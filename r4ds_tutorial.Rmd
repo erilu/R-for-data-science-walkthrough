@@ -127,7 +127,7 @@ ggplot(data = mpg) +
 
 We can see that the front wheel drive cars on average have low engine displacement and high highway mileage.
 
-Using size variable to further categorize in the graph (you can combine multiple parameters for the cateogrization! This is pretty cool.):
+Using size variable to further categorize in the graph (you can combine multiple parameters for the cateogrization! This is pretty cool). If you try to use a categorical/discrete variable for size, an error will be displayed.
 ```{r}
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy, size = class, color = class, alpha = drv))
@@ -142,9 +142,25 @@ ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, color = "blue"))
 ```
 
+The points are not blue because the "color =" parameter lies within aes(). This means the function will be looking for a column within the mpg dataset called "blue", which does not exist. So to fix this, place the "color =" parameter outside aes(), but within geom_point().
+
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy), color = "blue")
+```
+
+
 2. Which variables in mpg are categorical? Which variables are continuous? (Hint: type ?mpg to read the documentation for the dataset). How can you see this information when you run mpg?
 
+One way you can figure out which are categorical vs continuous is by using the ```summary()``` function. The continuous variables will have the quartiles specified, whereas the categorical variables will not. You might have to be wary about categorical variables in numerical form, in which you would have to read the documentation. Runing just ```mpg``` would show the type of varable under the column name (char vs int vs dbl, etc.) which would also let you know this information.
+
+```{r}
+summary(mpg)
+```
+
 3. Map a continuous variable to color, size, and shape. How do these aesthetics behave differently for categorical vs. continuous variables?
+
+
 
 4. What happens if you map the same variable to multiple aesthetics?
 
