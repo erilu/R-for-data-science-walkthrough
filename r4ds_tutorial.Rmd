@@ -1,0 +1,155 @@
+---
+title: "R for Data Science Walkthrough"
+output: html_notebook
+---
+
+This is an R notebook of my walkthrough through the book R for Data Science.
+
+# Chapter 1 & 2: Introduction
+Install the packages that the book will use (tidyverse):
+```{r}
+install.packages("tidyverse")
+library(tidyverse)
+```
+
+Install the datasets that the book will use:
+
+```{r}
+install.packages(c("nycflights13", "gapminder", "Lahman"))
+```
+
+Use the dput function to figure out how built-in data frames were constructed in R. First, examine how the ```mtcars``` dataset looks like using ```head()```.
+
+```{r}
+?mtcars # get documentation on the data / package / function
+head(mtcars) # get first few lines of the already built data frame
+```
+
+Now use ```dput()``` to learn how this data frame was constructed.
+
+```{r}
+dput(mtcars) # get the code used to build the actual data frame
+```
+
+We can see that the data frame was constructed by merging lists of each of the parameters (displ, hwy, etc..) into columns, then naming each of the columns and rows.
+
+# Chapter 3 - Introduction
+
+## 3.2 Creating a ggplot
+
+Learn how to use ggplot2. The dataset we will work with is the built-in dataset ```mpg```.
+```{r}
+head(mpg)
+```
+
+Plot mileage (hwy) against engine displacement (displ):
+
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes (x=displ, y=hwy)) +
+  ggtitle("Engine displacement (x-axis) vs Mileage (y-axis)") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+I added a title to the ggplot (ggtitle) and centered the title by adding a theme parameter. I also found that it was not required to have the "data =" or "mapping =" in the ggplot() or geom_point() parameters. Since there was a inverse correlation, I was interested to see what a linear model would look like if fitted to the data. Here is how I added a trend line to the plot above.
+
+```{r}
+ggplot(data = mpg, aes (x = displ, y = hwy)) + 
+  geom_point() +
+  ggtitle("Engine displacement (x-axis) vs Mileage (y-axis)") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  geom_smooth(method = 'lm', se = F)
+```
+
+I had to specify the ```aes``` in the ggplot() parameter, so that it would apply to both the geom_point() and geom_smooth(). When I kept the ```aes``` in the geom_point() paramter as before, I received an error.
+
+## 3.2.4 Exercises
+
+1.Run ggplot(data = mpg). What do you see?
+```{r}
+ggplot(data = mpg)
+```
+
+We see an empty plot. The ggplot() function simply creates a plotting space and specifies the data that will be plotted. Sequential parameters must be added ("+") to the ggplot to see anything.
+
+2. How many rows are in mpg? How many columns?
+```{r}
+dim(mpg)
+```
+
+There are 234 rows and 11 columns in the data set.
+
+3.What does the drv variable describe? Read the help for ?mpg to find out.
+```{r}
+?mpg
+```
+
+The ```drv``` column specifies whether the car is "f = front-wheel drive, r = rear wheel drive, 4 = 4wd"
+.
+
+4.Make a scatterplot of hwy vs cyl.
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes (x=cyl, y=hwy)) +
+  ggtitle("Number of Cylinders (x-axis) vs Mileage (y-axis)") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+There is an inverse correlation with the number of cylinders and how much mileage the car gets on the highway.
+
+5. What happens if you make a scatterplot of class vs drv? Why is the plot not useful?
+
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes (x=class, y=drv)) +
+  ggtitle("Number of Class (x-axis) vs Type of Drive (y-axis)") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+The data is not particularly useful since these are two categorical variables, and because the class of car does not usually dictate the type of drive. This plot would suggest that, since there are many classes of cars with two or more types of drive.
+
+## 3.3 Aesthetic Mappings
+
+Color-code the points in the scatterplot by another variable in the data set.
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = class))
+```
+
+The plot shows that SUVs have low highway mileage and high engine displacement and that compact cars have high mileage and low engine displacement, as expected.
+
+Another example, this time color coding based on the ```drv``` variable.
+
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = drv))
+```
+
+We can see that the front wheel drive cars on average have low engine displacement and high highway mileage.
+
+Using size variable to further categorize in the graph (you can combine multiple parameters for the cateogrization! This is pretty cool.):
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, size = class, color = class, alpha = drv))
+```
+
+## 3.3.1 Exercises
+
+1.What’s gone wrong with this code? Why are the points not blue?
+
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = "blue"))
+```
+
+2. Which variables in mpg are categorical? Which variables are continuous? (Hint: type ?mpg to read the documentation for the dataset). How can you see this information when you run mpg?
+
+3. Map a continuous variable to color, size, and shape. How do these aesthetics behave differently for categorical vs. continuous variables?
+
+4. What happens if you map the same variable to multiple aesthetics?
+
+5. What does the stroke aesthetic do? What shapes does it work with? (Hint: use ?geom_point)
+
+6. What happens if you map an aesthetic to something other than a variable name, like aes(colour = displ < 5)?
+
+
