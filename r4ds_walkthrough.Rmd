@@ -167,10 +167,62 @@ summary(mpg)
 
 3. Map a continuous variable to color, size, and shape. How do these aesthetics behave differently for categorical vs. continuous variables?
 
+I mapped the continuous variable, "cty", city miles per gallon, using color and size. By color, the points are now on a gradient. By size, the larger points have higher city miles per gallon. I couldn't map the continuous variable to shape, since there are a set number of shapes available. This was also an issue when running it for the variable "class", since there was one more class than there were number of shapes as well (the SUV category has no points as a result).
+
+```{r chp3_exercise_3}
+# install gridExtra package to plot multiple graphs side by side, could also use cowplots package
+# install.packages("gridExtra")
+library(gridExtra)
+byColor = ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = cty)) +
+  ggtitle("City miles mapped by color")
+bySize = ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, size = cty)) +
+  ggtitle("City miles mapped by size")
+
+grid.arrange(byColor, bySize, ncol=2)
+byShape = ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, shape = class))+
+  ggtitle("Number of Class (x-axis) vs Type of Drive (y-axis)")
+byShape
+
+```
+
+
 4. What happens if you map the same variable to multiple aesthetics?
+
+The points will all lie on the same area of the spectrum for each aesthetic.
+
+```{r chp3_exercise_4}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, size = cyl, color = cyl, alpha = cyl))
+```
 
 5. What does the stroke aesthetic do? What shapes does it work with? (Hint: use ?geom_point)
 
+The stroke will modify the width of the border for geom_points that have a border. Below I increase the size of the points after categorizing by the drv variable.
+
+```{r chp3_exercise_5}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, shape = drv, stroke = 3))
+```
+
+
 6. What happens if you map an aesthetic to something other than a variable name, like aes(colour = displ < 5)?
+
+The aesthetic will be mapped to the output of the argument. Displ < 5 will return TRUE for all points less than 5, and these points will be mapped to a separate color. Below is an example of displ < 5 and cyl < 5.
+
+```{r chp3_exercise_6}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = displ < 5))
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = cyl < 5))
+```
+
+
+
+
+
+
 
 

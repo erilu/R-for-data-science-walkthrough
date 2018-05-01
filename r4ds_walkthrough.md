@@ -21,7 +21,7 @@ Install the packages that the book will use (tidyverse):
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
+    ## ── Attaching packages ─────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 2.2.1     ✔ purrr   0.2.4
     ## ✔ tibble  1.4.2     ✔ dplyr   0.7.4
@@ -36,7 +36,7 @@ library(tidyverse)
 
     ## Warning: package 'dplyr' was built under R version 3.3.2
 
-    ## ── Conflicts ───────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -299,8 +299,87 @@ summary(mpg)
 
 1.  Map a continuous variable to color, size, and shape. How do these aesthetics behave differently for categorical vs. continuous variables?
 
-2.  What happens if you map the same variable to multiple aesthetics?
+I mapped the continuous variable, "cty", city miles per gallon, using color and size. By color, the points are now on a gradient. By size, the larger points have higher city miles per gallon. I couldn't map the continuous variable to shape, since there are a set number of shapes available. This was also an issue when running it for the variable "class", since there was one more class than there were number of shapes as well (the SUV category has no points as a result).
 
-3.  What does the stroke aesthetic do? What shapes does it work with? (Hint: use ?geom\_point)
+``` r
+# install gridExtra package to plot multiple graphs side by side, could also use cowplots package
+# install.packages("gridExtra")
+library(gridExtra)
+```
 
-4.  What happens if you map an aesthetic to something other than a variable name, like aes(colour = displ &lt; 5)?
+    ## Warning: package 'gridExtra' was built under R version 3.3.2
+
+    ## 
+    ## Attaching package: 'gridExtra'
+
+    ## The following object is masked from 'package:dplyr':
+    ## 
+    ##     combine
+
+``` r
+byColor = ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = cty)) +
+  ggtitle("City miles mapped by color")
+bySize = ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, size = cty)) +
+  ggtitle("City miles mapped by size")
+
+grid.arrange(byColor, bySize, ncol=2)
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/chp3_exercise_3-1.png)
+
+``` r
+byShape = ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, shape = class))+
+  ggtitle("Number of Class (x-axis) vs Type of Drive (y-axis)")
+byShape
+```
+
+    ## Warning: The shape palette can deal with a maximum of 6 discrete values
+    ## because more than 6 becomes difficult to discriminate; you have 7.
+    ## Consider specifying shapes manually if you must have them.
+
+    ## Warning: Removed 62 rows containing missing values (geom_point).
+
+![](r4ds_walkthrough_files/figure-markdown_github/chp3_exercise_3-2.png)
+
+1.  What happens if you map the same variable to multiple aesthetics?
+
+The points will all lie on the same area of the spectrum for each aesthetic.
+
+``` r
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, size = cyl, color = cyl, alpha = cyl))
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/chp3_exercise_4-1.png)
+
+1.  What does the stroke aesthetic do? What shapes does it work with? (Hint: use ?geom\_point)
+
+The stroke will modify the width of the border for geom\_points that have a border. Below I increase the size of the points after categorizing by the drv variable.
+
+``` r
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, shape = drv, stroke = 3))
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/chp3_exercise_5-1.png)
+
+1.  What happens if you map an aesthetic to something other than a variable name, like aes(colour = displ &lt; 5)?
+
+The aesthetic will be mapped to the output of the argument. Displ &lt; 5 will return TRUE for all points less than 5, and these points will be mapped to a separate color. Below is an example of displ &lt; 5 and cyl &lt; 5.
+
+``` r
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = displ < 5))
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/chp3_exercise_6-1.png)
+
+``` r
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = cyl < 5))
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/chp3_exercise_6-2.png)
