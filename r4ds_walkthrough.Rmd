@@ -112,7 +112,7 @@ ggplot(data = mpg) +
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
-The data is not particularly useful since these are two categorical variables, and because the class of car does not usually dictate the type of drive. This plot would suggest that, since there are many classes of cars with two or more types of drive.
+The data is not particularly useful since these are two categorical variables, and because the class of car does not usually dictate the type of drive. Furthermore, you do not know how many points fall under each of the dots seen at the crosshairs. This plot would suggest that, since there are many classes of cars with two or more types of drive.
 
 ## 3.3 Aesthetic Mappings
 
@@ -220,9 +220,263 @@ ggplot(data = mpg) +
 ```
 
 
+## 3.5 Facets
+
+Split data up into subplots based on a discrete variable: 1 dimensional facet. This allows us to focus in on subsets of the data (say for example, you wanted to quickly compare midsize vars vs minivans) Can add aesthetic mappings as well ontop of this!
+
+```{r 1D_facet}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = drv)) + 
+  facet_wrap(~ class, nrow = 2)
+```
+
+Instead of adding the aesthetic mapping, we can also make a 2D facet. This lets us add yet another mapping on top. So useful!
+
+```{r 2D_facet}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = trans)) + 
+  facet_grid(drv ~ cyl)
+```
+
+# 3.5.1 Exercises
+
+1. What happens if you facet on a continuous variable?
+
+Let's try faceting on city miles per gallon (cty):
+
+```{r continuous_facet}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_grid(drv ~ cty)
+```
+
+It looks like ggplot2 will still spit out a graph, but the graph is not very interpretable. It also takes much more time to process than a discrete variable with fewer factors.
+
+2. What do the empty cells in plot with facet_grid(drv ~ cyl) mean? How do they relate to this plot?
+
+The empty cells in facet_grid(drv~cyl) mean that there are no points that satisfy both of the conditions specified for drv and cyl. In the plot below, you can identify the same blank facet plots as the crosshairs that do not have points (for example, cars with 4 cylinders and rear wheel drive).
+
+```{r drv_vs_cyl}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = drv, y = cyl))
+```
+  
+  
+3. What plots does the following code make? What does . do?
+
+Based on the output, I assume that . means to perform a 1D facet plot using the variable supplied. Although having the . vs not having it doesn't change the output when using the form (~ drv). Switching between . ~ drv and drv ~ . flips the orientation of the graphs. Worth to note that facet_map(~ drv, ncol = 3) provides the same output as facet_grid(. ~ drv).
+```{r chp3_exercise_dot}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  facet_grid(drv ~ .)
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  facet_grid(. ~ drv)
+
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  facet_grid(. ~ cyl)
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  facet_grid(cyl~.)
+```
+
+
+4. Take the first faceted plot in this section:
+
+```{r 1D_facet_example}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_wrap(~ class)
+```
+
+What are the advantages to using faceting instead of the colour aesthetic? What are the disadvantages? How might the balance change if you had a larger dataset?
+
+Faceting will allow you to examine the overall distribution of one subset vs another. Pulling out the points and viewing the plot in isolation might make it easier to see trends in the data. Larger datasets with more variability between subsets (overlapping points) might want to use facets. However the computing power needed to facet the data might not scale well.
+
+5. Read ?facet_wrap. What does nrow do? What does ncol do? What other options control the layout of the individual panels? Why doesn’t facet_grid() have nrow and ncol argument?
+
+nrow and ncol in facet_wrap() determine how many rows and columns the output graphs will be organized into. Other options include as.table, or dir. facet_grid() does not have nrow and ncol because there are defined numbers of parameters for the two variables being compared.
+
+6. When using facet_grid() you should usually put the variable with more unique levels in the columns. Why?
+
+Putting the variable with more unique levels in the columns will allow you to scan the facets faster. Also, monitors are widescreen.
+
+## Geometric objects
+
+Data can be visualized in different ways using different geom_ functions:
+
+```{r geom_point_vs_smooth}
+# left
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy))
+
+# right
+ggplot(data = mpg) + 
+  geom_smooth(mapping = aes(x = displ, y = hwy))
+```
+
+Geom functions can be combined! Also, the better coding practice is to declare global parameters in ggplot() and change as you want in the geom_() functions, so that you do not have to modify or copy/paste multiple times. You can also only choose to display a subset of the data using the filter() command.
+
+```{r combine_point_smooth}
+# declaring locally
+ggplot(data = mpg) + 
+  geom_point(mapping = aes (x = displ, y = hwy, color = drv)) +
+  geom_smooth(mapping = aes(x = displ, y = hwy, linetype = drv, color = drv))
+
+# declaring globally and locally
+ggplot(data = mpg, mapping = aes (x = displ, y = hwy, color = drv)) + 
+  geom_point() +
+  geom_smooth(mapping = aes(linetype = drv))
+
+# using filter() to only display some of the data, dependent on city mileage value
+ggplot(data = mpg, mapping = aes (x = displ, y = hwy, color = drv)) +
+  geom_point(data = filter(mpg, cty < 20)) +
+  geom_smooth(mapping = aes(linetype = drv))
+
+```
+
+## 3.6.1 Exercises
+
+1. What geom would you use to draw a line chart? A boxplot? A histogram? An area chart?
+
+Line chart would use geom_line(), a boxplot would use geom_boxplot(), a histogram would use geom_histogram(), and an area chart would use geom_area().
+
+2. Run this code in your head and predict what the output will look like. Then, run the code in R and check your predictions.
+
+I predict that hwy will be plotted against displ as a scatter plot, with the color of the dot depending on the drv variable. superimposed on these points will be a smoothened conditional mean line, also colored based on the drv variable, since these were declared globally.
+
+```{r chp3_exercise_predict}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) + 
+  geom_point() + 
+  geom_smooth(se = FALSE)
+```
+  
+3. What does show.legend = FALSE do? What happens if you remove it?
+Why do you think I used it earlier in the chapter?
+
+show.legend = FALSE prevents the legend from being displayed. If you remove it, the legends will show up. I think that it was set to false just to save space!
+
+4. What does the se argument to geom_smooth() do?
+
+Based on the ?geom_smooth documentation, the se argument tells the graph to either display or hide the confidence interval around the smooth function. This would depend on the type of smoothing performed (loess vs lm, etc.).
+
+5. Will these two graphs look different? Why/why not?
+
+```{r chp3_exercise_diff}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point() + 
+  geom_smooth()
+
+ggplot() + 
+  geom_point(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_smooth(data = mpg, mapping = aes(x = displ, y = hwy))
+```
+
+No, the graphs will not look different. One defines the parameters globally, whereas the other defines the same parameters locally in each geom_() function.
+
+6. Recreate the R code necessary to generate the following graphs.
+
+```{r chp3_exercise_recreate}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+  geom_point () +
+  geom_smooth (se = FALSE)
+
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+  geom_point () +
+  geom_smooth (aes(group = drv), se = FALSE)
+
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) +
+  geom_point () +
+  geom_smooth (se = FALSE)
+
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+  geom_point (aes(color = drv)) +
+  geom_smooth (aes(linetype = drv), se = FALSE)
+
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, fill = drv)) +
+  geom_point (size = 3, shape = 21, stroke = 3, color = "white")
+
+
+```
+
+
+## 3.7 Statistical Transformations
+
+Make a barplot using geom_bar():
+
+```{r standard_barplot}
+ggplot(data = diamonds) +
+  geom_bar(mapping = aes(x = cut))
+```
+
+We can also create a barplot if given a set of pre-defined values:
+
+```{r predefined_barplot}
+demo <- tribble(
+  ~cut,         ~freq,
+  "Fair",       1610,
+  "Good",       4906,
+  "Very Good",  12082,
+  "Premium",    13791,
+  "Ideal",      21551
+)
+
+ggplot(data = demo) +
+  geom_bar(mapping = aes(x = cut, y = freq), stat = "identity")
+```
+
+Or plot the barplot as a proportion (kind of like a histogram would, except this uses discrete variables on the x axis):
+
+```{r}
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, y = ..prop.., group = 1))
+```
+
+This is how to provide a stat summary manually using stat_summary(). It might be better to visualize this using a boxplot. I'll try making one here as well:
+
+```{r stat_summary_vs_boxplot}
+# stat summary
+ggplot(data = diamonds) + 
+  stat_summary(
+    mapping = aes(x = cut, y = depth),
+    fun.ymin = min,
+    fun.ymax = max,
+    fun.y = median
+  )
+
+# boxplot
+
+ggplot(data = diamonds) +
+  geom_boxplot( mapping = aes (x = cut, y = depth))
+```
+
+As you can see, the layout for the stat_summary and boxplot are identical. The type of information provided by the boxplot is also very similar, except that it also provides the 1st and 3rd quartile and individual points lying outside. I am sure we could have added this information to the stat_summary().
+
+# 3.7.1 Exercises
+
+1. What is the default geom associated with stat_summary()? How could you rewrite the previous plot to use that geom function instead of the stat function?
+
+Looking at the ?stat_summary page, the default geom function associated with it is "pointrange." Below is a replicate of the plot using this geom_function:
+
+```{r geom_pointrange_vs_statsummary}
+ggplot(data = diamonds) +
+  geom_pointrange(mapping = aes (x = cut, y = depth, ymin =depth, ymax =depth))
+```
+This plot looks similar, but its not exactly the same. We still need to find a way to convert the dots into a line and plot the median point.
+
+
+2. What does geom_col() do? How is it different to geom_bar()?
 
 
 
+3. Most geoms and stats come in pairs that are almost always used in concert. Read through the documentation and make a list of all the pairs. What do they have in common?
 
+4. What variables does stat_smooth() compute? What parameters control its behaviour?
 
+5. In our proportion bar chart, we need to set group = 1. Why? In other words what is the problem with these two graphs?
 
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, y = ..prop..))
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = color, y = ..prop..))

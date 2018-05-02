@@ -8,6 +8,12 @@ Erick Lu
     -   [3.2.4 Exercises](#exercises)
     -   [3.3 Aesthetic Mappings](#aesthetic-mappings)
     -   [3.3.1 Exercises](#exercises-1)
+    -   [3.5 Facets](#facets)
+-   [3.5.1 Exercises](#exercises-2)
+    -   [Geometric objects](#geometric-objects)
+    -   [3.6.1 Exercises](#exercises-3)
+    -   [3.7 Statistical Transformations](#statistical-transformations)
+-   [3.7.1 Exercises](#exercises-4)
 
 This my walkthrough for the book: *R for Data Science* by Hadley Wickham and Garrett Grolemund. It contains my answers to their exercises and some of my own notes and data explorations.
 
@@ -210,7 +216,7 @@ ggplot(data = mpg) +
 
 ![](r4ds_walkthrough_files/figure-markdown_github/class_vs_drv-1.png)
 
-The data is not particularly useful since these are two categorical variables, and because the class of car does not usually dictate the type of drive. This plot would suggest that, since there are many classes of cars with two or more types of drive.
+The data is not particularly useful since these are two categorical variables, and because the class of car does not usually dictate the type of drive. Furthermore, you do not know how many points fall under each of the dots seen at the crosshairs. This plot would suggest that, since there are many classes of cars with two or more types of drive.
 
 3.3 Aesthetic Mappings
 ----------------------
@@ -383,3 +389,342 @@ ggplot(data = mpg) +
 ```
 
 ![](r4ds_walkthrough_files/figure-markdown_github/chp3_exercise_6-2.png)
+
+3.5 Facets
+----------
+
+Split data up into subplots based on a discrete variable: 1 dimensional facet. This allows us to focus in on subsets of the data (say for example, you wanted to quickly compare midsize vars vs minivans) Can add aesthetic mappings as well ontop of this!
+
+``` r
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = drv)) + 
+  facet_wrap(~ class, nrow = 2)
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/1D_facet-1.png)
+
+Instead of adding the aesthetic mapping, we can also make a 2D facet. This lets us add yet another mapping on top. So useful!
+
+``` r
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = trans)) + 
+  facet_grid(drv ~ cyl)
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/2D_facet-1.png)
+
+3.5.1 Exercises
+===============
+
+1.  What happens if you facet on a continuous variable?
+
+Let's try faceting on city miles per gallon (cty):
+
+``` r
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_grid(drv ~ cty)
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/continuous_facet-1.png)
+
+It looks like ggplot2 will still spit out a graph, but the graph is not very interpretable. It also takes much more time to process than a discrete variable with fewer factors.
+
+1.  What do the empty cells in plot with facet\_grid(drv ~ cyl) mean? How do they relate to this plot?
+
+The empty cells in facet\_grid(drv~cyl) mean that there are no points that satisfy both of the conditions specified for drv and cyl. In the plot below, you can identify the same blank facet plots as the crosshairs that do not have points (for example, cars with 4 cylinders and rear wheel drive).
+
+``` r
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = drv, y = cyl))
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/drv_vs_cyl-1.png)
+
+1.  What plots does the following code make? What does . do?
+
+Based on the output, I assume that . means to perform a 1D facet plot using the variable supplied. Although having the . vs not having it doesn't change the output when using the form (~ drv). Switching between . ~ drv and drv ~ . flips the orientation of the graphs. Worth to note that facet\_map(~ drv, ncol = 3) provides the same output as facet\_grid(. ~ drv).
+
+``` r
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  facet_grid(drv ~ .)
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/chp3_exercise_dot-1.png)
+
+``` r
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  facet_grid(. ~ drv)
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/chp3_exercise_dot-2.png)
+
+``` r
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  facet_grid(. ~ cyl)
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/chp3_exercise_dot-3.png)
+
+``` r
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  facet_grid(cyl~.)
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/chp3_exercise_dot-4.png)
+
+1.  Take the first faceted plot in this section:
+
+``` r
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_wrap(~ class)
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/1D_facet_example-1.png)
+
+What are the advantages to using faceting instead of the colour aesthetic? What are the disadvantages? How might the balance change if you had a larger dataset?
+
+Faceting will allow you to examine the overall distribution of one subset vs another. Pulling out the points and viewing the plot in isolation might make it easier to see trends in the data. Larger datasets with more variability between subsets (overlapping points) might want to use facets. However the computing power needed to facet the data might not scale well.
+
+1.  Read ?facet\_wrap. What does nrow do? What does ncol do? What other options control the layout of the individual panels? Why doesn’t facet\_grid() have nrow and ncol argument?
+
+nrow and ncol in facet\_wrap() determine how many rows and columns the output graphs will be organized into. Other options include as.table, or dir. facet\_grid() does not have nrow and ncol because there are defined numbers of parameters for the two variables being compared.
+
+1.  When using facet\_grid() you should usually put the variable with more unique levels in the columns. Why?
+
+Putting the variable with more unique levels in the columns will allow you to scan the facets faster. Also, monitors are widescreen.
+
+Geometric objects
+-----------------
+
+Data can be visualized in different ways using different geom\_ functions:
+
+``` r
+# left
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy))
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/geom_point_vs_smooth-1.png)
+
+``` r
+# right
+ggplot(data = mpg) + 
+  geom_smooth(mapping = aes(x = displ, y = hwy))
+```
+
+    ## `geom_smooth()` using method = 'loess'
+
+![](r4ds_walkthrough_files/figure-markdown_github/geom_point_vs_smooth-2.png)
+
+Geom functions can be combined! Also, the better coding practice is to declare global parameters in ggplot() and change as you want in the geom\_() functions, so that you do not have to modify or copy/paste multiple times. You can also only choose to display a subset of the data using the filter() command.
+
+``` r
+# declaring locally
+ggplot(data = mpg) + 
+  geom_point(mapping = aes (x = displ, y = hwy, color = drv)) +
+  geom_smooth(mapping = aes(x = displ, y = hwy, linetype = drv, color = drv))
+```
+
+    ## `geom_smooth()` using method = 'loess'
+
+![](r4ds_walkthrough_files/figure-markdown_github/combine_point_smooth-1.png)
+
+``` r
+# declaring globally and locally
+ggplot(data = mpg, mapping = aes (x = displ, y = hwy, color = drv)) + 
+  geom_point() +
+  geom_smooth(mapping = aes(linetype = drv))
+```
+
+    ## `geom_smooth()` using method = 'loess'
+
+![](r4ds_walkthrough_files/figure-markdown_github/combine_point_smooth-2.png)
+
+``` r
+# using filter() to only display some of the data, dependent on city mileage value
+ggplot(data = mpg, mapping = aes (x = displ, y = hwy, color = drv)) +
+  geom_point(data = filter(mpg, cty < 20)) +
+  geom_smooth(mapping = aes(linetype = drv))
+```
+
+    ## Warning: package 'bindrcpp' was built under R version 3.3.2
+
+    ## `geom_smooth()` using method = 'loess'
+
+![](r4ds_walkthrough_files/figure-markdown_github/combine_point_smooth-3.png)
+
+3.6.1 Exercises
+---------------
+
+1.  What geom would you use to draw a line chart? A boxplot? A histogram? An area chart?
+
+Line chart would use geom\_line(), a boxplot would use geom\_boxplot(), a histogram would use geom\_histogram(), and an area chart would use geom\_area().
+
+1.  Run this code in your head and predict what the output will look like. Then, run the code in R and check your predictions.
+
+I predict that hwy will be plotted against displ as a scatter plot, with the color of the dot depending on the drv variable. superimposed on these points will be a smoothened conditional mean line, also colored based on the drv variable, since these were declared globally.
+
+``` r
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) + 
+  geom_point() + 
+  geom_smooth(se = FALSE)
+```
+
+    ## `geom_smooth()` using method = 'loess'
+
+![](r4ds_walkthrough_files/figure-markdown_github/chp3_exercise_predict-1.png)
+
+1.  What does show.legend = FALSE do? What happens if you remove it? Why do you think I used it earlier in the chapter?
+
+show.legend = FALSE prevents the legend from being displayed. If you remove it, the legends will show up. I think that it was set to false just to save space!
+
+1.  What does the se argument to geom\_smooth() do?
+
+Based on the ?geom\_smooth documentation, the se argument tells the graph to either display or hide the confidence interval around the smooth function. This would depend on the type of smoothing performed (loess vs lm, etc.).
+
+1.  Will these two graphs look different? Why/why not?
+
+``` r
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point() + 
+  geom_smooth()
+```
+
+    ## `geom_smooth()` using method = 'loess'
+
+![](r4ds_walkthrough_files/figure-markdown_github/chp3_exercise_diff-1.png)
+
+``` r
+ggplot() + 
+  geom_point(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_smooth(data = mpg, mapping = aes(x = displ, y = hwy))
+```
+
+    ## `geom_smooth()` using method = 'loess'
+
+![](r4ds_walkthrough_files/figure-markdown_github/chp3_exercise_diff-2.png)
+
+No, the graphs will not look different. One defines the parameters globally, whereas the other defines the same parameters locally in each geom\_() function.
+
+1.  Recreate the R code necessary to generate the following graphs.
+
+``` r
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+  geom_point () +
+  geom_smooth (se = FALSE)
+```
+
+    ## `geom_smooth()` using method = 'loess'
+
+![](r4ds_walkthrough_files/figure-markdown_github/chp3_exercise_recreate-1.png)
+
+``` r
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+  geom_point () +
+  geom_smooth (aes(group = drv), se = FALSE)
+```
+
+    ## `geom_smooth()` using method = 'loess'
+
+![](r4ds_walkthrough_files/figure-markdown_github/chp3_exercise_recreate-2.png)
+
+``` r
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) +
+  geom_point () +
+  geom_smooth (se = FALSE)
+```
+
+    ## `geom_smooth()` using method = 'loess'
+
+![](r4ds_walkthrough_files/figure-markdown_github/chp3_exercise_recreate-3.png)
+
+``` r
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+  geom_point (aes(color = drv)) +
+  geom_smooth (aes(linetype = drv), se = FALSE)
+```
+
+    ## `geom_smooth()` using method = 'loess'
+
+![](r4ds_walkthrough_files/figure-markdown_github/chp3_exercise_recreate-4.png)
+
+``` r
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, fill = drv)) +
+  geom_point (size = 3, shape = 21, stroke = 3, color = "white")
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/chp3_exercise_recreate-5.png)
+
+3.7 Statistical Transformations
+-------------------------------
+
+Make a barplot using geom\_bar():
+
+``` r
+ggplot(data = diamonds) +
+  geom_bar(mapping = aes(x = cut))
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/standard_barplot-1.png)
+
+We can also create a barplot if given a set of pre-defined values:
+
+``` r
+demo <- tribble(
+  ~cut,         ~freq,
+  "Fair",       1610,
+  "Good",       4906,
+  "Very Good",  12082,
+  "Premium",    13791,
+  "Ideal",      21551
+)
+
+ggplot(data = demo) +
+  geom_bar(mapping = aes(x = cut, y = freq), stat = "identity")
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/predefined_barplot-1.png)
+
+Or plot the barplot as a proportion (kind of like a histogram would, except this uses discrete variables on the x axis):
+
+``` r
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, y = ..prop.., group = 1))
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/unnamed-chunk-9-1.png)
+
+This is how to provide a stat summary manually using stat\_summary(). It might be better to visualize this using a boxplot. I'll try making one here as well:
+
+``` r
+# stat summary
+ggplot(data = diamonds) + 
+  stat_summary(
+    mapping = aes(x = cut, y = depth),
+    fun.ymin = min,
+    fun.ymax = max,
+    fun.y = median
+  )
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/stat_summary_vs_boxplot-1.png)
+
+``` r
+# boxplot
+
+ggplot(data = diamonds) +
+  geom_boxplot( mapping = aes (x = cut, y = depth))
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/stat_summary_vs_boxplot-2.png)
+
+As you can see, the layout for the stat\_summary and boxplot are identical. The type of information provided by the boxplot is also very similar, except that it also provides the 1st and 3rd quartile and individual points lying outside. I am sure we could have added this information to the stat\_summary().
+
+3.7.1 Exercises
+===============
