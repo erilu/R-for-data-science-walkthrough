@@ -556,16 +556,64 @@ ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
   geom_point()
 ```
 
+A lot of the data points are overlapping, so we have no sense of how weighted each point is. A better version of the plot would be one that uses the jitter parameter:
+
+```{r chp3_exercise_jitter}
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+  geom_point(position = "jitter")
+
+```
 
 
 2. What parameters to geom_jitter() control the amount of jittering?
 
+Based on ?geom_jitter, the "width" and "height" parameters for geom_jitter will control how much noise is added to each point.
+
 3. Compare and contrast geom_jitter() with geom_count().
+
+```{r}
+# geom jitter
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+  geom_jitter()
+
+# geom count
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+  geom_count()
+
+```
+
+Geom_count does not "jitter" the points; instead, it increases the size of the point based off of how many points were in that specific x,y slot.
+
 
 4. What’s the default position adjustment for geom_boxplot()? Create a visualisation of the mpg dataset that demonstrates it
 
+?geom_boxplot() indicates that the default position is "dodge," which means that any further grouping by aesthetic of each category on the x-axis will have the "dodge" positioning. As shown above, "dodge" splits the category into the indicated subgroups and plots it side by side within the category.
 
+Here is a visualization of hte mpg dataset using geom_boxplot(), which shows the city miles per gallon for each class of car, further grouped by the type of drive. The type of drive is "dodged":
 
+```{r mpg_geom_boxplot}
+ggplot (data = mpg, mapping = aes (x = class, y = cty)) +
+  geom_boxplot(aes (color = drv))
+```
+
+If i wanted to plot the boxplots on top of each other, I would use position = "identity", and then make the graphs transparent by specifying an alpha value:
+
+```{r mpg_boxplot_overlap}
+ggplot (data = mpg, mapping = aes (x = class, y = cty)) +
+  geom_boxplot(aes (color = drv), position = "identity", alpha = 1)
+```
+
+## 3.9 Coordinate Systems
+
+Sometimes we want to swap the axes, for various reasons (one being that the x-labels are long and hard to fit on a small graph):
+
+```{r swap_axis}
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
+  geom_boxplot()
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
+  geom_boxplot() +
+  coord_flip()
+```
 
 
 

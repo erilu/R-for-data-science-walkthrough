@@ -14,6 +14,9 @@ Erick Lu
     -   [3.6.1 Exercises](#exercises-3)
     -   [3.7 Statistical Transformations](#statistical-transformations)
 -   [3.7.1 Exercises](#exercises-4)
+    -   [3.8 Position Adjustments](#position-adjustments)
+    -   [3.8.1 Exercises](#exercises-5)
+    -   [3.9 Coordinate Systems](#coordinate-systems)
 
 This my walkthrough for the book: *R for Data Science* by Hadley Wickham and Garrett Grolemund. It contains my answers to their exercises and some of my own notes and data explorations.
 
@@ -728,3 +731,216 @@ As you can see, the layout for the stat\_summary and boxplot are identical. The 
 
 3.7.1 Exercises
 ===============
+
+1.  What is the default geom associated with stat\_summary()? How could you rewrite the previous plot to use that geom function instead of the stat function?
+
+Looking at the ?stat\_summary page, the default geom function associated with it is "pointrange." Below is a replicate of the plot using this geom\_function:
+
+``` r
+ggplot(data = diamonds) +
+  geom_pointrange(mapping = aes (x = cut, y = depth, ymin =depth, ymax =depth))
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/geom_pointrange_vs_statsummary-1.png) This plot looks similar, but its not exactly the same. We still need to find a way to convert the dots into a line and plot the median point.
+
+1.  What does geom\_col() do? How is it different to geom\_bar()?
+
+geom\_col() creates a barplot but uses the values in the data. In other words, it is as if we used geom\_bar() with stat = "identity".
+
+1.  Most geoms and stats come in pairs that are almost always used in concert. Read through the documentation and make a list of all the pairs. What do they have in common?
+
+I would refer to this page on the tidyverse website to see all the pairs of stats and geoms: <http://ggplot2.tidyverse.org/reference/>. Most of the stats and corresponding geoms are paired and have the same suffix.
+
+1.  What variables does stat\_smooth() compute? What parameters control its behaviour?
+
+stat\_smooth() computes the moving average using a choice of methods. You can set the span for the smoothing to calculate from, number of points to evalate the smoother at, and other parameters. Below I use stat\_smooth to replicate one of the previous graphs that used geom\_smooth().
+
+``` r
+ggplot(data = mpg, aes(x = displ, y = hwy)) +
+  geom_point(aes(color = drv)) +
+  stat_smooth(se = "FALSE")
+```
+
+    ## `geom_smooth()` using method = 'loess'
+
+![](r4ds_walkthrough_files/figure-markdown_github/stat_smooth-1.png)
+
+1.  In our proportion bar chart, we need to set group = 1. Why? In other words what is the problem with these two graphs?
+
+Without the group = 1, each of the proportions that are calculated for every category in cut will be equal to 1. This is because geom\_bar is calculating the proportion of each category in cut within that same category (ie: what proportion of "Fair" is in "Fair"). By forcing the group to be 1, the proper proportions as part of the total number of observations will be displayed. Changing the group size to an arbitrary number doesnt seem to change the graph.
+
+``` r
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, y = ..prop..))
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/chp3_exercise_barchart_group-1.png)
+
+``` r
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = color, y = ..prop..))
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/chp3_exercise_barchart_group-2.png)
+
+For some reason adding "group = 1" to the second geom\_bar plot (the one with the fill = color parameter) gets rid of the fill. Looking online there was no straightforward solution to this, except for using ..count.. and manually calculating the proportions (not using y = ..prop..).
+
+3.8 Position Adjustments
+------------------------
+
+To apply a separate color to each bar, specify either "color" or "fill" within aes() with the same variable that was on the x axis.
+
+``` r
+# border, specify color parameter
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, colour = cut))
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/colored_bar_charts-1.png)
+
+``` r
+#fill, specify fill parameter
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = cut))
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/colored_bar_charts-2.png)
+
+If you color by a variable other than what was on the x axis, each bar will be split into colors:
+
+``` r
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = clarity))
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/color_bar_diffvar-1.png)
+
+Note that this is plotting the raw counts, and not the proportions. Trying to do this using y = ..prop.. and group=1 does not work.
+
+If you want to see the relative contribution in a different way (not stacked), set the position parameter to "identity". This will overlap the bars and make them all start from 0. To visualize them, you must either make the bars transparent or have no fill.
+
+``` r
+ggplot(data = diamonds, mapping = aes(x = cut, fill = clarity)) + 
+  geom_bar(alpha = 1/5, position = "identity")
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/position_alpha_fill_NA-1.png)
+
+``` r
+ggplot(data = diamonds, mapping = aes(x = cut, colour = clarity)) + 
+  geom_bar(fill = NA, position = "identity")
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/position_alpha_fill_NA-2.png) Alternatively, you can have all the bars go to the same height so you can see what the differences in proportion are between the subgroups of each item on the x axis (position = fill). Or, you can have each of the subgroups plotted side by side within each bar (position = dodge).
+
+``` r
+# position = fill
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = clarity), position = "fill")
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/position_fill_dodge-1.png)
+
+``` r
+# position = dodge
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = clarity), position = "dodge")
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/position_fill_dodge-2.png)
+
+On scatterplots, overlapping points can be overlooked quite easily. One way to get around this is to jitter all the points, so that the number of overlapping points can be better visualized. The jitter parameter adds some normally distributed noise to each of the values in the dataset.
+
+``` r
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy), position = "jitter")
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/mpg_jitter-1.png)
+
+3.8.1 Exercises
+---------------
+
+1.  What is the problem with this plot? How could you improve it?
+
+``` r
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+  geom_point()
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/unnamed-chunk-10-1.png)
+
+A lot of the data points are overlapping, so we have no sense of how weighted each point is. A better version of the plot would be one that uses the jitter parameter:
+
+``` r
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+  geom_point(position = "jitter")
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/chp3_exercise_jitter-1.png)
+
+1.  What parameters to geom\_jitter() control the amount of jittering?
+
+Based on ?geom\_jitter, the "width" and "height" parameters for geom\_jitter will control how much noise is added to each point.
+
+1.  Compare and contrast geom\_jitter() with geom\_count().
+
+``` r
+# geom jitter
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+  geom_jitter()
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/unnamed-chunk-11-1.png)
+
+``` r
+# geom count
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+  geom_count()
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/unnamed-chunk-11-2.png)
+
+Geom\_count does not "jitter" the points; instead, it increases the size of the point based off of how many points were in that specific x,y slot.
+
+1.  What’s the default position adjustment for geom\_boxplot()? Create a visualisation of the mpg dataset that demonstrates it
+
+?geom\_boxplot() indicates that the default position is "dodge," which means that any further grouping by aesthetic of each category on the x-axis will have the "dodge" positioning. As shown above, "dodge" splits the category into the indicated subgroups and plots it side by side within the category.
+
+Here is a visualization of hte mpg dataset using geom\_boxplot(), which shows the city miles per gallon for each class of car, further grouped by the type of drive. The type of drive is "dodged":
+
+``` r
+ggplot (data = mpg, mapping = aes (x = class, y = cty)) +
+  geom_boxplot(aes (color = drv))
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/mpg_geom_boxplot-1.png)
+
+If i wanted to plot the boxplots on top of each other, I would use position = "identity", and then make the graphs transparent by specifying an alpha value:
+
+``` r
+ggplot (data = mpg, mapping = aes (x = class, y = cty)) +
+  geom_boxplot(aes (color = drv), position = "identity", alpha = 1)
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/mpg_boxplot_overlap-1.png)
+
+3.9 Coordinate Systems
+----------------------
+
+Sometimes we want to swap the axes, for various reasons (one being that the x-labels are long and hard to fit on a small graph):
+
+``` r
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
+  geom_boxplot()
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/swap_axis-1.png)
+
+``` r
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
+  geom_boxplot() +
+  coord_flip()
+```
+
+![](r4ds_walkthrough_files/figure-markdown_github/swap_axis-2.png)
