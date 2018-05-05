@@ -1,0 +1,16 @@
+---
+title: "R for Data Science Walkthrough Chapters 4-8"
+author: "Erick Lu"
+output: 
+  github_document:
+    html_preview: false
+    toc: true
+    toc_depth: 2
+    fig_width: 3.5
+    fig_height: 2.5
+    dev: jpeg
+---
+
+This my walkthrough for the book: _R for Data Science_ by Hadley Wickham and Garrett Grolemund. It contains my answers to their exercises and some of my own notes and data explorations. Here I will go through chapters 4-8.
+
+# Chapter 4
