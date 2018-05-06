@@ -149,7 +149,7 @@ ggplot(data = mpg) +
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/displ_vs_hwy-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/displ_vs_hwy-1.png)
 
 I added a title to the ggplot (ggtitle) and centered the title by adding a theme parameter. I also found that it was not required to have the "data =" or "mapping =" in the ggplot() or geom\_point() parameters. Since there was a inverse correlation, I was interested to see what a linear model would look like if fitted to the data. Here is how I added a trend line to the plot above.
 
@@ -161,7 +161,7 @@ ggplot(data = mpg, aes (x = displ, y = hwy)) +
   geom_smooth(method = 'lm', se = F)
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/mpg_plot_with_lm_line-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/mpg_plot_with_lm_line-1.png)
 
 I had to specify the `aes` in the ggplot() parameter, so that it would apply to both the geom\_point() and geom\_smooth(). When I kept the `aes` in the geom\_point() paramter as before, I received an error.
 
@@ -174,7 +174,7 @@ I had to specify the `aes` in the ggplot() parameter, so that it would apply to 
 ggplot(data = mpg)
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/ggplot_only_empty-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/ggplot_only_empty-1.png)
 
 We see an empty plot. The ggplot() function simply creates a plotting space and specifies the data that will be plotted. Sequential parameters must be added ("+") to the ggplot to see anything.
 
@@ -205,7 +205,7 @@ ggplot(data = mpg) +
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/hwy_vs_cyl-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/hwy_vs_cyl-1.png)
 
 There is an inverse correlation with the number of cylinders and how much mileage the car gets on the highway.
 
@@ -218,7 +218,7 @@ ggplot(data = mpg) +
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/class_vs_drv-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/class_vs_drv-1.png)
 
 The data is not particularly useful since these are two categorical variables, and because the class of car does not usually dictate the type of drive. Furthermore, you do not know how many points fall under each of the dots seen at the crosshairs. This plot would suggest that, since there are many classes of cars with two or more types of drive.
 
@@ -232,7 +232,7 @@ ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, color = class))
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/color_code_by_class-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/color_code_by_class-1.png)
 
 The plot shows that SUVs have low highway mileage and high engine displacement and that compact cars have high mileage and low engine displacement, as expected.
 
@@ -243,7 +243,7 @@ ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, color = drv))
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/color_code_by_drv-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/color_code_by_drv-1.png)
 
 We can see that the front wheel drive cars on average have low engine displacement and high highway mileage.
 
@@ -254,7 +254,7 @@ ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, size = cyl, color = class, alpha = drv))
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/color_shape_transparency_mpg-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/color_shape_transparency_mpg-1.png)
 
 3.3.1 Exercises
 ---------------
@@ -266,7 +266,7 @@ ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, color = "blue"))
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_1-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_1-1.png)
 
 The points are not blue because the "color =" parameter lies within aes(). This means the function will be looking for a column within the mpg dataset called "blue", which does not exist. So to fix this, place the "color =" parameter outside aes(), but within geom\_point().
 
@@ -275,7 +275,7 @@ ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy), color = "blue")
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_2-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_2-1.png)
 
 1.  Which variables in mpg are categorical? Which variables are continuous? (Hint: type ?mpg to read the documentation for the dataset). How can you see this information when you run mpg?
 
@@ -337,7 +337,7 @@ bySize <- ggplot(data = mpg) +
 grid.arrange(byColor, bySize, ncol=2)
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_3-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_3-1.png)
 
 ``` r
 byShape <- ggplot(data = mpg) + 
@@ -352,7 +352,7 @@ byShape
 
     ## Warning: Removed 62 rows containing missing values (geom_point).
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_3-2.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_3-2.png)
 
 1.  What happens if you map the same variable to multiple aesthetics?
 
@@ -363,7 +363,7 @@ ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, size = cyl, color = cyl, alpha = cyl))
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_4-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_4-1.png)
 
 1.  What does the stroke aesthetic do? What shapes does it work with? (Hint: use ?geom\_point)
 
@@ -374,7 +374,7 @@ ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, shape = drv, stroke = 3))
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_5-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_5-1.png)
 
 1.  What happens if you map an aesthetic to something other than a variable name, like aes(colour = displ &lt; 5)?
 
@@ -385,14 +385,14 @@ ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, color = displ < 5))
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_6-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_6-1.png)
 
 ``` r
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy, color = cyl < 5))
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_6-2.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_6-2.png)
 
 3.5 Facets
 ----------
@@ -405,7 +405,7 @@ ggplot(data = mpg) +
   facet_wrap(~ class, nrow = 2)
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/1D_facet-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/1D_facet-1.png)
 
 Instead of adding the aesthetic mapping, we can also make a 2D facet. This lets us add yet another mapping on top. So useful!
 
@@ -415,7 +415,7 @@ ggplot(data = mpg) +
   facet_grid(drv ~ cyl)
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/2D_facet-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/2D_facet-1.png)
 
 3.5.1 Exercises
 ---------------
@@ -430,7 +430,7 @@ ggplot(data = mpg) +
   facet_grid(drv ~ cty)
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/continuous_facet-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/continuous_facet-1.png)
 
 It looks like ggplot2 will still spit out a graph, but the graph is not very interpretable. It also takes much more time to process than a discrete variable with fewer factors.
 
@@ -443,7 +443,7 @@ ggplot(data = mpg) +
   geom_point(mapping = aes(x = drv, y = cyl))
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/drv_vs_cyl-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/drv_vs_cyl-1.png)
 
 1.  What plots does the following code make? What does . do?
 
@@ -455,7 +455,7 @@ ggplot(data = mpg) +
   facet_grid(drv ~ .)
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_dot-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_dot-1.png)
 
 ``` r
 ggplot(data = mpg) + 
@@ -463,7 +463,7 @@ ggplot(data = mpg) +
   facet_grid(. ~ drv)
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_dot-2.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_dot-2.png)
 
 1.  Take the first faceted plot in this section:
 
@@ -473,7 +473,7 @@ ggplot(data = mpg) +
   facet_wrap(~ class)
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/1D_facet_example-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/1D_facet_example-1.png)
 
 What are the advantages to using faceting instead of the colour aesthetic? What are the disadvantages? How might the balance change if you had a larger dataset?
 
@@ -498,7 +498,7 @@ ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy))
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/geom_point_vs_smooth-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/geom_point_vs_smooth-1.png)
 
 ``` r
 # right
@@ -508,7 +508,7 @@ ggplot(data = mpg) +
 
     ## `geom_smooth()` using method = 'loess'
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/geom_point_vs_smooth-2.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/geom_point_vs_smooth-2.png)
 
 Geom functions can be combined! Also, the better coding practice is to declare global parameters in ggplot() and change as you want in the geom\_() functions, so that you do not have to modify or copy/paste multiple times. You can also only choose to display a subset of the data using the filter() command.
 
@@ -521,7 +521,7 @@ ggplot(data = mpg) +
 
     ## `geom_smooth()` using method = 'loess'
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/combine_point_smooth-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/combine_point_smooth-1.png)
 
 ``` r
 # declaring globally and locally
@@ -532,7 +532,7 @@ ggplot(data = mpg, mapping = aes (x = displ, y = hwy, color = drv)) +
 
     ## `geom_smooth()` using method = 'loess'
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/combine_point_smooth-2.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/combine_point_smooth-2.png)
 
 ``` r
 # using filter() to only display some of the data, dependent on city mileage value
@@ -545,7 +545,7 @@ ggplot(data = mpg, mapping = aes (x = displ, y = hwy, color = drv)) +
 
     ## `geom_smooth()` using method = 'loess'
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/combine_point_smooth-3.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/combine_point_smooth-3.png)
 
 3.6.1 Exercises
 ---------------
@@ -566,7 +566,7 @@ ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) +
 
     ## `geom_smooth()` using method = 'loess'
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_predict-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_predict-1.png)
 
 1.  What does show.legend = FALSE do? What happens if you remove it? Why do you think I used it earlier in the chapter?
 
@@ -586,7 +586,7 @@ ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
 
     ## `geom_smooth()` using method = 'loess'
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_diff-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_diff-1.png)
 
 ``` r
 ggplot() + 
@@ -596,7 +596,7 @@ ggplot() +
 
     ## `geom_smooth()` using method = 'loess'
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_diff-2.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_diff-2.png)
 
 No, the graphs will not look different. One defines the parameters globally, whereas the other defines the same parameters locally in each geom\_() function.
 
@@ -610,7 +610,7 @@ ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
 
     ## `geom_smooth()` using method = 'loess'
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_recreate-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_recreate-1.png)
 
 ``` r
 ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
@@ -620,7 +620,7 @@ ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
 
     ## `geom_smooth()` using method = 'loess'
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_recreate-2.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_recreate-2.png)
 
 ``` r
 ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) +
@@ -630,7 +630,7 @@ ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) +
 
     ## `geom_smooth()` using method = 'loess'
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_recreate-3.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_recreate-3.png)
 
 ``` r
 ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
@@ -640,14 +640,14 @@ ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
 
     ## `geom_smooth()` using method = 'loess'
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_recreate-4.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_recreate-4.png)
 
 ``` r
 ggplot(data = mpg, mapping = aes(x = displ, y = hwy, fill = drv)) +
   geom_point (size = 3, shape = 21, stroke = 3, color = "white")
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_recreate-5.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_recreate-5.png)
 
 3.7 Statistical Transformations
 -------------------------------
@@ -659,7 +659,7 @@ ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut))
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/standard_barplot-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/standard_barplot-1.png)
 
 We can also create a barplot if given a set of pre-defined values:
 
@@ -677,7 +677,7 @@ ggplot(data = demo) +
   geom_bar(mapping = aes(x = cut, y = freq), stat = "identity")
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/predefined_barplot-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/predefined_barplot-1.png)
 
 Or plot the barplot as a proportion (kind of like a histogram would, except this uses discrete variables on the x axis):
 
@@ -686,7 +686,7 @@ ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut, y = ..prop.., group = 1))
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/unnamed-chunk-9-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/unnamed-chunk-9-1.png)
 
 This is how to provide a stat summary manually using stat\_summary(). It might be better to visualize this using a boxplot. I'll try making one here as well:
 
@@ -701,7 +701,7 @@ ggplot(data = diamonds) +
   )
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/stat_summary_vs_boxplot-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/stat_summary_vs_boxplot-1.png)
 
 ``` r
 # boxplot
@@ -710,7 +710,7 @@ ggplot(data = diamonds) +
   geom_boxplot( mapping = aes (x = cut, y = depth))
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/stat_summary_vs_boxplot-2.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/stat_summary_vs_boxplot-2.png)
 
 As you can see, the layout for the stat\_summary and boxplot are identical. The type of information provided by the boxplot is also very similar, except that it also provides the 1st and 3rd quartile and individual points lying outside. I am sure we could have added this information to the stat\_summary().
 
@@ -726,7 +726,7 @@ ggplot(data = diamonds) +
   geom_pointrange(mapping = aes (x = cut, y = depth, ymin =depth, ymax =depth))
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/geom_pointrange_vs_statsummary-1.jpeg) This plot looks similar, but its not exactly the same. We still need to find a way to convert the dots into a line and plot the median point.
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/geom_pointrange_vs_statsummary-1.png) This plot looks similar, but its not exactly the same. We still need to find a way to convert the dots into a line and plot the median point.
 
 1.  What does geom\_col() do? How is it different to geom\_bar()?
 
@@ -748,7 +748,7 @@ ggplot(data = mpg, aes(x = displ, y = hwy)) +
 
     ## `geom_smooth()` using method = 'loess'
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/stat_smooth-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/stat_smooth-1.png)
 
 1.  In our proportion bar chart, we need to set group = 1. Why? In other words what is the problem with these two graphs?
 
@@ -759,14 +759,14 @@ ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut, y = ..prop..))
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_barchart_group-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_barchart_group-1.png)
 
 ``` r
 ggplot(data = diamonds) + 
   geom_bar(mapping = aes(x = cut, fill = color, y = ..prop..))
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_barchart_group-2.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_barchart_group-2.png)
 
 For some reason adding "group = 1" to the second geom\_bar plot (the one with the fill = color parameter) gets rid of the fill. Looking online there was no straightforward solution to this, except for using ..count.. and manually calculating the proportions (not using y = ..prop..).
 
@@ -781,7 +781,7 @@ ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut, colour = cut))
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/colored_bar_charts-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/colored_bar_charts-1.png)
 
 ``` r
 #fill, specify fill parameter
@@ -789,7 +789,7 @@ ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut, fill = cut))
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/colored_bar_charts-2.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/colored_bar_charts-2.png)
 
 If you color by a variable other than what was on the x axis, each bar will be split into colors:
 
@@ -798,7 +798,7 @@ ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut, fill = clarity))
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/color_bar_diffvar-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/color_bar_diffvar-1.png)
 
 Note that this is plotting the raw counts, and not the proportions. Trying to do this using y = ..prop.. and group=1 does not work.
 
@@ -809,14 +809,14 @@ ggplot(data = diamonds, mapping = aes(x = cut, fill = clarity)) +
   geom_bar(alpha = 1/5, position = "identity")
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/position_alpha_fill_NA-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/position_alpha_fill_NA-1.png)
 
 ``` r
 ggplot(data = diamonds, mapping = aes(x = cut, colour = clarity)) + 
   geom_bar(fill = NA, position = "identity")
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/position_alpha_fill_NA-2.jpeg) Alternatively, you can have all the bars go to the same height so you can see what the differences in proportion are between the subgroups of each item on the x axis (position = fill). Or, you can have each of the subgroups plotted side by side within each bar (position = dodge).
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/position_alpha_fill_NA-2.png) Alternatively, you can have all the bars go to the same height so you can see what the differences in proportion are between the subgroups of each item on the x axis (position = fill). Or, you can have each of the subgroups plotted side by side within each bar (position = dodge).
 
 ``` r
 # position = fill
@@ -824,7 +824,7 @@ ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut, fill = clarity), position = "fill")
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/position_fill_dodge-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/position_fill_dodge-1.png)
 
 ``` r
 # position = dodge
@@ -832,7 +832,7 @@ ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut, fill = clarity), position = "dodge")
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/position_fill_dodge-2.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/position_fill_dodge-2.png)
 
 On scatterplots, overlapping points can be overlooked quite easily. One way to get around this is to jitter all the points, so that the number of overlapping points can be better visualized. The jitter parameter adds some normally distributed noise to each of the values in the dataset.
 
@@ -841,7 +841,7 @@ ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy), position = "jitter")
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/mpg_jitter-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/mpg_jitter-1.png)
 
 3.8.1 Exercises
 ---------------
@@ -853,7 +853,7 @@ ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
   geom_point()
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_jitter-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_jitter-1.png)
 
 A lot of the data points are overlapping, so we have no sense of how weighted each point is. A better version of the plot would be one that uses the jitter parameter:
 
@@ -862,7 +862,7 @@ ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
   geom_point(position = "jitter")
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_jitter_better-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_jitter_better-1.png)
 
 1.  What parameters to geom\_jitter() control the amount of jittering?
 
@@ -876,7 +876,7 @@ ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
   geom_jitter()
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/compare_geom_jitter_count-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/compare_geom_jitter_count-1.png)
 
 ``` r
 # geom count
@@ -884,7 +884,7 @@ ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
   geom_count()
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/compare_geom_jitter_count-2.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/compare_geom_jitter_count-2.png)
 
 Geom\_count does not "jitter" the points; instead, it increases the size of the point based off of how many points were in that specific x,y slot.
 
@@ -899,7 +899,7 @@ ggplot (data = mpg, mapping = aes (x = class, y = cty)) +
   geom_boxplot(aes (color = drv))
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/mpg_geom_boxplot-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/mpg_geom_boxplot-1.png)
 
 If i wanted to plot the boxplots on top of each other, I would use position = "identity", and then make the graphs transparent by specifying an alpha value:
 
@@ -908,7 +908,7 @@ ggplot (data = mpg, mapping = aes (x = class, y = cty)) +
   geom_boxplot(aes (color = drv), position = "identity", alpha = 1)
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/mpg_boxplot_overlap-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/mpg_boxplot_overlap-1.png)
 
 3.9 Coordinate Systems
 ----------------------
@@ -921,7 +921,7 @@ ggplot(data = mpg, mapping = aes(x = class, y = hwy)) +
   geom_boxplot()
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/swap_axis-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/swap_axis-1.png)
 
 ``` r
 # horizontal boxplots
@@ -930,7 +930,7 @@ ggplot(data = mpg, mapping = aes(x = class, y = hwy)) +
   coord_flip()
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/swap_axis-2.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/swap_axis-2.png)
 
 We also might want to change bar plots into pie charts:
 
@@ -947,13 +947,13 @@ bar <- ggplot(data = diamonds) +
 bar + coord_flip()
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/bar_into_pie-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/bar_into_pie-1.png)
 
 ``` r
 bar + coord_polar()
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/bar_into_pie-2.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/bar_into_pie-2.png)
 
 ``` r
 # 
@@ -981,7 +981,7 @@ bar <- ggplot(data = diamonds) +
 bar + coord_polar(theta = 'y')
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/regular_pie_chart-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/regular_pie_chart-1.png)
 
 1.  What does labs() do? Read the documentation.
 
@@ -1003,7 +1003,7 @@ ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
   coord_fixed()
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_geom_abline-1.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_geom_abline-1.png)
 
 ``` r
 # modified the abline to plot a simple linear regression ontop of the points.
@@ -1013,7 +1013,7 @@ ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
   coord_fixed()
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_geom_abline-2.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_geom_abline-2.png)
 
 ``` r
 # used geom_smooth instead of geom_abline to get the same result
@@ -1023,6 +1023,6 @@ ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
   coord_fixed()
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_geom_abline-3.jpeg)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_geom_abline-3.png)
 
 This concludes my walkthrough of chapters 1-3 of *R for Data Science*! Thanks for reading! A walkthrough of chapters 4 - 8 can be found in the R markdown file, r4ds\_chapter4-8\_walkthrough.Rmd.

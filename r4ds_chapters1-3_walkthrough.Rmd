@@ -6,9 +6,8 @@ output:
     html_preview: false
     toc: true
     toc_depth: 2
-    fig_width: 3.5
-    fig_height: 2.5
-    dev: jpeg
+    fig_width: 5
+    fig_height: 3.5
 ---
 
 This my walkthrough for the book: _R for Data Science_ by Hadley Wickham and Garrett Grolemund. It contains my answers to their exercises and some of my own notes and data explorations. Here I will go through chapters 1-3, which focuses on learning the basics behind using ggplot2 to visualize data.

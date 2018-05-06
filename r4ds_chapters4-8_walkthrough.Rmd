@@ -14,3 +14,35 @@ output:
 This my walkthrough for the book: _R for Data Science_ by Hadley Wickham and Garrett Grolemund. It contains my answers to their exercises and some of my own notes and data explorations. Here I will go through chapters 4-8.
 
 # Chapter 4
+
+# Chapter 5
+
+The data that we will work with in chapter 5 is from the nycflights13 package.
+
+```{r}
+library(nycflights13)
+library(tidyverse)
+
+flights
+```
+
+## 5.2 Filter
+
+filter() will subset obervations based on their values. I think it works a lot like the which() function in base R (ie: data[which(data$variable > value),] ). Below is a way to do the same thing using either filter() or base R which().
+
+```{r}
+# tidyverse filter() output
+filter(flights, month == 1, day == 1)
+
+# base R way to get the same output
+flights[which(flights$month ==1 & flights$day ==1),]
+```
+
+
+
+
+
+
+
+
+
