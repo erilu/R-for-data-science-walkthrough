@@ -26,7 +26,7 @@ library(tidyverse)
 flights
 ```
 
-## 5.2 Filter
+## 5.2 Filter rows with filter()
 
 filter() will subset obervations based on their values. I think it works a lot like the which() function in base R (ie: data[which(data$variable > value),] ). Below is a way to do the same thing using either filter() or base R which().
 
@@ -38,9 +38,178 @@ filter(flights, month == 1, day == 1)
 flights[which(flights$month ==1 & flights$day ==1),]
 ```
 
+## 5.2.1 Comparisons
+
+A safer way for comparing two numeric vectors is the near() function in dplyr. For example, if running this comparison:
+
+```{r}
+sqrt(2) ^ 2 == 2
+1/49 * 49 == 1
+```
+
+We see that what we would normally regard as true is specified as FALSE in R, due to floating point precision issues. The near() function will allow more tolerance.
+
+```{r}
+near(sqrt(2) ^ 2,  2)
+near(1 / 49 * 49, 1)
+```
+
+## 5.2.2 Logical Operators
+
+There are many ways to combine "and", ```&```, "or", ```|```, and "not",```!``` to filter out observations in a data table.
+
+```{r}
+#following two filter functions give same output
+filter(flights, month == 11 | month == 12)
+filter(flights, month %in% c(11,12))
+
+#following two filter functions give same output
+filter(flights, !(arr_delay > 120 | dep_delay > 120))
+filter(flights, arr_delay <= 120 & !dep_delay > 120)
+```
 
 
+## 5.2.3 Missing values
 
+Missing values are represented as NA. NA values are "contagious," meaning that any operation or comparison with NA will also return NA. If a data frame contains NA values, they will not be returned by filter() unless specifically asked for, using is.na()
+
+```{r}
+df <- tibble(x = c(1, NA, 3))
+filter(df, x > 1)
+#> # A tibble: 1 × 1
+#>       x
+#>   <dbl>
+#> 1     3
+filter(df, is.na(x) | x > 1)
+```
+
+
+## 5.2.4 Exercises
+
+1. Find all flights that
+
+*Had an arrival delay of two or more hours
+
+```{r}
+# arr_delay is in minutes, so 120 for two hours
+filter(flights, arr_delay >= 120)
+```
+
+*Flew to Houston (IAH or HOU)
+
+```{r}
+filter(flights, dest == "IAH" | dest == "HOU")
+```
+
+*Were operated by United, American, or Delta
+
+```{r}
+#find all unique carriers:
+unique(flights$carrier)
+
+#Symbol for United = UA, American = AA, Delta = DL
+filter (flights, carrier %in% c("UA", "AA","DL"))
+```
+
+
+*Departed in summer (July, August, and September)
+
+```{r}
+filter (flights, month >= 7 & month <=9)
+# test whether the output only has months 7 8 9 to check our work.
+unique(filter (flights, month >= 7 & month <=9)$month)
+```
+
+
+*Arrived more than two hours late, but didn’t leave late
+
+```{r}
+filter (flights, arr_delay > 120, dep_delay <=0)
+#looks like combining the two arguments into one does the same thing.
+filter(flights, arr_delay > 120 & dep_delay <=0)
+```
+
+*Were delayed by at least an hour, but made up over 30 minutes in flight
+
+```{r}
+# if delayed 60 minutes but made up at least 30, expect arr_delay to be less than 60-30 = 30 min
+filter (flights, dep_delay >= 60, arr_delay < 30)
+
+```
+
+*Departed between midnight and 6am (inclusive)
+
+```{r}
+times <- filter (flights, dep_time >= 0 & dep_time <= 600)
+times
+#check if it worked
+range(times$dep_time)
+```
+
+*Another useful dplyr filtering helper is between(). What does it do? Can you use it to simplify the code needed to answer the previous challenges?
+
+?between() states that this is a shortcut to perform the same function as ```x >= left & x <= right```, for ```between(x, left, right)```. I will use between() to produce the same result as in the previous bullet point for flights departing between midnight and 6am.
+
+```{r}
+filter(flights, between(dep_time, 0, 600))
+```
+
+
+2. How many flights have a missing dep_time? What other variables are missing? What might these rows represent?
+
+
+```{r}
+filter(flights, is.na(dep_time))
+```
+
+The flights with missing dep_time also have missing arr_time and air_time, suggesting that these were cancelled flights.
+
+3. Why is NA ^ 0 not missing? Why is NA | TRUE not missing? Why is FALSE & NA not missing? Can you figure out the general rule? (NA * 0 is a tricky counterexample!)
+
+Since NA represents an unknown value, it still obeys certain rules as if it were a known value. Since any number to the power of 0 is 1, NA^0 returns the value 1, which will make the code ```filter(flights, dep_time == NA^0)``` return all the flights that departed at time 0001. NA | TRUE is an expression that evaluates to TRUE, because the logical operator will evaluate whether either side has a TRUE value. This would return all the data points in the data frame. FALSE & NA returns FALSE based on the same premise as the previous item. Since FALSE exists on either side of the & logical operator, it is evaluated as FALSE. The general (but not concrete) rule is that modifying NA with a logical operator in the form ```NA <operator> value``` will evaluate to either TRUE or FALSE, returning not missing values, and that NA will still abide by certain rules that any value would abide by. NA*0, however, is an exception beacuse this still evaluates to NA, whereas other values would evaluate to 0. 
+
+```{r}
+NA^0
+NA | TRUE
+FALSE & NA
+NA*0
+filter(flights, dep_time == NA^0)
+filter(flights, dep_time == NA | TRUE)
+```
+
+
+## 5.3 Arrange rows with arrange()
+
+arrange() will return a data frame with the observations sorted by the variable you specify. It functions similarly to the order() function in base R. Below are two ways to get the same sorted dataframe using arrange() and order(). You can see that arrange() makes things a little simpler to read. For the base R order() function, it will only return a sorted list of values, so you have to pass them into the flights[] frame to obtain all the values for the sorted data.
+
+```{r}
+# using arrange()
+arrange(flights, desc(arr_delay))
+# using base R order()
+flights[order(flights$arr_delay, decreasing = T),]
+```
+
+Missing values (NA) are placed at the end for arrange()
+
+
+```{r}
+df <- tibble(x = c(5, 2, NA))
+arrange(df, x)
+
+arrange(df, desc(x))
+
+```
+
+
+## 5.3.1 Exercises
+
+1. How could you use arrange() to sort all missing values to the start? (Hint: use is.na()).
+
+2. Sort flights to find the most delayed flights. Find the flights that left earliest.
+
+3. Sort flights to find the fastest flights.
+
+4. Which flights travelled the longest? Which travelled the shortest?
 
 
 
