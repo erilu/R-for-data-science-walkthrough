@@ -3,6 +3,7 @@ R for Data Science Walkthrough Chapters 4-8
 Erick Lu
 
 -   [Chapter 4](#chapter-4)
+    -   [4.4 Practice](#practice)
 -   [Chapter 5](#chapter-5)
     -   [5.2 Filter rows with filter()](#filter-rows-with-filter)
     -   [5.2.1 Comparisons](#comparisons)
@@ -17,16 +18,29 @@ Erick Lu
     -   [5.5.2 Exercises](#exercises-3)
     -   [5.6 Grouped summaries with summarise()](#grouped-summaries-with-summarise)
     -   [5.6.7 Exercises](#exercises-4)
+    -   [5.7 Grouped mutates (and filters)](#grouped-mutates-and-filters)
+    -   [5.7.1 Exercises](#exercises-5)
 
 This my walkthrough for the book: *R for Data Science* by Hadley Wickham and Garrett Grolemund. It contains my answers to their exercises and some of my own notes and data explorations. Here I will go through chapters 4-8.
 
 Chapter 4
 =========
 
-Chapter 5
-=========
+4.4 Practice
+------------
 
-The data that we will work with in chapter 5 is from the nycflights13 package.
+1.  Why does this code not work?
+
+``` r
+my_variable <- 10
+# my_varıable
+```
+
+The code does not work because there is a typo in the variable name that you are calling. The letter "i" is not the same in my\_var(i)able.
+
+1.  Tweak each of the following R commands so that they run correctly:
+
+Changed "dota" to "data", "fliter" to "filter", "=" to "==", and "diamond" to "diamonds"
 
 ``` r
 library(tidyverse)
@@ -52,6 +66,63 @@ library(tidyverse)
     ## ✖ dplyr::lag()    masks stats::lag()
 
 ``` r
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy))
+```
+
+![](r4ds_chapters4-8_walkthrough_files/figure-markdown_github/chap4_exercises-1.png)
+
+``` r
+filter(mpg, cyl == 8)
+```
+
+    ## Warning: package 'bindrcpp' was built under R version 3.3.2
+
+    ## # A tibble: 70 x 11
+    ##    manufacturer model     displ  year   cyl trans  drv     cty   hwy fl   
+    ##    <chr>        <chr>     <dbl> <int> <int> <chr>  <chr> <int> <int> <chr>
+    ##  1 audi         a6 quatt…  4.20  2008     8 auto(… 4        16    23 p    
+    ##  2 chevrolet    c1500 su…  5.30  2008     8 auto(… r        14    20 r    
+    ##  3 chevrolet    c1500 su…  5.30  2008     8 auto(… r        11    15 e    
+    ##  4 chevrolet    c1500 su…  5.30  2008     8 auto(… r        14    20 r    
+    ##  5 chevrolet    c1500 su…  5.70  1999     8 auto(… r        13    17 r    
+    ##  6 chevrolet    c1500 su…  6.00  2008     8 auto(… r        12    17 r    
+    ##  7 chevrolet    corvette   5.70  1999     8 manua… r        16    26 p    
+    ##  8 chevrolet    corvette   5.70  1999     8 auto(… r        15    23 p    
+    ##  9 chevrolet    corvette   6.20  2008     8 manua… r        16    26 p    
+    ## 10 chevrolet    corvette   6.20  2008     8 auto(… r        15    25 p    
+    ## # ... with 60 more rows, and 1 more variable: class <chr>
+
+``` r
+filter(diamonds, carat > 3)
+```
+
+    ## # A tibble: 32 x 10
+    ##    carat cut     color clarity depth table price     x     y     z
+    ##    <dbl> <ord>   <ord> <ord>   <dbl> <dbl> <int> <dbl> <dbl> <dbl>
+    ##  1  3.01 Premium I     I1       62.7   58.  8040  9.10  8.97  5.67
+    ##  2  3.11 Fair    J     I1       65.9   57.  9823  9.15  9.02  5.98
+    ##  3  3.01 Premium F     I1       62.2   56.  9925  9.24  9.13  5.73
+    ##  4  3.05 Premium E     I1       60.9   58. 10453  9.26  9.25  5.66
+    ##  5  3.02 Fair    I     I1       65.2   56. 10577  9.11  9.02  5.91
+    ##  6  3.01 Fair    H     I1       56.1   62. 10761  9.54  9.38  5.31
+    ##  7  3.65 Fair    H     I1       67.1   53. 11668  9.53  9.48  6.38
+    ##  8  3.24 Premium H     I1       62.1   58. 12300  9.44  9.40  5.85
+    ##  9  3.22 Ideal   I     I1       62.6   55. 12545  9.49  9.42  5.92
+    ## 10  3.50 Ideal   H     I1       62.8   57. 12587  9.65  9.59  6.03
+    ## # ... with 22 more rows
+
+1.  Press Alt + Shift + K. What happens? How can you get to the same place using the menus?
+
+This opens up a list of the keyboard shortcuts! Very useful. Using the menus, either type "shorcut" into the search bar under help, or find it under: tools: keyboard shortcuts help.
+
+Chapter 5
+=========
+
+The data that we will work with in chapter 5 is from the nycflights13 package.
+
+``` r
+library(tidyverse)
 library(nycflights13)
 ```
 
@@ -88,8 +159,6 @@ filter() will subset obervations based on their values. I think it works a lot l
 # tidyverse filter() output
 filter(flights, month == 1, day == 1)
 ```
-
-    ## Warning: package 'bindrcpp' was built under R version 3.3.2
 
     ## # A tibble: 842 x 19
     ##     year month   day dep_time sched_dep_time dep_delay arr_time
@@ -927,18 +996,270 @@ mean(longest$air_time)
 5.4 Select columns with select()
 --------------------------------
 
+The select() function allows you to select a subset of columns (variables) from your data frame and return a new data frame with these selected columns. This works similarly to using indexes to pull out columns from a data frame in base R. For example, here is a way to do the same thing both ways:
+
+``` r
+# Select columns by name
+select(flights, year, month, day)
+```
+
+    ## # A tibble: 336,776 x 3
+    ##     year month   day
+    ##    <int> <int> <int>
+    ##  1  2013     1     1
+    ##  2  2013     1     1
+    ##  3  2013     1     1
+    ##  4  2013     1     1
+    ##  5  2013     1     1
+    ##  6  2013     1     1
+    ##  7  2013     1     1
+    ##  8  2013     1     1
+    ##  9  2013     1     1
+    ## 10  2013     1     1
+    ## # ... with 336,766 more rows
+
+``` r
+# use base R to do the same thing
+flights[,c("year","month","day")]
+```
+
+    ## # A tibble: 336,776 x 3
+    ##     year month   day
+    ##    <int> <int> <int>
+    ##  1  2013     1     1
+    ##  2  2013     1     1
+    ##  3  2013     1     1
+    ##  4  2013     1     1
+    ##  5  2013     1     1
+    ##  6  2013     1     1
+    ##  7  2013     1     1
+    ##  8  2013     1     1
+    ##  9  2013     1     1
+    ## 10  2013     1     1
+    ## # ... with 336,766 more rows
+
+Select seems to be more versatile if you want to do other things quickly, like combining it with ends\_with(), starts\_with(), contains(), matches(), num\_range(), etc.
+
+``` r
+# select multiple columns using colon
+select(flights, year:day)
+```
+
+    ## # A tibble: 336,776 x 3
+    ##     year month   day
+    ##    <int> <int> <int>
+    ##  1  2013     1     1
+    ##  2  2013     1     1
+    ##  3  2013     1     1
+    ##  4  2013     1     1
+    ##  5  2013     1     1
+    ##  6  2013     1     1
+    ##  7  2013     1     1
+    ##  8  2013     1     1
+    ##  9  2013     1     1
+    ## 10  2013     1     1
+    ## # ... with 336,766 more rows
+
+``` r
+# select columns that end with a phrase
+select(flights, ends_with("time"))
+```
+
+    ## # A tibble: 336,776 x 5
+    ##    dep_time sched_dep_time arr_time sched_arr_time air_time
+    ##       <int>          <int>    <int>          <int>    <dbl>
+    ##  1      517            515      830            819     227.
+    ##  2      533            529      850            830     227.
+    ##  3      542            540      923            850     160.
+    ##  4      544            545     1004           1022     183.
+    ##  5      554            600      812            837     116.
+    ##  6      554            558      740            728     150.
+    ##  7      555            600      913            854     158.
+    ##  8      557            600      709            723      53.
+    ##  9      557            600      838            846     140.
+    ## 10      558            600      753            745     138.
+    ## # ... with 336,766 more rows
+
+A variant of select(), rename(), can rename column variables. This seems very useful.
+
+``` r
+rename(flights, tail_num = tailnum)
+```
+
+    ## # A tibble: 336,776 x 19
+    ##     year month   day dep_time sched_dep_time dep_delay arr_time
+    ##    <int> <int> <int>    <int>          <int>     <dbl>    <int>
+    ##  1  2013     1     1      517            515        2.      830
+    ##  2  2013     1     1      533            529        4.      850
+    ##  3  2013     1     1      542            540        2.      923
+    ##  4  2013     1     1      544            545       -1.     1004
+    ##  5  2013     1     1      554            600       -6.      812
+    ##  6  2013     1     1      554            558       -4.      740
+    ##  7  2013     1     1      555            600       -5.      913
+    ##  8  2013     1     1      557            600       -3.      709
+    ##  9  2013     1     1      557            600       -3.      838
+    ## 10  2013     1     1      558            600       -2.      753
+    ## # ... with 336,766 more rows, and 12 more variables: sched_arr_time <int>,
+    ## #   arr_delay <dbl>, carrier <chr>, flight <int>, tail_num <chr>,
+    ## #   origin <chr>, dest <chr>, air_time <dbl>, distance <dbl>, hour <dbl>,
+    ## #   minute <dbl>, time_hour <dttm>
+
+To move variables to the leftmost side using select(), use the everything() function in conjunction with the variables you are pulling out.
+
+``` r
+select(flights, carrier, flight, everything())
+```
+
+    ## # A tibble: 336,776 x 19
+    ##    carrier flight  year month   day dep_time sched_dep_time dep_delay
+    ##    <chr>    <int> <int> <int> <int>    <int>          <int>     <dbl>
+    ##  1 UA        1545  2013     1     1      517            515        2.
+    ##  2 UA        1714  2013     1     1      533            529        4.
+    ##  3 AA        1141  2013     1     1      542            540        2.
+    ##  4 B6         725  2013     1     1      544            545       -1.
+    ##  5 DL         461  2013     1     1      554            600       -6.
+    ##  6 UA        1696  2013     1     1      554            558       -4.
+    ##  7 B6         507  2013     1     1      555            600       -5.
+    ##  8 EV        5708  2013     1     1      557            600       -3.
+    ##  9 B6          79  2013     1     1      557            600       -3.
+    ## 10 AA         301  2013     1     1      558            600       -2.
+    ## # ... with 336,766 more rows, and 11 more variables: arr_time <int>,
+    ## #   sched_arr_time <int>, arr_delay <dbl>, tailnum <chr>, origin <chr>,
+    ## #   dest <chr>, air_time <dbl>, distance <dbl>, hour <dbl>, minute <dbl>,
+    ## #   time_hour <dttm>
+
 5.4.1 Exercises
 ---------------
 
 1.  Brainstorm as many ways as possible to select dep\_time, dep\_delay, arr\_time, and arr\_delay from flights.
 
-2.  What happens if you include the name of a variable multiple times in a select() call?
+``` r
+# standard way to select
+select (flights, dep_time, dep_delay, arr_time, arr_delay)
+```
 
-3.  What does the one\_of() function do? Why might it be helpful in conjunction with this vector?
+    ## # A tibble: 336,776 x 4
+    ##    dep_time dep_delay arr_time arr_delay
+    ##       <int>     <dbl>    <int>     <dbl>
+    ##  1      517        2.      830       11.
+    ##  2      533        4.      850       20.
+    ##  3      542        2.      923       33.
+    ##  4      544       -1.     1004      -18.
+    ##  5      554       -6.      812      -25.
+    ##  6      554       -4.      740       12.
+    ##  7      555       -5.      913       19.
+    ##  8      557       -3.      709      -14.
+    ##  9      557       -3.      838       -8.
+    ## 10      558       -2.      753        8.
+    ## # ... with 336,766 more rows
+
+``` r
+# select using starts_with()
+select (flights, starts_with("dep"),starts_with("arr"))
+```
+
+    ## # A tibble: 336,776 x 4
+    ##    dep_time dep_delay arr_time arr_delay
+    ##       <int>     <dbl>    <int>     <dbl>
+    ##  1      517        2.      830       11.
+    ##  2      533        4.      850       20.
+    ##  3      542        2.      923       33.
+    ##  4      544       -1.     1004      -18.
+    ##  5      554       -6.      812      -25.
+    ##  6      554       -4.      740       12.
+    ##  7      555       -5.      913       19.
+    ##  8      557       -3.      709      -14.
+    ##  9      557       -3.      838       -8.
+    ## 10      558       -2.      753        8.
+    ## # ... with 336,766 more rows
+
+``` r
+#can also do some less efficient combination of contains() and subtracting columns.
+select (flights, contains("dep_"), contains("arr_"),-contains("sched"))
+```
+
+    ## # A tibble: 336,776 x 4
+    ##    dep_time dep_delay arr_time arr_delay
+    ##       <int>     <dbl>    <int>     <dbl>
+    ##  1      517        2.      830       11.
+    ##  2      533        4.      850       20.
+    ##  3      542        2.      923       33.
+    ##  4      544       -1.     1004      -18.
+    ##  5      554       -6.      812      -25.
+    ##  6      554       -4.      740       12.
+    ##  7      555       -5.      913       19.
+    ##  8      557       -3.      709      -14.
+    ##  9      557       -3.      838       -8.
+    ## 10      558       -2.      753        8.
+    ## # ... with 336,766 more rows
+
+1.  What happens if you include the name of a variable multiple times in a select() call?
+
+``` r
+select(flights, dep_time, dep_time)
+```
+
+    ## # A tibble: 336,776 x 1
+    ##    dep_time
+    ##       <int>
+    ##  1      517
+    ##  2      533
+    ##  3      542
+    ##  4      544
+    ##  5      554
+    ##  6      554
+    ##  7      555
+    ##  8      557
+    ##  9      557
+    ## 10      558
+    ## # ... with 336,766 more rows
+
+It looks like you will only get the variable one time (it will not duplicate).
+
+1.  What does the one\_of() function do? Why might it be helpful in conjunction with this vector?
+
+one\_of() function takes in a vector of characters, which could be names of columns that you want to select. This way, you dont have to have so many arguments in select(). You can pre-make a vector with the columns you want, then select one\_of(vars), as shown here. However, I tried just putting the vector in as a argument without one\_of() and it gave the same output.
 
 ``` r
 vars <- c("year", "month", "day", "dep_delay", "arr_delay")
+#use the one_of() function to select each of the specified columns in vars
+select(flights, one_of(vars))
 ```
+
+    ## # A tibble: 336,776 x 5
+    ##     year month   day dep_delay arr_delay
+    ##    <int> <int> <int>     <dbl>     <dbl>
+    ##  1  2013     1     1        2.       11.
+    ##  2  2013     1     1        4.       20.
+    ##  3  2013     1     1        2.       33.
+    ##  4  2013     1     1       -1.      -18.
+    ##  5  2013     1     1       -6.      -25.
+    ##  6  2013     1     1       -4.       12.
+    ##  7  2013     1     1       -5.       19.
+    ##  8  2013     1     1       -3.      -14.
+    ##  9  2013     1     1       -3.       -8.
+    ## 10  2013     1     1       -2.        8.
+    ## # ... with 336,766 more rows
+
+``` r
+# it seems like this also works to give the same output.
+select(flights, vars)
+```
+
+    ## # A tibble: 336,776 x 5
+    ##     year month   day dep_delay arr_delay
+    ##    <int> <int> <int>     <dbl>     <dbl>
+    ##  1  2013     1     1        2.       11.
+    ##  2  2013     1     1        4.       20.
+    ##  3  2013     1     1        2.       33.
+    ##  4  2013     1     1       -1.      -18.
+    ##  5  2013     1     1       -6.      -25.
+    ##  6  2013     1     1       -4.       12.
+    ##  7  2013     1     1       -5.       19.
+    ##  8  2013     1     1       -3.      -14.
+    ##  9  2013     1     1       -3.       -8.
+    ## 10  2013     1     1       -2.        8.
+    ## # ... with 336,766 more rows
 
 1.  Does the result of running the following code surprise you? How do the select helpers deal with case by default? How can you change that default?
 
@@ -963,6 +1284,16 @@ select(flights, contains("TIME"))
     ##  9      557            600      838            846     140.
     ## 10      558            600      753            745     138.
     ## # ... with 336,766 more rows, and 1 more variable: time_hour <dttm>
+
+The code returns columns that have lowercase time in them, even though we specified TIME in uppercase. This is not surprising because ?contains() specifies that "ignore.case = TRUE" by default. To get only columns with uppercase TIME, we can write:
+
+``` r
+select(flights, contains("TIME", ignore.case = FALSE))
+```
+
+    ## # A tibble: 336,776 x 0
+
+Since no columns in the flights data frame have the uppercase TIME in them, nothing is returned.
 
 5.5 Add new variables with mutate()
 -----------------------------------
@@ -1009,3 +1340,25 @@ Which is more important: arrival delay or departure delay?
 4.  Which carrier has the worst delays? Challenge: can you disentangle the effects of bad airports vs. bad carriers? Why/why not? (Hint: think about flights %&gt;% group\_by(carrier, dest) %&gt;% summarise(n()))
 
 5.  What does the sort argument to count() do. When might you use it?
+
+5.7 Grouped mutates (and filters)
+---------------------------------
+
+5.7.1 Exercises
+---------------
+
+1.  Refer back to the lists of useful mutate and filtering functions. Describe how each operation changes when you combine it with grouping.
+
+2.  Which plane (tailnum) has the worst on-time record?
+
+3.  What time of day should you fly if you want to avoid delays as much as possible?
+
+4.  For each destination, compute the total minutes of delay. For each, flight, compute the proportion of the total delay for its destination.
+
+5.  Delays are typically temporally correlated: even once the problem that caused the initial delay has been resolved, later flights are delayed to allow earlier flights to leave. Using lag() explore how the delay of a flight is related to the delay of the immediately preceding flight.
+
+6.  Look at each destination. Can you find flights that are suspiciously fast? (i.e. flights that represent a potential data entry error). Compute the air time a flight relative to the shortest flight to that destination. Which flights were most delayed in the air?
+
+7.  Find all destinations that are flown by at least two carriers. Use that information to rank the carriers.
+
+8.  For each plane, count the number of flights before the first delay of greater than 1 hour.

@@ -19,7 +19,7 @@ This my walkthrough for the book: _R for Data Science_ by Hadley Wickham and Gar
 1. Why does this code not work?
 ```{r}
 my_variable <- 10
-my_varıable
+# my_varıable
 ```
 
 The code does not work because there is a typo in the variable name that you are calling. The letter "i" is not the same in my_var(i)able.
@@ -28,7 +28,7 @@ The code does not work because there is a typo in the variable name that you are
 
 Changed "dota" to "data", "fliter" to "filter", "=" to "==", and "diamond" to "diamonds"
 
-```{r}
+```{r chap4_exercises}
 library(tidyverse)
 
 ggplot(data = mpg) + 
@@ -289,23 +289,86 @@ mean(longest$air_time)
 
 ## 5.4 Select columns with select()
 
+The select() function allows you to select a subset of columns (variables) from your data frame and return a new data frame with these selected columns. This works similarly to using indexes to pull out columns from a data frame in base R. For example, here is a way to do the same thing both ways:
+
+```{r}
+# Select columns by name
+select(flights, year, month, day)
+
+# use base R to do the same thing
+flights[,c("year","month","day")]
+```
+
+Select seems to be more versatile if you want to do other things quickly, like combining it with ends_with(), starts_with(), contains(), matches(), num_range(), etc.
+
+```{r}
+# select multiple columns using colon
+select(flights, year:day)
+# select columns that end with a phrase
+select(flights, ends_with("time"))
+```
+
+A variant of select(), rename(), can rename column variables. This seems very useful.
+
+```{r}
+rename(flights, tail_num = tailnum)
+```
+
+To move variables to the leftmost side using select(), use the everything() function in conjunction with the variables you are pulling out.
+
+
+```{r}
+select(flights, carrier, flight, everything())
+```
 
 
 ## 5.4.1 Exercises
 1. Brainstorm as many ways as possible to select dep_time, dep_delay, arr_time, and arr_delay from flights.
 
+```{r}
+# standard way to select
+select (flights, dep_time, dep_delay, arr_time, arr_delay)
+# select using starts_with()
+select (flights, starts_with("dep"),starts_with("arr"))
+#can also do some less efficient combination of contains() and subtracting columns.
+select (flights, contains("dep_"), contains("arr_"),-contains("sched"))
+```
+
+
 2. What happens if you include the name of a variable multiple times in a select() call?
 
+```{r}
+select(flights, dep_time, dep_time)
+```
+
+It looks like you will only get the variable one time (it will not duplicate).
+
 3. What does the one_of() function do? Why might it be helpful in conjunction with this vector?
+
+one_of() function takes in a vector of characters, which could be names of columns that you want to select. This way, you dont have to have so many arguments in select(). You can pre-make a vector with the columns you want, then select one_of(vars), as shown here. However, I tried just putting the vector in as a argument without one_of() and it gave the same output.
 ```{r}
 vars <- c("year", "month", "day", "dep_delay", "arr_delay")
+#use the one_of() function to select each of the specified columns in vars
+select(flights, one_of(vars))
+
+# it seems like this also works to give the same output.
+select(flights, vars)
+
 ```
 
 4. Does the result of running the following code surprise you? How do the select helpers deal with case by default? How can you change that default?
+
 ```{r}
 select(flights, contains("TIME"))
 ```
 
+The code returns columns that have lowercase time in them, even though we specified TIME in uppercase. This is not surprising because ?contains() specifies that "ignore.case = TRUE" by default. To get only columns with uppercase TIME, we can write:
+
+```{r}
+select(flights, contains("TIME", ignore.case = FALSE))
+```
+
+Since no columns in the flights data frame have the uppercase TIME in them, nothing is returned.
 
 
 ## 5.5 Add new variables with mutate()
@@ -349,5 +412,27 @@ Which is more important: arrival delay or departure delay?
 5. Which carrier has the worst delays? Challenge: can you disentangle the effects of bad airports vs. bad carriers? Why/why not? (Hint: think about flights %>% group_by(carrier, dest) %>% summarise(n()))
 
 6. What does the sort argument to count() do. When might you use it?
+
+## 5.7 Grouped mutates (and filters)
+
+## 5.7.1 Exercises
+1. Refer back to the lists of useful mutate and filtering functions. Describe how each operation changes when you combine it with grouping.
+
+2. Which plane (tailnum) has the worst on-time record?
+
+3. What time of day should you fly if you want to avoid delays as much as possible?
+
+4. For each destination, compute the total minutes of delay. For each, flight, compute the proportion of the total delay for its destination.
+
+5. Delays are typically temporally correlated: even once the problem that caused the initial delay has been resolved, later flights are delayed to allow earlier flights to leave. Using lag() explore how the delay of a flight is related to the delay of the immediately preceding flight.
+
+6. Look at each destination. Can you find flights that are suspiciously fast? (i.e. flights that represent a potential data entry error). Compute the air time a flight relative to the shortest flight to that destination. Which flights were most delayed in the air?
+
+7. Find all destinations that are flown by at least two carriers. Use that information to rank the carriers.
+
+8. For each plane, count the number of flights before the first delay of greater than 1 hour.
+
+
+
 
 
