@@ -373,15 +373,109 @@ Since no columns in the flights data frame have the uppercase TIME in them, noth
 
 ## 5.5 Add new variables with mutate()
 
+```{r}
+# view the data as a spreadsheet with View() - note capital V
+# View(flights)
+
+# select a subset of columns so data is easier to work with for demonstration purposes
+flights_sml <- select(flights, 
+  year:day, 
+  ends_with("delay"), 
+  distance, 
+  air_time
+)
+flights_sml
+
+```
+
+To add new columns to the dataset that are functions of existing columns, use the mutate() function. You can even refer to newly created columns in the same call, which seems like magic. The new columns are appended to the end of the data frame.
+
+```{r}
+mutate(flights_sml,
+  gain = arr_delay - dep_delay,
+  hours = air_time / 60,
+  gain_per_hour = gain / hours
+)
+```
+
+To keep only the newly created columns, use transmute():
+
+```{r}
+transmute(flights,
+  gain = arr_delay - dep_delay,
+  hours = air_time / 60,
+  gain_per_hour = gain / hours
+)
+```
+
+
+In general, all functions or operators that can be applied to vectors and return vectors with the same number of values as output can be used with mutate() or transmute(). Examples include arithmetic operators, modular arithmetic, logs, offsets (lead() and lag()), cumulative sum/averages, logical comparisons (returns boolean for each value in vector),  Another provided example:
+
+```{r}
+# convert dep_time to hours and minutes using modulus and remainder
+transmute(flights,
+  dep_time,
+  hour = dep_time %/% 100,
+  minute = dep_time %% 100
+)
+```
+
+
+```{r}
+y <- c(1, 2, NA, 2,  4, 3)
+min_rank(y)
+rank(y)
+```
+
 
 ## 5.5.2 Exercises
 1. Currently dep_time and sched_dep_time are convenient to look at, but hard to compute with because they’re not really continuous numbers. Convert them to a more convenient representation of number of minutes since midnight.
 
+To convert military hours to minutes since midnight, first find how many hours it's been (%/% 100), then multiply that by 60 to get the minutes, then add the remainin minutes (%% 100). Below is a table of the old columns and new columns.
+
+```{r}
+transmute(flights,
+          dep_time,
+          sched_dep_time,
+          dep_time_min = (dep_time %/% 100)*60 + (dep_time %% 100),
+          sched_dep_time_min = (dep_time %/% 100)*60 + (dep_time %% 100)
+)
+```
+
+
 2. Compare air_time with arr_time - dep_time. What do you expect to see? What do you see? What do you need to do to fix it?
+
+I expect to see that arr_time - dep_time = air_time. However, the values do not match because arr_time - dep_time returns the amount of time in hours:minutes, whereas air_time is in total minutes. We would have to convert the output into total minutes. However, this still does not fix the problem. There is also the issue of time zones. Depending on where the plane flew, the air_time could be consistent but the arr_time could be way off. We can see from the first two rows that two different flights that had different arr_time and dep_times had the same air_time!
+
+```{r}
+# gives time in hours:min
+transmute (flights, arr_time, dep_time, air_time, my_air_time = arr_time - dep_time)
+
+# convert to total minutes
+transmute (flights, arr_time, dep_time, air_time, my_air_time = ((arr_time %/% 100)*60 + arr_time %% 100) - ((dep_time %/% 100)*60 + dep_time %% 100))
+```
 
 3. Compare dep_time, sched_dep_time, and dep_delay. How would you expect those three numbers to be related?
 
+I would expect that dep_time - sched_dep_time, converted to minutes, would equal dep_delay.
+
+```{r}
+transmute (flights, dep_time, sched_dep_time, dep_delay, my_dep_delay = ((dep_time %/% 100)*60 + dep_time %% 100) - ((sched_dep_time %/% 100)*60 + sched_dep_time %% 100))
+```
+
+
 4. Find the 10 most delayed flights using a ranking function. How do you want to handle ties? Carefully read the documentation for min_rank().
+
+I suppose we could arrange dep_delay to find the top most delayed flights. Using min_rank() will rank the delayed flights - if we rank the delayed flights and then sort on the rank, we see that the most delayed flight is rank 328521, with a delay of 1301 minutes. The default ties.method for min_rank is "min".
+
+```{r}
+transmute(flights, dep_delay, rank_delay = min_rank(dep_delay)) 
+
+transmute(flights, dep_delay, rank_delay = min_rank(dep_delay)) %>% arrange(desc(rank_delay))
+
+```
+
+
 
 5. What does 1:3 + 1:10 return? Why?
 

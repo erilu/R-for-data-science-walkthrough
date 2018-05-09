@@ -1298,20 +1298,267 @@ Since no columns in the flights data frame have the uppercase TIME in them, noth
 5.5 Add new variables with mutate()
 -----------------------------------
 
+``` r
+# view the data as a spreadsheet with View() - note capital V
+# View(flights)
+
+# select a subset of columns so data is easier to work with for demonstration purposes
+flights_sml <- select(flights, 
+  year:day, 
+  ends_with("delay"), 
+  distance, 
+  air_time
+)
+flights_sml
+```
+
+    ## # A tibble: 336,776 x 7
+    ##     year month   day dep_delay arr_delay distance air_time
+    ##    <int> <int> <int>     <dbl>     <dbl>    <dbl>    <dbl>
+    ##  1  2013     1     1        2.       11.    1400.     227.
+    ##  2  2013     1     1        4.       20.    1416.     227.
+    ##  3  2013     1     1        2.       33.    1089.     160.
+    ##  4  2013     1     1       -1.      -18.    1576.     183.
+    ##  5  2013     1     1       -6.      -25.     762.     116.
+    ##  6  2013     1     1       -4.       12.     719.     150.
+    ##  7  2013     1     1       -5.       19.    1065.     158.
+    ##  8  2013     1     1       -3.      -14.     229.      53.
+    ##  9  2013     1     1       -3.       -8.     944.     140.
+    ## 10  2013     1     1       -2.        8.     733.     138.
+    ## # ... with 336,766 more rows
+
+To add new columns to the dataset that are functions of existing columns, use the mutate() function. You can even refer to newly created columns in the same call, which seems like magic. The new columns are appended to the end of the data frame.
+
+``` r
+mutate(flights_sml,
+  gain = arr_delay - dep_delay,
+  hours = air_time / 60,
+  gain_per_hour = gain / hours
+)
+```
+
+    ## # A tibble: 336,776 x 10
+    ##     year month   day dep_delay arr_delay distance air_time  gain hours
+    ##    <int> <int> <int>     <dbl>     <dbl>    <dbl>    <dbl> <dbl> <dbl>
+    ##  1  2013     1     1        2.       11.    1400.     227.    9. 3.78 
+    ##  2  2013     1     1        4.       20.    1416.     227.   16. 3.78 
+    ##  3  2013     1     1        2.       33.    1089.     160.   31. 2.67 
+    ##  4  2013     1     1       -1.      -18.    1576.     183.  -17. 3.05 
+    ##  5  2013     1     1       -6.      -25.     762.     116.  -19. 1.93 
+    ##  6  2013     1     1       -4.       12.     719.     150.   16. 2.50 
+    ##  7  2013     1     1       -5.       19.    1065.     158.   24. 2.63 
+    ##  8  2013     1     1       -3.      -14.     229.      53.  -11. 0.883
+    ##  9  2013     1     1       -3.       -8.     944.     140.   -5. 2.33 
+    ## 10  2013     1     1       -2.        8.     733.     138.   10. 2.30 
+    ## # ... with 336,766 more rows, and 1 more variable: gain_per_hour <dbl>
+
+To keep only the newly created columns, use transmute():
+
+``` r
+transmute(flights,
+  gain = arr_delay - dep_delay,
+  hours = air_time / 60,
+  gain_per_hour = gain / hours
+)
+```
+
+    ## # A tibble: 336,776 x 3
+    ##     gain hours gain_per_hour
+    ##    <dbl> <dbl>         <dbl>
+    ##  1    9. 3.78           2.38
+    ##  2   16. 3.78           4.23
+    ##  3   31. 2.67          11.6 
+    ##  4  -17. 3.05          -5.57
+    ##  5  -19. 1.93          -9.83
+    ##  6   16. 2.50           6.40
+    ##  7   24. 2.63           9.11
+    ##  8  -11. 0.883        -12.5 
+    ##  9   -5. 2.33          -2.14
+    ## 10   10. 2.30           4.35
+    ## # ... with 336,766 more rows
+
+In general, all functions or operators that can be applied to vectors and return vectors with the same number of values as output can be used with mutate() or transmute(). Examples include arithmetic operators, modular arithmetic, logs, offsets (lead() and lag()), cumulative sum/averages, logical comparisons (returns boolean for each value in vector), Another provided example:
+
+``` r
+# convert dep_time to hours and minutes using modulus and remainder
+transmute(flights,
+  dep_time,
+  hour = dep_time %/% 100,
+  minute = dep_time %% 100
+)
+```
+
+    ## # A tibble: 336,776 x 3
+    ##    dep_time  hour minute
+    ##       <int> <dbl>  <dbl>
+    ##  1      517    5.    17.
+    ##  2      533    5.    33.
+    ##  3      542    5.    42.
+    ##  4      544    5.    44.
+    ##  5      554    5.    54.
+    ##  6      554    5.    54.
+    ##  7      555    5.    55.
+    ##  8      557    5.    57.
+    ##  9      557    5.    57.
+    ## 10      558    5.    58.
+    ## # ... with 336,766 more rows
+
+``` r
+y <- c(1, 2, NA, 2,  4, 3)
+min_rank(y)
+```
+
+    ## [1]  1  2 NA  2  5  4
+
+``` r
+rank(y)
+```
+
+    ## [1] 1.0 2.5 6.0 2.5 5.0 4.0
+
 5.5.2 Exercises
 ---------------
 
 1.  Currently dep\_time and sched\_dep\_time are convenient to look at, but hard to compute with because they’re not really continuous numbers. Convert them to a more convenient representation of number of minutes since midnight.
 
-2.  Compare air\_time with arr\_time - dep\_time. What do you expect to see? What do you see? What do you need to do to fix it?
+To convert military hours to minutes since midnight, first find how many hours it's been (%/% 100), then multiply that by 60 to get the minutes, then add the remainin minutes (%% 100). Below is a table of the old columns and new columns.
 
-3.  Compare dep\_time, sched\_dep\_time, and dep\_delay. How would you expect those three numbers to be related?
+``` r
+transmute(flights,
+          dep_time,
+          sched_dep_time,
+          dep_time_min = (dep_time %/% 100)*60 + (dep_time %% 100),
+          sched_dep_time_min = (dep_time %/% 100)*60 + (dep_time %% 100)
+)
+```
 
-4.  Find the 10 most delayed flights using a ranking function. How do you want to handle ties? Carefully read the documentation for min\_rank().
+    ## # A tibble: 336,776 x 4
+    ##    dep_time sched_dep_time dep_time_min sched_dep_time_min
+    ##       <int>          <int>        <dbl>              <dbl>
+    ##  1      517            515         317.               317.
+    ##  2      533            529         333.               333.
+    ##  3      542            540         342.               342.
+    ##  4      544            545         344.               344.
+    ##  5      554            600         354.               354.
+    ##  6      554            558         354.               354.
+    ##  7      555            600         355.               355.
+    ##  8      557            600         357.               357.
+    ##  9      557            600         357.               357.
+    ## 10      558            600         358.               358.
+    ## # ... with 336,766 more rows
 
-5.  What does 1:3 + 1:10 return? Why?
+1.  Compare air\_time with arr\_time - dep\_time. What do you expect to see? What do you see? What do you need to do to fix it?
 
-6.  What trigonometric functions does R provide?
+I expect to see that arr\_time - dep\_time = air\_time. However, the values do not match because arr\_time - dep\_time returns the amount of time in hours:minutes, whereas air\_time is in total minutes. We would have to convert the output into total minutes. However, this still does not fix the problem. There is also the issue of time zones. Depending on where the plane flew, the air\_time could be consistent but the arr\_time could be way off. We can see from the first two rows that two different flights that had different arr\_time and dep\_times had the same air\_time!
+
+``` r
+# gives time in hours:min
+transmute (flights, arr_time, dep_time, air_time, my_air_time = arr_time - dep_time)
+```
+
+    ## # A tibble: 336,776 x 4
+    ##    arr_time dep_time air_time my_air_time
+    ##       <int>    <int>    <dbl>       <int>
+    ##  1      830      517     227.         313
+    ##  2      850      533     227.         317
+    ##  3      923      542     160.         381
+    ##  4     1004      544     183.         460
+    ##  5      812      554     116.         258
+    ##  6      740      554     150.         186
+    ##  7      913      555     158.         358
+    ##  8      709      557      53.         152
+    ##  9      838      557     140.         281
+    ## 10      753      558     138.         195
+    ## # ... with 336,766 more rows
+
+``` r
+# convert to total minutes
+transmute (flights, arr_time, dep_time, air_time, my_air_time = ((arr_time %/% 100)*60 + arr_time %% 100) - ((dep_time %/% 100)*60 + dep_time %% 100))
+```
+
+    ## # A tibble: 336,776 x 4
+    ##    arr_time dep_time air_time my_air_time
+    ##       <int>    <int>    <dbl>       <dbl>
+    ##  1      830      517     227.        193.
+    ##  2      850      533     227.        197.
+    ##  3      923      542     160.        221.
+    ##  4     1004      544     183.        260.
+    ##  5      812      554     116.        138.
+    ##  6      740      554     150.        106.
+    ##  7      913      555     158.        198.
+    ##  8      709      557      53.         72.
+    ##  9      838      557     140.        161.
+    ## 10      753      558     138.        115.
+    ## # ... with 336,766 more rows
+
+1.  Compare dep\_time, sched\_dep\_time, and dep\_delay. How would you expect those three numbers to be related?
+
+I would expect that dep\_time - sched\_dep\_time, converted to minutes, would equal dep\_delay.
+
+``` r
+transmute (flights, dep_time, sched_dep_time, dep_delay, my_dep_delay = ((dep_time %/% 100)*60 + dep_time %% 100) - ((sched_dep_time %/% 100)*60 + sched_dep_time %% 100))
+```
+
+    ## # A tibble: 336,776 x 4
+    ##    dep_time sched_dep_time dep_delay my_dep_delay
+    ##       <int>          <int>     <dbl>        <dbl>
+    ##  1      517            515        2.           2.
+    ##  2      533            529        4.           4.
+    ##  3      542            540        2.           2.
+    ##  4      544            545       -1.          -1.
+    ##  5      554            600       -6.          -6.
+    ##  6      554            558       -4.          -4.
+    ##  7      555            600       -5.          -5.
+    ##  8      557            600       -3.          -3.
+    ##  9      557            600       -3.          -3.
+    ## 10      558            600       -2.          -2.
+    ## # ... with 336,766 more rows
+
+1.  Find the 10 most delayed flights using a ranking function. How do you want to handle ties? Carefully read the documentation for min\_rank().
+
+I suppose we could arrange dep\_delay to find the top most delayed flights. Using min\_rank() will rank the delayed flights - if we rank the delayed flights and then sort on the rank, we see that the most delayed flight is rank 328521, with a delay of 1301 minutes. The default ties.method for min\_rank is "min".
+
+``` r
+transmute(flights, dep_delay, rank_delay = min_rank(dep_delay)) 
+```
+
+    ## # A tibble: 336,776 x 2
+    ##    dep_delay rank_delay
+    ##        <dbl>      <int>
+    ##  1        2.     208140
+    ##  2        4.     219823
+    ##  3        2.     208140
+    ##  4       -1.     164763
+    ##  5       -6.      48888
+    ##  6       -4.      94410
+    ##  7       -5.      69589
+    ##  8       -3.     119029
+    ##  9       -3.     119029
+    ## 10       -2.     143247
+    ## # ... with 336,766 more rows
+
+``` r
+transmute(flights, dep_delay, rank_delay = min_rank(dep_delay)) %>% arrange(desc(rank_delay))
+```
+
+    ## # A tibble: 336,776 x 2
+    ##    dep_delay rank_delay
+    ##        <dbl>      <int>
+    ##  1     1301.     328521
+    ##  2     1137.     328520
+    ##  3     1126.     328519
+    ##  4     1014.     328518
+    ##  5     1005.     328517
+    ##  6      960.     328516
+    ##  7      911.     328515
+    ##  8      899.     328514
+    ##  9      898.     328513
+    ## 10      896.     328512
+    ## # ... with 336,766 more rows
+
+1.  What does 1:3 + 1:10 return? Why?
+
+2.  What trigonometric functions does R provide?
 
 5.6 Grouped summaries with summarise()
 --------------------------------------
