@@ -17,6 +17,7 @@ This my walkthrough for the book: _R for Data Science_ by Hadley Wickham and Gar
 ## 4.4 Practice
 
 1. Why does this code not work?
+
 ```{r}
 my_variable <- 10
 # my_varıable
@@ -471,7 +472,8 @@ I suppose we could arrange dep_delay to find the top most delayed flights. Using
 ```{r}
 transmute(flights, dep_delay, rank_delay = min_rank(dep_delay)) 
 
-transmute(flights, dep_delay, rank_delay = min_rank(dep_delay)) %>% arrange(desc(rank_delay))
+sorted_flights <- transmute(flights, dep_delay, rank_delay = min_rank(dep_delay)) %>% arrange(desc(rank_delay))
+sorted_flights[1:10,]
 
 ```
 
@@ -479,10 +481,101 @@ transmute(flights, dep_delay, rank_delay = min_rank(dep_delay)) %>% arrange(desc
 
 5. What does 1:3 + 1:10 return? Why?
 
+```{r}
+# returns error
+ 1:3 + 1:10
+# if adding to a multiple:
+1:3 + 1:9
+```
+
 6. What trigonometric functions does R provide?
 
+Taken from the R documentation: "These functions give the obvious trigonometric functions. They respectively compute the cosine, sine, tangent, arc-cosine, arc-sine, arc-tangent, and the two-argument arc-tangent."
+
+```cospi(x), sinpi(x), and tanpi(x), compute cos(pi*x), sin(pi*x), and tan(pi*x).```
 
 ## 5.6 Grouped summaries with summarise()
+
+summarise(), in its simplest usage, can perform a function on a column in the data set and return the output as a single row:
+
+```{r}
+summarise(flights, delay = mean(dep_delay, na.rm = TRUE))
+```
+
+A more advanced usage of summarise() is when paired with group_by(). This will return the function on each of the subgroups from group_by(), and giving statistics "by group". Looking at the group_by() output, there doesnt seem to be any striking difference between the original flights data frame and the grouped data frame. The result of using group_by() is not immediately apparent unless paired with summarise(). It would be interesting to know what other usages group_by() can have.
+
+```{r}
+by_day <- group_by(flights, year, month, day)
+summarise(by_day, delay = mean(dep_delay, na.rm = TRUE))
+```
+
+### 5.6.1 Combining multiple operations with the pipe
+
+Learning how to use the pipe - the pipe, or ```%>%``` can be used to more efficiently run sequential of functions on a variable and its output. This reduces the amount of naming intermediate variables we have to do. If we care about intermediate variables (ie, performing other analysis or using the vairable for other purposes) then I would not use the pipe. If i do not care about the intermeidate variables and want to quickly get output, the pipe would be useful.
+
+Here is the provided example about writing code without or with pipes:
+
+```{r}
+# not using pipes - note all the intermediate variables
+by_dest <- group_by(flights, dest)
+delay <- summarise(by_dest,
+  count = n(),
+  dist = mean(distance, na.rm = TRUE),
+  delay = mean(arr_delay, na.rm = TRUE)
+)
+delay <- filter(delay, count > 20, dest != "HNL")
+
+```
+
+
+```{r}
+# using pipes
+delay <- flights %>% 
+  group_by(dest) %>% 
+  summarise(
+    count = n(),
+    dist = mean(distance, na.rm = TRUE),
+    delay = mean(arr_delay, na.rm = TRUE)
+  ) %>% 
+  filter(count > 20, dest != "HNL")
+
+# It looks like delays increase with distance up to ~750 miles 
+# and then decrease. Maybe as flights get longer there's more 
+# ability to make up delays in the air?
+ggplot(data = delay, mapping = aes(x = dist, y = delay)) +
+  geom_point(aes(size = count), alpha = 1/3) +
+  geom_smooth(se = FALSE)
+#> `geom_smooth()` using method = 'loess'
+```
+
+### 5.6.2 Missing values
+
+Without setting na.rm, the following code does not produce any means using summarse(). Instead, all the values under the mean column are NA. This is beacuse aggregating NA with any other numbers will return NA. We must call na.rm = TRUE in the summarise() function to produce meaningul values.
+
+```{r}
+# without na.rm
+flights %>% 
+  group_by(year, month, day) %>% 
+  summarise(mean = mean(dep_delay))
+
+# with na.rm
+flights %>% 
+  group_by(year, month, day) %>% 
+  summarise(mean = mean(dep_delay, na.rm = TRUE))
+```
+
+
+To get a data frame without any of the NA values (cancelled flights):
+
+```{r}
+# 2 ways to use filter() to get the non-cancelled flights
+(not_cancelled <- flights %>% 
+  filter(!is.na(dep_delay), !is.na(arr_delay)))
+(not_cancelled2 <- flights %>% 
+  filter(!(is.na(dep_delay) | is.na(arr_delay))))
+```
+
+
 
 ## 5.6.7 Exercises
 1. Brainstorm at least 5 different ways to assess the typical delay characteristics of a group of flights. Consider the following scenarios:
