@@ -46,7 +46,7 @@ Changed "dota" to "data", "fliter" to "filter", "=" to "==", and "diamond" to "d
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ──────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
+    ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 2.2.1     ✔ purrr   0.2.4
     ## ✔ tibble  1.4.2     ✔ dplyr   0.7.4
@@ -61,7 +61,7 @@ library(tidyverse)
 
     ## Warning: package 'dplyr' was built under R version 3.3.2
 
-    ## ── Conflicts ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -1538,10 +1538,11 @@ transmute(flights, dep_delay, rank_delay = min_rank(dep_delay))
     ## # ... with 336,766 more rows
 
 ``` r
-transmute(flights, dep_delay, rank_delay = min_rank(dep_delay)) %>% arrange(desc(rank_delay))
+sorted_flights <- transmute(flights, dep_delay, rank_delay = min_rank(dep_delay)) %>% arrange(desc(rank_delay))
+sorted_flights[1:10,]
 ```
 
-    ## # A tibble: 336,776 x 2
+    ## # A tibble: 10 x 2
     ##    dep_delay rank_delay
     ##        <dbl>      <int>
     ##  1     1301.     328521
@@ -1554,14 +1555,531 @@ transmute(flights, dep_delay, rank_delay = min_rank(dep_delay)) %>% arrange(desc
     ##  8      899.     328514
     ##  9      898.     328513
     ## 10      896.     328512
-    ## # ... with 336,766 more rows
 
 1.  What does 1:3 + 1:10 return? Why?
 
-2.  What trigonometric functions does R provide?
+``` r
+# returns error
+ 1:3 + 1:10
+```
+
+    ## Warning in 1:3 + 1:10: longer object length is not a multiple of shorter
+    ## object length
+
+    ##  [1]  2  4  6  5  7  9  8 10 12 11
+
+``` r
+# if adding to a multiple:
+1:3 + 1:9
+```
+
+    ## [1]  2  4  6  5  7  9  8 10 12
+
+1.  What trigonometric functions does R provide?
+
+Taken from the R documentation: "These functions give the obvious trigonometric functions. They respectively compute the cosine, sine, tangent, arc-cosine, arc-sine, arc-tangent, and the two-argument arc-tangent."
+
+`cospi(x), sinpi(x), and tanpi(x), compute cos(pi*x), sin(pi*x), and tan(pi*x).`
 
 5.6 Grouped summaries with summarise()
 --------------------------------------
+
+summarise(), in its simplest usage, can perform a function on a column in the data set and return the output as a single row:
+
+``` r
+summarise(flights, delay = mean(dep_delay, na.rm = TRUE))
+```
+
+    ## # A tibble: 1 x 1
+    ##   delay
+    ##   <dbl>
+    ## 1  12.6
+
+A more advanced usage of summarise() is when paired with group\_by(). This will return the function on each of the subgroups from group\_by(), and giving statistics "by group". Looking at the group\_by() output, there doesnt seem to be any striking difference between the original flights data frame and the grouped data frame. The result of using group\_by() is not immediately apparent unless paired with summarise(). It would be interesting to know what other usages group\_by() can have.
+
+``` r
+by_day <- group_by(flights, year, month, day)
+summarise(by_day, delay = mean(dep_delay, na.rm = TRUE))
+```
+
+    ## # A tibble: 365 x 4
+    ## # Groups:   year, month [?]
+    ##     year month   day delay
+    ##    <int> <int> <int> <dbl>
+    ##  1  2013     1     1 11.5 
+    ##  2  2013     1     2 13.9 
+    ##  3  2013     1     3 11.0 
+    ##  4  2013     1     4  8.95
+    ##  5  2013     1     5  5.73
+    ##  6  2013     1     6  7.15
+    ##  7  2013     1     7  5.42
+    ##  8  2013     1     8  2.55
+    ##  9  2013     1     9  2.28
+    ## 10  2013     1    10  2.84
+    ## # ... with 355 more rows
+
+### 5.6.1 Combining multiple operations with the pipe
+
+Learning how to use the pipe - the pipe, or `%>%` can be used to more efficiently run sequential of functions on a variable and its output. This reduces the amount of naming intermediate variables we have to do. If we care about intermediate variables (ie, performing other analysis or using the vairable for other purposes) then I would not use the pipe. If i do not care about the intermeidate variables and want to quickly get output, the pipe would be useful.
+
+Here is the provided example about writing code without or with pipes:
+
+``` r
+# not using pipes - note all the intermediate variables
+by_dest <- group_by(flights, dest)
+delay <- summarise(by_dest,
+  count = n(),
+  dist = mean(distance, na.rm = TRUE),
+  delay = mean(arr_delay, na.rm = TRUE)
+)
+delay <- filter(delay, count > 20, dest != "HNL")
+```
+
+``` r
+# using pipes
+delay <- flights %>% 
+  group_by(dest) %>% 
+  summarise(
+    count = n(),
+    dist = mean(distance, na.rm = TRUE),
+    delay = mean(arr_delay, na.rm = TRUE)
+  ) %>% 
+  filter(count > 20, dest != "HNL")
+
+# It looks like delays increase with distance up to ~750 miles 
+# and then decrease. Maybe as flights get longer there's more 
+# ability to make up delays in the air?
+ggplot(data = delay, mapping = aes(x = dist, y = delay)) +
+  geom_point(aes(size = count), alpha = 1/3) +
+  geom_smooth(se = FALSE)
+```
+
+    ## `geom_smooth()` using method = 'loess'
+
+![](r4ds_chapters4-8_walkthrough_files/figure-markdown_github/unnamed-chunk-45-1.png)
+
+``` r
+#> `geom_smooth()` using method = 'loess'
+```
+
+### 5.6.2 Missing values
+
+Without setting na.rm, the following code does not produce any means using summarse(). Instead, all the values under the mean column are NA. This is beacuse aggregating NA with any other numbers will return NA. We must call na.rm = TRUE in the summarise() function to produce meaningul values.
+
+``` r
+# without na.rm
+flights %>% 
+  group_by(year, month, day) %>% 
+  summarise(mean = mean(dep_delay))
+```
+
+    ## # A tibble: 365 x 4
+    ## # Groups:   year, month [?]
+    ##     year month   day  mean
+    ##    <int> <int> <int> <dbl>
+    ##  1  2013     1     1    NA
+    ##  2  2013     1     2    NA
+    ##  3  2013     1     3    NA
+    ##  4  2013     1     4    NA
+    ##  5  2013     1     5    NA
+    ##  6  2013     1     6    NA
+    ##  7  2013     1     7    NA
+    ##  8  2013     1     8    NA
+    ##  9  2013     1     9    NA
+    ## 10  2013     1    10    NA
+    ## # ... with 355 more rows
+
+``` r
+# with na.rm
+flights %>% 
+  group_by(year, month, day) %>% 
+  summarise(mean = mean(dep_delay, na.rm = TRUE))
+```
+
+    ## # A tibble: 365 x 4
+    ## # Groups:   year, month [?]
+    ##     year month   day  mean
+    ##    <int> <int> <int> <dbl>
+    ##  1  2013     1     1 11.5 
+    ##  2  2013     1     2 13.9 
+    ##  3  2013     1     3 11.0 
+    ##  4  2013     1     4  8.95
+    ##  5  2013     1     5  5.73
+    ##  6  2013     1     6  7.15
+    ##  7  2013     1     7  5.42
+    ##  8  2013     1     8  2.55
+    ##  9  2013     1     9  2.28
+    ## 10  2013     1    10  2.84
+    ## # ... with 355 more rows
+
+To get a data frame without any of the NA values (cancelled flights):
+
+``` r
+# 2 ways to use filter() to get the non-cancelled flights
+(not_cancelled <- flights %>% 
+  filter(!is.na(dep_delay), !is.na(arr_delay)))
+```
+
+    ## # A tibble: 327,346 x 19
+    ##     year month   day dep_time sched_dep_time dep_delay arr_time
+    ##    <int> <int> <int>    <int>          <int>     <dbl>    <int>
+    ##  1  2013     1     1      517            515        2.      830
+    ##  2  2013     1     1      533            529        4.      850
+    ##  3  2013     1     1      542            540        2.      923
+    ##  4  2013     1     1      544            545       -1.     1004
+    ##  5  2013     1     1      554            600       -6.      812
+    ##  6  2013     1     1      554            558       -4.      740
+    ##  7  2013     1     1      555            600       -5.      913
+    ##  8  2013     1     1      557            600       -3.      709
+    ##  9  2013     1     1      557            600       -3.      838
+    ## 10  2013     1     1      558            600       -2.      753
+    ## # ... with 327,336 more rows, and 12 more variables: sched_arr_time <int>,
+    ## #   arr_delay <dbl>, carrier <chr>, flight <int>, tailnum <chr>,
+    ## #   origin <chr>, dest <chr>, air_time <dbl>, distance <dbl>, hour <dbl>,
+    ## #   minute <dbl>, time_hour <dttm>
+
+``` r
+(not_cancelled2 <- flights %>% 
+  filter(!(is.na(dep_delay) | is.na(arr_delay))))
+```
+
+    ## # A tibble: 327,346 x 19
+    ##     year month   day dep_time sched_dep_time dep_delay arr_time
+    ##    <int> <int> <int>    <int>          <int>     <dbl>    <int>
+    ##  1  2013     1     1      517            515        2.      830
+    ##  2  2013     1     1      533            529        4.      850
+    ##  3  2013     1     1      542            540        2.      923
+    ##  4  2013     1     1      544            545       -1.     1004
+    ##  5  2013     1     1      554            600       -6.      812
+    ##  6  2013     1     1      554            558       -4.      740
+    ##  7  2013     1     1      555            600       -5.      913
+    ##  8  2013     1     1      557            600       -3.      709
+    ##  9  2013     1     1      557            600       -3.      838
+    ## 10  2013     1     1      558            600       -2.      753
+    ## # ... with 327,336 more rows, and 12 more variables: sched_arr_time <int>,
+    ## #   arr_delay <dbl>, carrier <chr>, flight <int>, tailnum <chr>,
+    ## #   origin <chr>, dest <chr>, air_time <dbl>, distance <dbl>, hour <dbl>,
+    ## #   minute <dbl>, time_hour <dttm>
+
+``` r
+not_cancelled %>% 
+  group_by(year, month, day) %>% 
+  summarise(mean = mean(dep_delay))
+```
+
+    ## # A tibble: 365 x 4
+    ## # Groups:   year, month [?]
+    ##     year month   day  mean
+    ##    <int> <int> <int> <dbl>
+    ##  1  2013     1     1 11.4 
+    ##  2  2013     1     2 13.7 
+    ##  3  2013     1     3 10.9 
+    ##  4  2013     1     4  8.97
+    ##  5  2013     1     5  5.73
+    ##  6  2013     1     6  7.15
+    ##  7  2013     1     7  5.42
+    ##  8  2013     1     8  2.56
+    ##  9  2013     1     9  2.30
+    ## 10  2013     1    10  2.84
+    ## # ... with 355 more rows
+
+### 5.6.3 Counts
+
+When using summarise, its important to know how many observations each summary value was being computed on. If the counts are low, the variance of the summary value might be very high, and the results may not be as interpretable or reliable.
+
+``` r
+delays <- not_cancelled %>% 
+  group_by(tailnum) %>% 
+  summarise(
+    delay = mean(arr_delay)
+  )
+
+ggplot(data = delays, mapping = aes(x = delay)) + 
+  geom_freqpoly(binwidth = 10)
+```
+
+![](r4ds_chapters4-8_walkthrough_files/figure-markdown_github/unnamed-chunk-48-1.png)
+
+Here we see that some flights have very high delay values, but these flights also don't have very many counts. To count how many observations each summary value was computed on, use the n() function in summarize()
+
+``` r
+delays <- not_cancelled %>% 
+  group_by(tailnum) %>% 
+  summarise(
+    delay = mean(arr_delay, na.rm = TRUE),
+    n = n()
+  )
+
+# basically the previous graph flipped on its side
+ggplot(data = delays, mapping = aes(x = n, y = delay)) + 
+  geom_point(alpha = 1/10)
+```
+
+![](r4ds_chapters4-8_walkthrough_files/figure-markdown_github/unnamed-chunk-49-1.png)
+
+We can filter out the observations based on less than 25 counts using filter(), and then pipe the result into ggplot.
+
+``` r
+delays %>% 
+  filter(n > 25) %>% 
+  ggplot(mapping = aes(x = n, y = delay)) + 
+    geom_point(alpha = 1/10) +
+    geom_smooth(se = FALSE)
+```
+
+    ## `geom_smooth()` using method = 'gam'
+
+![](r4ds_chapters4-8_walkthrough_files/figure-markdown_github/unnamed-chunk-50-1.png)
+
+### 5.6.4 Useful summary functions
+
+Types of functions that you can use in summarize are: mean(), median(), sd(), IQR(), mad(), min(), quantile(), max(), first(), nth(), last(), n(), sum (!is.na()), counts of logical variables (sum(x&gt;20)), and more. And subsetting values prior to performing the function using &gt; &lt;, etc.
+
+When subsetting, it is important not to be confused between getting the mean of the subsetted values vs the proportion of the subsetted values that satisfy the condition:
+
+``` r
+# get mean delay of flights delayed by more than 60 hours
+not_cancelled %>% 
+  group_by(year, month, day) %>% 
+  summarise(
+    avg_delay_over60 = mean(arr_delay[arr_delay > 60]) # the average positive delay
+  )
+```
+
+    ## # A tibble: 365 x 4
+    ## # Groups:   year, month [?]
+    ##     year month   day avg_delay_over60
+    ##    <int> <int> <int>            <dbl>
+    ##  1  2013     1     1            131. 
+    ##  2  2013     1     2            116. 
+    ##  3  2013     1     3            109. 
+    ##  4  2013     1     4            104. 
+    ##  5  2013     1     5            103. 
+    ##  6  2013     1     6             90.5
+    ##  7  2013     1     7            106. 
+    ##  8  2013     1     8            100. 
+    ##  9  2013     1     9            165. 
+    ## 10  2013     1    10            183. 
+    ## # ... with 355 more rows
+
+``` r
+# get proportion of flights delayed for more than 60 hours
+not_cancelled %>% 
+  group_by(year, month, day) %>% 
+  summarise(hour_perc = mean(arr_delay > 60))
+```
+
+    ## # A tibble: 365 x 4
+    ## # Groups:   year, month [?]
+    ##     year month   day hour_perc
+    ##    <int> <int> <int>     <dbl>
+    ##  1  2013     1     1    0.0722
+    ##  2  2013     1     2    0.0851
+    ##  3  2013     1     3    0.0567
+    ##  4  2013     1     4    0.0396
+    ##  5  2013     1     5    0.0349
+    ##  6  2013     1     6    0.0470
+    ##  7  2013     1     7    0.0333
+    ##  8  2013     1     8    0.0213
+    ##  9  2013     1     9    0.0202
+    ## 10  2013     1    10    0.0183
+    ## # ... with 355 more rows
+
+The example in the book provides two ways to find the min & max observation for each group of flights (although the output is in a different format), which I thought was interesting.
+
+``` r
+# using summarise()
+not_cancelled %>% 
+  group_by(year, month, day) %>% 
+  summarise(
+    first_dep = first(dep_time), 
+    last_dep = last(dep_time)
+  )
+```
+
+    ## # A tibble: 365 x 5
+    ## # Groups:   year, month [?]
+    ##     year month   day first_dep last_dep
+    ##    <int> <int> <int>     <int>    <int>
+    ##  1  2013     1     1       517     2356
+    ##  2  2013     1     2        42     2354
+    ##  3  2013     1     3        32     2349
+    ##  4  2013     1     4        25     2358
+    ##  5  2013     1     5        14     2357
+    ##  6  2013     1     6        16     2355
+    ##  7  2013     1     7        49     2359
+    ##  8  2013     1     8       454     2351
+    ##  9  2013     1     9         2     2252
+    ## 10  2013     1    10         3     2320
+    ## # ... with 355 more rows
+
+``` r
+# using mutate() & filter()
+not_cancelled %>% 
+  group_by(year, month, day) %>% 
+  mutate(r = min_rank(desc(dep_time))) %>% 
+  filter(r %in% range(r))
+```
+
+    ## # A tibble: 770 x 20
+    ## # Groups:   year, month, day [365]
+    ##     year month   day dep_time sched_dep_time dep_delay arr_time
+    ##    <int> <int> <int>    <int>          <int>     <dbl>    <int>
+    ##  1  2013     1     1      517            515        2.      830
+    ##  2  2013     1     1     2356           2359       -3.      425
+    ##  3  2013     1     2       42           2359       43.      518
+    ##  4  2013     1     2     2354           2359       -5.      413
+    ##  5  2013     1     3       32           2359       33.      504
+    ##  6  2013     1     3     2349           2359      -10.      434
+    ##  7  2013     1     4       25           2359       26.      505
+    ##  8  2013     1     4     2358           2359       -1.      429
+    ##  9  2013     1     4     2358           2359       -1.      436
+    ## 10  2013     1     5       14           2359       15.      503
+    ## # ... with 760 more rows, and 13 more variables: sched_arr_time <int>,
+    ## #   arr_delay <dbl>, carrier <chr>, flight <int>, tailnum <chr>,
+    ## #   origin <chr>, dest <chr>, air_time <dbl>, distance <dbl>, hour <dbl>,
+    ## #   minute <dbl>, time_hour <dttm>, r <int>
+
+Also, I thought it was very useful how you can weight counts based on another variable, so that you can get a sum of total values of a different variable grouped on another set of variables (basically a shorter way to use group\_by and summarize-sum() together, as shown below).
+
+``` r
+# sum using weighted counts()
+not_cancelled %>% 
+  count(tailnum, wt = distance)
+```
+
+    ## # A tibble: 4,037 x 2
+    ##    tailnum       n
+    ##    <chr>     <dbl>
+    ##  1 D942DN    3418.
+    ##  2 N0EGMQ  239143.
+    ##  3 N10156  109664.
+    ##  4 N102UW   25722.
+    ##  5 N103US   24619.
+    ##  6 N104UW   24616.
+    ##  7 N10575  139903.
+    ##  8 N105UW   23618.
+    ##  9 N107US   21677.
+    ## 10 N108UW   32070.
+    ## # ... with 4,027 more rows
+
+``` r
+# sum using group_by and summarise() + sum()
+not_cancelled %>%
+  group_by(tailnum) %>%
+  summarise(sum_distances = sum(distance))
+```
+
+    ## # A tibble: 4,037 x 2
+    ##    tailnum sum_distances
+    ##    <chr>           <dbl>
+    ##  1 D942DN          3418.
+    ##  2 N0EGMQ        239143.
+    ##  3 N10156        109664.
+    ##  4 N102UW         25722.
+    ##  5 N103US         24619.
+    ##  6 N104UW         24616.
+    ##  7 N10575        139903.
+    ##  8 N105UW         23618.
+    ##  9 N107US         21677.
+    ## 10 N108UW         32070.
+    ## # ... with 4,027 more rows
+
+To count unique values, use n\_distinct():
+
+``` r
+not_cancelled %>% 
+  group_by(dest) %>% 
+  summarise(carriers = n_distinct(carrier)) %>% 
+  arrange(desc(carriers))
+```
+
+    ## # A tibble: 104 x 2
+    ##    dest  carriers
+    ##    <chr>    <int>
+    ##  1 ATL          7
+    ##  2 BOS          7
+    ##  3 CLT          7
+    ##  4 ORD          7
+    ##  5 TPA          7
+    ##  6 AUS          6
+    ##  7 DCA          6
+    ##  8 DTW          6
+    ##  9 IAD          6
+    ## 10 MSP          6
+    ## # ... with 94 more rows
+
+### 5.6.5 Grouping by multiple variables
+
+You can progressively peel off groupings by re-calling summarise() on previous summarise() tables. Must be careful to use aggregation functions that make sense, like sum(), and not rank-based statistics like median(). They initial grouped data frame can be ungrouped manually as well.
+
+``` r
+# group the data
+daily <- group_by(flights, year, month, day)
+
+# use summarise() to get metric per group
+(per_day   <- summarise(daily, flights = n()))
+```
+
+    ## # A tibble: 365 x 4
+    ## # Groups:   year, month [?]
+    ##     year month   day flights
+    ##    <int> <int> <int>   <int>
+    ##  1  2013     1     1     842
+    ##  2  2013     1     2     943
+    ##  3  2013     1     3     914
+    ##  4  2013     1     4     915
+    ##  5  2013     1     5     720
+    ##  6  2013     1     6     832
+    ##  7  2013     1     7     933
+    ##  8  2013     1     8     899
+    ##  9  2013     1     9     902
+    ## 10  2013     1    10     932
+    ## # ... with 355 more rows
+
+``` r
+# use summarise() on the previous summary to get metric one level up
+(per_month <- summarise(per_day, flights = sum(flights)))
+```
+
+    ## # A tibble: 12 x 3
+    ## # Groups:   year [?]
+    ##     year month flights
+    ##    <int> <int>   <int>
+    ##  1  2013     1   27004
+    ##  2  2013     2   24951
+    ##  3  2013     3   28834
+    ##  4  2013     4   28330
+    ##  5  2013     5   28796
+    ##  6  2013     6   28243
+    ##  7  2013     7   29425
+    ##  8  2013     8   29327
+    ##  9  2013     9   27574
+    ## 10  2013    10   28889
+    ## 11  2013    11   27268
+    ## 12  2013    12   28135
+
+``` r
+# use summarise() on the previous summary again to get metric another level up
+(per_year  <- summarise(per_month, flights = sum(flights)))
+```
+
+    ## # A tibble: 1 x 2
+    ##    year flights
+    ##   <int>   <int>
+    ## 1  2013  336776
+
+``` r
+# ungroup the data
+daily %>% 
+  ungroup() %>%             # no longer grouped by date
+  summarise(flights = n())  # all flights
+```
+
+    ## # A tibble: 1 x 1
+    ##   flights
+    ##     <int>
+    ## 1  336776
 
 5.6.7 Exercises
 ---------------
