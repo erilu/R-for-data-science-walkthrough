@@ -1,0 +1,12 @@
+---
+title: "R for Data Science Walkthrough Chapters 7-8"
+author: "Erick Lu"
+output: 
+  github_document:
+    html_preview: false
+    toc: true
+    toc_depth: 2
+    fig_width: 5
+    fig_height: 3.5
+---
+
