@@ -2720,9 +2720,41 @@ flights %>%
 
 6.Look at each destination. Can you find flights that are suspiciously fast? (i.e. flights that represent a potential data entry error). Compute the air time a flight relative to the shortest flight to that destination. Which flights were most delayed in the air?
 
-First, group flights by dest. To keep all rows so that we can pinpoint specific flights, we need to use a combination of mutate / filter, and ranking. This one is tough. I'll revisit this after learning more.
+To find flights that are suspiciously fast, group flights by dest and flight, then find the fastest air\_time within each subgroup. To compute air time to a flight relative to shortest flight to the destination, I would first take a ratio of the air\_time to distance, find out what this value is for the shortest flight (smallest distance), then compare it with the suspicious flights. To find the flights most delayed in the air, subtract arr\_delay from dep\_delay and compare these values.
+
+Working through writing the code for the above logic is tough. I'll revisit this after learning more.
 
 ``` r
+# use grouped mutate to find fastest flight time for a flight going to a destination
+not_cancelled %>%
+  group_by(dest,flight) %>%
+  mutate (fastest_flight_time = min(air_time),
+          ratio_distance_time = distance / air_time) %>%
+  arrange(ratio_distance_time)
+```
+
+    ## # A tibble: 327,346 x 21
+    ## # Groups:   dest, flight [11,421]
+    ##     year month   day dep_time sched_dep_time dep_delay arr_time
+    ##    <int> <int> <int>    <int>          <int>     <dbl>    <int>
+    ##  1  2013     1    28     1917           1825       52.     2118
+    ##  2  2013     6    29      755            800       -5.     1035
+    ##  3  2013     8    28      932            940       -8.     1116
+    ##  4  2013     1    30     1037            955       42.     1221
+    ##  5  2013    11    27      556            600       -4.      727
+    ##  6  2013     5    21      558            600       -2.      721
+    ##  7  2013    12     9     1540           1535        5.     1720
+    ##  8  2013     6    10     1356           1300       56.     1646
+    ##  9  2013     7    28     1322           1325       -3.     1612
+    ## 10  2013     4    11     1349           1345        4.     1542
+    ## # ... with 327,336 more rows, and 14 more variables: sched_arr_time <int>,
+    ## #   arr_delay <dbl>, carrier <chr>, flight <int>, tailnum <chr>,
+    ## #   origin <chr>, dest <chr>, air_time <dbl>, distance <dbl>, hour <dbl>,
+    ## #   minute <dbl>, time_hour <dttm>, fastest_flight_time <dbl>,
+    ## #   ratio_distance_time <dbl>
+
+``` r
+# visualize - work in progress
 not_cancelled %>% 
   group_by(dest) %>% 
   mutate(r = min_rank(desc(air_time))) %>% 
@@ -2736,4 +2768,155 @@ not_cancelled %>%
 
 7.Find all destinations that are flown by at least two carriers. Use that information to rank the carriers.
 
+The code below will find the destinations that are flown by at least 2 carriers. The second part of the question is vague--how can carriers be ranked by whether a destination is flown to by 2 more more carriers? It would make more sense to rank the destinations. Below I rank the carriers by the number of destinations they fly to.
+
+``` r
+# destinations that are flown by at least two carriers
+not_cancelled %>%
+  group_by(dest) %>%
+  filter( length(unique(carrier)) >= 2)
+```
+
+    ## # A tibble: 315,946 x 19
+    ## # Groups:   dest [75]
+    ##     year month   day dep_time sched_dep_time dep_delay arr_time
+    ##    <int> <int> <int>    <int>          <int>     <dbl>    <int>
+    ##  1  2013     1     1      517            515        2.      830
+    ##  2  2013     1     1      533            529        4.      850
+    ##  3  2013     1     1      542            540        2.      923
+    ##  4  2013     1     1      544            545       -1.     1004
+    ##  5  2013     1     1      554            600       -6.      812
+    ##  6  2013     1     1      554            558       -4.      740
+    ##  7  2013     1     1      555            600       -5.      913
+    ##  8  2013     1     1      557            600       -3.      709
+    ##  9  2013     1     1      557            600       -3.      838
+    ## 10  2013     1     1      558            600       -2.      753
+    ## # ... with 315,936 more rows, and 12 more variables: sched_arr_time <int>,
+    ## #   arr_delay <dbl>, carrier <chr>, flight <int>, tailnum <chr>,
+    ## #   origin <chr>, dest <chr>, air_time <dbl>, distance <dbl>, hour <dbl>,
+    ## #   minute <dbl>, time_hour <dttm>
+
+``` r
+# carriers that fly to the most destinations:
+not_cancelled %>%
+  group_by(carrier) %>%
+  summarize(
+    num_dest = length (unique(dest))
+  ) %>%
+  arrange (desc(num_dest))
+```
+
+    ## # A tibble: 16 x 2
+    ##    carrier num_dest
+    ##    <chr>      <int>
+    ##  1 EV            61
+    ##  2 9E            48
+    ##  3 UA            47
+    ##  4 B6            42
+    ##  5 DL            40
+    ##  6 MQ            20
+    ##  7 AA            19
+    ##  8 WN            11
+    ##  9 OO             5
+    ## 10 US             5
+    ## 11 VX             5
+    ## 12 FL             3
+    ## 13 YV             3
+    ## 14 AS             1
+    ## 15 F9             1
+    ## 16 HA             1
+
+``` r
+# just checking to see if length(unique(dest)) worked by selecting one of the flights and manually counting
+EV_flights <- not_cancelled %>%
+  filter ( carrier == 'EV')
+length(unique(EV_flights$dest))
+```
+
+    ## [1] 61
+
 8.For each plane, count the number of flights before the first delay of greater than 1 hour.
+
+I would first group by flight, and then select the minimum sched\_dep\_time for flights that were delayed greater than 60 minutes. Then I would count the number of flights that are less than the minimum sched\_dep\_time in each group of flights. I used full\_join() to map the first flight with delay greater than 1 hour to the original flights table, then used summarize() to count the number of flights that came before this for each group within tailnum.
+
+``` r
+# finds the first occurance of a delay greater than 60 min
+
+min_delay <- flights %>%
+  group_by(tailnum) %>%
+  filter (dep_delay > 60) %>%
+  summarize(
+    min_sched_dep =  min (sched_dep_time)
+  )
+
+# join the dep_time of the first occurance of the >60min delay to the original table
+joined_delay <- full_join (flights,min_delay, by = "tailnum") %>% arrange (tailnum)
+
+flights
+```
+
+    ## # A tibble: 336,776 x 19
+    ##     year month   day dep_time sched_dep_time dep_delay arr_time
+    ##    <int> <int> <int>    <int>          <int>     <dbl>    <int>
+    ##  1  2013     1     1      517            515        2.      830
+    ##  2  2013     1     1      533            529        4.      850
+    ##  3  2013     1     1      542            540        2.      923
+    ##  4  2013     1     1      544            545       -1.     1004
+    ##  5  2013     1     1      554            600       -6.      812
+    ##  6  2013     1     1      554            558       -4.      740
+    ##  7  2013     1     1      555            600       -5.      913
+    ##  8  2013     1     1      557            600       -3.      709
+    ##  9  2013     1     1      557            600       -3.      838
+    ## 10  2013     1     1      558            600       -2.      753
+    ## # ... with 336,766 more rows, and 12 more variables: sched_arr_time <int>,
+    ## #   arr_delay <dbl>, carrier <chr>, flight <int>, tailnum <chr>,
+    ## #   origin <chr>, dest <chr>, air_time <dbl>, distance <dbl>, hour <dbl>,
+    ## #   minute <dbl>, time_hour <dttm>
+
+``` r
+joined_delay
+```
+
+    ## # A tibble: 336,776 x 20
+    ##     year month   day dep_time sched_dep_time dep_delay arr_time
+    ##    <int> <int> <int>    <int>          <int>     <dbl>    <int>
+    ##  1  2013     2    11     1508           1400       68.     1807
+    ##  2  2013     3    23     1340           1300       40.     1638
+    ##  3  2013     3    24      859            835       24.     1142
+    ##  4  2013     7     5     1253           1259       -6.     1518
+    ##  5  2013     1     1     1604           1510       54.     1817
+    ##  6  2013     1     1     2100           2100        0.     2307
+    ##  7  2013     1     2      827            835       -8.     1059
+    ##  8  2013     1     2     2014           2020       -6.     2256
+    ##  9  2013     1     4     1621           1625       -4.     1853
+    ## 10  2013     1     5      834            835       -1.     1050
+    ## # ... with 336,766 more rows, and 13 more variables: sched_arr_time <int>,
+    ## #   arr_delay <dbl>, carrier <chr>, flight <int>, tailnum <chr>,
+    ## #   origin <chr>, dest <chr>, air_time <dbl>, distance <dbl>, hour <dbl>,
+    ## #   minute <dbl>, time_hour <dttm>, min_sched_dep <dbl>
+
+``` r
+# use summarize() to figure out how many values came before the first delay > 60min (see column num_before_delay60).
+joined_delay %>%
+  group_by(tailnum) %>%
+  summarize(
+    num_before_delay60 = sum ( sched_dep_time < min_sched_dep, na.rm = T)
+  )
+```
+
+    ## # A tibble: 4,044 x 2
+    ##    tailnum num_before_delay60
+    ##    <chr>                <int>
+    ##  1 D942DN                   3
+    ##  2 N0EGMQ                  13
+    ##  3 N10156                  15
+    ##  4 N102UW                  17
+    ##  5 N103US                   0
+    ##  6 N104UW                  28
+    ##  7 N10575                  20
+    ##  8 N105UW                  22
+    ##  9 N107US                  33
+    ## 10 N108UW                  32
+    ## # ... with 4,034 more rows
+
+Thanks for reading through my walkthrough of chapters 4-6! I hope you found my solutions to the exercises informative.

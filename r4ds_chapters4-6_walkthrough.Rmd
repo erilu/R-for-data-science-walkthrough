@@ -16,14 +16,14 @@ This my walkthrough for the book: _R for Data Science_ by Hadley Wickham and Gar
 
 ## 4.4 Practice
 
-1.Why does this code not work?
+### 1. Why does this code not work?
 ```{r}
 my_variable <- 10
 # my_varıable
 ```
 The code does not work because there is a typo in the variable name that you are calling. The letter "i" is not the same in my_var(i)able.
 
-2.Tweak each of the following R commands so that they run correctly:
+### 2. Tweak each of the following R commands so that they run correctly:
 
 Changed "dota" to "data", "fliter" to "filter", "=" to "==", and "diamond" to "diamonds"
 
@@ -37,7 +37,7 @@ filter(mpg, cyl == 8)
 filter(diamonds, carat > 3)
 ```
 
-3.Press Alt + Shift + K. What happens? How can you get to the same place using the menus?
+### 3. Press Alt + Shift + K. What happens? How can you get to the same place using the menus?
 
 This opens up a list of the keyboard shortcuts! Very useful. Using the menus, either type "shorcut" into the search bar under help, or find it under: tools: keyboard shortcuts help.
 
@@ -112,7 +112,7 @@ filter(df, is.na(x) | x > 1)
 
 ## 5.2.4 Exercises
 
-1.Find all flights that
+### 1. Find all flights that
 
 * Had an arrival delay of two or more hours
 
@@ -181,7 +181,7 @@ filter(flights, between(dep_time, 0, 600))
 ```
 
 
-2.How many flights have a missing dep_time? What other variables are missing? What might these rows represent?
+### 2. How many flights have a missing dep_time? What other variables are missing? What might these rows represent?
 
 
 ```{r}
@@ -190,7 +190,7 @@ filter(flights, is.na(dep_time))
 
 The flights with missing dep_time also have missing arr_time and air_time, suggesting that these were cancelled flights.
 
-3.Why is NA ^ 0 not missing? Why is NA | TRUE not missing? Why is FALSE & NA not missing? Can you figure out the general rule? (NA * 0 is a tricky counterexample!)
+### 3. Why is NA ^ 0 not missing? Why is NA | TRUE not missing? Why is FALSE & NA not missing? Can you figure out the general rule? (NA * 0 is a tricky counterexample!)
 
 Since NA represents an unknown value, it still obeys certain rules as if it were a known value. Since any number to the power of 0 is 1, NA^0 returns the value 1, which will make the code ```filter(flights, dep_time == NA^0)``` return all the flights that departed at time 0001. NA | TRUE is an expression that evaluates to TRUE, because the logical operator will evaluate whether either side has a TRUE value. This would return all the data points in the data frame. FALSE & NA returns FALSE based on the same premise as the previous item. Since FALSE exists on either side of the & logical operator, it is evaluated as FALSE. The general (but not concrete) rule is that modifying NA with a logical operator in the form ```NA <operator> value``` will evaluate to either TRUE or FALSE, returning not missing values, and that NA will still abide by certain rules that any value would abide by. NA*0, however, is an exception beacuse this still evaluates to NA, whereas other values would evaluate to 0. 
 
@@ -229,13 +229,13 @@ arrange(df, desc(x))
 
 ## 5.3.1 Exercises
 
-1.How could you use arrange() to sort all missing values to the start? (Hint: use is.na()).
+### 1. How could you use arrange() to sort all missing values to the start? (Hint: use is.na()).
 
 ```{r}
 arrange(flights, desc(is.na(dep_time)))
 ```
 
-2.Sort flights to find the most delayed flights. Find the flights that left earliest.
+### 2. Sort flights to find the most delayed flights. Find the flights that left earliest.
 
 ```{r}
 # most delayed flights
@@ -245,7 +245,7 @@ arrange(flights, desc(dep_delay))
 arrange(flights, dep_delay)
 ```
 
-3.Sort flights to find the fastest flights.
+### 3. Sort flights to find the fastest flights.
 
 ```{r fastest_flights_arrange}
 # fastest flights
@@ -264,7 +264,7 @@ ggplot (top1000_fastest, aes (x = arr_delay, y = air_time))+
 
 Based on the bar plot, within the top 1000 flights that landed early, AA, DL, and UA have more than other airlines. Looking at the scatterplot, it seems UA generally has medium-length flights that arrive ahead of schedule, whereas HA has very long flights that arrive ahead of schedule, and 9E has very short flights that arrive ahead of schedule.
 
-4.Which flights travelled the longest? Which travelled the shortest?
+### 4. Which flights travelled the longest? Which travelled the shortest?
 
 The shortest flights were from EWR to BDL, taking around 22 minutes. Of the top 100 shortest flights, flight number 4276 was the most frequent. The longest flights were from JFK to HNL or EWR to HNL, and lasted around 654 minutes. Of the top 100 longest flights, flight number 51 was the most frequent.
 
@@ -1009,9 +1009,19 @@ flights %>%
 
 6.Look at each destination. Can you find flights that are suspiciously fast? (i.e. flights that represent a potential data entry error). Compute the air time a flight relative to the shortest flight to that destination. Which flights were most delayed in the air?
 
-First, group flights by dest. To keep all rows so that we can pinpoint specific flights, we need to use a combination of mutate / filter, and ranking. This one is tough. I'll revisit this after learning more.
+To find flights that are suspiciously fast, group flights by dest and flight, then find the fastest air_time within each subgroup. To compute air time to a flight relative to shortest flight to the destination, I would first take a ratio of the air_time to distance, find out what this value is for the shortest flight (smallest distance), then compare it with the suspicious flights. To find the flights most delayed in the air, subtract arr_delay from dep_delay and compare these values.
+
+Working through writing the code for the above logic is tough. I'll revisit this after learning more.
 
 ```{r}
+# use grouped mutate to find fastest flight time for a flight going to a destination
+not_cancelled %>%
+  group_by(dest,flight) %>%
+  mutate (fastest_flight_time = min(air_time),
+          ratio_distance_time = distance / air_time) %>%
+  arrange(ratio_distance_time)
+
+# visualize - work in progress
 not_cancelled %>% 
   group_by(dest) %>% 
   mutate(r = min_rank(desc(air_time))) %>% 
@@ -1026,13 +1036,64 @@ not_cancelled %>%
 
 7.Find all destinations that are flown by at least two carriers. Use that information to rank the carriers.
 
+The code below will find the destinations that are flown by at least 2 carriers. The second part of the question is vague--how can carriers be ranked by whether a destination is flown to by 2 more more carriers? It would make more sense to rank the destinations. Below I rank the carriers by the number of destinations they fly to.
+
+```{r}
+# destinations that are flown by at least two carriers
+not_cancelled %>%
+  group_by(dest) %>%
+  filter( length(unique(carrier)) >= 2)
+  
+# carriers that fly to the most destinations:
+not_cancelled %>%
+  group_by(carrier) %>%
+  summarize(
+    num_dest = length (unique(dest))
+  ) %>%
+  arrange (desc(num_dest))
+
+# just checking to see if length(unique(dest)) worked by selecting one of the flights and manually counting
+EV_flights <- not_cancelled %>%
+  filter ( carrier == 'EV')
+length(unique(EV_flights$dest))
+
+```
 
 
 8.For each plane, count the number of flights before the first delay of greater than 1 hour.
 
+I would first group by flight, and then select the minimum sched_dep_time for flights that were delayed greater than 60 minutes. Then I would count the number of flights that are less than the minimum sched_dep_time in each group of flights. I used full_join() to map the first flight with delay greater than 1 hour to the original flights table, then used summarize() to count the number of flights that came before this for each group within tailnum.
+
+```{r}
+# finds the first occurance of a delay greater than 60 min
+
+min_delay <- flights %>%
+  group_by(tailnum) %>%
+  filter (dep_delay > 60) %>%
+  summarize(
+    min_sched_dep =  min (sched_dep_time)
+  )
+
+# join the dep_time of the first occurance of the >60min delay to the original table
+joined_delay <- full_join (flights,min_delay, by = "tailnum") %>% arrange (tailnum)
+
+flights
+joined_delay
+
+# use summarize() to figure out how many values came before the first delay > 60min (see column num_before_delay60).
+joined_delay %>%
+  group_by(tailnum) %>%
+  summarize(
+    num_before_delay60 = sum ( sched_dep_time < min_sched_dep, na.rm = T)
+  )
+
+  
+  
+
+```
 
 
-
+Thanks for reading through my walkthrough of chapters 4-6! I hope you found my solutions to the exercises informative.
 
 
 
