@@ -168,7 +168,7 @@ I had to specify the `aes` in the ggplot() parameter, so that it would apply to 
 3.2.4 Exercises
 ---------------
 
-1.Run ggplot(data = mpg). What do you see?
+### 1. Run ggplot(data = mpg). What do you see?
 
 ``` r
 ggplot(data = mpg)
@@ -178,7 +178,7 @@ ggplot(data = mpg)
 
 We see an empty plot. The ggplot() function simply creates a plotting space and specifies the data that will be plotted. Sequential parameters must be added ("+") to the ggplot to see anything.
 
-2.How many rows are in mpg? How many columns?
+### 2. How many rows are in mpg? How many columns?
 
 ``` r
 dim(mpg)
@@ -188,7 +188,7 @@ dim(mpg)
 
 There are 234 rows and 11 columns in the data set.
 
-3.What does the drv variable describe? Read the help for ?mpg to find out.
+### 3. What does the drv variable describe? Read the help for ?mpg to find out.
 
 ``` r
 ?mpg
@@ -209,7 +209,7 @@ ggplot(data = mpg) +
 
 There is an inverse correlation with the number of cylinders and how much mileage the car gets on the highway.
 
-5.What happens if you make a scatterplot of class vs drv? Why is the plot not useful?
+### 5. What happens if you make a scatterplot of class vs drv? Why is the plot not useful?
 
 ``` r
 ggplot(data = mpg) + 
@@ -259,7 +259,7 @@ ggplot(data = mpg) +
 3.3.1 Exercises
 ---------------
 
-1.What’s gone wrong with this code? Why are the points not blue?
+### 1. What’s gone wrong with this code? Why are the points not blue?
 
 ``` r
 ggplot(data = mpg) + 
@@ -277,7 +277,7 @@ ggplot(data = mpg) +
 
 ![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_2-1.png)
 
-2.Which variables in mpg are categorical? Which variables are continuous? (Hint: type ?mpg to read the documentation for the dataset). How can you see this information when you run mpg?
+### 2. Which variables in mpg are categorical? Which variables are continuous? (Hint: type ?mpg to read the documentation for the dataset). How can you see this information when you run mpg?
 
 One way you can figure out which are categorical vs continuous is by using the `summary()` function. The continuous variables will have the quartiles specified, whereas the categorical variables will not. You might have to be wary about categorical variables in numerical form, in which you would have to read the documentation. Runing just `mpg` would show the type of varable under the column name (char vs int vs dbl, etc.) which would also let you know this information.
 
@@ -307,7 +307,7 @@ summary(mpg)
     ##  3rd Qu.:27.00                                        
     ##  Max.   :44.00
 
-3.Map a continuous variable to color, size, and shape. How do these aesthetics behave differently for categorical vs. continuous variables?
+### 3. Map a continuous variable to color, size, and shape. How do these aesthetics behave differently for categorical vs. continuous variables?
 
 I mapped the continuous variable, "cty", city miles per gallon, using color and size. By color, the points are now on a gradient. By size, the larger points have higher city miles per gallon. I couldn't map the continuous variable to shape, since there are a set number of shapes available. This was also an issue when running it for the variable "class", since there was one more class than there were number of shapes as well (the SUV category has no points as a result).
 
@@ -354,7 +354,7 @@ byShape
 
 ![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_3-2.png)
 
-4.What happens if you map the same variable to multiple aesthetics?
+### 4. What happens if you map the same variable to multiple aesthetics?
 
 The points will all lie on the same area of the spectrum for each aesthetic.
 
@@ -365,7 +365,7 @@ ggplot(data = mpg) +
 
 ![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_4-1.png)
 
-5.What does the stroke aesthetic do? What shapes does it work with? (Hint: use ?geom\_point)
+### 5. What does the stroke aesthetic do? What shapes does it work with? (Hint: use ?geom\_point)
 
 The stroke will modify the width of the border for geom\_points that have a border. Below I increase the size of the points after categorizing by the drv variable.
 
@@ -376,7 +376,7 @@ ggplot(data = mpg) +
 
 ![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_5-1.png)
 
-6.What happens if you map an aesthetic to something other than a variable name, like aes(colour = displ &lt; 5)?
+### 6. What happens if you map an aesthetic to something other than a variable name, like aes(colour = displ &lt; 5)?
 
 The aesthetic will be mapped to the output of the argument. Displ &lt; 5 will return TRUE for all points less than 5, and these points will be mapped to a separate color. Below is an example of displ &lt; 5 and cyl &lt; 5.
 
@@ -420,7 +420,7 @@ ggplot(data = mpg) +
 3.5.1 Exercises
 ---------------
 
-1.What happens if you facet on a continuous variable?
+### 1. What happens if you facet on a continuous variable?
 
 Let's try faceting on city miles per gallon (cty):
 
@@ -434,7 +434,7 @@ ggplot(data = mpg) +
 
 It looks like ggplot2 will still spit out a graph, but the graph is not very interpretable. It also takes much more time to process than a discrete variable with fewer factors.
 
-2.What do the empty cells in plot with facet\_grid(drv ~ cyl) mean? How do they relate to this plot?
+### 2. What do the empty cells in plot with facet\_grid(drv ~ cyl) mean? How do they relate to this plot?
 
 The empty cells in facet\_grid(drv~cyl) mean that there are no points that satisfy both of the conditions specified for drv and cyl. In the plot below, you can identify the same blank facet plots as the crosshairs that do not have points (for example, cars with 4 cylinders and rear wheel drive).
 
@@ -445,7 +445,7 @@ ggplot(data = mpg) +
 
 ![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/drv_vs_cyl-1.png)
 
-3.What plots does the following code make? What does . do?
+### 3. What plots does the following code make? What does . do?
 
 Based on the output, I assume that . means to perform a 1D facet plot using the variable supplied. Although having the . vs not having it doesn't change the output when using the form (~ drv). Switching between . ~ drv and drv ~ . flips the orientation of the graphs. Worth to note that facet\_map(~ drv, ncol = 3) provides the same output as facet\_grid(. ~ drv).
 
@@ -465,7 +465,7 @@ ggplot(data = mpg) +
 
 ![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_dot-2.png)
 
-4.Take the first faceted plot in this section:
+### 4. Take the first faceted plot in this section:
 
 ``` r
 ggplot(data = mpg) + 
@@ -479,11 +479,11 @@ What are the advantages to using faceting instead of the colour aesthetic? What 
 
 Faceting will allow you to examine the overall distribution of one subset vs another. Pulling out the points and viewing the plot in isolation might make it easier to see trends in the data. Larger datasets with more variability between subsets (overlapping points) might want to use facets. However the computing power needed to facet the data might not scale well.
 
-5.Read ?facet\_wrap. What does nrow do? What does ncol do? What other options control the layout of the individual panels? Why doesn’t facet\_grid() have nrow and ncol argument?
+### 5. Read ?facet\_wrap. What does nrow do? What does ncol do? What other options control the layout of the individual panels? Why doesn’t facet\_grid() have nrow and ncol argument?
 
 nrow and ncol in facet\_wrap() determine how many rows and columns the output graphs will be organized into. Other options include as.table, or dir. facet\_grid() does not have nrow and ncol because there are defined numbers of parameters for the two variables being compared.
 
-6.When using facet\_grid() you should usually put the variable with more unique levels in the columns. Why?
+### 6. When using facet\_grid() you should usually put the variable with more unique levels in the columns. Why?
 
 Putting the variable with more unique levels in the columns will allow you to scan the facets faster. Also, monitors are widescreen.
 
@@ -550,11 +550,11 @@ ggplot(data = mpg, mapping = aes (x = displ, y = hwy, color = drv)) +
 3.6.1 Exercises
 ---------------
 
-1.What geom would you use to draw a line chart? A boxplot? A histogram? An area chart?
+### 1. What geom would you use to draw a line chart? A boxplot? A histogram? An area chart?
 
 Line chart would use geom\_line(), a boxplot would use geom\_boxplot(), a histogram would use geom\_histogram(), and an area chart would use geom\_area().
 
-2.Run this code in your head and predict what the output will look like. Then, run the code in R and check your predictions.
+### 2. Run this code in your head and predict what the output will look like. Then, run the code in R and check your predictions.
 
 I predict that hwy will be plotted against displ as a scatter plot, with the color of the dot depending on the drv variable. superimposed on these points will be a smoothened conditional mean line, also colored based on the drv variable, since these were declared globally.
 
@@ -568,15 +568,17 @@ ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) +
 
 ![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_predict-1.png)
 
-3.What does show.legend = FALSE do? What happens if you remove it? Why do you think I used it earlier in the chapter?
+### 3. What does show.legend = FALSE do? What happens if you remove it?
+
+Why do you think I used it earlier in the chapter?
 
 show.legend = FALSE prevents the legend from being displayed. If you remove it, the legends will show up. I think that it was set to false just to save space!
 
-4.What does the se argument to geom\_smooth() do?
+### 4. What does the se argument to geom\_smooth() do?
 
 Based on the ?geom\_smooth documentation, the se argument tells the graph to either display or hide the confidence interval around the smooth function. This would depend on the type of smoothing performed (loess vs lm, etc.).
 
-5.Will these two graphs look different? Why/why not?
+### 5. Will these two graphs look different? Why/why not?
 
 ``` r
 ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
@@ -600,7 +602,7 @@ ggplot() +
 
 No, the graphs will not look different. One defines the parameters globally, whereas the other defines the same parameters locally in each geom\_() function.
 
-6.Recreate the R code necessary to generate the following graphs.
+### 6. Recreate the R code necessary to generate the following graphs.
 
 ``` r
 ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
@@ -717,7 +719,7 @@ As you can see, the layout for the stat\_summary and boxplot are identical. The 
 3.7.1 Exercises
 ---------------
 
-1.What is the default geom associated with stat\_summary()? How could you rewrite the previous plot to use that geom function instead of the stat function?
+### 1. What is the default geom associated with stat\_summary()? How could you rewrite the previous plot to use that geom function instead of the stat function?
 
 Looking at the ?stat\_summary page, the default geom function associated with it is "pointrange." Below is a replicate of the plot using this geom\_function:
 
@@ -728,15 +730,15 @@ ggplot(data = diamonds) +
 
 ![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/geom_pointrange_vs_statsummary-1.png) This plot looks similar, but its not exactly the same. We still need to find a way to convert the dots into a line and plot the median point.
 
-2.What does geom\_col() do? How is it different to geom\_bar()?
+### 2. What does geom\_col() do? How is it different to geom\_bar()?
 
 geom\_col() creates a barplot but uses the values in the data. In other words, it is as if we used geom\_bar() with stat = "identity".
 
-3.Most geoms and stats come in pairs that are almost always used in concert. Read through the documentation and make a list of all the pairs. What do they have in common?
+### 3. Most geoms and stats come in pairs that are almost always used in concert. Read through the documentation and make a list of all the pairs. What do they have in common?
 
 I would refer to this page on the tidyverse website to see all the pairs of stats and geoms: <http://ggplot2.tidyverse.org/reference/>. Most of the stats and corresponding geoms are paired and have the same suffix.
 
-4.What variables does stat\_smooth() compute? What parameters control its behaviour?
+### 4. What variables does stat\_smooth() compute? What parameters control its behaviour?
 
 stat\_smooth() computes the moving average using a choice of methods. You can set the span for the smoothing to calculate from, number of points to evalate the smoother at, and other parameters. Below I use stat\_smooth to replicate one of the previous graphs that used geom\_smooth().
 
@@ -750,7 +752,7 @@ ggplot(data = mpg, aes(x = displ, y = hwy)) +
 
 ![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/stat_smooth-1.png)
 
-5.In our proportion bar chart, we need to set group = 1. Why? In other words what is the problem with these two graphs?
+### 5. In our proportion bar chart, we need to set group = 1. Why? In other words what is the problem with these two graphs?
 
 Without the group = 1, each of the proportions that are calculated for every category in cut will be equal to 1. This is because geom\_bar is calculating the proportion of each category in cut within that same category (ie: what proportion of "Fair" is in "Fair"). By forcing the group to be 1, the proper proportions as part of the total number of observations will be displayed. Changing the group size to an arbitrary number doesnt seem to change the graph.
 
@@ -846,7 +848,7 @@ ggplot(data = mpg) +
 3.8.1 Exercises
 ---------------
 
-1.What is the problem with this plot? How could you improve it?
+### 1. What is the problem with this plot? How could you improve it?
 
 ``` r
 ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
@@ -864,11 +866,11 @@ ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
 
 ![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_jitter_better-1.png)
 
-2.What parameters to geom\_jitter() control the amount of jittering?
+### 2. What parameters to geom\_jitter() control the amount of jittering?
 
 Based on ?geom\_jitter, the "width" and "height" parameters for geom\_jitter will control how much noise is added to each point.
 
-3.Compare and contrast geom\_jitter() with geom\_count().
+### 3. Compare and contrast geom\_jitter() with geom\_count().
 
 ``` r
 # geom jitter
@@ -888,7 +890,7 @@ ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
 
 Geom\_count does not "jitter" the points; instead, it increases the size of the point based off of how many points were in that specific x,y slot.
 
-4.What’s the default position adjustment for geom\_boxplot()? Create a visualisation of the mpg dataset that demonstrates it
+### 4. What’s the default position adjustment for geom\_boxplot()? Create a visualisation of the mpg dataset that demonstrates it
 
 ?geom\_boxplot() indicates that the default position is "dodge," which means that any further grouping by aesthetic of each category on the x-axis will have the "dodge" positioning. As shown above, "dodge" splits the category into the indicated subgroups and plots it side by side within the category.
 
@@ -962,7 +964,7 @@ bar + coord_polar()
 3.9.1 Exercises
 ---------------
 
-1.Turn a stacked bar chart into a pie chart using coord\_polar().
+### 1. Turn a stacked bar chart into a pie chart using coord\_polar().
 
 The previous chart is a coxcomb plot, not what you would usually expect to see when looking at pie charts. Below I've modified the code to produce a more conventional pie chart, starting from a stacked bar chart.
 
@@ -983,15 +985,15 @@ bar + coord_polar(theta = 'y')
 
 ![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/regular_pie_chart-1.png)
 
-2.What does labs() do? Read the documentation.
+### 2. What does labs() do? Read the documentation.
 
 Labs() allows you to specify custom labels for the ggplot graphs.
 
-3.What’s the difference between coord\_quickmap() and coord\_map()?
+### 3. What’s the difference between coord\_quickmap() and coord\_map()?
 
 coord\_map() projects a spherical map onto a 2D plane, but does not preserve straight lines. coord\_quickmap() does the same thing as coord\_map except that it uses a quick approximation that preserves straight lines (for the most part).
 
-4.What does the plot below tell you about the relationship between city and highway mpg? Why is coord\_fixed() important? What does geom\_abline() do?
+### 4. What does the plot below tell you about the relationship between city and highway mpg? Why is coord\_fixed() important? What does geom\_abline() do?
 
 The plot below tells us that there is a positive correlation between city and highway mpg. In other words, cars with higher city mileage tend to also have higher highway mileage. Although not necessary, coord\_fixed() will make the scale of each axis the same width (5 units on the y axis moves up by the same length as 5 units on the x axis). Geom\_abline() adds a line of slope 1 that passes through the origin (0,0). As it is now, it is not very informative. So, I modified the parameters to turn it into a regression line by passing in the slope and intercept values from the base R "lm" function. I also plotted the ggplot geom\_smooth() as a comparison, showing that they provide the same line.
 
