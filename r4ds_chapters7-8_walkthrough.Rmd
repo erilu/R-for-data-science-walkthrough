@@ -16,6 +16,21 @@ output:
 library(tidyverse)
 ```
 
+## Visualizing Distributions
+
+```{r}
+# discrete binning
+ggplot(data = diamonds) +
+  geom_bar(mapping = aes(x = cut))
+```
+
+
+```{r}
+# binning continuous variable
+ggplot(data = diamonds) +
+  geom_histogram(mapping = aes(x = carat), binwidth = 0.5)
+```
+
 
 ## 7.3.4 Exercises
 
