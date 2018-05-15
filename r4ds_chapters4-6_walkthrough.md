@@ -2720,51 +2720,104 @@ flights %>%
 
 ### 6. Look at each destination. Can you find flights that are suspiciously fast? (i.e. flights that represent a potential data entry error). Compute the air time a flight relative to the shortest flight to that destination. Which flights were most delayed in the air?
 
-To find flights that are suspiciously fast, group flights by dest and flight, then find the fastest air\_time within each subgroup. To compute air time to a flight relative to shortest flight to the destination, I would first take a ratio of the air\_time to distance, find out what this value is for the shortest flight (smallest distance), then compare it with the suspicious flights. To find the flights most delayed in the air, subtract arr\_delay from dep\_delay and compare these values.
-
-Working through writing the code for the above logic is tough. I'll revisit this after learning more.
+Flights that are suspiciously fast will have an air\_time value that is very small compared to the expected amount of air\_time (sched\_arr\_time - sched\_dep\_time). To find these flights, first group flights by dest, use mutate() to calculate the expected air\_time, and calculate the proportion of the amount of time saved during the flight, (expected\_air\_time - air\_time)/expected\_air\_time. Use arrange() to sort the flights based on prop\_time\_saved. If we expected the flight to take two hours but the flight had an air\_time of 20 minutes, these flights would show up at the top of each group. We see that there are suspiciously fast flights such as flight 4117 to ALB which took 26 minutes, but was expected to take 72 minutes, saving 63% of the expected flight time. This is suspicious!
 
 ``` r
-# use grouped mutate to find fastest flight time for a flight going to a destination
+# calculate the expected air time by converting sched_arr_time and sched_dep_time to minutes, then subtracting
+expected_times <- not_cancelled %>%
+  mutate (expected_air_time = (((sched_arr_time %/% 100)*60 + sched_arr_time %% 100) 
+                               - ((sched_dep_time %/% 100)*60 + sched_dep_time %% 100)))
+# if sched_arr_time was past midnight compared to sched_dep_time, the expected_air_time was negative.
+# this is a quick fix by adding 2400 in these instances using base R
+expected_times [expected_times$expected_air_time < 0, 'expected_air_time'] <- expected_times [expected_times$expected_air_time < 0, 'expected_air_time'] + 2400
+
+# use grouped arrange() to find suspicous flights with large prop_time_saved for each destination.
+expected_times %>%
+  group_by(dest) %>%
+  mutate( prop_time_saved = (expected_air_time - air_time)/expected_air_time ) %>%
+  arrange(desc(prop_time_saved)) %>%
+  slice (1:10) %>% # select top 10 fastest flights
+  select (dest, flight, sched_dep_time, sched_arr_time, air_time, expected_air_time, prop_time_saved)
+```
+
+    ## # A tibble: 1,029 x 7
+    ## # Groups:   dest [104]
+    ##    dest  flight sched_dep_time sched_arr_time air_time expected_air_time
+    ##    <chr>  <int>          <int>          <int>    <dbl>             <dbl>
+    ##  1 ABQ     1505           2001           2308     224.              187.
+    ##  2 ABQ     1505           2001           2308     230.              187.
+    ##  3 ABQ     1505           2001           2308     230.              187.
+    ##  4 ABQ     1505           2001           2308     230.              187.
+    ##  5 ABQ     1505           2001           2308     230.              187.
+    ##  6 ABQ     1505           2007           2259     212.              172.
+    ##  7 ABQ     1505           2001           2308     231.              187.
+    ##  8 ABQ     1505           2007           2259     213.              172.
+    ##  9 ABQ     1505           2007           2259     213.              172.
+    ## 10 ABQ     1505           2001           2308     233.              187.
+    ## # ... with 1,019 more rows, and 1 more variable: prop_time_saved <dbl>
+
+To compute air time to a flight relative to shortest flight to the destination, I would first take a ratio of the air\_time to distance, find out what this value is for the shortest flight (smallest distance), then compare it with the suspicious flights. To find the flights most delayed in the air, subtract arr\_delay from dep\_delay and compare these values.
+
+``` r
+# compare distance traveled over time 
 not_cancelled %>%
-  group_by(dest,flight) %>%
-  mutate (fastest_flight_time = min(air_time),
-          ratio_distance_time = distance / air_time) %>%
-  arrange(ratio_distance_time)
+  group_by(dest) %>%
+  mutate ( dist_over_time = distance/air_time,
+           shortest_dest_flight = min (air_time, na.rm = T)) %>%
+  arrange (desc(dist_over_time)) %>%
+  slice (1:10) %>% 
+  select( dest, flight, distance, air_time, dist_over_time, shortest_dest_flight)
 ```
 
-    ## # A tibble: 327,346 x 21
-    ## # Groups:   dest, flight [11,421]
-    ##     year month   day dep_time sched_dep_time dep_delay arr_time
-    ##    <int> <int> <int>    <int>          <int>     <dbl>    <int>
-    ##  1  2013     1    28     1917           1825       52.     2118
-    ##  2  2013     6    29      755            800       -5.     1035
-    ##  3  2013     8    28      932            940       -8.     1116
-    ##  4  2013     1    30     1037            955       42.     1221
-    ##  5  2013    11    27      556            600       -4.      727
-    ##  6  2013     5    21      558            600       -2.      721
-    ##  7  2013    12     9     1540           1535        5.     1720
-    ##  8  2013     6    10     1356           1300       56.     1646
-    ##  9  2013     7    28     1322           1325       -3.     1612
-    ## 10  2013     4    11     1349           1345        4.     1542
-    ## # ... with 327,336 more rows, and 14 more variables: sched_arr_time <int>,
-    ## #   arr_delay <dbl>, carrier <chr>, flight <int>, tailnum <chr>,
-    ## #   origin <chr>, dest <chr>, air_time <dbl>, distance <dbl>, hour <dbl>,
-    ## #   minute <dbl>, time_hour <dttm>, fastest_flight_time <dbl>,
-    ## #   ratio_distance_time <dbl>
+    ## # A tibble: 1,029 x 6
+    ## # Groups:   dest [104]
+    ##    dest  flight distance air_time dist_over_time shortest_dest_flight
+    ##    <chr>  <int>    <dbl>    <dbl>          <dbl>                <dbl>
+    ##  1 ABQ     1505    1826.     212.           8.61                 212.
+    ##  2 ABQ     1505    1826.     213.           8.57                 212.
+    ##  3 ABQ     1505    1826.     213.           8.57                 212.
+    ##  4 ABQ     1505    1826.     217.           8.41                 212.
+    ##  5 ABQ     1505    1826.     220.           8.30                 212.
+    ##  6 ABQ     1505    1826.     221.           8.26                 212.
+    ##  7 ABQ       65    1826.     221.           8.26                 212.
+    ##  8 ABQ       65    1826.     221.           8.26                 212.
+    ##  9 ABQ     1505    1826.     222.           8.23                 212.
+    ## 10 ABQ       65    1826.     222.           8.23                 212.
+    ## # ... with 1,019 more rows
 
 ``` r
-# visualize - work in progress
-not_cancelled %>% 
-  group_by(dest) %>% 
-  mutate(r = min_rank(desc(air_time))) %>% 
-  filter(r %in% range(r)) %>%
-  arrange(dest) %>%
-  ggplot(aes(x = dest, y = air_time))+
-  geom_point()
+# top 10 flights for each destination that are delayed the most in the air
+(in_air_delays <- not_cancelled %>%
+  group_by(dest) %>%
+  mutate (in_air_delay = arr_delay - dep_delay) %>%
+  arrange (desc(in_air_delay)) %>%
+  slice (1:10) %>% 
+  select( dest, flight, arr_delay, dep_delay, in_air_delay))
 ```
 
-![](r4ds_chapters4-6_walkthrough_files/figure-markdown_github/unnamed-chunk-70-1.png)
+    ## # A tibble: 1,029 x 5
+    ## # Groups:   dest [104]
+    ##    dest  flight arr_delay dep_delay in_air_delay
+    ##    <chr>  <int>     <dbl>     <dbl>        <dbl>
+    ##  1 ABQ     1505      126.       18.         108.
+    ##  2 ABQ     1505      103.        0.         103.
+    ##  3 ABQ     1505      117.       31.          86.
+    ##  4 ABQ     1505       72.        0.          72.
+    ##  5 ABQ     1505       67.        0.          67.
+    ##  6 ABQ       65      114.       48.          66.
+    ##  7 ABQ       65      108.       43.          65.
+    ##  8 ABQ     1505       70.       12.          58.
+    ##  9 ABQ       65       53.       -2.          55.
+    ## 10 ABQ     1505      153.       98.          55.
+    ## # ... with 1,019 more rows
+
+``` r
+ggplot(in_air_delays) +
+  geom_point (aes(x = dest, y = in_air_delay), position = 'jitter')+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+![](r4ds_chapters4-6_walkthrough_files/figure-markdown_github/unnamed-chunk-71-1.png)
 
 ### 7. Find all destinations that are flown by at least two carriers. Use that information to rank the carriers.
 
@@ -2775,6 +2828,32 @@ The code below will find the destinations that are flown by at least 2 carriers.
 not_cancelled %>%
   group_by(dest) %>%
   filter( length(unique(carrier)) >= 2)
+```
+
+    ## # A tibble: 315,946 x 19
+    ## # Groups:   dest [75]
+    ##     year month   day dep_time sched_dep_time dep_delay arr_time
+    ##    <int> <int> <int>    <int>          <int>     <dbl>    <int>
+    ##  1  2013     1     1      517            515        2.      830
+    ##  2  2013     1     1      533            529        4.      850
+    ##  3  2013     1     1      542            540        2.      923
+    ##  4  2013     1     1      544            545       -1.     1004
+    ##  5  2013     1     1      554            600       -6.      812
+    ##  6  2013     1     1      554            558       -4.      740
+    ##  7  2013     1     1      555            600       -5.      913
+    ##  8  2013     1     1      557            600       -3.      709
+    ##  9  2013     1     1      557            600       -3.      838
+    ## 10  2013     1     1      558            600       -2.      753
+    ## # ... with 315,936 more rows, and 12 more variables: sched_arr_time <int>,
+    ## #   arr_delay <dbl>, carrier <chr>, flight <int>, tailnum <chr>,
+    ## #   origin <chr>, dest <chr>, air_time <dbl>, distance <dbl>, hour <dbl>,
+    ## #   minute <dbl>, time_hour <dttm>
+
+``` r
+# get the same output using the n_distinct() function instead of length(unique())
+not_cancelled %>%
+  group_by(dest) %>%
+  filter( n_distinct(carrier) >= 2)
 ```
 
     ## # A tibble: 315,946 x 19
@@ -2827,13 +2906,43 @@ not_cancelled %>%
     ## 16 HA             1
 
 ``` r
-# just checking to see if length(unique(dest)) worked by selecting one of the flights and manually counting
+# checking to see if length(unique(dest)) worked by selecting one of the flights and manually counting
 EV_flights <- not_cancelled %>%
   filter ( carrier == 'EV')
 length(unique(EV_flights$dest))
 ```
 
     ## [1] 61
+
+``` r
+# we can also group sequentially, if that's what the question is suggesting
+not_cancelled %>%
+  group_by(dest) %>%
+  filter(n_distinct(carrier) >= 2) %>%  # filter for flights to destinations that have more than 2 carriers
+  group_by(carrier) %>% # group by carriers in this filtered dataset
+  summarize(num_dest = n_distinct(dest)) %>% # find the number of distinct destinations they fly to
+  arrange(desc(num_dest)) # sort the output
+```
+
+    ## # A tibble: 16 x 2
+    ##    carrier num_dest
+    ##    <chr>      <int>
+    ##  1 EV            50
+    ##  2 9E            47
+    ##  3 UA            42
+    ##  4 DL            39
+    ##  5 B6            35
+    ##  6 AA            19
+    ##  7 MQ            19
+    ##  8 WN            10
+    ##  9 OO             5
+    ## 10 US             5
+    ## 11 VX             4
+    ## 12 YV             3
+    ## 13 FL             2
+    ## 14 AS             1
+    ## 15 F9             1
+    ## 16 HA             1
 
 ### 8. For each plane, count the number of flights before the first delay of greater than 1 hour.
 
@@ -2850,31 +2959,7 @@ min_delay <- flights %>%
   )
 
 # join the dep_time of the first occurance of the >60min delay to the original table
-joined_delay <- full_join (flights,min_delay, by = "tailnum") %>% arrange (tailnum)
-
-flights
-```
-
-    ## # A tibble: 336,776 x 19
-    ##     year month   day dep_time sched_dep_time dep_delay arr_time
-    ##    <int> <int> <int>    <int>          <int>     <dbl>    <int>
-    ##  1  2013     1     1      517            515        2.      830
-    ##  2  2013     1     1      533            529        4.      850
-    ##  3  2013     1     1      542            540        2.      923
-    ##  4  2013     1     1      544            545       -1.     1004
-    ##  5  2013     1     1      554            600       -6.      812
-    ##  6  2013     1     1      554            558       -4.      740
-    ##  7  2013     1     1      555            600       -5.      913
-    ##  8  2013     1     1      557            600       -3.      709
-    ##  9  2013     1     1      557            600       -3.      838
-    ## 10  2013     1     1      558            600       -2.      753
-    ## # ... with 336,766 more rows, and 12 more variables: sched_arr_time <int>,
-    ## #   arr_delay <dbl>, carrier <chr>, flight <int>, tailnum <chr>,
-    ## #   origin <chr>, dest <chr>, air_time <dbl>, distance <dbl>, hour <dbl>,
-    ## #   minute <dbl>, time_hour <dttm>
-
-``` r
-joined_delay
+(joined_delay <- full_join (flights,min_delay, by = "tailnum") %>% arrange (tailnum))
 ```
 
     ## # A tibble: 336,776 x 20
