@@ -2737,11 +2737,11 @@ expected_times %>%
   group_by(dest) %>%
   mutate( prop_time_saved = (expected_air_time - air_time)/expected_air_time ) %>%
   arrange(desc(prop_time_saved)) %>%
-  slice (1:10) %>% # select top 10 fastest flights
+  slice (1:5) %>% # select top 5 fastest flights
   select (dest, flight, sched_dep_time, sched_arr_time, air_time, expected_air_time, prop_time_saved)
 ```
 
-    ## # A tibble: 1,029 x 7
+    ## # A tibble: 516 x 7
     ## # Groups:   dest [104]
     ##    dest  flight sched_dep_time sched_arr_time air_time expected_air_time
     ##    <chr>  <int>          <int>          <int>    <dbl>             <dbl>
@@ -2750,12 +2750,12 @@ expected_times %>%
     ##  3 ABQ     1505           2001           2308     230.              187.
     ##  4 ABQ     1505           2001           2308     230.              187.
     ##  5 ABQ     1505           2001           2308     230.              187.
-    ##  6 ABQ     1505           2007           2259     212.              172.
-    ##  7 ABQ     1505           2001           2308     231.              187.
-    ##  8 ABQ     1505           2007           2259     213.              172.
-    ##  9 ABQ     1505           2007           2259     213.              172.
-    ## 10 ABQ     1505           2001           2308     233.              187.
-    ## # ... with 1,019 more rows, and 1 more variable: prop_time_saved <dbl>
+    ##  6 ACK     1491            800            909      35.               69.
+    ##  7 ACK     1491            800            909      35.               69.
+    ##  8 ACK     1491            800            909      35.               69.
+    ##  9 ACK     1191           1209           1316      35.               67.
+    ## 10 ACK     1195            800            913      39.               73.
+    ## # ... with 506 more rows, and 1 more variable: prop_time_saved <dbl>
 
 To compute air time to a flight relative to shortest flight to the destination, I would first take a ratio of the air\_time to distance, find out what this value is for the shortest flight (smallest distance), then compare it with the suspicious flights. To find the flights most delayed in the air, subtract arr\_delay from dep\_delay and compare these values.
 
@@ -2766,11 +2766,11 @@ not_cancelled %>%
   mutate ( dist_over_time = distance/air_time,
            shortest_dest_flight = min (air_time, na.rm = T)) %>%
   arrange (desc(dist_over_time)) %>%
-  slice (1:10) %>% 
+  slice (1:5) %>% 
   select( dest, flight, distance, air_time, dist_over_time, shortest_dest_flight)
 ```
 
-    ## # A tibble: 1,029 x 6
+    ## # A tibble: 516 x 6
     ## # Groups:   dest [104]
     ##    dest  flight distance air_time dist_over_time shortest_dest_flight
     ##    <chr>  <int>    <dbl>    <dbl>          <dbl>                <dbl>
@@ -2779,24 +2779,24 @@ not_cancelled %>%
     ##  3 ABQ     1505    1826.     213.           8.57                 212.
     ##  4 ABQ     1505    1826.     217.           8.41                 212.
     ##  5 ABQ     1505    1826.     220.           8.30                 212.
-    ##  6 ABQ     1505    1826.     221.           8.26                 212.
-    ##  7 ABQ       65    1826.     221.           8.26                 212.
-    ##  8 ABQ       65    1826.     221.           8.26                 212.
-    ##  9 ABQ     1505    1826.     222.           8.23                 212.
-    ## 10 ABQ       65    1826.     222.           8.23                 212.
-    ## # ... with 1,019 more rows
+    ##  6 ACK     1491     199.      35.           5.69                  35.
+    ##  7 ACK     1191     199.      35.           5.69                  35.
+    ##  8 ACK     1491     199.      35.           5.69                  35.
+    ##  9 ACK     1191     199.      35.           5.69                  35.
+    ## 10 ACK     1491     199.      35.           5.69                  35.
+    ## # ... with 506 more rows
 
 ``` r
-# top 10 flights for each destination that are delayed the most in the air
+# top 5 flights for each destination that are delayed the most in the air
 (in_air_delays <- not_cancelled %>%
   group_by(dest) %>%
   mutate (in_air_delay = arr_delay - dep_delay) %>%
   arrange (desc(in_air_delay)) %>%
-  slice (1:10) %>% 
+  slice (1:5) %>% 
   select( dest, flight, arr_delay, dep_delay, in_air_delay))
 ```
 
-    ## # A tibble: 1,029 x 5
+    ## # A tibble: 516 x 5
     ## # Groups:   dest [104]
     ##    dest  flight arr_delay dep_delay in_air_delay
     ##    <chr>  <int>     <dbl>     <dbl>        <dbl>
@@ -2805,12 +2805,12 @@ not_cancelled %>%
     ##  3 ABQ     1505      117.       31.          86.
     ##  4 ABQ     1505       72.        0.          72.
     ##  5 ABQ     1505       67.        0.          67.
-    ##  6 ABQ       65      114.       48.          66.
-    ##  7 ABQ       65      108.       43.          65.
-    ##  8 ABQ     1505       70.       12.          58.
-    ##  9 ABQ       65       53.       -2.          55.
-    ## 10 ABQ     1505      153.       98.          55.
-    ## # ... with 1,019 more rows
+    ##  6 ACK     1491       86.       -5.          91.
+    ##  7 ACK     1191      150.       71.          79.
+    ##  8 ACK     1191       39.       -1.          40.
+    ##  9 ACK     1191       24.       -9.          33.
+    ## 10 ACK     1491       52.       26.          26.
+    ## # ... with 506 more rows
 
 ``` r
 ggplot(in_air_delays) +

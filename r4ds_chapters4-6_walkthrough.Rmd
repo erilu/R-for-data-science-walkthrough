@@ -1025,7 +1025,7 @@ expected_times %>%
   group_by(dest) %>%
   mutate( prop_time_saved = (expected_air_time - air_time)/expected_air_time ) %>%
   arrange(desc(prop_time_saved)) %>%
-  slice (1:10) %>% # select top 10 fastest flights
+  slice (1:5) %>% # select top 5 fastest flights
   select (dest, flight, sched_dep_time, sched_arr_time, air_time, expected_air_time, prop_time_saved)
 
 
@@ -1040,15 +1040,15 @@ not_cancelled %>%
   mutate ( dist_over_time = distance/air_time,
            shortest_dest_flight = min (air_time, na.rm = T)) %>%
   arrange (desc(dist_over_time)) %>%
-  slice (1:10) %>% 
+  slice (1:5) %>% 
   select( dest, flight, distance, air_time, dist_over_time, shortest_dest_flight)
 
-# top 10 flights for each destination that are delayed the most in the air
+# top 5 flights for each destination that are delayed the most in the air
 (in_air_delays <- not_cancelled %>%
   group_by(dest) %>%
   mutate (in_air_delay = arr_delay - dep_delay) %>%
   arrange (desc(in_air_delay)) %>%
-  slice (1:10) %>% 
+  slice (1:5) %>% 
   select( dest, flight, arr_delay, dep_delay, in_air_delay))
 
 ggplot(in_air_delays) +
