@@ -10,7 +10,11 @@ output:
     fig_height: 3.5
 ---
 
+This my walkthrough for the book: _R for Data Science_ by Hadley Wickham and Garrett Grolemund. It contains my answers to their exercises, highlights of some of the info I found useful / insightful, and some of my own notes and data explorations. Here I will go through chapters 7-8.
+
 # Chapter 7 Exploratory Data Analysis
+
+Exploratory data analysis (EDA) is something I was first introduced to while I was an undergraduate Statistics major at UC Berkeley. The description that this book provides is very similar to what I was taught, in that there is no "correct" or defined way to perform EDA. Exploring the data and generating questions and insights about how the data is structured, the quality of the data, what types of analysis/modeling can be performed using the data, and interpreting results of your analysis are all important things to be thinking about. While EDA can be performed in a variety of ways, this text focuses on using the tidyverse packages to do so.
 
 ```{r}
 library(tidyverse)
@@ -18,26 +22,155 @@ library(tidyverse)
 
 ## Visualizing Distributions
 
-```{r}
+Categorical variables can be visualized using a bar chart (how many observations have property 'x'?):
+
+```{r example_discrete_bins}
 # discrete binning
 ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut))
+# manual version:
+diamonds %>% 
+  count(cut)
 ```
 
+Continuous variables can also be visualized using a bar chart (how many observations have values between 1.5-2?):
 
-```{r}
+```{r example_continuous_bins}
 # binning continuous variable
 ggplot(data = diamonds) +
   geom_histogram(mapping = aes(x = carat), binwidth = 0.5)
+# manual version:
+diamonds %>% 
+  count(cut_width(carat, 0.5))
+```
+
+You can change the size of the bins in a histogram by modifying binwidth:
+
+```{r filtered_data_hist}
+# filter dataset to only keep observations with carat < 3
+smaller <- diamonds %>% 
+  filter(carat < 3)
+# plot histogram using smaller bin width
+ggplot(data = smaller, mapping = aes(x = carat)) +
+  geom_histogram(binwidth = 0.1)
+```
+
+You can also overlay histogram-like data using geom_freqpoly(). Here, the aesthetic mapping is further subgrouped by cut, using color. Each line shows up as a different color corresponding to the type of cut. We can see that the majority of ideal cuts have lower carats, as expected.
+
+```{r geom_freqpoly_example}
+ggplot(data = smaller, mapping = aes(x = carat, colour = cut)) +
+  geom_freqpoly(binwidth = 0.1)
+```
+
+Some of the common questions you can ask based on this type of data are:
+
+* Which values are the most common? Why?
+* Which values are rare? Why? Does that match your expectations?
+* Can you see any unusual patterns? What might explain them?
+
+If there are clusters visible in your data, such as in the dataset, faithful:
+
+```{r example_faithful_cluster}
+# example of histogram with 2 clusters
+ggplot(data = faithful, mapping = aes(x = eruptions)) + 
+  geom_histogram(binwidth = 0.25)
+```
+
+You might want to ask the following questions about the clusters:
+
+* How are the observations within each cluster similar to each other?
+* How are the observations in separate clusters different from each other?
+* How can you explain or describe the clusters?
+* Why might the appearance of clusters be misleading?
+
+If there are unusual values in your dataset, you can either filter them out using filter(), or replace the values with NA using mutate(). Below are the provided examples for both:
+
+```{r}
+# remove using filter()
+diamonds2 <- diamonds %>% 
+  filter(between(y, 3, 20))
+# replace with NA using mutate and ifelse()
+diamonds2 <- diamonds %>% 
+  mutate(y = ifelse(y < 3 | y > 20, NA, y))
+```
+
+I find that ifelse() is particularly useful, since you can use it to replace only a subset of values in any column of choice. For example, if we wanted to raise the price of all diamonds with a currrent price over 2000 by 3000, we could say:
+
+```{r}
+(raise_price <- diamonds %>% 
+  mutate(price = ifelse(price > 2000, price+3000, price)))
+```
+
+Missing values may provide some insight into the data, even though they do not have values. For example, the presence of a missing value in a column such as dep_time in the nycflights13 dataset suggests the flight was cancelled. You can then compare how the other attributes of a cancelled flight differ from a non-cancelled flight. The example provided by the book compares the distribution of sched_dep_time for cancelled vs non-cancelled flights:
+
+```{r example_canc_flight_freqpoly}
+nycflights13::flights %>% 
+  mutate(
+    cancelled = is.na(dep_time),
+    sched_hour = sched_dep_time %/% 100,
+    sched_min = sched_dep_time %% 100,
+    sched_dep_time = sched_hour + sched_min / 60
+  ) %>% 
+  ggplot(mapping = aes(sched_dep_time)) + 
+    geom_freqpoly(mapping = aes(colour = cancelled), binwidth = 1/4)
 ```
 
 ## 7.3.4 Exercises
 
 ### 1. Explore the distribution of each of the x, y, and z variables in diamonds. What do you learn? Think about a diamond and how you might decide which dimension is the length, width, and depth.
 
+To explor the distributions of x, y, and z, we can plot a histogram for each of them. Alternatively, we can plot a boxplot, which also shows the distribution of values for each of the variables, as well as any outliers. We can see that for each of the values, there are indeed a few outliers that have very high or low values. However, for the most part, x and y are between 4-9, and z is between 2 and 6. We can also plot a scatterplot of x vs y or z and fit a linear model to the points. We can see that there is a strong positive correlation between x and y, and x and z.
+
+```{r x_y_z_distribution}
+# plot a histogram for x, y, and z separately
+ggplot(diamonds, aes (x = x))+
+  geom_histogram(binwidth = 0.2)
+ggplot(diamonds, aes (x = y))+
+  geom_histogram(binwidth = 0.2)
+ggplot(diamonds, aes (x = z))+
+  geom_histogram(binwidth = 0.2)
+
+# or, reshape the data and plot a boxplot of the three variables side by side
+
+library(reshape2)
+x_y_z_melt = melt( select(diamonds, x,y,z), measure.vars = c('x','y','z'))
+ggplot(x_y_z_melt)+
+  geom_boxplot(aes(x = variable, y = value))
+
+# get a numeric summary for all the columns in diamonds
+summary(diamonds)
+
+# see how x correlates with y or z
+ggplot (diamonds, aes(x = x, y = y)) +
+  geom_point() +
+  geom_smooth(method = 'lm', se = F)
+
+ggplot (diamonds, aes(x = x, y = z)) +
+  geom_point()+
+  geom_smooth(method = 'lm', se = F)
+
+```
+
+
 ### 2. Explore the distribution of price. Do you discover anything unusual or surprising? (Hint: Carefully think about the binwidth and make sure you try a wide range of values.)
 
+```{r price_hist_dist}
+#examine the distribution of price using various bin widths
+ggplot (diamonds, aes (x = price))+
+  geom_histogram(binwidth = 10)
+ggplot (diamonds, aes (x = price))+
+  geom_histogram(binwidth = 50)
+ggplot (diamonds, aes (x = price))+
+  geom_histogram(binwidth = 500)
+
+# zoom in on diamonds which are less than 2500 to examine the anomaly
+ggplot(filter(diamonds, price < 2500), aes (x = price))+
+  geom_histogram(binwidth = 5)
+```
+
+
 ### 3. How many diamonds are 0.99 carat? How many are 1 carat? What do you think is the cause of the difference?
+
 
 ### 4. Compare and contrast coord_cartesian() vs xlim() or ylim() when zooming in on a histogram. What happens if you leave binwidth unset? What happens if you try and zoom so only half a bar shows?
 

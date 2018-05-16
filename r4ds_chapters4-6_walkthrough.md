@@ -21,7 +21,7 @@ Erick Lu
     -   [5.7 Grouped mutates (and filters)](#grouped-mutates-and-filters)
     -   [5.7.1 Exercises](#exercises-5)
 
-This my walkthrough for the book: *R for Data Science* by Hadley Wickham and Garrett Grolemund. It contains my answers to their exercises and some of my own notes and data explorations. Here I will go through chapters 4-6.
+This my walkthrough for the book: *R for Data Science* by Hadley Wickham and Garrett Grolemund. It contains my answers to their exercises, some highlights from the book that I found useful, and some of my own notes and data explorations. Here I will go through chapters 4-6.
 
 Chapter 4
 =========
@@ -2720,17 +2720,18 @@ flights %>%
 
 ### 6. Look at each destination. Can you find flights that are suspiciously fast? (i.e. flights that represent a potential data entry error). Compute the air time a flight relative to the shortest flight to that destination. Which flights were most delayed in the air?
 
-Flights that are suspiciously fast will have an air\_time value that is very small compared to the expected amount of air\_time (sched\_arr\_time - sched\_dep\_time). To find these flights, first group flights by dest, use mutate() to calculate the expected air\_time, and calculate the proportion of the amount of time saved during the flight, (expected\_air\_time - air\_time)/expected\_air\_time. Use arrange() to sort the flights based on prop\_time\_saved. If we expected the flight to take two hours but the flight had an air\_time of 20 minutes, these flights would show up at the top of each group. We see that there are suspiciously fast flights such as flight 4117 to ALB which took 26 minutes, but was expected to take 72 minutes, saving 63% of the expected flight time. This is suspicious!
+Flights that are suspiciously fast will have an air\_time value that is very small compared to the expected amount of air\_time (sched\_arr\_time - sched\_dep\_time). To find these flights, first group flights by dest, use mutate() to calculate the expected air\_time, and calculate the proportion of the amount of time saved during the flight, (expected\_air\_time - air\_time)/expected\_air\_time. Use arrange() to sort the flights based on prop\_time\_saved. If we expected the flight to take two hours but the flight had an air\_time of 20 minutes, these flights would show up at the top of each group. We see that there are suspiciously fast flights such as flight 4117 to ALB which took 26 minutes, but was expected to take 72 minutes, saving 63% of the expected flight time. Also, flight 4013 to PHL took 23 minutes but was expected ot take 93. This is suspicious!
 
 ``` r
-# calculate the expected air time by converting sched_arr_time and sched_dep_time to minutes, then subtracting
+# calculate the expected air time by converting sched_arr_time and sched_dep_time to minutes, then subtracting.
+# if the sched_arr_time was past midnight, we have to add 2400 to the value before subtracting.
+# to fix this, I use ifelse() within the mutate function.
 expected_times <- not_cancelled %>%
-  mutate (expected_air_time = (((sched_arr_time %/% 100)*60 + sched_arr_time %% 100) 
-                               - ((sched_dep_time %/% 100)*60 + sched_dep_time %% 100)))
-# if sched_arr_time was past midnight compared to sched_dep_time, the expected_air_time was negative.
-# this is a quick fix by adding 2400 in these instances using base R
-expected_times [expected_times$expected_air_time < 0, 'expected_air_time'] <- expected_times [expected_times$expected_air_time < 0, 'expected_air_time'] + 2400
-
+  mutate (expected_air_time = ifelse(sched_arr_time < sched_dep_time, 
+                                     ((((sched_arr_time+2400) %/% 100)*60 + (sched_arr_time+2400) %% 100) 
+                                      - ((sched_dep_time %/% 100)*60 + sched_dep_time %% 100)), 
+                                     (((sched_arr_time %/% 100)*60 + sched_arr_time %% 100) 
+                                      - ((sched_dep_time %/% 100)*60 + sched_dep_time %% 100))))
 # use grouped arrange() to find suspicous flights with large prop_time_saved for each destination.
 expected_times %>%
   group_by(dest) %>%
