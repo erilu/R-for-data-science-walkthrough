@@ -1,8 +1,10 @@
 # R for Data Science (r4ds) walkthrough - notes and solutions
 
-The free online version of the book **R for Data Science** by Hadley Wickham and Garrett Grolemund can be found at http://r4ds.had.co.nz/index.html. Here, I walk through the book chapter by chapter and provide solutions to their exercises, as well as mix in some of my own notes and explorations. I highly recommend walking through their book if you are trying to learn how to use the tidyverse for data wrangling.
+The free online version of the book **R for Data Science** by Hadley Wickham and Garrett Grolemund can be found at http://r4ds.had.co.nz/index.html. This is the version that I will be working with.
 
-I've written my notes and answers in R markdown ```.Rmd``` files, which I've rendered as ```github_document``` in RStudio. This produces files with the extension ```.md```, which should display the output of the R code (graphs, tables, etc.) immediately after each R code chunk. Please view these files, since they will be more informative than the ```.Rmd``` files. The files are split up into groups of chapters within the book which focus on a common topic (visualization using ggplot2, transforming data, etc.)
+Here, I work through the chapters of the book and provide solutions to their exercises, and also mix in some of my own notes and explorations. I highly recommend walking through their book if you are trying to learn how to use the tidyverse for data wrangling and analysis
+
+I've written my notes and answers in R markdown ```.Rmd``` files, which I've rendered as ```github_document``` in RStudio. This produces files with the extension ```.md```, which should display the output of the R code (graphs, tables, etc.) immediately after each R code chunk when viewed on Github in your browser. These files will be more informative than the ```.Rmd``` files which do not display the output. The files are split up into groups of chapters within the book which focus on a common topic (visualization using ggplot2, transforming data, etc.), listed below.
 
 Links to walkthrough:
 
