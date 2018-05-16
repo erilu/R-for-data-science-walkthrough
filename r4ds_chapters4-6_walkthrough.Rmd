@@ -1123,7 +1123,7 @@ joined_delay %>%
 ```
 
 
-Thanks for reading through my walkthrough of chapters 4-6! I hope you found my solutions to the exercises informative.
+Thanks for reading through my walkthrough of chapters 4 - 6! I hope you found my solutions to the exercises informative. A walkthrough of chapters 7 - 8 can be found at [r4ds_chapters7-8_walkthrough.md](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_chapters7-8_walkthrough.md).
 
 
 

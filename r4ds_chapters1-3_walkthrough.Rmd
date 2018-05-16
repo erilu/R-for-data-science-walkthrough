@@ -687,6 +687,4 @@ ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
 
 ```
 
-This concludes my walkthrough of chapters 1-3 of _R for Data Science_! Thanks for reading! A walkthrough of chapters 4 - 8 can be found in the R markdown file, r4ds_chapter4-8_walkthrough.Rmd.
-
-
+This concludes my walkthrough of chapters 1-3 of _R for Data Science_! Thanks for reading! A walkthrough of chapters 4 - 6 can be found at [r4ds_chapters4-6_walkthrough.md](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_chapters4-6_walkthrough.md).
