@@ -5,6 +5,7 @@ Erick Lu
 -   [Chapter 7 Exploratory Data Analysis](#chapter-7-exploratory-data-analysis)
     -   [Visualizing Distributions](#visualizing-distributions)
     -   [7.3.4 Exercises](#exercises)
+    -   [7.4 Missing Values](#missing-values)
     -   [7.4.1 Exercises](#exercises-1)
     -   [7.5.1.1 Exercises](#exercises-2)
     -   [7.5.2.1 Exercises](#exercises-3)
@@ -114,7 +115,7 @@ ggplot(data = smaller, mapping = aes(x = carat)) +
 
 ![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/filtered_data_hist-1.png)
 
-You can also overlay histogram-like data using geom\_freqpoly(). Here, the aesthetic mapping is further subgrouped by cut, using color. Each line shows up as a different color corresponding to the type of cut. We can see that the majority of ideal cuts have lower carats, as expected.
+You can also overlay histogram-like data using geom\_freqpoly(). Here, the aesthetic mapping is further subgrouped by cut, using color. Each line shows up as a different color corresponding to the type of cut. We can see that the majority of ideal cuts have lower carats.
 
 ``` r
 ggplot(data = smaller, mapping = aes(x = carat, colour = cut)) +
@@ -146,61 +147,52 @@ You might want to ask the following questions about the clusters:
 -   How can you explain or describe the clusters?
 -   Why might the appearance of clusters be misleading?
 
-If there are unusual values in your dataset, you can either filter them out using filter(), or replace the values with NA using mutate(). Below are the provided examples for both:
+Sometimes histograms will reveal outliers or other unusual values. For example, why are the majority of values on the lefthand side of this plot?
 
 ``` r
-# remove using filter()
-diamonds2 <- diamonds %>% 
-  filter(between(y, 3, 20))
-# replace with NA using mutate and ifelse()
-diamonds2 <- diamonds %>% 
-  mutate(y = ifelse(y < 3 | y > 20, NA, y))
+ggplot(diamonds) + 
+  geom_histogram(mapping = aes(x = y), binwidth = 0.5)
 ```
 
-I find that ifelse() is particularly useful, since you can use it to replace only a subset of values in any column of choice. For example, if we wanted to raise the price of all diamonds with a currrent price over 2000 by 3000, we could say:
+![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/unnamed-chunk-2-1.png)
+
+The histogram will plot all values, so if there are 1 or 2 values ith very high 'y' in a dataset with thousands of observations, these will still get plotted and not be immediately visible. A way to see them is to use coor\_cartesian(), as shown in the book.
 
 ``` r
-(raise_price <- diamonds %>% 
-  mutate(price = ifelse(price > 2000, price+3000, price)))
+ggplot(diamonds) + 
+  geom_histogram(mapping = aes(x = y), binwidth = 0.5) +
+  coord_cartesian(ylim = c(0, 50))
 ```
 
-    ## # A tibble: 53,940 x 10
-    ##    carat cut       color clarity depth table price     x     y     z
-    ##    <dbl> <ord>     <ord> <ord>   <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-    ##  1 0.230 Ideal     E     SI2      61.5   55.  326.  3.95  3.98  2.43
-    ##  2 0.210 Premium   E     SI1      59.8   61.  326.  3.89  3.84  2.31
-    ##  3 0.230 Good      E     VS1      56.9   65.  327.  4.05  4.07  2.31
-    ##  4 0.290 Premium   I     VS2      62.4   58.  334.  4.20  4.23  2.63
-    ##  5 0.310 Good      J     SI2      63.3   58.  335.  4.34  4.35  2.75
-    ##  6 0.240 Very Good J     VVS2     62.8   57.  336.  3.94  3.96  2.48
-    ##  7 0.240 Very Good I     VVS1     62.3   57.  336.  3.95  3.98  2.47
-    ##  8 0.260 Very Good H     SI1      61.9   55.  337.  4.07  4.11  2.53
-    ##  9 0.220 Fair      E     VS2      65.1   61.  337.  3.87  3.78  2.49
-    ## 10 0.230 Very Good H     VS1      59.4   61.  338.  4.00  4.05  2.39
-    ## # ... with 53,930 more rows
-
-Missing values may provide some insight into the data, even though they do not have values. For example, the presence of a missing value in a column such as dep\_time in the nycflights13 dataset suggests the flight was cancelled. You can then compare how the other attributes of a cancelled flight differ from a non-cancelled flight. The example provided by the book compares the distribution of sched\_dep\_time for cancelled vs non-cancelled flights:
+![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/unnamed-chunk-3-1.png) We can see now that there are some outlier values with very high 'y' values, which are the cause of the funny-looking histogram. You can pull out unusual values or outliers using dplyr commands (from chapter 4-6), to figure out why they are deviating from the rest of the data.
 
 ``` r
-nycflights13::flights %>% 
-  mutate(
-    cancelled = is.na(dep_time),
-    sched_hour = sched_dep_time %/% 100,
-    sched_min = sched_dep_time %% 100,
-    sched_dep_time = sched_hour + sched_min / 60
-  ) %>% 
-  ggplot(mapping = aes(sched_dep_time)) + 
-    geom_freqpoly(mapping = aes(colour = cancelled), binwidth = 1/4)
+unusual <- diamonds %>% 
+  filter(y < 3 | y > 20) %>% 
+  select(price, x, y, z) %>%
+  arrange(y)
+unusual
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/example_canc_flight_freqpoly-1.png)
+    ## # A tibble: 9 x 4
+    ##   price     x     y     z
+    ##   <int> <dbl> <dbl> <dbl>
+    ## 1  5139  0.     0.   0.  
+    ## 2  6381  0.     0.   0.  
+    ## 3 12800  0.     0.   0.  
+    ## 4 15686  0.     0.   0.  
+    ## 5 18034  0.     0.   0.  
+    ## 6  2130  0.     0.   0.  
+    ## 7  2130  0.     0.   0.  
+    ## 8  2075  5.15  31.8  5.12
+    ## 9 12210  8.09  58.9  8.06
 
 7.3.4 Exercises
 ---------------
 
 ### 1. Explore the distribution of each of the x, y, and z variables in diamonds. What do you learn? Think about a diamond and how you might decide which dimension is the length, width, and depth.
 
-To explor the distributions of x, y, and z, we can plot a histogram for each of them. Alternatively, we can plot a boxplot, which also shows the distribution of values for each of the variables, as well as any outliers. We can see that for each of the values, there are indeed a few outliers that have very high or low values. However, for the most part, x and y are between 4-9, and z is between 2 and 6. We can also plot a scatterplot of x vs y or z and fit a linear model to the points. We can see that there is a strong positive correlation between x and y, and x and z.
+To explore the distributions of x, y, and z, we can plot a histogram for each of them. Alternatively, we can plot a boxplot, which also shows the distribution of values for each of the variables, as well as any outliers. We can see that for each of the values, there are indeed a few outliers that have very high or low values. However, for the most part, x and y are between 4-9, and z is between 2 and 6. We can also plot a scatterplot of x vs y or z and fit a linear model to the points. We can see that there is a strong positive correlation between x and y, and x and z.
 
 ``` r
 # plot a histogram for x, y, and z separately
@@ -296,6 +288,8 @@ ggplot (diamonds, aes(x = x, y = z)) +
 
 ### 2. Explore the distribution of price. Do you discover anything unusual or surprising? (Hint: Carefully think about the binwidth and make sure you try a wide range of values.)
 
+The distribution of price is skewed to the right (the tail is on the right side). The majority of prices are low, but there are a small amount of very high priced gems. The usual feature revealed by using smaller and smaller binwidth is that there seems to be an absence of diamonds with price 1500 +/- 50 (gap in the histogram).
+
 ``` r
 #examine the distribution of price using various bin widths
 ggplot (diamonds, aes (x = price))+
@@ -328,7 +322,126 @@ ggplot(filter(diamonds, price < 2500), aes (x = price))+
 
 ### 3. How many diamonds are 0.99 carat? How many are 1 carat? What do you think is the cause of the difference?
 
+``` r
+# use dplyr to filter data by diamonds with either 0.99 or 1 carat, then count each group
+diamonds %>%
+  filter (carat == 0.99 | carat == 1) %>%
+  count (group_by = carat)
+```
+
+    ## # A tibble: 2 x 2
+    ##   group_by     n
+    ##      <dbl> <int>
+    ## 1    0.990    23
+    ## 2    1.00   1558
+
+We see that there are 23 observations with 0.99 carat, and 1558 observations with 1 carat. This is a huge difference. There could be many explanations. Maybe diamonds of at least 1 carat can be sold at a higher price range, incentivizing the production of diamonds at least 1 carat and no less. Or, it could be due to an unconcious human tendancy to round to the nearest whole number.
+
 ### 4. Compare and contrast coord\_cartesian() vs xlim() or ylim() when zooming in on a histogram. What happens if you leave binwidth unset? What happens if you try and zoom so only half a bar shows?
+
+When using ylim() to zoom in with the same parameters as coord\_cartesian, the values for bars that do not completely fall into view are omitted! As a result, limiting the y axis to between 0 and 50 removes almost the entire dataset! Leaving binwidth unset results in geom\_histogram() choosing a default binwidth. If you try and zoom so only half a bar shows, the bar will be omitted entirely but the rest of the bins will not change (there will be a gap).
+
+``` r
+# coord_cartesian() to zoom (book provided example)
+ggplot(diamonds) + 
+  geom_histogram(mapping = aes(x = y), binwidth = 0.5) +
+  coord_cartesian(ylim = c(0, 50))
+```
+
+![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/unnamed-chunk-6-1.png)
+
+``` r
+# use  xlim() and ylim() to zoom
+ggplot(diamonds) + 
+  geom_histogram(mapping = aes(x = y), binwidth = 0.5)+
+  ylim(0,50)
+```
+
+    ## Warning: Removed 11 rows containing missing values (geom_bar).
+
+![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/unnamed-chunk-6-2.png)
+
+``` r
+#Use xlim and ylim, leave binwidth unset
+ggplot(diamonds) + 
+  geom_histogram(mapping = aes(x = y))+
+  ylim(0,10000)+
+  xlim(0,10)
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 5 rows containing non-finite values (stat_bin).
+
+![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/unnamed-chunk-6-3.png)
+
+``` r
+# leave binwidth unset, cut ylim off in the middle of a bar (it dissapears!)
+ggplot(diamonds) + 
+  geom_histogram(mapping = aes(x = y))+
+  ylim(0,7500)+
+  xlim(0,10)
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 5 rows containing non-finite values (stat_bin).
+
+    ## Warning: Removed 1 rows containing missing values (geom_bar).
+
+![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/unnamed-chunk-6-4.png)
+
+7.4 Missing Values
+------------------
+
+If there are unusual values in your dataset, you can either filter them out using filter(), or replace the values with NA using mutate(). Below are the provided examples for both:
+
+``` r
+# remove using filter()
+diamonds2 <- diamonds %>% 
+  filter(between(y, 3, 20))
+# replace with NA using mutate and ifelse()
+diamonds2 <- diamonds %>% 
+  mutate(y = ifelse(y < 3 | y > 20, NA, y))
+```
+
+I find that ifelse() is particularly useful, since you can use it to replace only a subset of values in any column of choice. For example, if we wanted to raise the price of all diamonds with a currrent price over 2000 by 3000, we could say:
+
+``` r
+(raise_price <- diamonds %>% 
+  mutate(price = ifelse(price > 2000, price+3000, price)))
+```
+
+    ## # A tibble: 53,940 x 10
+    ##    carat cut       color clarity depth table price     x     y     z
+    ##    <dbl> <ord>     <ord> <ord>   <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
+    ##  1 0.230 Ideal     E     SI2      61.5   55.  326.  3.95  3.98  2.43
+    ##  2 0.210 Premium   E     SI1      59.8   61.  326.  3.89  3.84  2.31
+    ##  3 0.230 Good      E     VS1      56.9   65.  327.  4.05  4.07  2.31
+    ##  4 0.290 Premium   I     VS2      62.4   58.  334.  4.20  4.23  2.63
+    ##  5 0.310 Good      J     SI2      63.3   58.  335.  4.34  4.35  2.75
+    ##  6 0.240 Very Good J     VVS2     62.8   57.  336.  3.94  3.96  2.48
+    ##  7 0.240 Very Good I     VVS1     62.3   57.  336.  3.95  3.98  2.47
+    ##  8 0.260 Very Good H     SI1      61.9   55.  337.  4.07  4.11  2.53
+    ##  9 0.220 Fair      E     VS2      65.1   61.  337.  3.87  3.78  2.49
+    ## 10 0.230 Very Good H     VS1      59.4   61.  338.  4.00  4.05  2.39
+    ## # ... with 53,930 more rows
+
+Missing values may provide some insight into the data, even though they do not have values. For example, the presence of a missing value in a column such as dep\_time in the nycflights13 dataset suggests the flight was cancelled. You can then compare how the other attributes of a cancelled flight differ from a non-cancelled flight. The example provided by the book compares the distribution of sched\_dep\_time for cancelled vs non-cancelled flights:
+
+``` r
+nycflights13::flights %>% 
+  mutate(
+    cancelled = is.na(dep_time),
+    sched_hour = sched_dep_time %/% 100,
+    sched_min = sched_dep_time %% 100,
+    sched_dep_time = sched_hour + sched_min / 60
+  ) %>% 
+  ggplot(mapping = aes(sched_dep_time)) + 
+    geom_freqpoly(mapping = aes(colour = cancelled), binwidth = 1/4)
+```
+
+![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/example_canc_flight_freqpoly-1.png)
 
 7.4.1 Exercises
 ---------------
@@ -380,6 +493,6 @@ ggplot(data = diamonds) +
   coord_cartesian(xlim = c(4, 11), ylim = c(4, 11))
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/unnamed-chunk-4-1.png)
+![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/unnamed-chunk-9-1.png)
 
 ### 6. Why is a scatterplot a better display than a binned plot for this case?
