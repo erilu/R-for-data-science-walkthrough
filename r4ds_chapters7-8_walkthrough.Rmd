@@ -241,8 +241,43 @@ nycflights13::flights %>%
 ## 7.4.1 Exercises
 ### 1. What happens to missing values in a histogram? What happens to missing values in a bar chart? Why is there a difference?
 
+both ?geom_bar and ?geom_histogram state that "na.rm	- If FALSE, the default, missing values are removed with a warning. If TRUE, missing values are silently removed." So, for both, missing values are omitted in either case. In terms of how this affects the plots, it looks like for histograms, there is a gap where the values used to be. For bar plots, the count is reduced for the category the NA value used to be in (geom_bar() is associated with the stat function count(), which counts the non-missing values for each category). This has significance for bar plots since if the majority of values in a certain category were missing values, the displayed counts would be low but the viewer would be unaware of the underlying reason as to why.
+
+```{r}
+# histogram of vector of random numbers, normally distributed
+(x <- data.frame(x = rnorm(20,5,3)))
+ggplot(x, aes(x))+
+  geom_histogram()
+# replace a chunk of values with NA and see what that does to the histogram.
+(add_na <- mutate(x, x = ifelse(x > 5 & x <8, NA, x)))
+ggplot(add_na, aes(x))+
+  geom_histogram()
+```
+
+
 ### 2. What does na.rm = TRUE do in mean() and sum()?
 
+mean(), by default, has na.rm = FALSE, which does not remove the NA values prior to calculating the mean. It will try to calculate the mean including the NA value, which evaluates to NA. The same applies for sum(). If you set na.rm = TRUE for both functions, the NA values are removed prior to calculating, and a non-missing value is returned.
+
+```{r}
+# calculate the sum of vector without NA values, na.rm = FALSE by default
+(x <- 1:10)
+mean(x)
+sum(x)
+
+# calculate the sum of vector containing NA values, na.rm = FALSE by default
+(x <- append(x, c(NA,NA)))
+mean(x)
+sum(x)
+
+# calculate the sum of vector without NA values, setting na.rm = TRUE
+mean(x, na.rm = T)
+sum(x, na.rm = T)
+```
+
+## 7.5 Covariation
+
+Covariation is how the values of two or more variables are related - in other words, is there a correlation between two or more variables, or columns (if the data is tidy), of your dataset? Knowing this is important, since it may affect the types of parameters you choose when building models (for example, multicollinearity issues when performing OLS).
 
 ## 7.5.1.1 Exercises
 
