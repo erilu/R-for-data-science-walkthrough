@@ -85,14 +85,14 @@ You might want to ask the following questions about the clusters:
 
 Sometimes histograms will reveal outliers or other unusual values. For example, why are the majority of values on the lefthand side of this plot?
 
-```{r}
+```{r y_dist_diamonds}
 ggplot(diamonds) + 
   geom_histogram(mapping = aes(x = y), binwidth = 0.5)
 ```
 
 The histogram will plot all values, so if there are 1 or 2 values ith very high 'y' in a dataset with thousands of observations, these will still get plotted and not be immediately visible. A way to see them is to use coor_cartesian(), as shown in the book.
 
-```{r}
+```{r coord_cartesian_y}
 ggplot(diamonds) + 
   geom_histogram(mapping = aes(x = y), binwidth = 0.5) +
   coord_cartesian(ylim = c(0, 50))
@@ -179,7 +179,7 @@ We see that there are 23 observations with 0.99 carat, and 1558 observations wit
 
 When using ylim() to zoom in with the same parameters as coord_cartesian, the values for bars that do not completely fall into view are omitted! As a result, limiting the y axis to between 0 and 50 removes almost the entire dataset! Leaving binwidth unset results in geom_histogram() choosing a default binwidth. If you try and zoom so only half a bar shows, the bar will be omitted entirely but the rest of the bins will not change (there will be a gap).
 
-```{r}
+```{r coord_cartesian_vs_xylim}
 # coord_cartesian() to zoom (book provided example)
 ggplot(diamonds) + 
   geom_histogram(mapping = aes(x = y), binwidth = 0.5) +
@@ -243,7 +243,7 @@ nycflights13::flights %>%
 
 both ?geom_bar and ?geom_histogram state that "na.rm	- If FALSE, the default, missing values are removed with a warning. If TRUE, missing values are silently removed." So, for both, missing values are omitted in either case. In terms of how this affects the plots, it looks like for histograms, there is a gap where the values used to be. For bar plots, the count is reduced for the category the NA value used to be in (geom_bar() is associated with the stat function count(), which counts the non-missing values for each category). This has significance for bar plots since if the majority of values in a certain category were missing values, the displayed counts would be low but the viewer would be unaware of the underlying reason as to why.
 
-```{r}
+```{r introduce_NA_hist_bin}
 # histogram of vector of random numbers, normally distributed
 (x <- data.frame(x = rnorm(20,5,3)))
 ggplot(x, aes(x))+
@@ -279,13 +279,113 @@ sum(x, na.rm = T)
 
 Covariation is how the values of two or more variables are related - in other words, is there a correlation between two or more variables, or columns (if the data is tidy), of your dataset? Knowing this is important, since it may affect the types of parameters you choose when building models (for example, multicollinearity issues when performing OLS).
 
+## 7.5.1 A categorical and continuous variable
+
+Default for geom_freqpoly() is to plot the individual groups by count, so if any one group has a lot of observations, it might mask effects in groups that have small numbers of observations. Below, since ideal cuts have the majority of counts, it looks overrepresented in the freqpoly() graph.
+
+```{r freq_poly_bycount}
+ggplot(data = diamonds, mapping = aes(x = price)) + 
+  geom_freqpoly(mapping = aes(colour = cut), binwidth = 500)
+
+ggplot(diamonds) + 
+  geom_bar(mapping = aes(x = cut))
+```
+
+To normalize all the counts and plot the distributions by density, use y= ..density..
+
+```{r freqpoly_density}
+ggplot(data = diamonds, mapping = aes(x = price, y = ..density..)) + 
+  geom_freqpoly(mapping = aes(colour = cut), binwidth = 500)
+```
+
+The book notes that there is something surprising about this plot. It shows that diamonds with an ideal cut cost on average lower than diamonds with a fair cut, which is initially counterintuitive. We would have expected that ideal cuts, because of their higher quality cut, cost more. What might be happening here is that there is a hidden 3rd variable that is related to cut and price. Perhaps ideal cuts are on average smaller in size, and prices of small diamonds tend to be small.
+
+Boxplots also give a great sense of the spread of the data. You can think of a boxplot as a histogram turned on its side and summarized by its median, and IQR. Here is the provided boxplot of the distribution of price by cut:
+
+```{r price_cut_boxplot}
+ggplot(data = diamonds, mapping = aes(x = cut, y = price)) +
+  geom_boxplot()
+```
+
+We can see again that ideal diamonds have a lower median price than fair diamonds, as we learned from the individual freqpoly graphs.
+
+Another provided example is the boxplot of the mtcars dataset (mileage by car class):
+
+```{r mtcars_boxplot_unordered}
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) +
+  geom_boxplot()
+```
+
+A useful way to reorganize the categorical variables on the x-axis is to use reorder(). I think organized graphs are great! We can order the x axis based on a statistic, in this case the median:
+
+```{r mtcars_boxplot_ordered}
+ggplot(data = mpg) +
+  geom_boxplot(mapping = aes(x = reorder(class, hwy, FUN = median), y = hwy))
+```
+
+We learned this in chapter 3, but a way to flip the axes is to add a coord_flip() function to your ggplot. This is useful when you have long axis labels. I prefer tilting the labels by 45 degrees by modifying the tilt using theme().
+
+```{r mtcars_boxplot_coordflip}
+ggplot(data = mpg) +
+  geom_boxplot(mapping = aes(x = reorder(class, hwy, FUN = median), y = hwy)) +
+  coord_flip()
+```
+
+
 ## 7.5.1.1 Exercises
 
 ### 1. Use what you’ve learned to improve the visualisation of the departure times of cancelled vs. non-cancelled flights.
 
+The provided geom_freqpoly() visualization for cancelled vs non-cancelled flights had the issue of there being many more non-cancelled flights than cancelled flights. To fix this, we will use y = ..density.. instead of the total count for the graph, so that we can better see the how the trends compare in each of the groups.
+
+```{r cancelled_flights_freqpoly_density}
+nycflights13::flights %>% 
+  mutate(
+    cancelled = is.na(dep_time),
+    sched_hour = sched_dep_time %/% 100,
+    sched_min = sched_dep_time %% 100,
+    sched_dep_time = sched_hour + sched_min / 60
+  ) %>% 
+  ggplot(mapping = aes(sched_dep_time, y = ..density..)) + 
+    geom_freqpoly(mapping = aes(colour = cancelled), binwidth = 1/4)
+```
+
+From the overlaid & normalized graphs, we observe that more cancellations occur for flights scheduled to depart between hours 15-22.
+
 ### 2. What variable in the diamonds dataset is most important for predicting the price of a diamond? How is that variable correlated with cut? Why does the combination of those two relationships lead to lower quality diamonds being more expensive?
 
+To look for variables that are most useful for predicting the price of the diamond, we can use the cor() function to compute the correlation matrix for all numerical columns. It will show us what is the correlation between any pairwise combination of variables.
+
+```{r}
+cor(diamonds[,c(1,5:10)], use = 'all.obs')
+```
+
+We observe that the highest correlation with price is carat. To observe how carat is correlated with cut, we can plot a boxplot of carat vs cut:
+
+```{r boxplot_carat_cut}
+ggplot(diamonds, aes(x = reorder(cut, carat, FUN = median), y = carat))+
+  geom_boxplot()
+```
+
+From this graph we see that ideal cuts have the lowest carat, whereas the fair cuts have the largest carat. By pairing this information with the positive correlation between carat and price, this suggests that ideal cuts on average cost less than fair cuts, because ideal cuts have, on average, lower carat. This explains what we saw in the geom_freqpoly() plot earlier in the chapter, in which we were puzzled as to why ideal cuts had a lower median price than fair cuts. It is because the ideal cut diamonds were smaller on average!
+
 ### 3. Install the ggstance package, and create a horizontal boxplot. How does this compare to using coord_flip()?
+
+```{r boxplot_ggstance}
+# install ggstance using the commented command below
+# install.packages("ggstance")
+library(ggstance)
+
+# horizontal boxplot from question #2, using coord_flip()
+ggplot(diamonds, aes(x = reorder(cut, carat, FUN = median), y = carat))+
+  geom_boxplot()+
+  coord_flip()
+# horizontal boxplot from question #2, using ggstance geom_boxploth()
+ggplot(diamonds, aes(x = reorder(cut, carat, FUN = median), y = carat))+
+  geom_boxploth()
+
+```
+
 
 ### 4. One problem with boxplots is that they were developed in an era of much smaller datasets and tend to display a prohibitively large number of “outlying values”. One approach to remedy this problem is the letter value plot. Install the lvplot package, and try using geom_lv() to display the distribution of price vs cut. What do you learn? How do you interpret the plots?
 

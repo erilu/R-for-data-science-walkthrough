@@ -7,6 +7,8 @@ Erick Lu
     -   [7.3.4 Exercises](#exercises)
     -   [7.4 Missing Values](#missing-values)
     -   [7.4.1 Exercises](#exercises-1)
+    -   [7.5 Covariation](#covariation)
+    -   [7.5.1 A categorical and continuous variable](#a-categorical-and-continuous-variable)
     -   [7.5.1.1 Exercises](#exercises-2)
     -   [7.5.2.1 Exercises](#exercises-3)
     -   [7.5.3.1 Exercises](#exercises-4)
@@ -154,7 +156,7 @@ ggplot(diamonds) +
   geom_histogram(mapping = aes(x = y), binwidth = 0.5)
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/unnamed-chunk-2-1.png)
+![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/y_dist_diamonds-1.png)
 
 The histogram will plot all values, so if there are 1 or 2 values ith very high 'y' in a dataset with thousands of observations, these will still get plotted and not be immediately visible. A way to see them is to use coor\_cartesian(), as shown in the book.
 
@@ -164,7 +166,7 @@ ggplot(diamonds) +
   coord_cartesian(ylim = c(0, 50))
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/unnamed-chunk-3-1.png) We can see now that there are some outlier values with very high 'y' values, which are the cause of the funny-looking histogram. You can pull out unusual values or outliers using dplyr commands (from chapter 4-6), to figure out why they are deviating from the rest of the data.
+![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/coord_cartesian_y-1.png) We can see now that there are some outlier values with very high 'y' values, which are the cause of the funny-looking histogram. You can pull out unusual values or outliers using dplyr commands (from chapter 4-6), to figure out why they are deviating from the rest of the data.
 
 ``` r
 unusual <- diamonds %>% 
@@ -348,7 +350,7 @@ ggplot(diamonds) +
   coord_cartesian(ylim = c(0, 50))
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/unnamed-chunk-6-1.png)
+![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/coord_cartesian_vs_xylim-1.png)
 
 ``` r
 # use  xlim() and ylim() to zoom
@@ -359,7 +361,7 @@ ggplot(diamonds) +
 
     ## Warning: Removed 11 rows containing missing values (geom_bar).
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/unnamed-chunk-6-2.png)
+![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/coord_cartesian_vs_xylim-2.png)
 
 ``` r
 #Use xlim and ylim, leave binwidth unset
@@ -373,7 +375,7 @@ ggplot(diamonds) +
 
     ## Warning: Removed 5 rows containing non-finite values (stat_bin).
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/unnamed-chunk-6-3.png)
+![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/coord_cartesian_vs_xylim-3.png)
 
 ``` r
 # leave binwidth unset, cut ylim off in the middle of a bar (it dissapears!)
@@ -389,7 +391,7 @@ ggplot(diamonds) +
 
     ## Warning: Removed 1 rows containing missing values (geom_bar).
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/unnamed-chunk-6-4.png)
+![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/coord_cartesian_vs_xylim-4.png)
 
 7.4 Missing Values
 ------------------
@@ -448,16 +450,305 @@ nycflights13::flights %>%
 
 ### 1. What happens to missing values in a histogram? What happens to missing values in a bar chart? Why is there a difference?
 
+both ?geom\_bar and ?geom\_histogram state that "na.rm - If FALSE, the default, missing values are removed with a warning. If TRUE, missing values are silently removed." So, for both, missing values are omitted in either case. In terms of how this affects the plots, it looks like for histograms, there is a gap where the values used to be. For bar plots, the count is reduced for the category the NA value used to be in (geom\_bar() is associated with the stat function count(), which counts the non-missing values for each category). This has significance for bar plots since if the majority of values in a certain category were missing values, the displayed counts would be low but the viewer would be unaware of the underlying reason as to why.
+
+``` r
+# histogram of vector of random numbers, normally distributed
+(x <- data.frame(x = rnorm(20,5,3)))
+```
+
+    ##             x
+    ## 1   3.4148586
+    ## 2   2.8469049
+    ## 3   7.9158258
+    ## 4   5.7161981
+    ## 5   5.2473641
+    ## 6   6.0739615
+    ## 7   7.4948210
+    ## 8   6.2657148
+    ## 9   6.9020437
+    ## 10  4.0128986
+    ## 11  6.9580614
+    ## 12 -2.5025189
+    ## 13  5.3793296
+    ## 14  8.1973847
+    ## 15  3.4912998
+    ## 16  7.8571451
+    ## 17  3.8367504
+    ## 18  5.1688915
+    ## 19  5.9806024
+    ## 20  0.5768121
+
+``` r
+ggplot(x, aes(x))+
+  geom_histogram()
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/introduce_NA_hist_bin-1.png)
+
+``` r
+# replace a chunk of values with NA and see what that does to the histogram.
+(add_na <- mutate(x, x = ifelse(x > 5 & x <8, NA, x)))
+```
+
+    ##             x
+    ## 1   3.4148586
+    ## 2   2.8469049
+    ## 3          NA
+    ## 4          NA
+    ## 5          NA
+    ## 6          NA
+    ## 7          NA
+    ## 8          NA
+    ## 9          NA
+    ## 10  4.0128986
+    ## 11         NA
+    ## 12 -2.5025189
+    ## 13         NA
+    ## 14  8.1973847
+    ## 15  3.4912998
+    ## 16         NA
+    ## 17  3.8367504
+    ## 18         NA
+    ## 19         NA
+    ## 20  0.5768121
+
+``` r
+ggplot(add_na, aes(x))+
+  geom_histogram()
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 12 rows containing non-finite values (stat_bin).
+
+![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/introduce_NA_hist_bin-2.png)
+
 ### 2. What does na.rm = TRUE do in mean() and sum()?
+
+mean(), by default, has na.rm = FALSE, which does not remove the NA values prior to calculating the mean. It will try to calculate the mean including the NA value, which evaluates to NA. The same applies for sum(). If you set na.rm = TRUE for both functions, the NA values are removed prior to calculating, and a non-missing value is returned.
+
+``` r
+# calculate the sum of vector without NA values, na.rm = FALSE by default
+(x <- 1:10)
+```
+
+    ##  [1]  1  2  3  4  5  6  7  8  9 10
+
+``` r
+mean(x)
+```
+
+    ## [1] 5.5
+
+``` r
+sum(x)
+```
+
+    ## [1] 55
+
+``` r
+# calculate the sum of vector containing NA values, na.rm = FALSE by default
+(x <- append(x, c(NA,NA)))
+```
+
+    ##  [1]  1  2  3  4  5  6  7  8  9 10 NA NA
+
+``` r
+mean(x)
+```
+
+    ## [1] NA
+
+``` r
+sum(x)
+```
+
+    ## [1] NA
+
+``` r
+# calculate the sum of vector without NA values, setting na.rm = TRUE
+mean(x, na.rm = T)
+```
+
+    ## [1] 5.5
+
+``` r
+sum(x, na.rm = T)
+```
+
+    ## [1] 55
+
+7.5 Covariation
+---------------
+
+Covariation is how the values of two or more variables are related - in other words, is there a correlation between two or more variables, or columns (if the data is tidy), of your dataset? Knowing this is important, since it may affect the types of parameters you choose when building models (for example, multicollinearity issues when performing OLS).
+
+7.5.1 A categorical and continuous variable
+-------------------------------------------
+
+Default for geom\_freqpoly() is to plot the individual groups by count, so if any one group has a lot of observations, it might mask effects in groups that have small numbers of observations. Below, since ideal cuts have the majority of counts, it looks overrepresented in the freqpoly() graph.
+
+``` r
+ggplot(data = diamonds, mapping = aes(x = price)) + 
+  geom_freqpoly(mapping = aes(colour = cut), binwidth = 500)
+```
+
+![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/freq_poly_bycount-1.png)
+
+``` r
+ggplot(diamonds) + 
+  geom_bar(mapping = aes(x = cut))
+```
+
+![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/freq_poly_bycount-2.png)
+
+To normalize all the counts and plot the distributions by density, use y= ..density..
+
+``` r
+ggplot(data = diamonds, mapping = aes(x = price, y = ..density..)) + 
+  geom_freqpoly(mapping = aes(colour = cut), binwidth = 500)
+```
+
+![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/freqpoly_density-1.png)
+
+The book notes that there is something surprising about this plot. It shows that diamonds with an ideal cut cost on average lower than diamonds with a fair cut, which is initially counterintuitive. We would have expected that ideal cuts, because of their higher quality cut, cost more. What might be happening here is that there is a hidden 3rd variable that is related to cut and price. Perhaps ideal cuts are on average smaller in size, and prices of small diamonds tend to be small.
+
+Boxplots also give a great sense of the spread of the data. You can think of a boxplot as a histogram turned on its side and summarized by its median, and IQR. Here is the provided boxplot of the distribution of price by cut:
+
+``` r
+ggplot(data = diamonds, mapping = aes(x = cut, y = price)) +
+  geom_boxplot()
+```
+
+![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/price_cut_boxplot-1.png)
+
+We can see again that ideal diamonds have a lower median price than fair diamonds, as we learned from the individual freqpoly graphs.
+
+Another provided example is the boxplot of the mtcars dataset (mileage by car class):
+
+``` r
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) +
+  geom_boxplot()
+```
+
+![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/mtcars_boxplot_unordered-1.png)
+
+A useful way to reorganize the categorical variables on the x-axis is to use reorder(). I think organized graphs are great! We can order the x axis based on a statistic, in this case the median:
+
+``` r
+ggplot(data = mpg) +
+  geom_boxplot(mapping = aes(x = reorder(class, hwy, FUN = median), y = hwy))
+```
+
+![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/mtcars_boxplot_ordered-1.png)
+
+We learned this in chapter 3, but a way to flip the axes is to add a coord\_flip() function to your ggplot. This is useful when you have long axis labels. I prefer tilting the labels by 45 degrees by modifying the tilt using theme().
+
+``` r
+ggplot(data = mpg) +
+  geom_boxplot(mapping = aes(x = reorder(class, hwy, FUN = median), y = hwy)) +
+  coord_flip()
+```
+
+![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/mtcars_boxplot_coordflip-1.png)
 
 7.5.1.1 Exercises
 -----------------
 
 ### 1. Use what you’ve learned to improve the visualisation of the departure times of cancelled vs. non-cancelled flights.
 
+The provided geom\_freqpoly() visualization for cancelled vs non-cancelled flights had the issue of there being many more non-cancelled flights than cancelled flights. To fix this, we will use y = ..density.. instead of the total count for the graph, so that we can better see the how the trends compare in each of the groups.
+
+``` r
+nycflights13::flights %>% 
+  mutate(
+    cancelled = is.na(dep_time),
+    sched_hour = sched_dep_time %/% 100,
+    sched_min = sched_dep_time %% 100,
+    sched_dep_time = sched_hour + sched_min / 60
+  ) %>% 
+  ggplot(mapping = aes(sched_dep_time, y = ..density..)) + 
+    geom_freqpoly(mapping = aes(colour = cancelled), binwidth = 1/4)
+```
+
+![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/cancelled_flights_freqpoly_density-1.png)
+
+From the overlaid & normalized graphs, we observe that more cancellations occur for flights scheduled to depart between hours 15-22.
+
 ### 2. What variable in the diamonds dataset is most important for predicting the price of a diamond? How is that variable correlated with cut? Why does the combination of those two relationships lead to lower quality diamonds being more expensive?
 
+To look for variables that are most useful for predicting the price of the diamond, we can use the cor() function to compute the correlation matrix for all numerical columns. It will show us what is the correlation between any pairwise combination of variables.
+
+``` r
+cor(diamonds[,c(1,5:10)], use = 'all.obs')
+```
+
+    ##            carat       depth      table      price           x           y
+    ## carat 1.00000000  0.02822431  0.1816175  0.9215913  0.97509423  0.95172220
+    ## depth 0.02822431  1.00000000 -0.2957785 -0.0106474 -0.02528925 -0.02934067
+    ## table 0.18161755 -0.29577852  1.0000000  0.1271339  0.19534428  0.18376015
+    ## price 0.92159130 -0.01064740  0.1271339  1.0000000  0.88443516  0.86542090
+    ## x     0.97509423 -0.02528925  0.1953443  0.8844352  1.00000000  0.97470148
+    ## y     0.95172220 -0.02934067  0.1837601  0.8654209  0.97470148  1.00000000
+    ## z     0.95338738  0.09492388  0.1509287  0.8612494  0.97077180  0.95200572
+    ##                z
+    ## carat 0.95338738
+    ## depth 0.09492388
+    ## table 0.15092869
+    ## price 0.86124944
+    ## x     0.97077180
+    ## y     0.95200572
+    ## z     1.00000000
+
+We observe that the highest correlation with price is carat. To observe how carat is correlated with cut, we can plot a boxplot of carat vs cut:
+
+``` r
+ggplot(diamonds, aes(x = reorder(cut, carat, FUN = median), y = carat))+
+  geom_boxplot()
+```
+
+![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/boxplot_carat_cut-1.png)
+
+From this graph we see that ideal cuts have the lowest carat, whereas the fair cuts have the largest carat. By pairing this information with the positive correlation between carat and price, this suggests that ideal cuts on average cost less than fair cuts, because ideal cuts have, on average, lower carat. This explains what we saw in the geom\_freqpoly() plot earlier in the chapter, in which we were puzzled as to why ideal cuts had a lower median price than fair cuts. It is because the ideal cut diamonds were smaller on average!
+
 ### 3. Install the ggstance package, and create a horizontal boxplot. How does this compare to using coord\_flip()?
+
+``` r
+# install ggstance using the commented command below
+# install.packages("ggstance")
+library(ggstance)
+```
+
+    ## Warning: package 'ggstance' was built under R version 3.3.2
+
+    ## 
+    ## Attaching package: 'ggstance'
+
+    ## The following objects are masked from 'package:ggplot2':
+    ## 
+    ##     geom_errorbarh, GeomErrorbarh
+
+``` r
+# horizontal boxplot from question #2, using coord_flip()
+ggplot(diamonds, aes(x = reorder(cut, carat, FUN = median), y = carat))+
+  geom_boxplot()+
+  coord_flip()
+```
+
+![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/boxplot_ggstance-1.png)
+
+``` r
+# horizontal boxplot from question #2, using ggstance geom_boxploth()
+ggplot(diamonds, aes(x = reorder(cut, carat, FUN = median), y = carat))+
+  geom_boxploth()
+```
+
+    ## Warning: position_dodgev requires non-overlapping y intervals
+
+![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/boxplot_ggstance-2.png)
 
 ### 4. One problem with boxplots is that they were developed in an era of much smaller datasets and tend to display a prohibitively large number of “outlying values”. One approach to remedy this problem is the letter value plot. Install the lvplot package, and try using geom\_lv() to display the distribution of price vs cut. What do you learn? How do you interpret the plots?
 
@@ -493,6 +784,6 @@ ggplot(data = diamonds) +
   coord_cartesian(xlim = c(4, 11), ylim = c(4, 11))
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/unnamed-chunk-9-1.png)
+![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/unnamed-chunk-8-1.png)
 
 ### 6. Why is a scatterplot a better display than a binned plot for this case?
