@@ -10,7 +10,7 @@ output:
     fig_height: 3.5
 ---
 
-This my walkthrough for the book: _R for Data Science_ by Hadley Wickham and Garrett Grolemund. It contains my answers to their exercises, highlights of some of the info I found useful / insightful, and some of my own notes and data explorations. Here I will go through chapters 7-8.
+This my walkthrough for chapters 7-8 of the book: _R for Data Science_ by Hadley Wickham and Garrett Grolemund. It contains my answers to their exercises, information that I found useful / insightful, and some of my own notes and data explorations.
 
 # Chapter 7 Exploratory Data Analysis
 
