@@ -517,7 +517,7 @@ diamonds %>%
 Using dplyr, first group by destination and month, then compute the average flight delay for each month/dest using summarize(). Then, pipe the result into a geom_tile call. The large number of destinations makes the plot difficult to read. You can flip the coords so that the destinations will be on the y axis. In general, the problem with this plot is that there are too many items to keep track of. 
 
 ```{r flights_geom_tile}
-
+library(nycflights13)
 flights %>%
   group_by(dest, month) %>%
   summarize ( avg_delay = mean(dep_delay, na.rm = T)) %>%
@@ -566,13 +566,17 @@ ggplot(data = diamonds) +
   geom_bin2d(mapping = aes(x = carat, y = price))
 
 # install.packages("hexbin")
-ggplot(data = diamonds) +
-  geom_hex(mapping = aes(x = carat, y = price))
+#ggplot(data = diamonds) +
+#  geom_hex(mapping = aes(x = carat, y = price))
 ```
 
 The book also suggests binning one of the continuous variables and plotting boxplots for the other variable for each bin created. There are two ways to bin, using either cut_width() or cut_number(). cut_width() keeps the increment the same for each bin, whereas cut_number() keeps the number of observations the same.
 
 ```{r boxplot_continuous_cut}
+# filter dataset to only keep observations with carat < 3
+smaller <- diamonds %>% 
+  filter(carat < 3)
+
 # cut_width binning
 ggplot(data = smaller, mapping = aes(x = carat, y = price)) + 
   geom_boxplot(mapping = aes(group = cut_width(carat, 0.1)))
@@ -586,11 +590,37 @@ ggplot(data = smaller, mapping = aes(x = carat, y = price)) +
 ## 7.5.3.1 Exercises
 ### 1. Instead of summarising the conditional distribution with a boxplot, you could use a frequency polygon. What do you need to consider when using cut_width() vs cut_number()? How does that impact a visualisation of the 2d distribution of carat and price?
 
+When using cut_width(), you must consider the range of the distribution of the variable you are binning. For example, you shouldn't bin by a number larger than the range of carat, or by a number too small (too many bins). If an inappropriate bin size is chosen, the data could be uninterpretable. This goes for cut_number() too. Selecting an appropriate number of bins to create for cut_number() is slightly different. We have to take into account the number of observations for each 
+
+```{r}
+# visualize price binning by carat, cut_width()
+ggplot(smaller, aes(x = price, y = ..density..,)) +
+  geom_freqpoly(aes(color = cut_width(carat, 0.5)))
+
+# visualize price binning by carat, cut_number(), 10 bins
+ggplot(smaller, aes(x = price, y = ..density..,)) +
+  geom_freqpoly(aes(color = cut_number(carat, 10)))
+```
+
 ### 2. Visualise the distribution of carat, partitioned by price.
+
+```{r}
+# visualize distribution of carat, binning price, cut_number()
+ggplot(smaller, aes(x = carat)) + 
+  geom_freqpoly(aes(color = cut_number(price, 10)))
+# visualize distribution of carat, binning price, cut_width()
+ggplot(smaller, aes(x = carat)) + 
+  geom_freqpoly(aes(color = cut_width(price, 5000)))
+```
 
 ### 3. How does the price distribution of very large diamonds compare to small diamonds. Is it as you expect, or does it surprise you?
 
+
+
 ### 4. Combine two of the techniques you’ve learned to visualise the combined distribution of cut, carat, and price.
+
+
+
 
 ### 5. Two dimensional plots reveal outliers that are not visible in one dimensional plots. For example, some points in the plot below have an unusual combination of x and y values, which makes the points outliers even though their x and y values appear normal when examined separately.
 
@@ -606,5 +636,43 @@ ggplot(data = diamonds) +
 ### 6. Why is a scatterplot a better display than a binned plot for this case?
 
 
+## 7.6 Patterns and models
 
+Some important questions to ask when discovering a pattern in the data are:
+
+* Could this pattern be due to coincidence (i.e. random chance)?
+* How can you describe the relationship implied by the pattern?
+* How strong is the relationship implied by the pattern?
+* What other variables might affect the relationship?
+* Does the relationship change if you look at individual subgroups of the data?
+
+By identifying patterns between variables, we can model the pattern and even use this information to learn more about other aspects of the data. As explained earlier, it was puzzling why ideal cut diamonds cost less than lower grade, fair cut diamonds. This was due to the fact that more ideal cut diamonds were smaller in carat, which resulted in the lower price. By identifying this pattern, we can subtract the influence of carat on price, and examine how the cut quality correlates with price after doing so. The book provides the following code, which fits a linear model (lm) between price and carat (mod), adds a transformed value of the residuals (observed value of price - expected value of price based solely on carat size) to the diamonds dataset, then plots the relationship between carat and the residual. We observe that the residuals are higher with ideal cuts than with fair cuts, as expected. We can interpret this as: if carat size was kept constant, ideal cuts cost more than fair cuts on average.
+
+```{r}
+library(modelr)
+
+mod <- lm(log(price) ~ log(carat), data = diamonds)
+
+(diamonds2 <- diamonds %>% 
+  add_residuals(mod) %>% 
+  mutate(resid = exp(resid)))
+
+ggplot(data = diamonds2) + 
+  geom_boxplot(mapping = aes(x = cut, y = resid))
+```
+
+# Chapter 8 - Workflow: Projects
+
+To ensure reproducibility, I agree with the book that it is best to set RStudio to not preserve your workspace between sessions. You can also do the following to refresh your script:
+
+* Press Cmd/Ctrl + Shift + F10 to restart RStudio.
+* Press Cmd/Ctrl + Shift + S to rerun the current script.
+
+It is also very important to keep your analysis organized. Have all your plots saved along with your analysis script, and the copies of the raw data in the same folder as your R script/R notebook. A way that RStudio can facilitate organization is through the Projects feature. By creating a RStudio project (.Rproj) in a specified directory, any scripts that you work on for the project will know to look in that directory when you read / write files, which saves time.
+
+Whether you choose to use this feature or not, it is important to stay organized and have an easy way to return to a project and know what you did and which files / code are required to reproduce the analysis. 
+
+---
+
+Thanks for reading through my walkthrough of chapter 7-8! I hope you found my solutions to the exercises informative. A walkthrough of chapters 9-11 can be found at [r4ds_chapters9-11_walkthrough.md](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_chapters9-11_walkthrough.md).
 
