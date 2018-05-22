@@ -245,11 +245,13 @@ both ?geom_bar and ?geom_histogram state that "na.rm	- If FALSE, the default, mi
 
 ```{r introduce_NA_hist_bin}
 # histogram of vector of random numbers, normally distributed
-(x <- data.frame(x = rnorm(100,5,3)))
+x <- data.frame(x = rnorm(100,5,3))
+head(x)
 ggplot(x, aes(x))+
   geom_histogram()
 # replace a chunk of values with NA and see what that does to the histogram.
-(add_na <- mutate(x, x = ifelse(x > 5 & x <8, NA, x)))
+add_na <- mutate(x, x = ifelse(x > 5 & x <8, NA, x))
+head(add_na)
 ggplot(add_na, aes(x))+
   geom_histogram()
 ```
