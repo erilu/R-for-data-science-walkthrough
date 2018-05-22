@@ -20,7 +20,7 @@ Exploratory data analysis (EDA) is something I was first introduced to while I w
 library(tidyverse)
 ```
 
-## Visualizing Distributions
+## 7.3.1 Visualizing distributions
 
 Categorical variables can be visualized using a bar chart (how many observations have property 'x'?):
 
@@ -323,7 +323,7 @@ ggplot(data = mpg) +
   geom_boxplot(mapping = aes(x = reorder(class, hwy, FUN = median), y = hwy))
 ```
 
-We learned this in chapter 3, but a way to flip the axes is to add a coord_flip() function to your ggplot. This is useful when you have long axis labels. I prefer tilting the labels by 45 degrees by modifying the tilt using theme().
+We learned this in chapter 3, but a way to flip the axes is to add a coord_flip() function to your ggplot. This is useful when you have long axis labels. I prefer tilting the labels by 45 degrees by modifying the tilt using ```theme(axis.text.x = element_text(angle = 45, hjust = 1))```.
 
 ```{r mtcars_boxplot_coordflip}
 ggplot(data = mpg) +
@@ -590,9 +590,9 @@ ggplot(data = smaller, mapping = aes(x = carat, y = price)) +
 ## 7.5.3.1 Exercises
 ### 1. Instead of summarising the conditional distribution with a boxplot, you could use a frequency polygon. What do you need to consider when using cut_width() vs cut_number()? How does that impact a visualisation of the 2d distribution of carat and price?
 
-When using cut_width(), you must consider the range of the distribution of the variable you are binning. For example, you shouldn't bin by a number larger than the range of carat, or by a number too small (too many bins). If an inappropriate bin size is chosen, the data could be uninterpretable. This goes for cut_number() too. Selecting an appropriate number of bins to create for cut_number() is slightly different. We have to take into account the number of observations for each 
+When using cut_width(), you must consider the range of the distribution of the variable you are binning. For example, you shouldn't bin by a number larger than the range of carat, or by a number too small (too many bins). If an inappropriate bin size is chosen, the data could be uninterpretable. This goes for cut_number() too. Selecting an appropriate number of bins to create for cut_number() is slightly different. We have to take into account the number of observations that fall into each price category. Suppose the distribution of price was skewed to the right (small number of very high priced observations). This would result in a misleading cut_number() distribution. 
 
-```{r}
+```{r price_carat_partition}
 # visualize price binning by carat, cut_width()
 ggplot(smaller, aes(x = price, y = ..density..,)) +
   geom_freqpoly(aes(color = cut_width(carat, 0.5)))
@@ -604,37 +604,67 @@ ggplot(smaller, aes(x = price, y = ..density..,)) +
 
 ### 2. Visualise the distribution of carat, partitioned by price.
 
-```{r}
+To get this distribution, switch carat and price in the code from the previous question.
+
+```{r carat_price_partition}
 # visualize distribution of carat, binning price, cut_number()
-ggplot(smaller, aes(x = carat)) + 
+ggplot(smaller, aes(x = carat, y = ..density..)) + 
   geom_freqpoly(aes(color = cut_number(price, 10)))
 # visualize distribution of carat, binning price, cut_width()
-ggplot(smaller, aes(x = carat)) + 
+ggplot(smaller, aes(x = carat, y = ..density..)) + 
   geom_freqpoly(aes(color = cut_width(price, 5000)))
 ```
 
 ### 3. How does the price distribution of very large diamonds compare to small diamonds. Is it as you expect, or does it surprise you?
 
-
+Based on the graphs in question 1 and 2, very large diamonds (high carat) are, on average, priced higher than small diamonds (low carat). This is as I would expect. Looking at the distribution of carat size partitioned by price (cut_width() of 5000), we see that the majority of highest priced diamonds have high carat sizes.
 
 ### 4. Combine two of the techniques you’ve learned to visualise the combined distribution of cut, carat, and price.
 
+One way to combine the 3 parameters in one visualization is to use facetting. To visualise how the distributoin of carat and price compare within each category of cut, we can facet either a scatterplot (a binned scatterplot might be better in this case, since there are so many points), or the freqpoly() graphs that we generated previously. We observe from the binned scatterplot that there is a large concentration of points (light blue color) at a low carat and low price. For all types of cuts, price correlates positively with carat. We can also facet the distribution of price vs cut by carat using cut_number(). In this plot we observe that, again, for all cut types, price correlates with higher carat size.
+
+```{r cut_carat_price_facet}
+# visualize price vs carat, faceting by cut
+ggplot (diamonds, aes(carat, price))+
+  geom_bin2d( )+
+  facet_wrap(~cut)
+
+# visualize price binning by carat, cut_number(), 10 bins
+ggplot(diamonds, aes(x = price, y = ..density..)) +
+  geom_freqpoly(aes(color = cut_number(carat, 10)))+
+  facet_wrap(~cut)
+
+# visualize price vs cut, binning by carat, 3 bins
+ggplot(diamonds, aes(x = cut, y = price)) +
+  geom_boxplot()+
+  facet_wrap(~cut_number(carat, 3))+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
 
 
+### 5. Two dimensional plots reveal outliers that are not visible in one dimensional plots. For example, some points in the plot below have an unusual combination of x and y values, which makes the points outliers even though their x and y values appear normal when examined separately. Why is a scatterplot a better display than a binned plot for this case?
 
-### 5. Two dimensional plots reveal outliers that are not visible in one dimensional plots. For example, some points in the plot below have an unusual combination of x and y values, which makes the points outliers even though their x and y values appear normal when examined separately.
+Because the correlation of x and y is so strong, it becomes easy to find the outliers in the graph below. For example, we might wonder why the outlier with a x-value of 6.7 only had a y value of 4, since the majority of other points with x-values of 6.7 had y-values of near 6.7 as well. A scatter plot allows us to see these individual points, since a scatter plot simply plots all the points in the dataset on the graph. A binned plot using geom_bin2d() may mask a lot of the outliers, depending on the bin size. An outlier, if included in a bin with non-outliers, will go undetected.
 
-```{r}
+Binning only one of the continuous variables will have less caveats, but may still result in issues. In the example below, I've binned the plot using a cut_width of 0.5, and plotted boxplots for each interval. We can see that while most of the outliers are preserved, the x-values have been shifted to match the center of each bin.
 
+```{r x_vs_y_scatter_example}
+# the provided scatterplot
 ggplot(data = diamonds) +
   geom_point(mapping = aes(x = x, y = y)) +
   coord_cartesian(xlim = c(4, 11), ylim = c(4, 11))
 
+# bin using geom_bin2d. default graph is quite ugly.
+ggplot(data = diamonds) +
+  geom_bin2d(mapping = aes(x = x, y = y)) +
+  coord_cartesian(xlim = c(4, 11), ylim = c(4, 11))
+
+# a binned boxplot of the same data
+ggplot(data = diamonds) +
+  geom_boxplot(mapping = aes(x = x, y = y, group = cut_width (x, 0.5))) +
+  coord_cartesian(xlim = c(4, 11), ylim = c(4, 11))
+
 ```
-
-
-### 6. Why is a scatterplot a better display than a binned plot for this case?
-
 
 ## 7.6 Patterns and models
 
@@ -648,7 +678,7 @@ Some important questions to ask when discovering a pattern in the data are:
 
 By identifying patterns between variables, we can model the pattern and even use this information to learn more about other aspects of the data. As explained earlier, it was puzzling why ideal cut diamonds cost less than lower grade, fair cut diamonds. This was due to the fact that more ideal cut diamonds were smaller in carat, which resulted in the lower price. By identifying this pattern, we can subtract the influence of carat on price, and examine how the cut quality correlates with price after doing so. The book provides the following code, which fits a linear model (lm) between price and carat (mod), adds a transformed value of the residuals (observed value of price - expected value of price based solely on carat size) to the diamonds dataset, then plots the relationship between carat and the residual. We observe that the residuals are higher with ideal cuts than with fair cuts, as expected. We can interpret this as: if carat size was kept constant, ideal cuts cost more than fair cuts on average.
 
-```{r}
+```{r subtract_model_boxplot_example}
 library(modelr)
 
 mod <- lm(log(price) ~ log(carat), data = diamonds)
