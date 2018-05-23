@@ -1,0 +1,296 @@
+---
+title: "R for Data Science Walkthrough Chapters 9-13"
+author: "Erick Lu"
+output: 
+  github_document:
+    html_preview: false
+    toc: true
+    toc_depth: 2
+    fig_width: 5
+    fig_height: 3.5
+---
+
+This my walkthrough for chapters 9-13 for the book: _R for Data Science_ by Hadley Wickham and Garrett Grolemund. Here I provide solutions to their exercises and some of my own notes and explorations.
+
+# Chapter 9 Introduction
+
+This chapter provides a list of the content covered in chapter 10-16, which includes tibbles, data import, tidy data, relational data, strings (regular expressions), factors, and dates/times.
+
+```{r}
+library(tidyverse)
+```
+
+
+# Chapter 10 Tibbles
+
+You can create tibbles from existing data frames using as_tibble(), or create brand new tibbles using tibble():
+
+```{r}
+tibble(
+  x = 1:5, 
+  y = 1, 
+  z = x ^ 2 + y
+)
+```
+
+A cousin of tibble(), tribble(), can also be used as a way to manually enter data into a tibble format:
+
+```{r}
+tribble(
+  ~x, ~y, ~z,
+  #--|--|----
+  "a", 2, 3.6,
+  "b", 1, 8.5
+)
+```
+
+You can also use non-syntactic names for variables in tibbles:
+
+```{r}
+tb <- tibble(
+  `:)` = "smile", 
+  ` ` = "space",
+  `2000` = "number"
+)
+tb
+```
+
+When compared to a data.frame in baseR, the tibble looks more user-friendly. Calling a tibble automatically provides only the beginning chunk of the data rather than filling up your entire console (think if it as default head(data.frame) display). Other nice features include not converting strings to factors or changing variable names.
+
+To convert tables to or from data frames, use as_tibble() and as.data.frame():
+
+```{r}
+class(iris)
+class(as_tibble(iris))
+class(as.data.frame(as_tibble(iris)))
+```
+
+You can select columns in tibbles the same way you would with a data.frame:
+
+```{r}
+df <- tibble(
+  x = runif(5),
+  y = rnorm(5)
+)
+# extract column 'x' using either $ or [[]]
+df$x
+df[["x"]]
+df[[1]]
+```
+
+## 10.5 Exercises
+
+### 1. How can you tell if an object is a tibble? (Hint: try printing mtcars, which is a regular data frame).
+
+You can tell if an object is a tibble because the output you get by calling it will say "tibble"! For example, calling the diamonds tibble returns :```# A tibble: 53,940 x 10``` as the first line of the output. Also you can tell something is a tibble based on the class specifications underneath each variable name. A tibble will also only print out the first 10 rows by default, whereas a data.frame will print out as many as the console allows. Last, the definitive way to tell something is a tibble is to use the class() function.
+
+```{r}
+class(diamonds)
+class(mtcars)
+```
+
+### 2. Compare and contrast the following operations on a data.frame and equivalent tibble. What is different? Why might the default data frame behaviours cause you frustration?
+
+On a data.frame, ```df$x``` will still return the values for column xyz. This behavior does not occur for a tibble, which requires the exact name of the column ```df$xyz```. This data.frame feature might cause frustration if you have columns in your dataset with the same prefix, in which you might fetch the wrong column. The other functions between data.frame and tibble work the same way. One distinction to note is that, when creating the data.frame, "a" is considered a factor with 1 level. When creating the tibble, "a" is not converted into a factor.
+
+```{r}
+df <- data.frame(abc = 1, xyz = "a")
+df$x
+df[, "xyz"]
+df[, c("abc", "xyz")]
+
+df <- tibble(abc = 1, xyz = "a")
+df$x
+df[, "xyz"]
+df[, c("abc", "xyz")]
+```
+
+### 3. If you have the name of a variable stored in an object, e.g. var <- "mpg", how can you extract the reference variable from a tibble?
+
+If the name of the variable is stored in an object, you can pass the object in lieu of the variable name using [[]] or [] just as you would do so with the explicit variable name. You can even pass the object and another variable name to obtain multiple reference variables using c(). I provide an example below using the diamonds dataset.
+
+```{r}
+var <- "carat"
+var2 <- c("carat","price")
+
+# extract only carat
+diamonds[,var]
+
+#extract carat and price
+diamonds[,c(var,"price")]
+diamonds[,var2]
+```
+
+### 4. Practice referring to non-syntactic names in the following data frame by:
+```{r}
+annoying <- tibble(
+  `1` = 1:10,
+  `2` = `1` * 2 + rnorm(length(`1`))
+)
+```
+
+* Extracting the variable called 1.
+```{r}
+annoying[,"1"]
+```
+* Plotting a scatterplot of 1 vs 2.
+```{r}
+ggplot(annoying, aes(`1`,`2`))+
+  geom_point()
+```
+
+* Creating a new column called 3 which is 2 divided by 1.
+```{r}
+annoying %>%
+  mutate(`3` = `2`/`1`)
+```
+
+* Renaming the columns to one, two and three.
+```{r}
+annoying %>%
+  mutate(`3` = `2`/`1`) %>%
+  rename(one = `1`, two = `2`, three = `3` )
+```
+
+
+### 5. What does tibble::enframe() do? When might you use it?
+
+Taken from the documentation: "enframe() converts named atomic vectors or lists to two-column data frames. For unnamed vectors, the natural sequence is used as name column." I might use this when I have a vector that I want to turn into a data.frame for graphing using ggplot, which requires data be in data.frame or tibble.
+
+```{r}
+x = rnorm(100)
+names(x) <- c(5:104)
+enframe(x)
+class(enframe(x))
+```
+
+### 6. What option controls how many additional column names are printed at the footer of a tibble?
+
+The documentation for ?format.tbl (tibble formatting) says that the n_extra argument will control how many additional columns to print abbreviated information for. The example provided in the documentation is below, which only prints 2 of the additional columns (whereas the unmodified print(flights) would yield 5 additional columns in the footer).
+
+```{r}
+print(nycflights13::flights, n_extra = 2)
+```
+
+
+# Chapter 11 Data Import
+
+## 11.2 Getting started - reading in files
+
+To practice various utilities for reading in files, we can use inline csv designation, which requires proper newline designation. Below are some examples of reading in inline csv chunks with various arguments tailored for the type of data being read in.
+
+```{r}
+# basic read_csv()
+read_csv("a,b,c
+         1,2,3 
+         4,5,6")
+# read in data, ignoring metadata lines
+read_csv("The first line of metadata
+The second line of metadata
+  x,y,z
+  1,2,3", skip = 2)
+# designate lines to skip that start with specific symbol
+read_csv("# A comment I want to skip
+  x,y,z
+  1,2,3", comment = "#")
+# read in file that doesnt have column names
+read_csv("1,2,3\n4,5,6", col_names = FALSE)
+# read in file and specify column names
+read_csv("1,2,3\n4,5,6", col_names = c("x", "y", "z"))
+# read in file, replacing symbol with missing values (NA)
+read_csv("a,b,c\n1,2,.", na = ".")
+```
+
+## 11.2.2 Exercises
+
+### 1. What function would you use to read a file where fields were separated with “|”?
+
+I would use ```read_delim()``` to read in a file where fields are separated with "|". For example:
+
+```{r}
+read_delim ("a|b|c
+            1|2|3
+            4|5|6", "|")
+```
+
+### 2. Apart from file, skip, and comment, what other arguments do read_csv() and read_tsv() have in common?
+
+Based on the documentation, read_csv() and read_tsv() have col_names, col_types, locale, na, quoted_na, quote, trim_ws, n_max, guess_max, and progress.
+
+### 3. What are the most important arguments to read_fwf()?
+
+The most important arguments are the file, and the col_positions arguments. There are many options to specify col_positions, including fwf_empty(), fwf_widths(), fwf_positions(), and fwf_cols(). Below is the example provided in the documentation:
+
+```{r}
+fwf_sample <- readr_example("fwf-sample.txt")
+cat(read_lines(fwf_sample))
+
+# You can specify column positions in several ways:
+# 1. Guess based on position of empty columns
+read_fwf(fwf_sample, fwf_empty(fwf_sample, col_names = c("first", "last", "state", "ssn")))
+# 2. A vector of field widths
+read_fwf(fwf_sample, fwf_widths(c(20, 10, 12), c("name", "state", "ssn")))
+# 3. Paired vectors of start and end positions
+read_fwf(fwf_sample, fwf_positions(c(1, 30), c(10, 42), c("name", "ssn")))
+# 4. Named arguments with start and end positions
+read_fwf(fwf_sample, fwf_cols(name = c(1, 10), ssn = c(30, 42)))
+# 5. Named arguments with column widths
+read_fwf(fwf_sample, fwf_cols(name = 20, state = 10, ssn = 12))
+```
+
+### 4. Sometimes strings in a CSV file contain commas. To prevent them from causing problems they need to be surrounded by a quoting character, like " or '. By convention, read_csv() assumes that the quoting character will be ", and if you want to change it you’ll need to use read_delim() instead. What arguments do you need to specify to read the following text into a data frame?
+
+```"x,y\n1,'a,b'"```
+
+
+
+### 5. Identify what is wrong with each of the following inline CSV files. What happens when you run the code?
+```{r}
+read_csv("a,b\n1,2,3\n4,5,6")
+read_csv("a,b,c\n1,2\n1,2,3,4")
+read_csv("a,b\n\"1")
+read_csv("a,b\n1,2\na,b")
+read_csv("a;b\n1;3")
+```
+
+## 11.3 Parsing a vector
+
+## 11.3.5 Exercises
+### 1. What are the most important arguments to locale()?
+
+### 2. What happens if you try and set decimal_mark and grouping_mark to the same character? What happens to the default value of grouping_mark when you set decimal_mark to “,”? What happens to the default value of decimal_mark when you set the grouping_mark to “.”?
+
+### 3. I didn’t discuss the date_format and time_format options to locale(). What do they do? Construct an example that shows when they might be useful.
+
+### 4. If you live outside the US, create a new locale object that encapsulates the settings for the types of file you read most commonly.
+
+### 5. What’s the difference between read_csv() and read_csv2()?
+
+### 6. What are the most common encodings used in Europe? What are the most common encodings used in Asia? Do some googling to find out.
+
+### 7. Generate the correct format string to parse each of the following dates and times:
+```{r}
+
+d1 <- "January 1, 2010"
+d2 <- "2015-Mar-07"
+d3 <- "06-Jun-2017"
+d4 <- c("August 19 (2015)", "July 1 (2015)")
+d5 <- "12/30/14" # Dec 30, 2014
+t1 <- "1705"
+t2 <- "11:15:10.12 PM"
+```
+
+
+## 11.4 and 11.5 Parsing a file & Writing to a file
+
+
+
+
+
+
+
+
+
+
+
+
