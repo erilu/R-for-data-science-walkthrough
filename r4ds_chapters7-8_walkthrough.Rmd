@@ -706,5 +706,5 @@ Whether you choose to use this feature or not, it is important to stay organized
 
 ---
 
-Thanks for reading through my walkthrough of chapter 7-8! I hope you found my solutions to the exercises informative. A walkthrough of chapters 9-11 can be found at [r4ds_chapters9-11_walkthrough.md](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_chapters9-11_walkthrough.md).
+Thanks for reading through my walkthrough of chapter 7-8! I hope you found my solutions to the exercises informative. A walkthrough of chapters 9-13 can be found at [r4ds_chapters9-13_walkthrough.md](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_chapters9-13_walkthrough.md).
 
