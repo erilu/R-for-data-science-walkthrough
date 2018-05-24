@@ -423,7 +423,7 @@ ggplot(data = demo) +
 
 Or plot the barplot as a proportion (kind of like a histogram would, except this uses discrete variables on the x axis):
 
-```{r}
+```{r barplot_proportion}
 ggplot(data = diamonds) + 
   geom_bar(mapping = aes(x = cut, y = ..prop.., group = 1))
 ```

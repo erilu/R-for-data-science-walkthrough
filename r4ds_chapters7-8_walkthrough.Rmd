@@ -568,8 +568,8 @@ ggplot(data = diamonds) +
   geom_bin2d(mapping = aes(x = carat, y = price))
 
 # install.packages("hexbin")
-#ggplot(data = diamonds) +
-#  geom_hex(mapping = aes(x = carat, y = price))
+ggplot(data = diamonds) +
+  geom_hex(mapping = aes(x = carat, y = price))
 ```
 
 The book also suggests binning one of the continuous variables and plotting boxplots for the other variable for each bin created. There are two ways to bin, using either cut_width() or cut_number(). cut_width() keeps the increment the same for each bin, whereas cut_number() keeps the number of observations the same.
@@ -646,7 +646,7 @@ ggplot(diamonds, aes(x = cut, y = price)) +
 
 ### 5. Two dimensional plots reveal outliers that are not visible in one dimensional plots. For example, some points in the plot below have an unusual combination of x and y values, which makes the points outliers even though their x and y values appear normal when examined separately. Why is a scatterplot a better display than a binned plot for this case?
 
-Because the correlation of x and y is so strong, it becomes easy to find the outliers in the graph below. For example, we might wonder why the outlier with a x-value of 6.7 only had a y value of 4, since the majority of other points with x-values of 6.7 had y-values of near 6.7 as well. A scatter plot allows us to see these individual points, since a scatter plot simply plots all the points in the dataset on the graph. A binned plot using geom_bin2d() may mask a lot of the outliers, depending on the bin size. An outlier, if included in a bin with non-outliers, will go undetected.
+Because the correlation of x and y is so strong, it becomes easy to find the outliers in the graph below. For example, we might wonder why the outlier with a x-value of 6.7 only had a y value of 4, since the majority of other points with x-values of 6.7 had y-values of near 6.7 as well. A scatter plot allows us to see these individual points, since a scatter plot simply plots all the points in the dataset on the graph. A binned plot using geom_bin2d() or geom_hex() may mask a lot of the outliers, depending on the bin size. An outlier, if included in a bin with non-outliers, will go undetected.
 
 Binning only one of the continuous variables will have less caveats, but may still result in issues. In the example below, I've binned the plot using a cut_width of 0.5, and plotted boxplots for each interval. We can see that while most of the outliers are preserved, the x-values have been shifted to match the center of each bin.
 
@@ -656,9 +656,9 @@ ggplot(data = diamonds) +
   geom_point(mapping = aes(x = x, y = y)) +
   coord_cartesian(xlim = c(4, 11), ylim = c(4, 11))
 
-# bin using geom_bin2d. default graph is quite ugly.
+# bin using geom_hex. default graph is quite ugly and bins include outliers
 ggplot(data = diamonds) +
-  geom_bin2d(mapping = aes(x = x, y = y)) +
+  geom_hex(mapping = aes(x = x, y = y)) +
   coord_cartesian(xlim = c(4, 11), ylim = c(4, 11))
 
 # a binned boxplot of the same data

@@ -31,17 +31,9 @@ library(tidyverse)
     ## ── Attaching packages ─────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 2.2.1     ✔ purrr   0.2.4
-    ## ✔ tibble  1.4.2     ✔ dplyr   0.7.4
-    ## ✔ tidyr   0.8.0     ✔ stringr 1.3.0
+    ## ✔ tibble  1.4.2     ✔ dplyr   0.7.5
+    ## ✔ tidyr   0.8.1     ✔ stringr 1.3.1
     ## ✔ readr   1.1.1     ✔ forcats 0.3.0
-
-    ## Warning: package 'ggplot2' was built under R version 3.3.2
-
-    ## Warning: package 'readr' was built under R version 3.3.2
-
-    ## Warning: package 'purrr' was built under R version 3.3.2
-
-    ## Warning: package 'dplyr' was built under R version 3.3.2
 
     ## ── Conflicts ────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
@@ -90,8 +82,6 @@ ggplot(data = diamonds) +
 diamonds %>% 
   count(cut_width(carat, 0.5))
 ```
-
-    ## Warning: package 'bindrcpp' was built under R version 3.3.2
 
     ## # A tibble: 11 x 2
     ##    `cut_width(carat, 0.5)`     n
@@ -183,13 +173,13 @@ unusual
     ## # A tibble: 9 x 4
     ##   price     x     y     z
     ##   <int> <dbl> <dbl> <dbl>
-    ## 1  5139  0.     0.   0.  
-    ## 2  6381  0.     0.   0.  
-    ## 3 12800  0.     0.   0.  
-    ## 4 15686  0.     0.   0.  
-    ## 5 18034  0.     0.   0.  
-    ## 6  2130  0.     0.   0.  
-    ## 7  2130  0.     0.   0.  
+    ## 1  5139  0      0    0   
+    ## 2  6381  0      0    0   
+    ## 3 12800  0      0    0   
+    ## 4 15686  0      0    0   
+    ## 5 18034  0      0    0   
+    ## 6  2130  0      0    0   
+    ## 7  2130  0      0    0   
     ## 8  2075  5.15  31.8  5.12
     ## 9 12210  8.09  58.9  8.06
 
@@ -227,8 +217,6 @@ ggplot(diamonds, aes (x = z))+
 
 library(reshape2)
 ```
-
-    ## Warning: package 'reshape2' was built under R version 3.3.2
 
     ## 
     ## Attaching package: 'reshape2'
@@ -338,8 +326,8 @@ diamonds %>%
     ## # A tibble: 2 x 2
     ##   group_by     n
     ##      <dbl> <int>
-    ## 1    0.990    23
-    ## 2    1.00   1558
+    ## 1     0.99    23
+    ## 2     1     1558
 
 We see that there are 23 observations with 0.99 carat, and 1558 observations with 1 carat. This is a huge difference. There could be many explanations. Maybe diamonds of at least 1 carat can be sold at a higher price range, incentivizing the production of diamonds at least 1 carat and no less. Or, it could be due to an unconcious human tendancy to round to the nearest whole number.
 
@@ -421,16 +409,16 @@ I find that ifelse() is particularly useful, since you can use it to replace onl
     ## # A tibble: 53,940 x 10
     ##    carat cut       color clarity depth table price     x     y     z
     ##    <dbl> <ord>     <ord> <ord>   <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-    ##  1 0.230 Ideal     E     SI2      61.5   55.  326.  3.95  3.98  2.43
-    ##  2 0.210 Premium   E     SI1      59.8   61.  326.  3.89  3.84  2.31
-    ##  3 0.230 Good      E     VS1      56.9   65.  327.  4.05  4.07  2.31
-    ##  4 0.290 Premium   I     VS2      62.4   58.  334.  4.20  4.23  2.63
-    ##  5 0.310 Good      J     SI2      63.3   58.  335.  4.34  4.35  2.75
-    ##  6 0.240 Very Good J     VVS2     62.8   57.  336.  3.94  3.96  2.48
-    ##  7 0.240 Very Good I     VVS1     62.3   57.  336.  3.95  3.98  2.47
-    ##  8 0.260 Very Good H     SI1      61.9   55.  337.  4.07  4.11  2.53
-    ##  9 0.220 Fair      E     VS2      65.1   61.  337.  3.87  3.78  2.49
-    ## 10 0.230 Very Good H     VS1      59.4   61.  338.  4.00  4.05  2.39
+    ##  1 0.23  Ideal     E     SI2      61.5    55   326  3.95  3.98  2.43
+    ##  2 0.21  Premium   E     SI1      59.8    61   326  3.89  3.84  2.31
+    ##  3 0.23  Good      E     VS1      56.9    65   327  4.05  4.07  2.31
+    ##  4 0.290 Premium   I     VS2      62.4    58   334  4.2   4.23  2.63
+    ##  5 0.31  Good      J     SI2      63.3    58   335  4.34  4.35  2.75
+    ##  6 0.24  Very Good J     VVS2     62.8    57   336  3.94  3.96  2.48
+    ##  7 0.24  Very Good I     VVS1     62.3    57   336  3.95  3.98  2.47
+    ##  8 0.26  Very Good H     SI1      61.9    55   337  4.07  4.11  2.53
+    ##  9 0.22  Fair      E     VS2      65.1    61   337  3.87  3.78  2.49
+    ## 10 0.23  Very Good H     VS1      59.4    61   338  4     4.05  2.39
     ## # ... with 53,930 more rows
 
 Missing values may provide some insight into the data, even though they do not have values. For example, the presence of a missing value in a column such as dep\_time in the nycflights13 dataset suggests the flight was cancelled. You can then compare how the other attributes of a cancelled flight differ from a non-cancelled flight. The example provided by the book compares the distribution of sched\_dep\_time for cancelled vs non-cancelled flights:
@@ -463,12 +451,12 @@ head(x)
 ```
 
     ##          x
-    ## 1 8.610660
-    ## 2 1.036452
-    ## 3 6.086193
-    ## 4 6.132567
-    ## 5 3.548619
-    ## 6 1.974829
+    ## 1 5.882593
+    ## 2 4.401981
+    ## 3 5.082233
+    ## 4 2.940216
+    ## 5 3.823540
+    ## 6 1.701539
 
 ``` r
 ggplot(x, aes(x))+
@@ -486,12 +474,12 @@ head(add_na)
 ```
 
     ##          x
-    ## 1 8.610660
-    ## 2 1.036452
+    ## 1       NA
+    ## 2 4.401981
     ## 3       NA
-    ## 4       NA
-    ## 5 3.548619
-    ## 6 1.974829
+    ## 4 2.940216
+    ## 5 3.823540
+    ## 6 1.701539
 
 ``` r
 ggplot(add_na, aes(x))+
@@ -500,7 +488,7 @@ ggplot(add_na, aes(x))+
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-    ## Warning: Removed 26 rows containing non-finite values (stat_bin).
+    ## Warning: Removed 20 rows containing non-finite values (stat_bin).
 
 ![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/introduce_NA_hist_bin-2.png)
 
@@ -702,8 +690,6 @@ I plotted the graph from part 2 using either coord\_flip() or geom\_boxploth() f
 library(ggstance)
 ```
 
-    ## Warning: package 'ggstance' was built under R version 3.3.2
-
     ## 
     ## Attaching package: 'ggstance'
 
@@ -791,18 +777,18 @@ The plots generated by geom\_jitter() are very similar to the stripchart() from 
 ```
 
     ## # A tibble: 1,000 x 10
-    ##    carat cut     color clarity depth table price     x     y     z
-    ##    <dbl> <ord>   <ord> <ord>   <dbl> <dbl> <int> <dbl> <dbl> <dbl>
-    ##  1 1.01  Premium E     SI1      62.4   59.  5430  6.38  6.35  3.97
-    ##  2 0.760 Ideal   J     SI1      61.9   53.  1859  5.85  5.92  3.64
-    ##  3 1.00  Premium F     SI1      62.1   60.  4234  6.29  6.23  3.88
-    ##  4 0.290 Ideal   G     VS1      62.2   54.   507  4.23  4.26  2.64
-    ##  5 1.00  Good    G     VVS2     60.9   56.  7492  6.49  6.52  3.96
-    ##  6 1.00  Premium D     SI1      62.0   58.  4704  6.41  6.29  3.94
-    ##  7 1.20  Premium I     SI1      61.4   57.  5098  6.87  6.80  4.20
-    ##  8 1.01  Good    F     SI2      63.7   59.  4166  6.28  6.38  4.03
-    ##  9 3.01  Good    I     SI2      63.9   60. 18242  9.06  9.01  5.77
-    ## 10 0.310 Ideal   F     IF       62.3   57.  1122  4.34  4.30  2.69
+    ##    carat cut       color clarity depth table price     x     y     z
+    ##    <dbl> <ord>     <ord> <ord>   <dbl> <dbl> <int> <dbl> <dbl> <dbl>
+    ##  1  0.32 Ideal     D     VS2      62.2    55   758  4.37  4.41  2.73
+    ##  2  0.7  Ideal     E     SI1      61.9    55  2537  5.74  5.77  3.56
+    ##  3  0.53 Ideal     D     VS2      61.2    55  1956  5.25  5.21  3.2 
+    ##  4  0.51 Premium   D     VVS2     62.4    59  2387  5.13  5.06  3.18
+    ##  5  0.7  Premium   D     SI2      59.3    59  2562  5.79  5.74  3.42
+    ##  6  0.3  Premium   D     SI2      60.9    58   574  4.32  4.29  2.62
+    ##  7  1.02 Ideal     G     SI1      62.1    55  5426  6.46  6.49  4.02
+    ##  8  1.21 Ideal     E     SI1      61.8    56  8863  6.82  6.86  4.23
+    ##  9  0.68 Very Good G     VS1      60.7    58  2114  5.68  5.75  3.47
+    ## 10  1.01 Ideal     F     VS1      63.2    56  7209  6.35  6.41  4.03
     ## # ... with 990 more rows
 
 ``` r
@@ -823,11 +809,7 @@ stripchart(price~cut, data = smaller_diamonds, method = "jitter", jitter = 0.1, 
 ``` r
 #install.packages("ggbeeswarm")
 library(ggbeeswarm)
-```
 
-    ## Warning: package 'ggbeeswarm' was built under R version 3.3.2
-
-``` r
 # ggbeeswarm geom_quasirandom()
 ggplot(smaller_diamonds, aes(cut,price))+
   geom_quasirandom()
@@ -944,11 +926,6 @@ Using dplyr, first group by destination and month, then compute the average flig
 
 ``` r
 library(nycflights13)
-```
-
-    ## Warning: package 'nycflights13' was built under R version 3.3.2
-
-``` r
 flights %>%
   group_by(dest, month) %>%
   summarize ( avg_delay = mean(dep_delay, na.rm = T)) %>%
@@ -1015,9 +992,11 @@ ggplot(data = diamonds) +
 
 ``` r
 # install.packages("hexbin")
-#ggplot(data = diamonds) +
-#  geom_hex(mapping = aes(x = carat, y = price))
+ggplot(data = diamonds) +
+  geom_hex(mapping = aes(x = carat, y = price))
 ```
+
+![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/bin2d_geom_hex-2.png)
 
 The book also suggests binning one of the continuous variables and plotting boxplots for the other variable for each bin created. There are two ways to bin, using either cut\_width() or cut\_number(). cut\_width() keeps the increment the same for each bin, whereas cut\_number() keeps the number of observations the same.
 
@@ -1132,7 +1111,7 @@ ggplot(diamonds, aes(x = cut, y = price)) +
 
 ### 5. Two dimensional plots reveal outliers that are not visible in one dimensional plots. For example, some points in the plot below have an unusual combination of x and y values, which makes the points outliers even though their x and y values appear normal when examined separately. Why is a scatterplot a better display than a binned plot for this case?
 
-Because the correlation of x and y is so strong, it becomes easy to find the outliers in the graph below. For example, we might wonder why the outlier with a x-value of 6.7 only had a y value of 4, since the majority of other points with x-values of 6.7 had y-values of near 6.7 as well. A scatter plot allows us to see these individual points, since a scatter plot simply plots all the points in the dataset on the graph. A binned plot using geom\_bin2d() may mask a lot of the outliers, depending on the bin size. An outlier, if included in a bin with non-outliers, will go undetected.
+Because the correlation of x and y is so strong, it becomes easy to find the outliers in the graph below. For example, we might wonder why the outlier with a x-value of 6.7 only had a y value of 4, since the majority of other points with x-values of 6.7 had y-values of near 6.7 as well. A scatter plot allows us to see these individual points, since a scatter plot simply plots all the points in the dataset on the graph. A binned plot using geom\_bin2d() or geom\_hex() may mask a lot of the outliers, depending on the bin size. An outlier, if included in a bin with non-outliers, will go undetected.
 
 Binning only one of the continuous variables will have less caveats, but may still result in issues. In the example below, I've binned the plot using a cut\_width of 0.5, and plotted boxplots for each interval. We can see that while most of the outliers are preserved, the x-values have been shifted to match the center of each bin.
 
@@ -1146,9 +1125,9 @@ ggplot(data = diamonds) +
 ![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/x_vs_y_scatter_example-1.png)
 
 ``` r
-# bin using geom_bin2d. default graph is quite ugly.
+# bin using geom_hex. default graph is quite ugly and bins include outliers
 ggplot(data = diamonds) +
-  geom_bin2d(mapping = aes(x = x, y = y)) +
+  geom_hex(mapping = aes(x = x, y = y)) +
   coord_cartesian(xlim = c(4, 11), ylim = c(4, 11))
 ```
 
@@ -1178,11 +1157,7 @@ By identifying patterns between variables, we can model the pattern and even use
 
 ``` r
 library(modelr)
-```
 
-    ## Warning: package 'modelr' was built under R version 3.3.2
-
-``` r
 mod <- lm(log(price) ~ log(carat), data = diamonds)
 
 (diamonds2 <- diamonds %>% 
@@ -1193,16 +1168,16 @@ mod <- lm(log(price) ~ log(carat), data = diamonds)
     ## # A tibble: 53,940 x 11
     ##    carat cut       color clarity depth table price     x     y     z resid
     ##    <dbl> <ord>     <ord> <ord>   <dbl> <dbl> <int> <dbl> <dbl> <dbl> <dbl>
-    ##  1 0.230 Ideal     E     SI2      61.5   55.   326  3.95  3.98  2.43 0.820
-    ##  2 0.210 Premium   E     SI1      59.8   61.   326  3.89  3.84  2.31 0.955
-    ##  3 0.230 Good      E     VS1      56.9   65.   327  4.05  4.07  2.31 0.822
-    ##  4 0.290 Premium   I     VS2      62.4   58.   334  4.20  4.23  2.63 0.569
-    ##  5 0.310 Good      J     SI2      63.3   58.   335  4.34  4.35  2.75 0.511
-    ##  6 0.240 Very Good J     VVS2     62.8   57.   336  3.94  3.96  2.48 0.787
-    ##  7 0.240 Very Good I     VVS1     62.3   57.   336  3.95  3.98  2.47 0.787
-    ##  8 0.260 Very Good H     SI1      61.9   55.   337  4.07  4.11  2.53 0.690
-    ##  9 0.220 Fair      E     VS2      65.1   61.   337  3.87  3.78  2.49 0.913
-    ## 10 0.230 Very Good H     VS1      59.4   61.   338  4.00  4.05  2.39 0.850
+    ##  1 0.23  Ideal     E     SI2      61.5    55   326  3.95  3.98  2.43 0.820
+    ##  2 0.21  Premium   E     SI1      59.8    61   326  3.89  3.84  2.31 0.955
+    ##  3 0.23  Good      E     VS1      56.9    65   327  4.05  4.07  2.31 0.822
+    ##  4 0.290 Premium   I     VS2      62.4    58   334  4.2   4.23  2.63 0.569
+    ##  5 0.31  Good      J     SI2      63.3    58   335  4.34  4.35  2.75 0.511
+    ##  6 0.24  Very Good J     VVS2     62.8    57   336  3.94  3.96  2.48 0.787
+    ##  7 0.24  Very Good I     VVS1     62.3    57   336  3.95  3.98  2.47 0.787
+    ##  8 0.26  Very Good H     SI1      61.9    55   337  4.07  4.11  2.53 0.690
+    ##  9 0.22  Fair      E     VS2      65.1    61   337  3.87  3.78  2.49 0.913
+    ## 10 0.23  Very Good H     VS1      59.4    61   338  4     4.05  2.39 0.850
     ## # ... with 53,930 more rows
 
 ``` r

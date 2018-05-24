@@ -34,17 +34,9 @@ library(tidyverse)
     ## ── Attaching packages ─────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 2.2.1     ✔ purrr   0.2.4
-    ## ✔ tibble  1.4.2     ✔ dplyr   0.7.4
-    ## ✔ tidyr   0.8.0     ✔ stringr 1.3.0
+    ## ✔ tibble  1.4.2     ✔ dplyr   0.7.5
+    ## ✔ tidyr   0.8.1     ✔ stringr 1.3.1
     ## ✔ readr   1.1.1     ✔ forcats 0.3.0
-
-    ## Warning: package 'ggplot2' was built under R version 3.3.2
-
-    ## Warning: package 'readr' was built under R version 3.3.2
-
-    ## Warning: package 'purrr' was built under R version 3.3.2
-
-    ## Warning: package 'dplyr' was built under R version 3.3.2
 
     ## ── Conflicts ────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
@@ -105,11 +97,10 @@ dput(mtcars) # get the code used to build the actual data frame
     ##     3, 3, 3, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 4, 4, 4, 3, 3, 3, 
     ##     3, 3, 4, 5, 5, 5, 5, 5, 4), carb = c(4, 4, 1, 1, 2, 1, 4, 
     ##     2, 2, 4, 4, 3, 3, 3, 4, 4, 4, 1, 2, 1, 1, 2, 2, 4, 2, 1, 
-    ##     2, 2, 4, 6, 8, 2)), .Names = c("mpg", "cyl", "disp", "hp", 
-    ## "drat", "wt", "qsec", "vs", "am", "gear", "carb"), row.names = c("Mazda RX4", 
-    ## "Mazda RX4 Wag", "Datsun 710", "Hornet 4 Drive", "Hornet Sportabout", 
-    ## "Valiant", "Duster 360", "Merc 240D", "Merc 230", "Merc 280", 
-    ## "Merc 280C", "Merc 450SE", "Merc 450SL", "Merc 450SLC", "Cadillac Fleetwood", 
+    ##     2, 2, 4, 6, 8, 2)), row.names = c("Mazda RX4", "Mazda RX4 Wag", 
+    ## "Datsun 710", "Hornet 4 Drive", "Hornet Sportabout", "Valiant", 
+    ## "Duster 360", "Merc 240D", "Merc 230", "Merc 280", "Merc 280C", 
+    ## "Merc 450SE", "Merc 450SL", "Merc 450SLC", "Cadillac Fleetwood", 
     ## "Lincoln Continental", "Chrysler Imperial", "Fiat 128", "Honda Civic", 
     ## "Toyota Corolla", "Toyota Corona", "Dodge Challenger", "AMC Javelin", 
     ## "Camaro Z28", "Pontiac Firebird", "Fiat X1-9", "Porsche 914-2", 
@@ -133,12 +124,12 @@ head(mpg)
     ## # A tibble: 6 x 11
     ##   manufacturer model displ  year   cyl trans drv     cty   hwy fl    class
     ##   <chr>        <chr> <dbl> <int> <int> <chr> <chr> <int> <int> <chr> <chr>
-    ## 1 audi         a4     1.80  1999     4 auto… f        18    29 p     comp…
-    ## 2 audi         a4     1.80  1999     4 manu… f        21    29 p     comp…
-    ## 3 audi         a4     2.00  2008     4 manu… f        20    31 p     comp…
-    ## 4 audi         a4     2.00  2008     4 auto… f        21    30 p     comp…
-    ## 5 audi         a4     2.80  1999     6 auto… f        16    26 p     comp…
-    ## 6 audi         a4     2.80  1999     6 manu… f        18    26 p     comp…
+    ## 1 audi         a4      1.8  1999     4 auto… f        18    29 p     comp…
+    ## 2 audi         a4      1.8  1999     4 manu… f        21    29 p     comp…
+    ## 3 audi         a4      2    2008     4 manu… f        20    31 p     comp…
+    ## 4 audi         a4      2    2008     4 auto… f        21    30 p     comp…
+    ## 5 audi         a4      2.8  1999     6 auto… f        16    26 p     comp…
+    ## 6 audi         a4      2.8  1999     6 manu… f        18    26 p     comp…
 
 Plot mileage (hwy) against engine displacement (displ):
 
@@ -316,8 +307,6 @@ I mapped the continuous variable, "cty", city miles per gallon, using color and 
 # install.packages("gridExtra")
 library(gridExtra)
 ```
-
-    ## Warning: package 'gridExtra' was built under R version 3.3.2
 
     ## 
     ## Attaching package: 'gridExtra'
@@ -541,8 +530,6 @@ ggplot(data = mpg, mapping = aes (x = displ, y = hwy, color = drv)) +
   geom_smooth(mapping = aes(linetype = drv))
 ```
 
-    ## Warning: package 'bindrcpp' was built under R version 3.3.2
-
     ## `geom_smooth()` using method = 'loess'
 
 ![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/combine_point_smooth-3.png)
@@ -688,7 +675,7 @@ ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut, y = ..prop.., group = 1))
 ```
 
-![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/unnamed-chunk-9-1.png)
+![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/barplot_proportion-1.png)
 
 This is how to provide a stat summary manually using stat\_summary(). It might be better to visualize this using a boxplot. I'll try making one here as well:
 

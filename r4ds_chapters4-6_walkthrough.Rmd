@@ -525,7 +525,7 @@ delay <- filter(delay, count > 20, dest != "HNL")
 ```
 
 
-```{r}
+```{r pipe_dist_vs_delay_example}
 # using pipes
 delay <- flights %>% 
   group_by(dest) %>% 
@@ -581,7 +581,7 @@ not_cancelled %>%
 
 When using summarise, its important to know how many observations each summary value was being computed on. If the counts are low, the variance of the summary value might be very high, and the results may not be as interpretable or reliable.
 
-```{r}
+```{r delay_freqpoly_example}
 delays <- not_cancelled %>% 
   group_by(tailnum) %>% 
   summarise(
@@ -592,9 +592,9 @@ ggplot(data = delays, mapping = aes(x = delay)) +
   geom_freqpoly(binwidth = 10)
 ```
 
-Here we see that some flights have very high delay values, but these flights also don't have very many counts. To count how many observations each summary value was computed on, use the n() function in summarize()
+Here we see that some flights have very high delay values, but these flights also don't have very many counts. To count how many observations each summary value was computed on, use the n() function in summarize().
 
-```{r}
+```{r delays_geom_point_example}
 delays <- not_cancelled %>% 
   group_by(tailnum) %>% 
   summarise(
@@ -609,7 +609,7 @@ ggplot(data = delays, mapping = aes(x = n, y = delay)) +
 
 We can filter out the observations based on less than 25 counts using filter(), and then pipe the result into ggplot.
 
-```{r}
+```{r delays_filtered_example}
 delays %>% 
   filter(n > 25) %>% 
   ggplot(mapping = aes(x = n, y = delay)) + 
@@ -712,7 +712,7 @@ daily %>%
 
 To examine how flights behave, I would group by the flight number (flight), then perform analyses on the grouped flights. When looking at the data, there are some flights that are always 15 minutes late! However, these flights had less than 20 total data points. Filtering out the flights with less than 20 total points, we can see that flights with less data points tend to have a higher proportion of delays, whereas flights with many data points have an overall lower proportion of delayed flights. The proportion of flights that are early 15 minutes also follows a similar trend, with flights that have flown fewer times tending to have larger proportion of those flights 15 minutes early.
 
-```{r}
+```{r flight_early_late_50}
 by_flight <- not_cancelled %>%
   group_by(flight) %>%
   summarise(
@@ -802,7 +802,7 @@ If a flight still took place and there was an error in entering the dep_delay or
 
 To answer the first part of the question, this code returns a table with the number of cancelled flights per day. Plotting the data as a time series, we can see that there is some periodic trend in which spikes of large numbers of cancelled flights occur.
 
-```{r}
+```{r num_cancelled_per_day}
 # find number of cancelled flights per day
 
 cancelled_flights <- filter (flights, is.na(air_time))
@@ -820,7 +820,7 @@ ggplot (per_day_cancelled)+
 
 To find the proportion of cancelled flights per day, first group flights by year,month,day using group_by(), then for each day, count the total number of flights and number of cancelled flights using summarize(), and then use mutate() to calculate the proportion by dividing the number of cancelled flights by the total flights. Based on the graph of average_delay vs proportion_cancelled, we can see that there is a positive correlation in which days that have overall higher delays also have overall higher proportion of cancelled flights.
 
-```{r}
+```{r proportion_cancelled_vs_delay}
 #proportion of cancelled flights per day
 
 (proportion_cancelled <- flights %>%
@@ -841,7 +841,7 @@ ggplot(proportion_cancelled, aes (average_delay, prop_cancelled))+
 
 The top 5 carriers with the worst delays are: F9, EV, YV< FL, and WN. If we continue to subset by airport location (see graph), we find that some carriers have higher delays on average without depending on destination, whereas some carriers which fly only to certain destinations have a large dep_delay. One such example is FL, which we see only flies to 3 destinations and has a high dep_delay on average.
 
-```{r}
+```{r delay_by_carrier}
 # find carrier with worst delay
 by_carrier <- flights %>%
   group_by(carrier) %>%
@@ -924,7 +924,7 @@ mutate(  dep_time,
 There are over 100 planes which have a 100% record of being delayed, either on departure or arrival.
 
 ```{r}
-
+# by departure delay
 flights %>%
   group_by(tailnum) %>%
   summarize(
@@ -933,7 +933,7 @@ flights %>%
   ) %>%
   arrange (desc(delay_proportion))
 
-
+# by arrival delay
 flights %>%
   group_by(tailnum) %>%
   summarize(
@@ -949,7 +949,7 @@ flights %>%
 
 To figure this out, we would want to examine the distribution of delays over time to see where the delays are minimized. Plotting time on the x-axis and the mean dep_delay per unit time on the y axis, we can see that from time 500-1000 there are on average less delays than during other times.
 
-```{r}
+```{r mean_delay_vs_deptime}
 flights %>%
   group_by(dep_time) %>%
   summarize(
@@ -985,9 +985,6 @@ flights %>%
   mutate (prop_delay = dep_delay / sum (dep_delay)) %>%
   select (dest, flight, dep_delay, prop_delay) %>%
   arrange (dest)
-
-
-
 ```
 
 
@@ -995,7 +992,7 @@ flights %>%
 
 I first filter for flights that are delayed. The flights are already ordered by dep_tiem. I then use mutate() and lag() to bind a new column to the data that shows what the previous delay was for that observation. Then, I plot the current delay vs. the previous delay in a scatterplot. Since there are so many points, it is hard to see the pattern. So, I added a linear regression line to the points (OLS) to visualize any correlation that exists. There is a positive correlation, suggesting that, on average, flights that come immediately after a delayed flight tend to also be delayed. The slope is < 1, suggesting that the delay is less than the previous delay.
 
-```{r}
+```{r previous_delay_corr_dep_delay}
 flights %>%
   filter (dep_delay >0) %>%
   mutate ( prev_delay = lag(dep_delay)) %>%
@@ -1033,7 +1030,7 @@ expected_times %>%
 
 To compute air time to a flight relative to shortest flight to the destination, I would first take a ratio of the air_time to distance, find out what this value is for the shortest flight (smallest distance), then compare it with the suspicious flights. To find the flights most delayed in the air, subtract arr_delay from dep_delay and compare these values.
 
-```{r}
+```{r in_air_delays}
 # compare distance traveled over time 
 not_cancelled %>%
   group_by(dest) %>%
