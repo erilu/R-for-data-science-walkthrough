@@ -238,22 +238,143 @@ read_fwf(fwf_sample, fwf_cols(name = c(1, 10), ssn = c(30, 42)))
 read_fwf(fwf_sample, fwf_cols(name = 20, state = 10, ssn = 12))
 ```
 
-### 4. Sometimes strings in a CSV file contain commas. To prevent them from causing problems they need to be surrounded by a quoting character, like " or '. By convention, read_csv() assumes that the quoting character will be ", and if you want to change it you’ll need to use read_delim() instead. What arguments do you need to specify to read the following text into a data frame?
+### 4. Sometimes strings in a CSV file contain commas. To prevent them from causing problems they need to be surrounded by a quoting character, like " or '. By convention, read_csv() assumes that the quoting character will be ", and if you want to change it you’ll need to use read_delim() instead. What arguments do you need to specify to read the following text into a data frame? ```"x,y\n1,'a,b'"```
 
-```"x,y\n1,'a,b'"```
+In this example, the string is surrounded by the quoting character '. This is not what read_csv() default assumes. In the documentation it looks like you can specify the quote argument for both read_csv() and read_delim(). Below I read in the text using both methods, specifying ```quote = "\'"```.
 
-
+```{r}
+read_csv ("x,y\n1,'a,b'", quote = "\'")
+read_delim("x,y\n1,'a,b'", delim = ",", quote = "\'")
+```
 
 ### 5. Identify what is wrong with each of the following inline CSV files. What happens when you run the code?
+
+I have annotated the code below with the problems for each of the inline CSV files. The output should be displayed if you are viewing the rendered ```.md file``` (you won't see the output if this is a ```.Rmd``` file).
+
 ```{r}
+# There are not enough column names to go with the amount of columns in the data.
 read_csv("a,b\n1,2,3\n4,5,6")
+# Mismatched numbers of columns again. The first row only has 2, whereas the 2nd row has 4, and the header only has 3.
 read_csv("a,b,c\n1,2\n1,2,3,4")
+# Two header columns, and one column of data. Also the "1" is still being read in as an integer.
 read_csv("a,b\n\"1")
+# Since there are both integer values and character values in the same column, both columns are defined as character.
 read_csv("a,b\n1,2\na,b")
+# I assume ";" was meant to be the delimiter. The csv only has one observation. Use read_delim("a;b\n1;3", ";") instead.
 read_csv("a;b\n1;3")
 ```
 
 ## 11.3 Parsing a vector
+
+Parsing vectors or files can be useful to convert variables to their appropriate classes. For example, if a column of integer values was read in as characters, we can convert the data back into integers using parse_integer(). Below are the provided examples of use:
+
+```{r}
+str(parse_logical(c("TRUE", "FALSE", "NA")))
+str(parse_integer(c("1", "2", "3")))
+str(parse_date(c("2010-01-01", "1979-10-14")))
+```
+
+Below are the other examples using parsing functions. Using the problems() function on a parsed vector seems especially useful!
+
+```{r}
+# can specify na values if present in data
+parse_integer(c("1", "231", ".", "456"), na = ".")
+
+x <- parse_integer(c("123", "345", "abc", "123.45"))
+x
+problems(x)
+```
+
+### Parsing Numbers
+
+Reading in data obtained from outside the US is also tricky since there are different conventions used to display numerical data. For example, using "." instead of "," to mark decimal places or groupings. The functions have arguments that allow you to specify these marks. The examples provided in the book are below. parse_number() also ignores non-numerical symbols such as $ or %. However, parse_double does not seem to have this feature.
+
+```{r}
+# you can specify the decimal mark symbol if needed
+parse_double("1.23")
+parse_double("1,23", locale = locale(decimal_mark = ","))
+
+# parse_number() ignores non-numerical symbols
+parse_number("$100")
+parse_number("20%")
+parse_number("It cost $123.45")
+
+# You can also specify grouping marks if needed.
+# Used in America
+parse_number("$123,456,789")
+# Used in many parts of Europe
+parse_number("123.456.789", locale = locale(grouping_mark = "."))
+# Used in Switzerland
+parse_number("123'456'789", locale = locale(grouping_mark = "'"))
+```
+
+### Parsing Strings
+
+You can use parse_character() to parse strings. Each character in a string is encoded, and you can specify the encoding as an argument in parse_character(). To guess the encoding for a particular string you are parsing, you can use guess_encoding().
+
+```{r}
+x1 <- "El Ni\xf1o was particularly bad this year"
+x2 <- "\x82\xb1\x82\xf1\x82\xc9\x82\xbf\x82\xcd"
+
+parse_character(x1, locale = locale(encoding = "Latin1"))
+parse_character(x2, locale = locale(encoding = "Shift-JIS"))
+
+guess_encoding(charToRaw(x1))
+guess_encoding(charToRaw(x2))
+```
+
+### Parsing Factors
+
+To parse a vector of factors, you can use parse_factor(), specifying the levels that you are expecting to see. If a value in the vector does not exist in the levels argument, an error is returned.
+
+```{r}
+fruit <- c("apple", "banana")
+parse_factor(c("apple", "banana", "banana"), levels = fruit)
+parse_factor(c("apple", "banana", "bananana"), levels = fruit)
+```
+
+
+### Parsing Dates, Date-times, and Times
+
+There are three types of parsers for these purposes which spit out a combination of date, time, or date-time. Below are the provided examples from the book for each of the parsers.
+
+```{r}
+# date-time
+# requires input as year, month, day (mandatory), time-(optional)-hour, minute, second, 
+parse_datetime("2010-10-01T2010")
+parse_datetime("20101010")
+```
+
+```{r}
+# date - year, month, day
+# expects a four digit year, a - or /, the month, a - or /, then the day
+parse_date("2010-10-01")
+```
+
+```{r}
+#  expects the hour, :, minutes, optionally : and seconds, and an optional am/pm specifier:
+library(hms)
+parse_time("01:10 am")
+parse_time("01:10 pm")
+parse_time("20:10:01")
+```
+
+You can also create your own date-time format. There are many parameters you can specify for your date-time "key". See ?parse_date for the options. Depending on how you set up the "key", you may parse different dates from one set of numbers (book example below).
+
+```{r}
+# different dates are parsed depending on the key that you provide
+parse_date("01/02/15", "%m/%d/%y")
+parse_date("01/02/15", "%d/%m/%y")
+parse_date("01/02/15", "%y/%m/%d")
+
+```
+
+Last, as with parsing numbers, different countries may have different date formats. You can solve this by specifying the local argument, as we did with parse_integer().
+
+```{r}
+parse_date("1 janvier 2015", "%d %B %Y", locale = locale("fr"))
+```
+
 
 ## 11.3.5 Exercises
 ### 1. What are the most important arguments to locale()?
@@ -284,13 +405,173 @@ t2 <- "11:15:10.12 PM"
 ## 11.4 and 11.5 Parsing a file & Writing to a file
 
 
+# Chapter 12 Tidy Data
+
+## 12.2.1 Exercises
+
+### 1. Using prose, describe how the variables and observations are organised in each of the sample tables.
+
+### 2. Compute the rate for table2, and table4a + table4b. You will need to perform four operations:
+
+* Extract the number of TB cases per country per year.
+* Extract the matching population per country per year.
+* Divide cases by population, and multiply by 10000.
+* Store back in the appropriate place.
+
+Which representation is easiest to work with? Which is hardest? Why?
+
+### 3. Recreate the plot showing change in cases over time using table2 instead of table1. What do you need to do first?
+
+
+## 12.3.3 Exercises
+
+### 1. Why are gather() and spread() not perfectly symmetrical? Carefully consider the following example:
+```{r}
+stocks <- tibble(
+  year   = c(2015, 2015, 2016, 2016),
+  half  = c(   1,    2,     1,    2),
+  return = c(1.88, 0.59, 0.92, 0.17)
+)
+stocks %>% 
+  spread(year, return) %>% 
+  gather("year", "return", `2015`:`2016`)
+```
+(Hint: look at the variable types and think about column names.)
+
+Both spread() and gather() have a convert argument. What does it do?
+
+
+### 2. Why does this code fail?
+```{r}
+table4a %>% 
+  gather(1999, 2000, key = "year", value = "cases")
+#> Error in combine_vars(vars, ind_list): Position must be between 0 and n
+```
+
+
+### 3. Why does spreading this tibble fail? How could you add a new column to fix the problem?
+```{r}
+people <- tribble(
+  ~name,             ~key,    ~value,
+  #-----------------|--------|------
+  "Phillip Woods",   "age",       45,
+  "Phillip Woods",   "height",   186,
+  "Phillip Woods",   "age",       50,
+  "Jessica Cordero", "age",       37,
+  "Jessica Cordero", "height",   156
+)
+```
+
+
+### 4. Tidy the simple tibble below. Do you need to spread or gather it? What are the variables?
+```{r}
+preg <- tribble(
+  ~pregnant, ~male, ~female,
+  "yes",     NA,    10,
+  "no",      20,    12
+)
+
+```
 
 
 
+## 12.4.3 Exercises
+### 1. What do the extra and fill arguments do in separate()? Experiment with the various options for the following two toy datasets.
+```{r}
+tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
+  separate(x, c("one", "two", "three"))
+
+tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
+  separate(x, c("one", "two", "three"))
+```
+
+### 2. Both unite() and separate() have a remove argument. What does it do? Why would you set it to FALSE?
+
+### 3. Compare and contrast separate() and extract(). Why are there three variations of separation (by position, by separator, and with groups), but only one unite?
+
+
+##12.5.1 Exercises
+### 1. Compare and contrast the fill arguments to spread() and complete().
+
+### 2. What does the direction argument to fill() do?
+
+
+## 12.6.1 Exercises
+### 1. In this case study I set na.rm = TRUE just to make it easier to check that we had the correct values. Is this reasonable? Think about how missing values are represented in this dataset. Are there implicit missing values? What’s the difference between an NA and zero?
+
+### 2. What happens if you neglect the mutate() step? (mutate(key = stringr::str_replace(key, "newrel", "new_rel")))
+
+### 3. I claimed that iso2 and iso3 were redundant with country. Confirm this claim.
+
+### 4. For each country, year, and sex compute the total number of cases of TB. Make an informative visualisation of the data.
 
 
 
+# Chapter 13 Relational Data
+
+## 13.2.1 Exercises
+
+### 1. Imagine you wanted to draw (approximately) the route each plane flies from its origin to its destination. What variables would you need? What tables would you need to combine?
+
+### 2. I forgot to draw the relationship between weather and airports. What is the relationship and how should it appear in the diagram?
+
+### 3. weather only contains information for the origin (NYC) airports. If it contained weather records for all airports in the USA, what additional relation would it define with flights?
+
+### 4. We know that some days of the year are “special”, and fewer people than usual fly on them. How might you represent that data as a data frame? What would be the primary keys of that table? How would it connect to the existing tables?
 
 
+## 13.3.1 Exercises
+
+### 1. Add a surrogate key to flights.
+
+### 2. Identify the keys in the following datasets
+
+* Lahman::Batting,
+* babynames::babynames
+* nasaweather::atmos
+* fueleconomy::vehicles
+* ggplot2::diamonds
+(You might need to install some packages and read some documentation.)
+
+### 3. Draw a diagram illustrating the connections between the Batting, Master, and Salaries tables in the Lahman package. Draw another diagram that shows the relationship between Master, Managers, AwardsManagers. How would you characterise the relationship between the Batting, Pitching, and Fielding tables?
+
+
+
+## 13.4.6 Exercises
+
+### 1. Compute the average delay by destination, then join on the airports data frame so you can show the spatial distribution of delays. Here’s an easy way to draw a map of the United States:
+```{r}
+airports %>%
+  semi_join(flights, c("faa" = "dest")) %>%
+  ggplot(aes(lon, lat)) +
+    borders("state") +
+    geom_point() +
+    coord_quickmap()
+```
+
+(Don’t worry if you don’t understand what semi_join() does — you’ll learn about it next.)
+You might want to use the size or colour of the points to display the average delay for each airport.
+
+### 2. Add the location of the origin and destination (i.e. the lat and lon) to flights.
+
+### 3. Is there a relationship between the age of a plane and its delays?
+
+### 4. What weather conditions make it more likely to see a delay?
+
+### 5. What happened on June 13 2013? Display the spatial pattern of delays, and then use Google to cross-reference with the weather.
+
+
+## 13.5.1 Exercises
+### 1. What does it mean for a flight to have a missing tailnum? What do the tail numbers that don’t have a matching record in planes have in common? (Hint: one variable explains ~90% of the problems.)
+
+### 2. Filter flights to only show flights with planes that have flown at least 100 flights.
+
+### 3. Combine fueleconomy::vehicles and fueleconomy::common to find only the records for the most common models.
+
+### 4. Find the 48 hours (over the course of the whole year) that have the worst delays. Cross-reference it with the weather data. Can you see any patterns?
+
+### 5. What does anti_join(flights, airports, by = c("dest" = "faa")) tell you? What does anti_join(airports, flights, by = c("faa" = "dest")) tell you?
+
+### 6. You might expect that there’s an implicit relationship between plane and airline, because each plane is flown by a single airline. Confirm or reject this hypothesis using the tools you’ve learned above.
 
 
