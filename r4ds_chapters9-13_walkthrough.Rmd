@@ -375,29 +375,76 @@ Last, as with parsing numbers, different countries may have different date forma
 parse_date("1 janvier 2015", "%d %B %Y", locale = locale("fr"))
 ```
 
-
 ## 11.3.5 Exercises
+
 ### 1. What are the most important arguments to locale()?
+
+If you are using locale() for parse_number(), then the most important arguments are ```decimal_mark``` and ```grouping_mark```. For parse_character(), you should specify ```encoding```. For parse_date(), you should specify the region using the appropriate characters.
 
 ### 2. What happens if you try and set decimal_mark and grouping_mark to the same character? What happens to the default value of grouping_mark when you set decimal_mark to “,”? What happens to the default value of decimal_mark when you set the grouping_mark to “.”?
 
+When you try to set them to the same character, you get an error: ```Error: `decimal_mark` and `grouping_mark` must be different``` The default grouping_mark becomes '.' if decimal_mark is set to ','.
+
+```{r}
+# parse_number("1,234.567", locale = locale(grouping_mark = '.', decimal_mark = '.')) # This Errors!
+parse_number("1.234,567", locale = locale(decimal_mark = ','))
+parse_number("1.234,567", locale = locale(grouping_mark = '.'))
+```
+
 ### 3. I didn’t discuss the date_format and time_format options to locale(). What do they do? Construct an example that shows when they might be useful.
+
+The date_format and time_format specify the date and time formats for the parse function, which are by default ```date_format = "%AD"``` and ```time_format = "%AT"```. From the readr vignette, for date_format, "The default value is %AD which uses an automatic date parser that recognises dates of the format Y-m-d or Y/m/d." For time_format, "The default value is %At which uses an automatic time parser that recognises times of the form H:M optionally followed by seconds and am/pm." I could see this useful to specify a custom date_format for american dates, which are often entered as m-d-Y instead of the default Y-m-d. The full four year date is also often truncated to the last 2 digits, which might result in an error without specifying it in date_format. Below is an example.
+
+```{r}
+# today's american date parsed incorrectly using default date_format (throws error)
+parse_date("05/24/18")
+# today's american date parsed correctly by specifying date_format
+parse_date("05/24/18", locale = locale(date_format = "%m/%d/%y"))
+```
 
 ### 4. If you live outside the US, create a new locale object that encapsulates the settings for the types of file you read most commonly.
 
+I live in the US, but for practice purposes lets say I move to Colombia. I might have to commonly read in old files that are not UTF-8 encoded, but latin1 encoded. The decimal marks are also "," instead of ".". Below is an example locale object for these requirements.
+
+```{r}
+locale(date_names = "es", decimal_mark = ",", encoding = "latin1")
+```
+
 ### 5. What’s the difference between read_csv() and read_csv2()?
+
+Base on the documentation, read_csv2() uses semicolons ";" as separators, instead of ",". read_csv2() would ideally be used if the comma "," is used as a decimal point within the file, which would mess up read_csv(). Below is an example:
+
+```{r}
+# messed up because "," is used as a decimal point
+read_csv("a;b\n1,0;2,0")
+# using read_csv2 fixes the problem
+read_csv2("a;b\n1,0;2,0")
+```
 
 ### 6. What are the most common encodings used in Europe? What are the most common encodings used in Asia? Do some googling to find out.
 
-### 7. Generate the correct format string to parse each of the following dates and times:
-```{r}
+Common encodings used in Europe are: 
+Common encodings used in Asia are:
 
+### 7. Generate the correct format string to parse each of the following dates and times:
+
+My answers are in the R code below. Helpful descriptions for the format string paramters are found at ?parse_datetime.
+
+```{r}
 d1 <- "January 1, 2010"
+parse_date (d1, "%B%e%*%Y")
+
 d2 <- "2015-Mar-07"
+parse_date(d2, "%Y-%b-%d")
+
 d3 <- "06-Jun-2017"
+
 d4 <- c("August 19 (2015)", "July 1 (2015)")
+
 d5 <- "12/30/14" # Dec 30, 2014
+
 t1 <- "1705"
+
 t2 <- "11:15:10.12 PM"
 ```
 
@@ -443,8 +490,8 @@ Both spread() and gather() have a convert argument. What does it do?
 
 ### 2. Why does this code fail?
 ```{r}
-table4a %>% 
-  gather(1999, 2000, key = "year", value = "cases")
+# table4a %>% 
+#   gather(1999, 2000, key = "year", value = "cases")
 #> Error in combine_vars(vars, ind_list): Position must be between 0 and n
 ```
 
@@ -541,6 +588,7 @@ tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
 
 ### 1. Compute the average delay by destination, then join on the airports data frame so you can show the spatial distribution of delays. Here’s an easy way to draw a map of the United States:
 ```{r}
+library(nycflights13)
 airports %>%
   semi_join(flights, c("faa" = "dest")) %>%
   ggplot(aes(lon, lat)) +
