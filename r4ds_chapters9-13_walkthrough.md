@@ -10,7 +10,8 @@ Erick Lu
     -   [11.2.2 Exercises](#exercises-1)
     -   [11.3 Parsing a vector](#parsing-a-vector)
     -   [11.3.5 Exercises](#exercises-2)
-    -   [11.4 and 11.5 Parsing a file & Writing to a file](#and-11.5-parsing-a-file-writing-to-a-file)
+    -   [11.4 Parsing a file](#parsing-a-file)
+    -   [11.5 Writing to a file](#writing-to-a-file)
 -   [Chapter 12 Tidy Data](#chapter-12-tidy-data)
     -   [12.2.1 Exercises](#exercises-3)
     -   [12.3.3 Exercises](#exercises-4)
@@ -133,19 +134,19 @@ df <- tibble(
 df$x
 ```
 
-    ## [1] 0.08101037 0.11158800 0.90870677 0.40799873 0.33430156
+    ## [1] 0.76496530 0.26593143 0.21536696 0.03861285 0.33243504
 
 ``` r
 df[["x"]]
 ```
 
-    ## [1] 0.08101037 0.11158800 0.90870677 0.40799873 0.33430156
+    ## [1] 0.76496530 0.26593143 0.21536696 0.03861285 0.33243504
 
 ``` r
 df[[1]]
 ```
 
-    ## [1] 0.08101037 0.11158800 0.90870677 0.40799873 0.33430156
+    ## [1] 0.76496530 0.26593143 0.21536696 0.03861285 0.33243504
 
 10.5 Exercises
 --------------
@@ -333,16 +334,16 @@ annoying %>%
     ## # A tibble: 10 x 3
     ##      `1`   `2`   `3`
     ##    <int> <dbl> <dbl>
-    ##  1     1  2.49  2.49
-    ##  2     2  3.22  1.61
-    ##  3     3  6.63  2.21
-    ##  4     4  6.46  1.61
-    ##  5     5  9.02  1.80
-    ##  6     6 11.9   1.98
-    ##  7     7 13.4   1.92
-    ##  8     8 16.2   2.03
+    ##  1     1  3.66  3.66
+    ##  2     2  3.08  1.54
+    ##  3     3  5.52  1.84
+    ##  4     4  6.70  1.68
+    ##  5     5 10.4   2.07
+    ##  6     6 12.6   2.10
+    ##  7     7 12.3   1.76
+    ##  8     8 15.0   1.88
     ##  9     9 17.7   1.97
-    ## 10    10 20.0   2.00
+    ## 10    10 19.2   1.92
 
 -   Renaming the columns to one, two and three.
 
@@ -355,16 +356,16 @@ annoying %>%
     ## # A tibble: 10 x 3
     ##      one   two three
     ##    <int> <dbl> <dbl>
-    ##  1     1  2.49  2.49
-    ##  2     2  3.22  1.61
-    ##  3     3  6.63  2.21
-    ##  4     4  6.46  1.61
-    ##  5     5  9.02  1.80
-    ##  6     6 11.9   1.98
-    ##  7     7 13.4   1.92
-    ##  8     8 16.2   2.03
+    ##  1     1  3.66  3.66
+    ##  2     2  3.08  1.54
+    ##  3     3  5.52  1.84
+    ##  4     4  6.70  1.68
+    ##  5     5 10.4   2.07
+    ##  6     6 12.6   2.10
+    ##  7     7 12.3   1.76
+    ##  8     8 15.0   1.88
     ##  9     9 17.7   1.97
-    ## 10    10 20.0   2.00
+    ## 10    10 19.2   1.92
 
 ### 5. What does tibble::enframe() do? When might you use it?
 
@@ -377,18 +378,18 @@ enframe(x)
 ```
 
     ## # A tibble: 100 x 2
-    ##    name    value
-    ##    <chr>   <dbl>
-    ##  1 5     -1.56  
-    ##  2 6     -0.746 
-    ##  3 7      0.170 
-    ##  4 8     -0.316 
-    ##  5 9      1.23  
-    ##  6 10     0.0133
-    ##  7 11     1.18  
-    ##  8 12     1.86  
-    ##  9 13    -0.490 
-    ## 10 14     0.0899
+    ##    name   value
+    ##    <chr>  <dbl>
+    ##  1 5      2.04 
+    ##  2 6     -0.909
+    ##  3 7     -0.919
+    ##  4 8      1.65 
+    ##  5 9      1.15 
+    ##  6 10     0.546
+    ##  7 11    -0.529
+    ##  8 12     0.145
+    ##  9 13     1.38 
+    ## 10 14     0.111
     ## # ... with 90 more rows
 
 ``` r
@@ -1079,7 +1080,11 @@ read_csv2("a;b\n1,0;2,0")
 
 ### 6. What are the most common encodings used in Europe? What are the most common encodings used in Asia? Do some googling to find out.
 
-Common encodings used in Europe are: Common encodings used in Asia are:
+I got the info from the ?stringi::stri\_enc\_detect documentation.
+
+Common encodings used in Europe are: ISO-8859-1, ISO-8859-2, windows-1252, ISO-8859-7 Common encodings used in Asia are: Shift\_JIS, ISO-2022-JP, ISO-2022-CN, ISO-2022-KR, GB18030, EUC-JP, EUC-KR
+
+UTF-8 is widely popular now, and you can also use guess\_encoding() if you are unsure what encoding to use. There is also a lot of info about encoding on Wikipedia.
 
 ### 7. Generate the correct format string to parse each of the following dates and times:
 
@@ -1101,18 +1106,244 @@ parse_date(d2, "%Y-%b-%d")
 
 ``` r
 d3 <- "06-Jun-2017"
-
-d4 <- c("August 19 (2015)", "July 1 (2015)")
-
-d5 <- "12/30/14" # Dec 30, 2014
-
-t1 <- "1705"
-
-t2 <- "11:15:10.12 PM"
+parse_date(d3, "%d-%b-%Y")
 ```
 
-11.4 and 11.5 Parsing a file & Writing to a file
-------------------------------------------------
+    ## [1] "2017-06-06"
+
+``` r
+d4 <- c("August 19 (2015)", "July 1 (2015)")
+parse_date(d4, "%B %d (%Y)")
+```
+
+    ## [1] "2015-08-19" "2015-07-01"
+
+``` r
+d5 <- "12/30/14" # Dec 30, 2014
+parse_date(d5, "%m/%d/%y")
+```
+
+    ## [1] "2014-12-30"
+
+``` r
+t1 <- "1705"
+parse_time(t1, "%H%M")
+```
+
+    ## 17:05:00
+
+``` r
+t2 <- "11:15:10.12 PM"
+parse_time(t2, "%I:%M:%OS %p")
+```
+
+    ## 23:15:10.12
+
+11.4 Parsing a file
+-------------------
+
+The parsers that we learned about in the previous section are automatically applied by readr when reading in a file using read\_csv() or other reading functions. These guess the type of data in each column being read in, using a combination of guess\_parser() and parse\_guess() on the first 1000 rows of observations.
+
+``` r
+guess_parser(c("TRUE", "FALSE"))
+```
+
+    ## [1] "logical"
+
+``` r
+parse_guess("2010-10-10")
+```
+
+    ## [1] "2010-10-10"
+
+There are usually a lot of issues when parsing a large, unorganized file. readr has a "challenge" example that displays some of the issues that arise:
+
+``` r
+challenge <- read_csv(readr_example("challenge.csv"))
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   x = col_integer(),
+    ##   y = col_character()
+    ## )
+
+    ## Warning in rbind(names(probs), probs_f): number of columns of result is not
+    ## a multiple of vector length (arg 1)
+
+    ## Warning: 1000 parsing failures.
+    ## row # A tibble: 5 x 5 col     row col   expected               actual             file               expected   <int> <chr> <chr>                  <chr>              <chr>              actual 1  1001 x     no trailing characters .23837975086644292 '/Library/Framewo… file 2  1002 x     no trailing characters .41167997173033655 '/Library/Framewo… row 3  1003 x     no trailing characters .7460716762579978  '/Library/Framewo… col 4  1004 x     no trailing characters .723450553836301   '/Library/Framewo… expected 5  1005 x     no trailing characters .614524137461558   '/Library/Framewo…
+    ## ... ................. ... .......................................................................... ........ .......................................................................... ...... .......................................................................... .... .......................................................................... ... .......................................................................... ... .......................................................................... ........ ..........................................................................
+    ## See problems(...) for more details.
+
+Since the default only looks at the first 1000 rows, we can run into issues if the first 1000 rows or more have troubling characteristics. Here there are many issues displayed in the output after attempting to read the file in. It is very helpful that the error output displays what the function attempted to do. We see that it attempted to parse column x using col\_integer(), and column y using col\_character(). We can see more details by using problems():
+
+``` r
+problems(challenge)
+```
+
+    ## # A tibble: 1,000 x 5
+    ##      row col   expected               actual             file             
+    ##    <int> <chr> <chr>                  <chr>              <chr>            
+    ##  1  1001 x     no trailing characters .23837975086644292 '/Library/Framew…
+    ##  2  1002 x     no trailing characters .41167997173033655 '/Library/Framew…
+    ##  3  1003 x     no trailing characters .7460716762579978  '/Library/Framew…
+    ##  4  1004 x     no trailing characters .723450553836301   '/Library/Framew…
+    ##  5  1005 x     no trailing characters .614524137461558   '/Library/Framew…
+    ##  6  1006 x     no trailing characters .473980569280684   '/Library/Framew…
+    ##  7  1007 x     no trailing characters .5784610391128808  '/Library/Framew…
+    ##  8  1008 x     no trailing characters .2415937229525298  '/Library/Framew…
+    ##  9  1009 x     no trailing characters .11437866208143532 '/Library/Framew…
+    ## 10  1010 x     no trailing characters .2983446326106787  '/Library/Framew…
+    ## # ... with 990 more rows
+
+``` r
+tail(challenge)
+```
+
+    ## # A tibble: 6 x 2
+    ##       x y         
+    ##   <int> <chr>     
+    ## 1    NA 2019-11-21
+    ## 2    NA 2018-03-29
+    ## 3    NA 2014-08-04
+    ## 4    NA 2015-08-16
+    ## 5    NA 2020-02-04
+    ## 6    NA 2019-01-06
+
+``` r
+typeof(challenge$x)
+```
+
+    ## [1] "integer"
+
+``` r
+typeof(challenge$y)
+```
+
+    ## [1] "character"
+
+``` r
+unique(challenge$y[1:1000])
+```
+
+    ## [1] NA
+
+The values for column x after row 1000 seem to be doubles, rather than integers. We can fix this by changing the default parsing function from col\_integer() to col\_double(). We also observe that column y contains date values, but the default type was character, since the first 1000 values were NA. We can fix this by changing col\_character() to col\_date().
+
+``` r
+challenge <- read_csv(
+  readr_example("challenge.csv"), 
+  col_types = cols(
+    x = col_double(),
+    y = col_date()
+  )
+)
+tail(challenge)
+```
+
+    ## # A tibble: 6 x 2
+    ##       x y         
+    ##   <dbl> <date>    
+    ## 1 0.805 2019-11-21
+    ## 2 0.164 2018-03-29
+    ## 3 0.472 2014-08-04
+    ## 4 0.718 2015-08-16
+    ## 5 0.270 2020-02-04
+    ## 6 0.608 2019-01-06
+
+``` r
+typeof(challenge$x)
+```
+
+    ## [1] "double"
+
+``` r
+typeof(challenge$y)
+```
+
+    ## [1] "double"
+
+Hadley recommends that we should always examine the output of the read\_() function and re-specify the col\_parsers to match what is appropriate for the data. One strategy around this that he describes, which I think would probably be more straightforward if you have many, many columns of data, is to read everything in as a character, then use type\_convert() on the table to convert to the appropriate types. We can see in the example below that type\_convert() properly converts column x to double and column y to date formats.
+
+``` r
+challenge2 <- read_csv(readr_example("challenge.csv"), 
+  col_types = cols(.default = col_character())
+)
+challenge2
+```
+
+    ## # A tibble: 2,000 x 2
+    ##    x     y    
+    ##    <chr> <chr>
+    ##  1 404   <NA> 
+    ##  2 4172  <NA> 
+    ##  3 3004  <NA> 
+    ##  4 787   <NA> 
+    ##  5 37    <NA> 
+    ##  6 2332  <NA> 
+    ##  7 2489  <NA> 
+    ##  8 1449  <NA> 
+    ##  9 3665  <NA> 
+    ## 10 3863  <NA> 
+    ## # ... with 1,990 more rows
+
+``` r
+type_convert(challenge2)
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   x = col_double(),
+    ##   y = col_date(format = "")
+    ## )
+
+    ## # A tibble: 2,000 x 2
+    ##        x y         
+    ##    <dbl> <date>    
+    ##  1   404 NA        
+    ##  2  4172 NA        
+    ##  3  3004 NA        
+    ##  4   787 NA        
+    ##  5    37 NA        
+    ##  6  2332 NA        
+    ##  7  2489 NA        
+    ##  8  1449 NA        
+    ##  9  3665 NA        
+    ## 10  3863 NA        
+    ## # ... with 1,990 more rows
+
+The functions read\_lines() and read\_file() also seem useful to read in the raw lines or unstructured text of a file, in order to better understand the type of data contained. Unless you want to manipulate the strings or extract data using regexes, it might be more efficient to use `less` in your terminal to view the data file, rather than read\_file().
+
+``` r
+# use read_lines to read individual lines of the file
+head(read_lines(readr_example("challenge.csv")))
+```
+
+    ## [1] "x,y"     "404,NA"  "4172,NA" "3004,NA" "787,NA"  "37,NA"
+
+``` r
+#use read_file to read the entire file in as one string
+substr(read_file(readr_example("challenge.csv")), 1, 100)
+```
+
+    ## [1] "x,y\n404,NA\n4172,NA\n3004,NA\n787,NA\n37,NA\n2332,NA\n2489,NA\n1449,NA\n3665,NA\n3863,NA\n4374,NA\n875,NA\n172,N"
+
+11.5 Writing to a file
+----------------------
+
+The functions write\_csv() and write\_tsv() are useful functions to write data.frames or tibbles in R to files. When writing files, it is important to use UTF-8 encoding for strings and save dates/date-times in ISO8601 format. There is also a special function for writing to excel: write\_excel\_csv(). write\_rds() will save the actual R object containing the data frame, so that if you load the `.rds` using read\_rds() you can access the data as it was at the time of save. Think of this as using save() in base R to save a `.Robj` for a variable you want to keep track of. You could also use write\_feather() from the `feather` package to save the data in a format accessible by other programming languages, or read it back into R using read\_feather().
+
+``` r
+# write_csv(challenge, "challenge.csv")
+# write_rds(challenge, "challenge.rds")
+# library(feather)
+# write_feather(challenge, "challenge.feather")
+```
+
+When executing the above write\_csv() or write\_rds(), the files will appear in your working directory, which if you are using an R notebook, conveniently is where your `.Rmd` file is being kept!
+
+There are also other types of files that might be read in. You can use haven for reading in SPSS, Stata, and SAS files, readxl for excel files, DBI to run SQL queries against databases (returns data frame), jsonlite for json, and xml2 for XML.
 
 Chapter 12 Tidy Data
 ====================
@@ -1299,7 +1530,7 @@ airports %>%
     ## 
     ##     map
 
-![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/unnamed-chunk-42-1.png)
+![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/unnamed-chunk-49-1.png)
 
 (Don’t worry if you don’t understand what semi\_join() does — you’ll learn about it next.) You might want to use the size or colour of the points to display the average delay for each airport.
 
