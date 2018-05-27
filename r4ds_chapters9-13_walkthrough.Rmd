@@ -532,9 +532,33 @@ There are also other types of files that might be read in. You can use haven for
 
 # Chapter 12 Tidy Data
 
+Below is the example provided by the book of the same data presented in 4 different ways. One way is tidy, the others are not!
+
+```{r}
+table1
+table2
+table3
+# data spread across 2 tables
+table4a # cases
+table4b # population
+```
+
+The three rules that must be satisfied for data to be "tidy" are: 
+
+* Each variable must have its own column.
+* Each observation must have its own row.
+* Each value must have its own cell.
+
+Using these rules, the a tidy dataset from above is ```table1```. The packages in the tidyverse such as ggplot2, dplyr, etc. are designed to work with tidy data, so we must learn how to reorganize data and clean it up in the event that we receive a dataset that is not tidy (which is very often).
+
 ## 12.2.1 Exercises
 
 ### 1. Using prose, describe how the variables and observations are organised in each of the sample tables.
+
+* In table1, each of the variables are organized into columns, and each observation is in a separate row. Each row presents a unique combination of variables and respective observations, and each value has its own cell. This is considered a tidy dataset.
+* In table2, each observation is in a separate row, but each variable does not have its own column. This is not a tidy dataset. To "tidy" this data, population and cases should be separated into individual rows, based on the count column. Count is not considered a variable. Rather, it is considered a value.
+* In table 3, population and cases have been combined into a single column, "rate". Note that this is **not** the actual value of the cases divided by the population (as you might obtain using a mutate()), rather it is a character listing the two separate items! If we had not known there were two variables combined into one column, we might have called this a tidy dataset. I would find a way to split the rate into cases and population, then use mutate() to calculate the rate.
+* In table 4a and 4b, the data for population and cases have been split into two separate tables. The date variable is spread across the columns, and each row of each table represents an individual observation. The two tables have the same country column, and look like something you would see when working with relational data.
 
 ### 2. Compute the rate for table2, and table4a + table4b. You will need to perform four operations:
 
@@ -545,7 +569,20 @@ There are also other types of files that might be read in. You can use haven for
 
 Which representation is easiest to work with? Which is hardest? Why?
 
+
+
+
 ### 3. Recreate the plot showing change in cases over time using table2 instead of table1. What do you need to do first?
+
+First, we need to tidy table2 so that we can use it with ggplot2, using the spread() function. Then, we can use the ggplot() function in the same manner as in the book example.
+
+```{r}
+table2 %>%
+  spread(key = type, value = count) %>%
+  ggplot(aes(year, cases)) + 
+    geom_line(aes(group = country), colour = "grey50") + 
+    geom_point(aes(colour = country))
+```
 
 
 ## 12.3.3 Exercises
