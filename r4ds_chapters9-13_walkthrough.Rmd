@@ -569,8 +569,32 @@ Using these rules, the a tidy dataset from above is ```table1```. The packages i
 
 Which representation is easiest to work with? Which is hardest? Why?
 
+I will try doing the above operations without using tidyr functions. 
+
+For table2, we can first filter for the TB cases using filter(), then filter for the population per country using filter() as well. Then we can divide the two, multiply by 10000, and bind the results back to the original table2 by using cbind(). Since there are two rows in table2 corresponding to the same rate value, we must duplicate each rate twice using ```rep( each = 2 )``` before binding to table2. This preserves the original structure of table2, and has the rate stored in the appropriate places. Using the spread() function in tidyr to generate tidy data and then using mutate() is much easier!
+
+For table 4a and 4b, we can extract the 1999 values from each table and perform the rate calculation, and do the same thing for the 2000 values.Then, we can bind these rates back to both table4a and 4b using cbind. This preserves the original structure for both tables.
+
+```{r}
+# perform the operations above for table 2a, without using spread()
+rate_table2 <- ((filter (table2, type == 'cases')$count / # select cases
+  filter (table2, type == 'population')$count) * 10000) %>% # divide by populatoin
+  rep(each = 2) # repeat each element twice, maintaining the order of the vector
+cbind(table2,rate_table2)
+
+# using spread() and dplyr is more straightforward and results in tidy data.
+table2 %>%
+  spread(key = type, value = count) %>%
+  mutate(rate = (cases / population) * 10000)
+
+# perform the operations above for table 4a and 4b
+rate_1999 <- (table4a$`1999` / table4b$`1999`)*10000
+rate_2000 <- (table4a$`2000` / table4b$`2000`)*10000
+cbind (table4a, rate_1999, rate_2000)
+cbind (table4b, rate_1999, rate_2000)
 
 
+```
 
 ### 3. Recreate the plot showing change in cases over time using table2 instead of table1. What do you need to do first?
 
@@ -584,6 +608,25 @@ table2 %>%
     geom_point(aes(colour = country))
 ```
 
+## 12.3.1 Spreading and Gathering
+
+If some column names are not names of variables, but rather values of variables, it will be helful to "gather" these columns into a single column and map the values accordingly. For example, table4a and table4b has values for 1999 and 2000 split across multiple columns. To gather the values, use gather() by specifying the names of the columns to gather, and the names of the variable that is being gathered (key) and the value (value) that is being redistributed.
+
+```{r}
+table4a %>% 
+  gather(`1999`, `2000`, key = "year", value = "cases")
+
+table4b %>% 
+  gather(`1999`, `2000`, key = "year", value = "population")
+```
+
+12.3.2 Spreading
+
+When an observation is spread across multiple rows, as in table2, you can spread the data into multiple columns such that each row contains data from a single observation. In table2, each observation is considered a country in a year. Cases and populations for each country/year observation can be split from the type column into their own columns.
+
+```{r}
+spread(table2, key = type, value = count)
+```
 
 ## 12.3.3 Exercises
 
@@ -594,14 +637,26 @@ stocks <- tibble(
   half  = c(   1,    2,     1,    2),
   return = c(1.88, 0.59, 0.92, 0.17)
 )
+stocks
+stocks %>% 
+  spread(year, return)
 stocks %>% 
   spread(year, return) %>% 
   gather("year", "return", `2015`:`2016`)
 ```
 (Hint: look at the variable types and think about column names.)
 
+There are a couple differences between the unmodified stocks tibble and the spread and gathered tibble. The spread and gathered stocks tibble has the columns ordered differently. Also, the the types of each column have changed. The original tibble had 3 columns of type <dbl> whereas the spread and gathered tibble has changed the year column to <chr>. The column names can also be changed by spreading and gathering, since they have to be specified as arguments in gather().
+
 Both spread() and gather() have a convert argument. What does it do?
 
+If set to TRUE (the default is FALSE), then the function type.convert() with asis = TRUE will be run on each of the new columns in the spread() or gather() output. This will try to convert the columns to variables of the appropriate type. For example, using convert = TRUE on the example above causes the year column to become an <int> rather than <chr>.
+
+```{r}
+stocks %>% 
+  spread(year, return) %>% 
+  gather("year", "return", `2015`:`2016`, convert = TRUE)
+```
 
 ### 2. Why does this code fail?
 ```{r}
@@ -610,6 +665,12 @@ Both spread() and gather() have a convert argument. What does it do?
 #> Error in combine_vars(vars, ind_list): Position must be between 0 and n
 ```
 
+The code fails because the variables passed into gather(), 1999 and 2000, are not written correctly. They should be encased in backticks, like this: `1999` and `2000`. The code below works.
+
+```{r}
+table4a %>% 
+   gather(`1999`, `2000`, key = "year", value = "cases")
+```
 
 ### 3. Why does spreading this tibble fail? How could you add a new column to fix the problem?
 ```{r}
@@ -622,8 +683,33 @@ people <- tribble(
   "Jessica Cordero", "age",       37,
   "Jessica Cordero", "height",   156
 )
+# spreading fails
+#spread(people, key, value)
+
+people2 <- tribble(
+  ~name,             ~key,    ~value,
+  #-----------------|--------|------
+  "Phillip Woods",   "age",       45,
+  "Phillip Woods",   "height",   186,
+  "Phillip Woods2",   "age",       50,
+  "Jessica Cordero", "age",       37,
+  "Jessica Cordero", "height",   156
+)
+spread(people2, key, value)
+people3 <- tribble(
+  ~name,             ~key,    ~value, ~index,
+  #-----------------|--------|------|------
+  "Phillip Woods",   "age",       45, 1,
+  "Phillip Woods",   "height",   186, 1,
+  "Phillip Woods",   "age",       50, 2,
+  "Jessica Cordero", "age",       37, 3,
+  "Jessica Cordero", "height",   156, 3
+)
+# works now
+spread(people3, key, value)
 ```
 
+Spreading the provided tribble fails because there is a duplicate value for the variables name and key. If I modify the second "Phillip Woods" value to "Phillip Woods2", the spread() function works. If I add another column named "index" that identifies the unique sets of age and height, spread() also works. In any case, spread() requires a unique combination of variables to spread against.
 
 ### 4. Tidy the simple tibble below. Do you need to spread or gather it? What are the variables?
 ```{r}
@@ -632,9 +718,14 @@ preg <- tribble(
   "yes",     NA,    10,
   "no",      20,    12
 )
-
 ```
 
+I would need to gather the data. We can combine the male and female designation into a column called "gender", and gather the 4 numerical observations into a column called "cases". Below is the code required to do this.
+
+```{r}
+preg %>%
+  gather(male, female, key = "gender", value = "cases")
+```
 
 
 ## 12.4.3 Exercises
@@ -646,6 +737,8 @@ tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>%
 tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
   separate(x, c("one", "two", "three"))
 ```
+
+
 
 ### 2. Both unite() and separate() have a remove argument. What does it do? Why would you set it to FALSE?
 

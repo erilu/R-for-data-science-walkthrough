@@ -14,6 +14,7 @@ Erick Lu
     -   [11.5 Writing to a file](#writing-to-a-file)
 -   [Chapter 12 Tidy Data](#chapter-12-tidy-data)
     -   [12.2.1 Exercises](#exercises-3)
+    -   [12.3.1 Spreading and Gathering](#spreading-and-gathering)
     -   [12.3.3 Exercises](#exercises-4)
     -   [12.4.3 Exercises](#exercises-5)
     -   [12.5.1 Exercises](#exercises-6)
@@ -134,19 +135,19 @@ df <- tibble(
 df$x
 ```
 
-    ## [1] 0.76496530 0.26593143 0.21536696 0.03861285 0.33243504
+    ## [1] 0.6801368 0.1621273 0.9235521 0.5015813 0.1049575
 
 ``` r
 df[["x"]]
 ```
 
-    ## [1] 0.76496530 0.26593143 0.21536696 0.03861285 0.33243504
+    ## [1] 0.6801368 0.1621273 0.9235521 0.5015813 0.1049575
 
 ``` r
 df[[1]]
 ```
 
-    ## [1] 0.76496530 0.26593143 0.21536696 0.03861285 0.33243504
+    ## [1] 0.6801368 0.1621273 0.9235521 0.5015813 0.1049575
 
 10.5 Exercises
 --------------
@@ -334,16 +335,16 @@ annoying %>%
     ## # A tibble: 10 x 3
     ##      `1`   `2`   `3`
     ##    <int> <dbl> <dbl>
-    ##  1     1  3.66  3.66
-    ##  2     2  3.08  1.54
-    ##  3     3  5.52  1.84
-    ##  4     4  6.70  1.68
-    ##  5     5 10.4   2.07
-    ##  6     6 12.6   2.10
-    ##  7     7 12.3   1.76
-    ##  8     8 15.0   1.88
-    ##  9     9 17.7   1.97
-    ## 10    10 19.2   1.92
+    ##  1     1  1.87  1.87
+    ##  2     2  4.20  2.10
+    ##  3     3  5.12  1.71
+    ##  4     4  8.65  2.16
+    ##  5     5 10.3   2.06
+    ##  6     6 11.5   1.91
+    ##  7     7 13.9   1.99
+    ##  8     8 15.7   1.96
+    ##  9     9 18.8   2.09
+    ## 10    10 19.9   1.99
 
 -   Renaming the columns to one, two and three.
 
@@ -356,16 +357,16 @@ annoying %>%
     ## # A tibble: 10 x 3
     ##      one   two three
     ##    <int> <dbl> <dbl>
-    ##  1     1  3.66  3.66
-    ##  2     2  3.08  1.54
-    ##  3     3  5.52  1.84
-    ##  4     4  6.70  1.68
-    ##  5     5 10.4   2.07
-    ##  6     6 12.6   2.10
-    ##  7     7 12.3   1.76
-    ##  8     8 15.0   1.88
-    ##  9     9 17.7   1.97
-    ## 10    10 19.2   1.92
+    ##  1     1  1.87  1.87
+    ##  2     2  4.20  2.10
+    ##  3     3  5.12  1.71
+    ##  4     4  8.65  2.16
+    ##  5     5 10.3   2.06
+    ##  6     6 11.5   1.91
+    ##  7     7 13.9   1.99
+    ##  8     8 15.7   1.96
+    ##  9     9 18.8   2.09
+    ## 10    10 19.9   1.99
 
 ### 5. What does tibble::enframe() do? When might you use it?
 
@@ -380,16 +381,16 @@ enframe(x)
     ## # A tibble: 100 x 2
     ##    name   value
     ##    <chr>  <dbl>
-    ##  1 5      2.04 
-    ##  2 6     -0.909
-    ##  3 7     -0.919
-    ##  4 8      1.65 
-    ##  5 9      1.15 
-    ##  6 10     0.546
-    ##  7 11    -0.529
-    ##  8 12     0.145
-    ##  9 13     1.38 
-    ## 10 14     0.111
+    ##  1 5      0.144
+    ##  2 6     -0.897
+    ##  3 7      0.163
+    ##  4 8     -1.63 
+    ##  5 9     -1.01 
+    ##  6 10    -0.855
+    ##  7 11    -1.73 
+    ##  8 12    -1.31 
+    ##  9 13    -2.13 
+    ## 10 14     2.00 
     ## # ... with 90 more rows
 
 ``` r
@@ -1348,10 +1349,96 @@ There are also other types of files that might be read in. You can use haven for
 Chapter 12 Tidy Data
 ====================
 
+Below is the example provided by the book of the same data presented in 4 different ways. One way is tidy, the others are not!
+
+``` r
+table1
+```
+
+    ## # A tibble: 6 x 4
+    ##   country      year  cases population
+    ##   <chr>       <int>  <int>      <int>
+    ## 1 Afghanistan  1999    745   19987071
+    ## 2 Afghanistan  2000   2666   20595360
+    ## 3 Brazil       1999  37737  172006362
+    ## 4 Brazil       2000  80488  174504898
+    ## 5 China        1999 212258 1272915272
+    ## 6 China        2000 213766 1280428583
+
+``` r
+table2
+```
+
+    ## # A tibble: 12 x 4
+    ##    country      year type            count
+    ##    <chr>       <int> <chr>           <int>
+    ##  1 Afghanistan  1999 cases             745
+    ##  2 Afghanistan  1999 population   19987071
+    ##  3 Afghanistan  2000 cases            2666
+    ##  4 Afghanistan  2000 population   20595360
+    ##  5 Brazil       1999 cases           37737
+    ##  6 Brazil       1999 population  172006362
+    ##  7 Brazil       2000 cases           80488
+    ##  8 Brazil       2000 population  174504898
+    ##  9 China        1999 cases          212258
+    ## 10 China        1999 population 1272915272
+    ## 11 China        2000 cases          213766
+    ## 12 China        2000 population 1280428583
+
+``` r
+table3
+```
+
+    ## # A tibble: 6 x 3
+    ##   country      year rate             
+    ## * <chr>       <int> <chr>            
+    ## 1 Afghanistan  1999 745/19987071     
+    ## 2 Afghanistan  2000 2666/20595360    
+    ## 3 Brazil       1999 37737/172006362  
+    ## 4 Brazil       2000 80488/174504898  
+    ## 5 China        1999 212258/1272915272
+    ## 6 China        2000 213766/1280428583
+
+``` r
+# data spread across 2 tables
+table4a # cases
+```
+
+    ## # A tibble: 3 x 3
+    ##   country     `1999` `2000`
+    ## * <chr>        <int>  <int>
+    ## 1 Afghanistan    745   2666
+    ## 2 Brazil       37737  80488
+    ## 3 China       212258 213766
+
+``` r
+table4b # population
+```
+
+    ## # A tibble: 3 x 3
+    ##   country         `1999`     `2000`
+    ## * <chr>            <int>      <int>
+    ## 1 Afghanistan   19987071   20595360
+    ## 2 Brazil       172006362  174504898
+    ## 3 China       1272915272 1280428583
+
+The three rules that must be satisfied for data to be "tidy" are:
+
+-   Each variable must have its own column.
+-   Each observation must have its own row.
+-   Each value must have its own cell.
+
+Using these rules, the a tidy dataset from above is `table1`. The packages in the tidyverse such as ggplot2, dplyr, etc. are designed to work with tidy data, so we must learn how to reorganize data and clean it up in the event that we receive a dataset that is not tidy (which is very often).
+
 12.2.1 Exercises
 ----------------
 
 ### 1. Using prose, describe how the variables and observations are organised in each of the sample tables.
+
+-   In table1, each of the variables are organized into columns, and each observation is in a separate row. Each row presents a unique combination of variables and respective observations, and each value has its own cell. This is considered a tidy dataset.
+-   In table2, each observation is in a separate row, but each variable does not have its own column. This is not a tidy dataset. To "tidy" this data, population and cases should be separated into individual rows, based on the count column. Count is not considered a variable. Rather, it is considered a value.
+-   In table 3, population and cases have been combined into a single column, "rate". Note that this is **not** the actual value of the cases divided by the population (as you might obtain using a mutate()), rather it is a character listing the two separate items! If we had not known there were two variables combined into one column, we might have called this a tidy dataset. I would find a way to split the rate into cases and population, then use mutate() to calculate the rate.
+-   In table 4a and 4b, the data for population and cases have been split into two separate tables. The date variable is spread across the columns, and each row of each table represents an individual observation. The two tables have the same country column, and look like something you would see when working with relational data.
 
 ### 2. Compute the rate for table2, and table4a + table4b. You will need to perform four operations:
 
@@ -1362,7 +1449,138 @@ Chapter 12 Tidy Data
 
 Which representation is easiest to work with? Which is hardest? Why?
 
+I will try doing the above operations without using tidyr functions.
+
+For table2, we can first filter for the TB cases using filter(), then filter for the population per country using filter() as well. Then we can divide the two, multiply by 10000, and bind the results back to the original table2 by using cbind(). Since there are two rows in table2 corresponding to the same rate value, we must duplicate each rate twice using `rep( each = 2 )` before binding to table2. This preserves the original structure of table2, and has the rate stored in the appropriate places. Using the spread() function in tidyr to generate tidy data and then using mutate() is much easier!
+
+For table 4a and 4b, we can extract the 1999 values from each table and perform the rate calculation, and do the same thing for the 2000 values.Then, we can bind these rates back to both table4a and 4b using cbind. This preserves the original structure for both tables.
+
+``` r
+# perform the operations above for table 2a, without using spread()
+rate_table2 <- ((filter (table2, type == 'cases')$count / # select cases
+  filter (table2, type == 'population')$count) * 10000) %>% # divide by populatoin
+  rep(each = 2) # repeat each element twice, maintaining the order of the vector
+cbind(table2,rate_table2)
+```
+
+    ##        country year       type      count rate_table2
+    ## 1  Afghanistan 1999      cases        745    0.372741
+    ## 2  Afghanistan 1999 population   19987071    0.372741
+    ## 3  Afghanistan 2000      cases       2666    1.294466
+    ## 4  Afghanistan 2000 population   20595360    1.294466
+    ## 5       Brazil 1999      cases      37737    2.193930
+    ## 6       Brazil 1999 population  172006362    2.193930
+    ## 7       Brazil 2000      cases      80488    4.612363
+    ## 8       Brazil 2000 population  174504898    4.612363
+    ## 9        China 1999      cases     212258    1.667495
+    ## 10       China 1999 population 1272915272    1.667495
+    ## 11       China 2000      cases     213766    1.669488
+    ## 12       China 2000 population 1280428583    1.669488
+
+``` r
+# using spread() and dplyr is more straightforward and results in tidy data.
+table2 %>%
+  spread(key = type, value = count) %>%
+  mutate(rate = (cases / population) * 10000)
+```
+
+    ## # A tibble: 6 x 5
+    ##   country      year  cases population  rate
+    ##   <chr>       <int>  <int>      <int> <dbl>
+    ## 1 Afghanistan  1999    745   19987071 0.373
+    ## 2 Afghanistan  2000   2666   20595360 1.29 
+    ## 3 Brazil       1999  37737  172006362 2.19 
+    ## 4 Brazil       2000  80488  174504898 4.61 
+    ## 5 China        1999 212258 1272915272 1.67 
+    ## 6 China        2000 213766 1280428583 1.67
+
+``` r
+# perform the operations above for table 4a and 4b
+rate_1999 <- (table4a$`1999` / table4b$`1999`)*10000
+rate_2000 <- (table4a$`2000` / table4b$`2000`)*10000
+cbind (table4a, rate_1999, rate_2000)
+```
+
+    ##       country   1999   2000 rate_1999 rate_2000
+    ## 1 Afghanistan    745   2666  0.372741  1.294466
+    ## 2      Brazil  37737  80488  2.193930  4.612363
+    ## 3       China 212258 213766  1.667495  1.669488
+
+``` r
+cbind (table4b, rate_1999, rate_2000)
+```
+
+    ##       country       1999       2000 rate_1999 rate_2000
+    ## 1 Afghanistan   19987071   20595360  0.372741  1.294466
+    ## 2      Brazil  172006362  174504898  2.193930  4.612363
+    ## 3       China 1272915272 1280428583  1.667495  1.669488
+
 ### 3. Recreate the plot showing change in cases over time using table2 instead of table1. What do you need to do first?
+
+First, we need to tidy table2 so that we can use it with ggplot2, using the spread() function. Then, we can use the ggplot() function in the same manner as in the book example.
+
+``` r
+table2 %>%
+  spread(key = type, value = count) %>%
+  ggplot(aes(year, cases)) + 
+    geom_line(aes(group = country), colour = "grey50") + 
+    geom_point(aes(colour = country))
+```
+
+![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/unnamed-chunk-46-1.png)
+
+12.3.1 Spreading and Gathering
+------------------------------
+
+If some column names are not names of variables, but rather values of variables, it will be helful to "gather" these columns into a single column and map the values accordingly. For example, table4a and table4b has values for 1999 and 2000 split across multiple columns. To gather the values, use gather() by specifying the names of the columns to gather, and the names of the variable that is being gathered (key) and the value (value) that is being redistributed.
+
+``` r
+table4a %>% 
+  gather(`1999`, `2000`, key = "year", value = "cases")
+```
+
+    ## # A tibble: 6 x 3
+    ##   country     year   cases
+    ##   <chr>       <chr>  <int>
+    ## 1 Afghanistan 1999     745
+    ## 2 Brazil      1999   37737
+    ## 3 China       1999  212258
+    ## 4 Afghanistan 2000    2666
+    ## 5 Brazil      2000   80488
+    ## 6 China       2000  213766
+
+``` r
+table4b %>% 
+  gather(`1999`, `2000`, key = "year", value = "population")
+```
+
+    ## # A tibble: 6 x 3
+    ##   country     year  population
+    ##   <chr>       <chr>      <int>
+    ## 1 Afghanistan 1999    19987071
+    ## 2 Brazil      1999   172006362
+    ## 3 China       1999  1272915272
+    ## 4 Afghanistan 2000    20595360
+    ## 5 Brazil      2000   174504898
+    ## 6 China       2000  1280428583
+
+12.3.2 Spreading
+
+When an observation is spread across multiple rows, as in table2, you can spread the data into multiple columns such that each row contains data from a single observation. In table2, each observation is considered a country in a year. Cases and populations for each country/year observation can be split from the type column into their own columns.
+
+``` r
+spread(table2, key = type, value = count)
+```
+
+    ## # A tibble: 6 x 4
+    ##   country      year  cases population
+    ##   <chr>       <int>  <int>      <int>
+    ## 1 Afghanistan  1999    745   19987071
+    ## 2 Afghanistan  2000   2666   20595360
+    ## 3 Brazil       1999  37737  172006362
+    ## 4 Brazil       2000  80488  174504898
+    ## 5 China        1999 212258 1272915272
+    ## 6 China        2000 213766 1280428583
 
 12.3.3 Exercises
 ----------------
@@ -1375,6 +1593,29 @@ stocks <- tibble(
   half  = c(   1,    2,     1,    2),
   return = c(1.88, 0.59, 0.92, 0.17)
 )
+stocks
+```
+
+    ## # A tibble: 4 x 3
+    ##    year  half return
+    ##   <dbl> <dbl>  <dbl>
+    ## 1  2015     1   1.88
+    ## 2  2015     2   0.59
+    ## 3  2016     1   0.92
+    ## 4  2016     2   0.17
+
+``` r
+stocks %>% 
+  spread(year, return)
+```
+
+    ## # A tibble: 2 x 3
+    ##    half `2015` `2016`
+    ##   <dbl>  <dbl>  <dbl>
+    ## 1     1   1.88   0.92
+    ## 2     2   0.59   0.17
+
+``` r
 stocks %>% 
   spread(year, return) %>% 
   gather("year", "return", `2015`:`2016`)
@@ -1390,7 +1631,25 @@ stocks %>%
 
 (Hint: look at the variable types and think about column names.)
 
+There are a couple differences between the unmodified stocks tibble and the spread and gathered tibble. The spread and gathered stocks tibble has the columns ordered differently. Also, the the types of each column have changed. The original tibble had 3 columns of type <dbl> whereas the spread and gathered tibble has changed the year column to <chr>. The column names can also be changed by spreading and gathering, since they have to be specified as arguments in gather().
+
 Both spread() and gather() have a convert argument. What does it do?
+
+If set to TRUE (the default is FALSE), then the function type.convert() with asis = TRUE will be run on each of the new columns in the spread() or gather() output. This will try to convert the columns to variables of the appropriate type. For example, using convert = TRUE on the example above causes the year column to become an <int> rather than <chr>.
+
+``` r
+stocks %>% 
+  spread(year, return) %>% 
+  gather("year", "return", `2015`:`2016`, convert = TRUE)
+```
+
+    ## # A tibble: 4 x 3
+    ##    half  year return
+    ##   <dbl> <int>  <dbl>
+    ## 1     1  2015   1.88
+    ## 2     2  2015   0.59
+    ## 3     1  2016   0.92
+    ## 4     2  2016   0.17
 
 ### 2. Why does this code fail?
 
@@ -1399,6 +1658,23 @@ Both spread() and gather() have a convert argument. What does it do?
 #   gather(1999, 2000, key = "year", value = "cases")
 #> Error in combine_vars(vars, ind_list): Position must be between 0 and n
 ```
+
+The code fails because the variables passed into gather(), 1999 and 2000, are not written correctly. They should be encased in backticks, like this: `1999` and `2000`. The code below works.
+
+``` r
+table4a %>% 
+   gather(`1999`, `2000`, key = "year", value = "cases")
+```
+
+    ## # A tibble: 6 x 3
+    ##   country     year   cases
+    ##   <chr>       <chr>  <int>
+    ## 1 Afghanistan 1999     745
+    ## 2 Brazil      1999   37737
+    ## 3 China       1999  212258
+    ## 4 Afghanistan 2000    2666
+    ## 5 Brazil      2000   80488
+    ## 6 China       2000  213766
 
 ### 3. Why does spreading this tibble fail? How could you add a new column to fix the problem?
 
@@ -1412,7 +1688,50 @@ people <- tribble(
   "Jessica Cordero", "age",       37,
   "Jessica Cordero", "height",   156
 )
+# spreading fails
+#spread(people, key, value)
+
+people2 <- tribble(
+  ~name,             ~key,    ~value,
+  #-----------------|--------|------
+  "Phillip Woods",   "age",       45,
+  "Phillip Woods",   "height",   186,
+  "Phillip Woods2",   "age",       50,
+  "Jessica Cordero", "age",       37,
+  "Jessica Cordero", "height",   156
+)
+spread(people2, key, value)
 ```
+
+    ## # A tibble: 3 x 3
+    ##   name              age height
+    ##   <chr>           <dbl>  <dbl>
+    ## 1 Jessica Cordero    37    156
+    ## 2 Phillip Woods      45    186
+    ## 3 Phillip Woods2     50     NA
+
+``` r
+people3 <- tribble(
+  ~name,             ~key,    ~value, ~index,
+  #-----------------|--------|------|------
+  "Phillip Woods",   "age",       45, 1,
+  "Phillip Woods",   "height",   186, 1,
+  "Phillip Woods",   "age",       50, 2,
+  "Jessica Cordero", "age",       37, 3,
+  "Jessica Cordero", "height",   156, 3
+)
+# works now
+spread(people3, key, value)
+```
+
+    ## # A tibble: 3 x 4
+    ##   name            index   age height
+    ##   <chr>           <dbl> <dbl>  <dbl>
+    ## 1 Jessica Cordero     3    37    156
+    ## 2 Phillip Woods       1    45    186
+    ## 3 Phillip Woods       2    50     NA
+
+Spreading the provided tribble fails because there is a duplicate value for the variables name and key. If I modify the second "Phillip Woods" value to "Phillip Woods2", the spread() function works. If I add another column named "index" that identifies the unique sets of age and height, spread() also works. In any case, spread() requires a unique combination of variables to spread against.
 
 ### 4. Tidy the simple tibble below. Do you need to spread or gather it? What are the variables?
 
@@ -1423,6 +1742,21 @@ preg <- tribble(
   "no",      20,    12
 )
 ```
+
+I would need to gather the data. We can combine the male and female designation into a column called "gender", and gather the 4 numerical observations into a column called "cases". Below is the code required to do this.
+
+``` r
+preg %>%
+  gather(male, female, key = "gender", value = "cases")
+```
+
+    ## # A tibble: 4 x 3
+    ##   pregnant gender cases
+    ##   <chr>    <chr>  <dbl>
+    ## 1 yes      male      NA
+    ## 2 no       male      20
+    ## 3 yes      female    10
+    ## 4 no       female    12
 
 12.4.3 Exercises
 ----------------
@@ -1530,7 +1864,7 @@ airports %>%
     ## 
     ##     map
 
-![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/unnamed-chunk-49-1.png)
+![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/unnamed-chunk-57-1.png)
 
 (Don’t worry if you don’t understand what semi\_join() does — you’ll learn about it next.) You might want to use the size or colour of the points to display the average delay for each airport.
 
