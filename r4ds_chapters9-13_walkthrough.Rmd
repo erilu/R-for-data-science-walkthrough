@@ -620,8 +620,6 @@ table4b %>%
   gather(`1999`, `2000`, key = "year", value = "population")
 ```
 
-12.3.2 Spreading
-
 When an observation is spread across multiple rows, as in table2, you can spread the data into multiple columns such that each row contains data from a single observation. In table2, each observation is considered a country in a year. Cases and populations for each country/year observation can be split from the type column into their own columns.
 
 ```{r}
@@ -728,6 +726,37 @@ preg %>%
 ```
 
 
+## 12.4 Separating and uniting
+
+In table3, the data for population and cases are combined into one column, rate. To separate them, we can use the separate() function in tidyr. In the opposite case, the function unite() can be used to combine an observation split across multiple columns. Do not confuse unite() with gather()!
+
+Separate() separates one column into multiple columns, by splitting based on a separator character. If the separator is the only non-numerical character for each observation, it does not have to be specified.
+
+```{r}
+table3 %>% 
+  separate(rate, into = c("cases", "population"))
+```
+
+Similar to spread() and gather(), separate() has a convert argument that can try to convert the columns to the appropriate types. You can also specify the index to separate the values on, using a number instead of string value for the sep argument.
+
+```{r}
+table3 %>% 
+  separate(rate, into = c("cases", "population"), convert = TRUE)
+table3 %>% 
+  separate(year, into = c("century", "year"), sep = 2)
+```
+
+Unite() is the opposite of separating, and will combine two columns together using a default underscore "_". You can change the underscore to your choice of separator, using and empty "" if you do not wish to separate the values. The convert argument does not seem to work with this function in the example below.
+
+```{r}
+# use default separator for unite()
+table5 %>%
+  unite(new, century,year)
+# specify sep = "" to combine the two columns with no separation
+table5 %>% 
+  unite(new, century, year, sep = "")
+```
+
 ## 12.4.3 Exercises
 ### 1. What do the extra and fill arguments do in separate()? Experiment with the various options for the following two toy datasets.
 ```{r}
@@ -738,20 +767,128 @@ tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
   separate(x, c("one", "two", "three"))
 ```
 
+In the examples above, the tibbles created are 1 column, 3 rows, with strings as observations. Within each string, commas separate the letters. The separate(x, c("one", "two", "three")) will try to split each string using the comma into three columns. However, in the first tibble, there is a row with four values separated by commas (an extra value). This is where the ```extra``` argument comes into play. 
 
+The documentation for extra states that:
+* "warn" (the default): emit a warning and drop extra values.
+* "drop": drop any extra values without a warning.
+* "merge": only splits at most length(into) times
+
+For the second tibble, there are only two values separated by a comma in the second row (a missing value). This is where the ```fill``` argument comes into play.
+
+The documentation for fill states that:
+
+* "warn" (the default): emit a warning and fill from the right
+* "right": fill with missing values on the right
+* "left": fill with missing values on the left
+
+The default for both extra and fill is "warn", which just provides a warning about the missing or extra value. Below I will try the other two options on the appropriate tibles.
+
+```{r}
+# tibble with extra value
+tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
+  separate(x, c("one", "two", "three"), extra = "drop")
+tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
+  separate(x, c("one", "two", "three"), extra = "merge")
+
+# tible with missing value
+tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
+  separate(x, c("one", "two", "three"), fill = "right")
+tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
+  separate(x, c("one", "two", "three"), fill = "left")
+```
 
 ### 2. Both unite() and separate() have a remove argument. What does it do? Why would you set it to FALSE?
 
+The documentation states that "If TRUE, remove input column from output data frame." The column with the values that were split is by default removed from the resulting table, but if this parameter is set to FALSE, the column remains. You might want to set it to FALSE if you want to have a record of what the original column looked like or want to separate the column a different way. Below is an exmaple of setting remove = FALSE on table3. We can see that the rate column still exists in the output.
+
+```{r}
+table3 %>% 
+  separate(rate, into = c("cases", "population"), convert = TRUE, remove = FALSE)
+```
+
 ### 3. Compare and contrast separate() and extract(). Why are there three variations of separation (by position, by separator, and with groups), but only one unite?
+
+extract() is a version of separate() except you can specify which groups to include in the final output using regexes. For example, if you run the default extract() on a data frame, it will first separate based on a non-numeric delimiter, then only place the number of groups you specify in the into argument, starting from the left. separate() will throw an error if you specify less than the number of groups for the ```into``` argument, and by default want to return all the groups created.
+
+There are three variations of separation because the output can be flexible based on the type of separation used (there are fewer constraints on how a value can be split up). There is only one unite because combining values together has more constraints. Unless you can take bits and pieces of different variables to unite (and define how that occurs), the only thing you can define is the delimiter that is used when uniting the data.
+
+```{r}
+# separate errors if you try to separate into less columns than groups, but can still function.
+table3 %>%
+  separate(rate, into = c("cases"))
+# extract does not error
+table3 %>%
+  extract(rate, into = c("cases"))
+```
+
+## 12.5 Missing Values
+
+Values in your dataset can be missing explicitly, in which they are specified as NA, or implicitly, in which they are not specified at all. The example provided is:
+
+```{r}
+stocks <- tibble(
+  year   = c(2015, 2015, 2015, 2015, 2016, 2016, 2016),
+  qtr    = c(   1,    2,    3,    4,    2,    3,    4),
+  return = c(1.88, 0.59, 0.35,   NA, 0.92, 0.17, 2.66)
+)
+stocks
+```
+
+In which there is an explicitly missing value for year 2015 quarter 4, and an implicitly missing value for year 2016 quarter 1 (which is just not present in the data).
+
+We can expose the implicitly missing value by spreading the data:
+
+```{r}
+stocks %>% 
+  spread(year, return)
+```
+
+Now we see two explicitly missing values. We can also omit NA values entirely by using na.omit() or by specifying na.rm = T in a spread and gather combination.
+
+```{r}
+# get rid of NA values using na.omit()
+na.omit(stocks)
+# get rid of NA values using spread and gather( na.rm = T )
+stocks %>% 
+  spread(year, return) %>% 
+  gather(year, return, `2015`:`2016`, na.rm = TRUE)
+```
+
+A very useful tool is the complete() function in tidyr! It will look for all combinations of the variables specified and find implicitly missing values in the data, and turn them explicit! This is much cleaner-looking than spreading and gathering.
+
+```{r}
+stocks %>% 
+  complete(year, qtr)
+```
+
+
+```{r}
+treatment <- tribble(
+  ~ person,           ~ treatment, ~response,
+  "Derrick Whitmore", 1,           7,
+  NA,                 2,           10,
+  NA,                 3,           9,
+  "Katherine Burke",  1,           4
+)
+treatment
+treatment %>% 
+  fill(person)
+```
+
 
 
 ##12.5.1 Exercises
+
 ### 1. Compare and contrast the fill arguments to spread() and complete().
 
 ### 2. What does the direction argument to fill() do?
 
 
+
+
 ## 12.6.1 Exercises
+
 ### 1. In this case study I set na.rm = TRUE just to make it easier to check that we had the correct values. Is this reasonable? Think about how missing values are represented in this dataset. Are there implicit missing values? What’s the difference between an NA and zero?
 
 ### 2. What happens if you neglect the mutate() step? (mutate(key = stringr::str_replace(key, "newrel", "new_rel")))
@@ -759,6 +896,9 @@ tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
 ### 3. I claimed that iso2 and iso3 were redundant with country. Confirm this claim.
 
 ### 4. For each country, year, and sex compute the total number of cases of TB. Make an informative visualisation of the data.
+
+
+
 
 
 
