@@ -855,13 +855,14 @@ stocks %>%
   gather(year, return, `2015`:`2016`, na.rm = TRUE)
 ```
 
-A very useful tool is the complete() function in tidyr! It will look for all combinations of the variables specified and find implicitly missing values in the data, and turn them explicit! This is much cleaner-looking than spreading and gathering.
+A very useful tool is the complete() function in tidyr! It will look for all combinations of the variables specified and find implicitly missing values in the data, and turn them explicit. This is much cleaner-looking than spreading and gathering.
 
 ```{r}
 stocks %>% 
   complete(year, qtr)
 ```
 
+Another reason there might be missing values in your dataset is because data was only entered for the first occurance of an observation, and implied that the sequential observations would be for the same identifying entry (also called "carrying forward" values). Below is the example provided in the book, in which the treatment and response variables are associated with a person variable. However, patient names are only identified for their first occurance in the table. To make the table easier to work with, we can "carry forward" the names using fill().
 
 ```{r}
 treatment <- tribble(
@@ -876,29 +877,179 @@ treatment %>%
   fill(person)
 ```
 
-
-
 ##12.5.1 Exercises
 
 ### 1. Compare and contrast the fill arguments to spread() and complete().
 
+For the spread() function, the documentation for the fill argument states that:
+
+"If set, missing values will be replaced with this value. Note that there are two types of missingness in the input: explicit missing values (i.e. NA), and implicit missings, rows that simply aren't present. Both types of missing value will be replaced by fill."
+
+In other words, you can replace the missing values with a value of your choice, specified by the fill argument. For example:
+
+```{r}
+stocks %>% 
+  spread(year, return, fill = "MISSING")
+# turns out you can supply more than one value, but this doesnt seem to work that great. use complete() instead for multiple values.
+stocks %>% 
+  spread(year, return, fill = c("NO_2015","NO_2016"))
+```
+
+For the complete() function, the documentation for the fill argument states that:
+
+"A named list that for each variable supplies a single value to use instead of NA for missing combinations."
+
+In other words, you can supply the fill argument with a list that has one entry for each of the columns in your data frame. Depending on where the missing value is located, it will be replaced by the appropriate NA value. In the example below, I replace any NA values in the year column with "NO_YEAR", in the qtr column with "NO_QTR", and in the return column with "NO_RETURN".
+
+```{r}
+stocks %>% 
+  complete(year, qtr, fill = list(year = "NO_YEAR", qtr = "NO_QTR", return = "NO_RETURN"))
+```
+
 ### 2. What does the direction argument to fill() do?
 
+The documentation for the direction argument in fill() states: "Direction in which to fill missing values. Currently either "down" (the default) or "up"."
+
+So if we specify direction = "up" for the example provided earlier, the NA values will be filled with the 2nd patient (Katherine Burke), not the 1st patient.
+
+```{r}
+treatment %>% 
+  fill(person, .direction = "up")
+```
 
 
+## 12.6 Case Study
+
+The case study presented uses the tidyr::who dataset, which is depicted below:
+
+```{r}
+who
+```
+
+```{r}
+who1 <- who %>% 
+  gather(new_sp_m014:newrel_f65, key = "key", value = "cases", na.rm = TRUE)
+who1
+```
+
+```{r}
+who2 <- who1 %>% 
+  mutate(key = stringr::str_replace(key, "newrel", "new_rel"))
+who2
+```
+
+```{r}
+who3 <- who2 %>% 
+  separate(key, c("new", "type", "sexage"), sep = "_")
+who3
+```
+
+```{r}
+who3 %>% 
+  count(new)
+
+who4 <- who3 %>% 
+  select(-new, -iso2, -iso3)
+```
+
+
+```{r}
+who5 <- who4 %>% 
+  separate(sexage, c("sex", "age"), sep = 1)
+who5
+```
+
+```{r}
+who %>%
+  gather(code, value, new_sp_m014:newrel_f65, na.rm = TRUE) %>% 
+  mutate(code = stringr::str_replace(code, "newrel", "new_rel")) %>%
+  separate(code, c("new", "var", "sexage")) %>% 
+  select(-new, -iso2, -iso3) %>% 
+  separate(sexage, c("sex", "age"), sep = 1)
+```
 
 ## 12.6.1 Exercises
 
+
 ### 1. In this case study I set na.rm = TRUE just to make it easier to check that we had the correct values. Is this reasonable? Think about how missing values are represented in this dataset. Are there implicit missing values? What’s the difference between an NA and zero?
+
+In some instances, the presence of an explicitly missing value might have meaning behind it. For example, maybe more missing values are present in data collected from districts in poor neighborhoods, because of staffing issues. In cases where knowing why missing values are present, it might not be good to use na.rm = TRUE. In this context, the presence of missing values might have meant that no cases were observed, or that no people were recorded in the sex/age group specified. However we do not know this for certain. For the purposes of teaching us how to tidy data, I would say that this was reasonable.
+
+To find the number of implicit missing values, first make version of the tidy who without removing NA values, then use complete() to convert implicitly missing values to explicitly missing values. We can then look at how many new rows with NA values were added by subtracting the # of rows (using nrow()). The difference between NA and zero is that the value of NA is unknown (it could have been anything, but the data wasn't entered), and the value of 0 is that there were zero TB cases (this is a defined value that holds meaning).
+
+```{r}
+clean_who <- who %>%
+  gather(code, value, new_sp_m014:newrel_f65) %>% 
+  mutate(code = stringr::str_replace(code, "newrel", "new_rel")) %>%
+  separate(code, c("new", "var", "sexage")) %>% 
+  select(-new, -iso2, -iso3) %>% 
+  separate(sexage, c("sex", "age"), sep = 1)
+
+# Use complete to convert implicity missing values into explicitly missing values
+complete_who <- complete(clean_who, country, year)
+
+# Calculate how many implicitly missing values there are in the dataset by subtracting rows
+nrow(complete_who) - nrow(clean_who)[1]
+
+# count how many values are NA in the data set, how many are 0, and how many are neither NA or 0.
+clean_who %>%
+  count(is.na(value), value == 0)
+
+```
 
 ### 2. What happens if you neglect the mutate() step? (mutate(key = stringr::str_replace(key, "newrel", "new_rel")))
 
+The mutate() step is required to allow the separate() function to be applied in the same manner for all the values in the code column, because it changes instances of "newrel" to "new_rel", which has an underscore after "new" like all the other entries in the column. Without the mutate() step, the rows with "newrel" in them will not be separated correctly by separate(). Below is the output after removing the mutate() step, which shows an error "Expected 3 pieces. Missing pieces filled with `NA` in 2580 rows..."
+
+```{r}
+who %>%
+  gather(code, value, new_sp_m014:newrel_f65, na.rm = TRUE) %>% 
+  separate(code, c("new", "var", "sexage")) %>% 
+  select(-new, -iso2, -iso3) %>% 
+  separate(sexage, c("sex", "age"), sep = 1)
+```
+
+
 ### 3. I claimed that iso2 and iso3 were redundant with country. Confirm this claim.
+
+```{r}
+# see how many unique values for country, iso2, and iso3 there are
+length(unique(who$country))
+length(unique(who$iso2))
+length(unique(who$iso3))
+
+# find out how many unique groupings of country, iso2, and iso3 there are
+who %>%
+  group_by(country, iso2, iso3) %>%
+  count() %>%
+  nrow()
+
+```
+
 
 ### 4. For each country, year, and sex compute the total number of cases of TB. Make an informative visualisation of the data.
 
 
+```{r}
+tidy_who <- who %>%
+  gather(code, value, new_sp_m014:newrel_f65, na.rm = TRUE) %>% 
+  mutate(code = stringr::str_replace(code, "newrel", "new_rel")) %>%
+  separate(code, c("new", "var", "sexage")) %>% 
+  select(-new, -iso2, -iso3) %>% 
+  separate(sexage, c("sex", "age"), sep = 1)
 
+total_TB <- tidy_who %>%
+  group_by(country, year, sex) %>%
+  summarize(
+    total_TB_cases = sum(value, na.rm = T)
+  )
+
+total_TB %>%
+  ggplot(aes (x = year, y = total_TB_cases))+
+  geom_jitter()
+
+
+```
 
 
 
