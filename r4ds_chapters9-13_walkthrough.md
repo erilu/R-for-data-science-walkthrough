@@ -16,14 +16,21 @@ Erick Lu
     -   [12.2.1 Exercises](#exercises-3)
     -   [12.3.1 Spreading and Gathering](#spreading-and-gathering)
     -   [12.3.3 Exercises](#exercises-4)
+    -   [12.4 Separating and uniting](#separating-and-uniting)
     -   [12.4.3 Exercises](#exercises-5)
+    -   [12.5 Missing Values](#missing-values)
     -   [12.5.1 Exercises](#exercises-6)
+    -   [12.6 Case Study](#case-study)
     -   [12.6.1 Exercises](#exercises-7)
 -   [Chapter 13 Relational Data](#chapter-13-relational-data)
     -   [13.2.1 Exercises](#exercises-8)
+    -   [13.3 Keys](#keys)
     -   [13.3.1 Exercises](#exercises-9)
+    -   [13.4 Mutating Joins](#mutating-joins)
     -   [13.4.6 Exercises](#exercises-10)
+    -   [Filtering Joins](#filtering-joins)
     -   [13.5.1 Exercises](#exercises-11)
+    -   [Join problems and set operations](#join-problems-and-set-operations)
 
 This my walkthrough for chapters 9-13 for the book: *R for Data Science* by Hadley Wickham and Garrett Grolemund. Here I provide solutions to their exercises and some of my own notes and explorations.
 
@@ -135,19 +142,19 @@ df <- tibble(
 df$x
 ```
 
-    ## [1] 0.6801368 0.1621273 0.9235521 0.5015813 0.1049575
+    ## [1] 0.9776703 0.9524460 0.9609116 0.5134890 0.3119201
 
 ``` r
 df[["x"]]
 ```
 
-    ## [1] 0.6801368 0.1621273 0.9235521 0.5015813 0.1049575
+    ## [1] 0.9776703 0.9524460 0.9609116 0.5134890 0.3119201
 
 ``` r
 df[[1]]
 ```
 
-    ## [1] 0.6801368 0.1621273 0.9235521 0.5015813 0.1049575
+    ## [1] 0.9776703 0.9524460 0.9609116 0.5134890 0.3119201
 
 10.5 Exercises
 --------------
@@ -323,7 +330,7 @@ ggplot(annoying, aes(`1`,`2`))+
   geom_point()
 ```
 
-![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/unnamed-chunk-12-1.png)
+![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/scatterplot_1v2-1.png)
 
 -   Creating a new column called 3 which is 2 divided by 1.
 
@@ -333,18 +340,18 @@ annoying %>%
 ```
 
     ## # A tibble: 10 x 3
-    ##      `1`   `2`   `3`
-    ##    <int> <dbl> <dbl>
-    ##  1     1  1.87  1.87
-    ##  2     2  4.20  2.10
-    ##  3     3  5.12  1.71
-    ##  4     4  8.65  2.16
-    ##  5     5 10.3   2.06
-    ##  6     6 11.5   1.91
-    ##  7     7 13.9   1.99
-    ##  8     8 15.7   1.96
-    ##  9     9 18.8   2.09
-    ## 10    10 19.9   1.99
+    ##      `1`    `2`   `3`
+    ##    <int>  <dbl> <dbl>
+    ##  1     1  0.714 0.714
+    ##  2     2  3.25  1.62 
+    ##  3     3  5.96  1.99 
+    ##  4     4  6.89  1.72 
+    ##  5     5 10.1   2.03 
+    ##  6     6 12.4   2.07 
+    ##  7     7 14.5   2.07 
+    ##  8     8 16.2   2.02 
+    ##  9     9 19.5   2.17 
+    ## 10    10 20.8   2.08
 
 -   Renaming the columns to one, two and three.
 
@@ -355,18 +362,18 @@ annoying %>%
 ```
 
     ## # A tibble: 10 x 3
-    ##      one   two three
-    ##    <int> <dbl> <dbl>
-    ##  1     1  1.87  1.87
-    ##  2     2  4.20  2.10
-    ##  3     3  5.12  1.71
-    ##  4     4  8.65  2.16
-    ##  5     5 10.3   2.06
-    ##  6     6 11.5   1.91
-    ##  7     7 13.9   1.99
-    ##  8     8 15.7   1.96
-    ##  9     9 18.8   2.09
-    ## 10    10 19.9   1.99
+    ##      one    two three
+    ##    <int>  <dbl> <dbl>
+    ##  1     1  0.714 0.714
+    ##  2     2  3.25  1.62 
+    ##  3     3  5.96  1.99 
+    ##  4     4  6.89  1.72 
+    ##  5     5 10.1   2.03 
+    ##  6     6 12.4   2.07 
+    ##  7     7 14.5   2.07 
+    ##  8     8 16.2   2.02 
+    ##  9     9 19.5   2.17 
+    ## 10    10 20.8   2.08
 
 ### 5. What does tibble::enframe() do? When might you use it?
 
@@ -381,16 +388,16 @@ enframe(x)
     ## # A tibble: 100 x 2
     ##    name   value
     ##    <chr>  <dbl>
-    ##  1 5      0.144
-    ##  2 6     -0.897
-    ##  3 7      0.163
-    ##  4 8     -1.63 
-    ##  5 9     -1.01 
-    ##  6 10    -0.855
-    ##  7 11    -1.73 
-    ##  8 12    -1.31 
-    ##  9 13    -2.13 
-    ## 10 14     2.00 
+    ##  1 5     -1.00 
+    ##  2 6      0.294
+    ##  3 7     -1.94 
+    ##  4 8     -1.07 
+    ##  5 9      1.38 
+    ##  6 10    -1.54 
+    ##  7 11    -0.412
+    ##  8 12    -0.653
+    ##  9 13    -0.354
+    ## 10 14     1.01 
     ## # ... with 90 more rows
 
 ``` r
@@ -1527,7 +1534,7 @@ table2 %>%
     geom_point(aes(colour = country))
 ```
 
-![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/unnamed-chunk-46-1.png)
+![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/table2_recreate_casesovertime-1.png)
 
 12.3.1 Spreading and Gathering
 ------------------------------
@@ -1563,8 +1570,6 @@ table4b %>%
     ## 4 Afghanistan 2000    20595360
     ## 5 Brazil      2000   174504898
     ## 6 China       2000  1280428583
-
-12.3.2 Spreading
 
 When an observation is spread across multiple rows, as in table2, you can spread the data into multiple columns such that each row contains data from a single observation. In table2, each observation is considered a country in a year. Cases and populations for each country/year observation can be split from the type column into their own columns.
 
@@ -1758,6 +1763,94 @@ preg %>%
     ## 3 yes      female    10
     ## 4 no       female    12
 
+12.4 Separating and uniting
+---------------------------
+
+In table3, the data for population and cases are combined into one column, rate. To separate them, we can use the separate() function in tidyr. In the opposite case, the function unite() can be used to combine an observation split across multiple columns. Do not confuse unite() with gather()!
+
+Separate() separates one column into multiple columns, by splitting based on a separator character. If the separator is the only non-numerical character for each observation, it does not have to be specified.
+
+``` r
+table3 %>% 
+  separate(rate, into = c("cases", "population"))
+```
+
+    ## # A tibble: 6 x 4
+    ##   country      year cases  population
+    ## * <chr>       <int> <chr>  <chr>     
+    ## 1 Afghanistan  1999 745    19987071  
+    ## 2 Afghanistan  2000 2666   20595360  
+    ## 3 Brazil       1999 37737  172006362 
+    ## 4 Brazil       2000 80488  174504898 
+    ## 5 China        1999 212258 1272915272
+    ## 6 China        2000 213766 1280428583
+
+Similar to spread() and gather(), separate() has a convert argument that can try to convert the columns to the appropriate types. You can also specify the index to separate the values on, using a number instead of string value for the sep argument.
+
+``` r
+table3 %>% 
+  separate(rate, into = c("cases", "population"), convert = TRUE)
+```
+
+    ## # A tibble: 6 x 4
+    ##   country      year  cases population
+    ## * <chr>       <int>  <int>      <int>
+    ## 1 Afghanistan  1999    745   19987071
+    ## 2 Afghanistan  2000   2666   20595360
+    ## 3 Brazil       1999  37737  172006362
+    ## 4 Brazil       2000  80488  174504898
+    ## 5 China        1999 212258 1272915272
+    ## 6 China        2000 213766 1280428583
+
+``` r
+table3 %>% 
+  separate(year, into = c("century", "year"), sep = 2)
+```
+
+    ## # A tibble: 6 x 4
+    ##   country     century year  rate             
+    ## * <chr>       <chr>   <chr> <chr>            
+    ## 1 Afghanistan 19      99    745/19987071     
+    ## 2 Afghanistan 20      00    2666/20595360    
+    ## 3 Brazil      19      99    37737/172006362  
+    ## 4 Brazil      20      00    80488/174504898  
+    ## 5 China       19      99    212258/1272915272
+    ## 6 China       20      00    213766/1280428583
+
+Unite() is the opposite of separating, and will combine two columns together using a default underscore "\_". You can change the underscore to your choice of separator, using and empty "" if you do not wish to separate the values. The convert argument does not seem to work with this function in the example below.
+
+``` r
+# use default separator for unite()
+table5 %>%
+  unite(new, century,year)
+```
+
+    ## # A tibble: 6 x 3
+    ##   country     new   rate             
+    ##   <chr>       <chr> <chr>            
+    ## 1 Afghanistan 19_99 745/19987071     
+    ## 2 Afghanistan 20_00 2666/20595360    
+    ## 3 Brazil      19_99 37737/172006362  
+    ## 4 Brazil      20_00 80488/174504898  
+    ## 5 China       19_99 212258/1272915272
+    ## 6 China       20_00 213766/1280428583
+
+``` r
+# specify sep = "" to combine the two columns with no separation
+table5 %>% 
+  unite(new, century, year, sep = "")
+```
+
+    ## # A tibble: 6 x 3
+    ##   country     new   rate             
+    ##   <chr>       <chr> <chr>            
+    ## 1 Afghanistan 1999  745/19987071     
+    ## 2 Afghanistan 2000  2666/20595360    
+    ## 3 Brazil      1999  37737/172006362  
+    ## 4 Brazil      2000  80488/174504898  
+    ## 5 China       1999  212258/1272915272
+    ## 6 China       2000  213766/1280428583
+
 12.4.3 Exercises
 ----------------
 
@@ -1791,30 +1884,795 @@ tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
     ## 2 d     e     <NA> 
     ## 3 f     g     i
 
+In the examples above, the tibbles created are 1 column, 3 rows, with strings as observations. Within each string, commas separate the letters. The separate(x, c("one", "two", "three")) will try to split each string using the comma into three columns. However, in the first tibble, there is a row with four values separated by commas (an extra value). This is where the `extra` argument comes into play.
+
+The documentation for extra states that: \* "warn" (the default): emit a warning and drop extra values. \* "drop": drop any extra values without a warning. \* "merge": only splits at most length(into) times
+
+For the second tibble, there are only two values separated by a comma in the second row (a missing value). This is where the `fill` argument comes into play.
+
+The documentation for fill states that:
+
+-   "warn" (the default): emit a warning and fill from the right
+-   "right": fill with missing values on the right
+-   "left": fill with missing values on the left
+
+The default for both extra and fill is "warn", which just provides a warning about the missing or extra value. Below I will try the other two options on the appropriate tibles.
+
+``` r
+# tibble with extra value
+tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
+  separate(x, c("one", "two", "three"), extra = "drop")
+```
+
+    ## # A tibble: 3 x 3
+    ##   one   two   three
+    ##   <chr> <chr> <chr>
+    ## 1 a     b     c    
+    ## 2 d     e     f    
+    ## 3 h     i     j
+
+``` r
+tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
+  separate(x, c("one", "two", "three"), extra = "merge")
+```
+
+    ## # A tibble: 3 x 3
+    ##   one   two   three
+    ##   <chr> <chr> <chr>
+    ## 1 a     b     c    
+    ## 2 d     e     f,g  
+    ## 3 h     i     j
+
+``` r
+# tible with missing value
+tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
+  separate(x, c("one", "two", "three"), fill = "right")
+```
+
+    ## # A tibble: 3 x 3
+    ##   one   two   three
+    ##   <chr> <chr> <chr>
+    ## 1 a     b     c    
+    ## 2 d     e     <NA> 
+    ## 3 f     g     i
+
+``` r
+tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
+  separate(x, c("one", "two", "three"), fill = "left")
+```
+
+    ## # A tibble: 3 x 3
+    ##   one   two   three
+    ##   <chr> <chr> <chr>
+    ## 1 a     b     c    
+    ## 2 <NA>  d     e    
+    ## 3 f     g     i
+
 ### 2. Both unite() and separate() have a remove argument. What does it do? Why would you set it to FALSE?
 
+The documentation states that "If TRUE, remove input column from output data frame." The column with the values that were split is by default removed from the resulting table, but if this parameter is set to FALSE, the column remains. You might want to set it to FALSE if you want to have a record of what the original column looked like or want to separate the column a different way. Below is an exmaple of setting remove = FALSE on table3. We can see that the rate column still exists in the output.
+
+``` r
+table3 %>% 
+  separate(rate, into = c("cases", "population"), convert = TRUE, remove = FALSE)
+```
+
+    ## # A tibble: 6 x 5
+    ##   country      year rate               cases population
+    ## * <chr>       <int> <chr>              <int>      <int>
+    ## 1 Afghanistan  1999 745/19987071         745   19987071
+    ## 2 Afghanistan  2000 2666/20595360       2666   20595360
+    ## 3 Brazil       1999 37737/172006362    37737  172006362
+    ## 4 Brazil       2000 80488/174504898    80488  174504898
+    ## 5 China        1999 212258/1272915272 212258 1272915272
+    ## 6 China        2000 213766/1280428583 213766 1280428583
+
 ### 3. Compare and contrast separate() and extract(). Why are there three variations of separation (by position, by separator, and with groups), but only one unite?
+
+extract() is a version of separate() except you can specify which groups to include in the final output using regexes. For example, if you run the default extract() on a data frame, it will first separate based on a non-numeric delimiter, then only place the number of groups you specify in the into argument, starting from the left. separate() will throw an error if you specify less than the number of groups for the `into` argument, and by default want to return all the groups created.
+
+There are three variations of separation because the output can be flexible based on the type of separation used (there are fewer constraints on how a value can be split up). There is only one unite because combining values together has more constraints. Unless you can take bits and pieces of different variables to unite (and define how that occurs), the only thing you can define is the delimiter that is used when uniting the data.
+
+``` r
+# separate errors if you try to separate into less columns than groups, but can still function.
+table3 %>%
+  separate(rate, into = c("cases"))
+```
+
+    ## Warning: Expected 1 pieces. Additional pieces discarded in 6 rows [1, 2, 3,
+    ## 4, 5, 6].
+
+    ## # A tibble: 6 x 3
+    ##   country      year cases 
+    ## * <chr>       <int> <chr> 
+    ## 1 Afghanistan  1999 745   
+    ## 2 Afghanistan  2000 2666  
+    ## 3 Brazil       1999 37737 
+    ## 4 Brazil       2000 80488 
+    ## 5 China        1999 212258
+    ## 6 China        2000 213766
+
+``` r
+# extract does not error
+table3 %>%
+  extract(rate, into = c("cases"))
+```
+
+    ## # A tibble: 6 x 3
+    ##   country      year cases 
+    ## * <chr>       <int> <chr> 
+    ## 1 Afghanistan  1999 745   
+    ## 2 Afghanistan  2000 2666  
+    ## 3 Brazil       1999 37737 
+    ## 4 Brazil       2000 80488 
+    ## 5 China        1999 212258
+    ## 6 China        2000 213766
+
+12.5 Missing Values
+-------------------
+
+Values in your dataset can be missing explicitly, in which they are specified as NA, or implicitly, in which they are not specified at all. The example provided is:
+
+``` r
+stocks <- tibble(
+  year   = c(2015, 2015, 2015, 2015, 2016, 2016, 2016),
+  qtr    = c(   1,    2,    3,    4,    2,    3,    4),
+  return = c(1.88, 0.59, 0.35,   NA, 0.92, 0.17, 2.66)
+)
+stocks
+```
+
+    ## # A tibble: 7 x 3
+    ##    year   qtr return
+    ##   <dbl> <dbl>  <dbl>
+    ## 1  2015     1   1.88
+    ## 2  2015     2   0.59
+    ## 3  2015     3   0.35
+    ## 4  2015     4  NA   
+    ## 5  2016     2   0.92
+    ## 6  2016     3   0.17
+    ## 7  2016     4   2.66
+
+In which there is an explicitly missing value for year 2015 quarter 4, and an implicitly missing value for year 2016 quarter 1 (which is just not present in the data).
+
+We can expose the implicitly missing value by spreading the data:
+
+``` r
+stocks %>% 
+  spread(year, return)
+```
+
+    ## # A tibble: 4 x 3
+    ##     qtr `2015` `2016`
+    ##   <dbl>  <dbl>  <dbl>
+    ## 1     1   1.88  NA   
+    ## 2     2   0.59   0.92
+    ## 3     3   0.35   0.17
+    ## 4     4  NA      2.66
+
+Now we see two explicitly missing values. We can also omit NA values entirely by using na.omit() or by specifying na.rm = T in a spread and gather combination.
+
+``` r
+# get rid of NA values using na.omit()
+na.omit(stocks)
+```
+
+    ## # A tibble: 6 x 3
+    ##    year   qtr return
+    ##   <dbl> <dbl>  <dbl>
+    ## 1  2015     1   1.88
+    ## 2  2015     2   0.59
+    ## 3  2015     3   0.35
+    ## 4  2016     2   0.92
+    ## 5  2016     3   0.17
+    ## 6  2016     4   2.66
+
+``` r
+# get rid of NA values using spread and gather( na.rm = T )
+stocks %>% 
+  spread(year, return) %>% 
+  gather(year, return, `2015`:`2016`, na.rm = TRUE)
+```
+
+    ## # A tibble: 6 x 3
+    ##     qtr year  return
+    ## * <dbl> <chr>  <dbl>
+    ## 1     1 2015    1.88
+    ## 2     2 2015    0.59
+    ## 3     3 2015    0.35
+    ## 4     2 2016    0.92
+    ## 5     3 2016    0.17
+    ## 6     4 2016    2.66
+
+A very useful tool is the complete() function in tidyr! It will look for all combinations of the variables specified and find implicitly missing values in the data, and turn them explicit. This is much cleaner-looking than spreading and gathering.
+
+``` r
+stocks %>% 
+  complete(year, qtr)
+```
+
+    ## # A tibble: 8 x 3
+    ##    year   qtr return
+    ##   <dbl> <dbl>  <dbl>
+    ## 1  2015     1   1.88
+    ## 2  2015     2   0.59
+    ## 3  2015     3   0.35
+    ## 4  2015     4  NA   
+    ## 5  2016     1  NA   
+    ## 6  2016     2   0.92
+    ## 7  2016     3   0.17
+    ## 8  2016     4   2.66
+
+Another reason there might be missing values in your dataset is because data was only entered for the first occurance of an observation, and implied that the sequential observations would be for the same identifying entry (also called "carrying forward" values). Below is the example provided in the book, in which the treatment and response variables are associated with a person variable. However, patient names are only identified for their first occurance in the table. To make the table easier to work with, we can "carry forward" the names using fill().
+
+``` r
+treatment <- tribble(
+  ~ person,           ~ treatment, ~response,
+  "Derrick Whitmore", 1,           7,
+  NA,                 2,           10,
+  NA,                 3,           9,
+  "Katherine Burke",  1,           4
+)
+treatment
+```
+
+    ## # A tibble: 4 x 3
+    ##   person           treatment response
+    ##   <chr>                <dbl>    <dbl>
+    ## 1 Derrick Whitmore         1        7
+    ## 2 <NA>                     2       10
+    ## 3 <NA>                     3        9
+    ## 4 Katherine Burke          1        4
+
+``` r
+treatment %>% 
+  fill(person)
+```
+
+    ## # A tibble: 4 x 3
+    ##   person           treatment response
+    ##   <chr>                <dbl>    <dbl>
+    ## 1 Derrick Whitmore         1        7
+    ## 2 Derrick Whitmore         2       10
+    ## 3 Derrick Whitmore         3        9
+    ## 4 Katherine Burke          1        4
 
 12.5.1 Exercises
 ----------------
 
 ### 1. Compare and contrast the fill arguments to spread() and complete().
 
+For the spread() function, the documentation for the fill argument states that:
+
+"If set, missing values will be replaced with this value. Note that there are two types of missingness in the input: explicit missing values (i.e. NA), and implicit missings, rows that simply aren't present. Both types of missing value will be replaced by fill."
+
+In other words, you can replace the missing values with a value of your choice, specified by the fill argument. For example:
+
+``` r
+stocks %>% 
+  spread(year, return, fill = "MISSING")
+```
+
+    ## # A tibble: 4 x 3
+    ##     qtr `2015`  `2016` 
+    ##   <dbl> <chr>   <chr>  
+    ## 1     1 1.88    MISSING
+    ## 2     2 0.59    0.92   
+    ## 3     3 0.35    0.17   
+    ## 4     4 MISSING 2.66
+
+``` r
+# turns out you can supply more than one value, but this doesnt seem to work that great. use complete() instead for multiple values.
+stocks %>% 
+  spread(year, return, fill = c("NO_2015","NO_2016"))
+```
+
+    ## Warning in if (!is.na(fill)) {: the condition has length > 1 and only the
+    ## first element will be used
+
+    ## # A tibble: 4 x 3
+    ##     qtr `2015`  `2016` 
+    ##   <dbl> <chr>   <chr>  
+    ## 1     1 1.88    NO_2016
+    ## 2     2 0.59    0.92   
+    ## 3     3 0.35    0.17   
+    ## 4     4 NO_2015 2.66
+
+For the complete() function, the documentation for the fill argument states that:
+
+"A named list that for each variable supplies a single value to use instead of NA for missing combinations."
+
+In other words, you can supply the fill argument with a list that has one entry for each of the columns in your data frame. Depending on where the missing value is located, it will be replaced by the appropriate NA value. In the example below, I replace any NA values in the year column with "NO\_YEAR", in the qtr column with "NO\_QTR", and in the return column with "NO\_RETURN".
+
+``` r
+stocks %>% 
+  complete(year, qtr, fill = list(year = "NO_YEAR", qtr = "NO_QTR", return = "NO_RETURN"))
+```
+
+    ## # A tibble: 8 x 3
+    ##   year  qtr   return   
+    ##   <chr> <chr> <chr>    
+    ## 1 2015  1     1.88     
+    ## 2 2015  2     0.59     
+    ## 3 2015  3     0.35     
+    ## 4 2015  4     NO_RETURN
+    ## 5 2016  1     NO_RETURN
+    ## 6 2016  2     0.92     
+    ## 7 2016  3     0.17     
+    ## 8 2016  4     2.66
+
 ### 2. What does the direction argument to fill() do?
+
+The documentation for the direction argument in fill() states: "Direction in which to fill missing values. Currently either "down" (the default) or "up"."
+
+So if we specify direction = "up" for the example provided earlier, the NA values will be filled with the 2nd patient (Katherine Burke), not the 1st patient.
+
+``` r
+treatment %>% 
+  fill(person, .direction = "up")
+```
+
+    ## # A tibble: 4 x 3
+    ##   person           treatment response
+    ##   <chr>                <dbl>    <dbl>
+    ## 1 Derrick Whitmore         1        7
+    ## 2 Katherine Burke          2       10
+    ## 3 Katherine Burke          3        9
+    ## 4 Katherine Burke          1        4
+
+12.6 Case Study
+---------------
+
+The case study presented uses the tidyr::who dataset, which is depicted below:
+
+``` r
+who
+```
+
+    ## # A tibble: 7,240 x 60
+    ##    country     iso2  iso3   year new_sp_m014 new_sp_m1524 new_sp_m2534
+    ##    <chr>       <chr> <chr> <int>       <int>        <int>        <int>
+    ##  1 Afghanistan AF    AFG    1980          NA           NA           NA
+    ##  2 Afghanistan AF    AFG    1981          NA           NA           NA
+    ##  3 Afghanistan AF    AFG    1982          NA           NA           NA
+    ##  4 Afghanistan AF    AFG    1983          NA           NA           NA
+    ##  5 Afghanistan AF    AFG    1984          NA           NA           NA
+    ##  6 Afghanistan AF    AFG    1985          NA           NA           NA
+    ##  7 Afghanistan AF    AFG    1986          NA           NA           NA
+    ##  8 Afghanistan AF    AFG    1987          NA           NA           NA
+    ##  9 Afghanistan AF    AFG    1988          NA           NA           NA
+    ## 10 Afghanistan AF    AFG    1989          NA           NA           NA
+    ## # ... with 7,230 more rows, and 53 more variables: new_sp_m3544 <int>,
+    ## #   new_sp_m4554 <int>, new_sp_m5564 <int>, new_sp_m65 <int>,
+    ## #   new_sp_f014 <int>, new_sp_f1524 <int>, new_sp_f2534 <int>,
+    ## #   new_sp_f3544 <int>, new_sp_f4554 <int>, new_sp_f5564 <int>,
+    ## #   new_sp_f65 <int>, new_sn_m014 <int>, new_sn_m1524 <int>,
+    ## #   new_sn_m2534 <int>, new_sn_m3544 <int>, new_sn_m4554 <int>,
+    ## #   new_sn_m5564 <int>, new_sn_m65 <int>, new_sn_f014 <int>,
+    ## #   new_sn_f1524 <int>, new_sn_f2534 <int>, new_sn_f3544 <int>,
+    ## #   new_sn_f4554 <int>, new_sn_f5564 <int>, new_sn_f65 <int>,
+    ## #   new_ep_m014 <int>, new_ep_m1524 <int>, new_ep_m2534 <int>,
+    ## #   new_ep_m3544 <int>, new_ep_m4554 <int>, new_ep_m5564 <int>,
+    ## #   new_ep_m65 <int>, new_ep_f014 <int>, new_ep_f1524 <int>,
+    ## #   new_ep_f2534 <int>, new_ep_f3544 <int>, new_ep_f4554 <int>,
+    ## #   new_ep_f5564 <int>, new_ep_f65 <int>, newrel_m014 <int>,
+    ## #   newrel_m1524 <int>, newrel_m2534 <int>, newrel_m3544 <int>,
+    ## #   newrel_m4554 <int>, newrel_m5564 <int>, newrel_m65 <int>,
+    ## #   newrel_f014 <int>, newrel_f1524 <int>, newrel_f2534 <int>,
+    ## #   newrel_f3544 <int>, newrel_f4554 <int>, newrel_f5564 <int>,
+    ## #   newrel_f65 <int>
+
+Below are the steps taken to "tidy" this dataset. The columns to the right of year are recorded cases of TB for each of the specified cohorts, which can be gathered.
+
+``` r
+who1 <- who %>% 
+  gather(new_sp_m014:newrel_f65, key = "key", value = "cases", na.rm = TRUE)
+who1
+```
+
+    ## # A tibble: 76,046 x 6
+    ##    country     iso2  iso3   year key         cases
+    ##  * <chr>       <chr> <chr> <int> <chr>       <int>
+    ##  1 Afghanistan AF    AFG    1997 new_sp_m014     0
+    ##  2 Afghanistan AF    AFG    1998 new_sp_m014    30
+    ##  3 Afghanistan AF    AFG    1999 new_sp_m014     8
+    ##  4 Afghanistan AF    AFG    2000 new_sp_m014    52
+    ##  5 Afghanistan AF    AFG    2001 new_sp_m014   129
+    ##  6 Afghanistan AF    AFG    2002 new_sp_m014    90
+    ##  7 Afghanistan AF    AFG    2003 new_sp_m014   127
+    ##  8 Afghanistan AF    AFG    2004 new_sp_m014   139
+    ##  9 Afghanistan AF    AFG    2005 new_sp_m014   151
+    ## 10 Afghanistan AF    AFG    2006 new_sp_m014   193
+    ## # ... with 76,036 more rows
+
+In order to prepare for using separate on "key", we need to standardize the format of the values. Most of the values have two underscores: one after "new" and one before the age range. However, one cohort does not have the first underscore after "new". The underscore can be added using str\_replace().
+
+``` r
+who2 <- who1 %>% 
+  mutate(key = stringr::str_replace(key, "newrel", "new_rel"))
+who2
+```
+
+    ## # A tibble: 76,046 x 6
+    ##    country     iso2  iso3   year key         cases
+    ##    <chr>       <chr> <chr> <int> <chr>       <int>
+    ##  1 Afghanistan AF    AFG    1997 new_sp_m014     0
+    ##  2 Afghanistan AF    AFG    1998 new_sp_m014    30
+    ##  3 Afghanistan AF    AFG    1999 new_sp_m014     8
+    ##  4 Afghanistan AF    AFG    2000 new_sp_m014    52
+    ##  5 Afghanistan AF    AFG    2001 new_sp_m014   129
+    ##  6 Afghanistan AF    AFG    2002 new_sp_m014    90
+    ##  7 Afghanistan AF    AFG    2003 new_sp_m014   127
+    ##  8 Afghanistan AF    AFG    2004 new_sp_m014   139
+    ##  9 Afghanistan AF    AFG    2005 new_sp_m014   151
+    ## 10 Afghanistan AF    AFG    2006 new_sp_m014   193
+    ## # ... with 76,036 more rows
+
+Now that the format is standardized, the new, type, and sexage can be separated:
+
+``` r
+who3 <- who2 %>% 
+  separate(key, c("new", "type", "sexage"), sep = "_")
+who3
+```
+
+    ## # A tibble: 76,046 x 8
+    ##    country     iso2  iso3   year new   type  sexage cases
+    ##    <chr>       <chr> <chr> <int> <chr> <chr> <chr>  <int>
+    ##  1 Afghanistan AF    AFG    1997 new   sp    m014       0
+    ##  2 Afghanistan AF    AFG    1998 new   sp    m014      30
+    ##  3 Afghanistan AF    AFG    1999 new   sp    m014       8
+    ##  4 Afghanistan AF    AFG    2000 new   sp    m014      52
+    ##  5 Afghanistan AF    AFG    2001 new   sp    m014     129
+    ##  6 Afghanistan AF    AFG    2002 new   sp    m014      90
+    ##  7 Afghanistan AF    AFG    2003 new   sp    m014     127
+    ##  8 Afghanistan AF    AFG    2004 new   sp    m014     139
+    ##  9 Afghanistan AF    AFG    2005 new   sp    m014     151
+    ## 10 Afghanistan AF    AFG    2006 new   sp    m014     193
+    ## # ... with 76,036 more rows
+
+The iso2 and iso3 columns look like different identifiers for country, so these can be dropped.
+
+``` r
+who3 %>% 
+  count(new)
+```
+
+    ## # A tibble: 1 x 2
+    ##   new       n
+    ##   <chr> <int>
+    ## 1 new   76046
+
+``` r
+who4 <- who3 %>% 
+  select(-new, -iso2, -iso3)
+```
+
+The sexage column can be futher separated into sex and age:
+
+``` r
+who5 <- who4 %>% 
+  separate(sexage, c("sex", "age"), sep = 1)
+who5
+```
+
+    ## # A tibble: 76,046 x 6
+    ##    country      year type  sex   age   cases
+    ##    <chr>       <int> <chr> <chr> <chr> <int>
+    ##  1 Afghanistan  1997 sp    m     014       0
+    ##  2 Afghanistan  1998 sp    m     014      30
+    ##  3 Afghanistan  1999 sp    m     014       8
+    ##  4 Afghanistan  2000 sp    m     014      52
+    ##  5 Afghanistan  2001 sp    m     014     129
+    ##  6 Afghanistan  2002 sp    m     014      90
+    ##  7 Afghanistan  2003 sp    m     014     127
+    ##  8 Afghanistan  2004 sp    m     014     139
+    ##  9 Afghanistan  2005 sp    m     014     151
+    ## 10 Afghanistan  2006 sp    m     014     193
+    ## # ... with 76,036 more rows
+
+We can combine all the steps above using the pipe:
+
+``` r
+who %>%
+  gather(code, value, new_sp_m014:newrel_f65, na.rm = TRUE) %>% 
+  mutate(code = stringr::str_replace(code, "newrel", "new_rel")) %>%
+  separate(code, c("new", "var", "sexage")) %>% 
+  select(-new, -iso2, -iso3) %>% 
+  separate(sexage, c("sex", "age"), sep = 1)
+```
+
+    ## # A tibble: 76,046 x 6
+    ##    country      year var   sex   age   value
+    ##    <chr>       <int> <chr> <chr> <chr> <int>
+    ##  1 Afghanistan  1997 sp    m     014       0
+    ##  2 Afghanistan  1998 sp    m     014      30
+    ##  3 Afghanistan  1999 sp    m     014       8
+    ##  4 Afghanistan  2000 sp    m     014      52
+    ##  5 Afghanistan  2001 sp    m     014     129
+    ##  6 Afghanistan  2002 sp    m     014      90
+    ##  7 Afghanistan  2003 sp    m     014     127
+    ##  8 Afghanistan  2004 sp    m     014     139
+    ##  9 Afghanistan  2005 sp    m     014     151
+    ## 10 Afghanistan  2006 sp    m     014     193
+    ## # ... with 76,036 more rows
 
 12.6.1 Exercises
 ----------------
 
 ### 1. In this case study I set na.rm = TRUE just to make it easier to check that we had the correct values. Is this reasonable? Think about how missing values are represented in this dataset. Are there implicit missing values? What’s the difference between an NA and zero?
 
+In some instances, the presence of an explicitly missing value might have meaning behind it. For example, maybe more missing values are present in data collected from districts in poor neighborhoods, because of staffing issues. In cases where knowing why missing values are present, it might not be good to use na.rm = TRUE. In this context, the presence of missing values might have meant that no cases were observed, or that no people were recorded in the sex/age group specified. However we do not know this for certain. For the purposes of teaching us how to tidy data, I would say that this was reasonable.
+
+To find the number of implicit missing values, first make version of the tidy who without removing NA values, then use complete() to convert implicitly missing values to explicitly missing values. We can then look at how many new rows with NA values were added by subtracting the \# of rows (using nrow()). The difference between NA and zero is that the value of NA is unknown (it could have been anything, but the data wasn't entered), and the value of 0 is that there were zero TB cases (this is a defined value that holds meaning).
+
+``` r
+clean_who <- who %>%
+  gather(code, value, new_sp_m014:newrel_f65) %>% 
+  mutate(code = stringr::str_replace(code, "newrel", "new_rel")) %>%
+  separate(code, c("new", "var", "sexage")) %>% 
+  select(-new, -iso2, -iso3) %>% 
+  separate(sexage, c("sex", "age"), sep = 1)
+
+# Use complete to convert implicity missing values into explicitly missing values
+complete_who <- complete(clean_who, country, year)
+
+# Calculate how many implicitly missing values there are in the dataset by subtracting rows
+nrow(complete_who) - nrow(clean_who)[1]
+```
+
+    ## [1] 206
+
+``` r
+# count how many values are NA in the data set, how many are 0, and how many are neither NA or 0.
+clean_who %>%
+  count(is.na(value), value == 0)
+```
+
+    ## # A tibble: 3 x 3
+    ##   `is.na(value)` `value == 0`      n
+    ##   <lgl>          <lgl>         <int>
+    ## 1 FALSE          FALSE         64966
+    ## 2 FALSE          TRUE          11080
+    ## 3 TRUE           NA           329394
+
 ### 2. What happens if you neglect the mutate() step? (mutate(key = stringr::str\_replace(key, "newrel", "new\_rel")))
+
+The mutate() step is required to allow the separate() function to be applied in the same manner for all the values in the code column, because it changes instances of "newrel" to "new\_rel", which has an underscore after "new" like all the other entries in the column. Without the mutate() step, the rows with "newrel" in them will not be separated correctly by separate(). Below is the output after removing the mutate() step, which shows an error "Expected 3 pieces. Missing pieces filled with `NA` in 2580 rows..."
+
+``` r
+who %>%
+  gather(code, value, new_sp_m014:newrel_f65, na.rm = TRUE) %>% 
+  separate(code, c("new", "var", "sexage")) %>% 
+  select(-new, -iso2, -iso3) %>% 
+  separate(sexage, c("sex", "age"), sep = 1)
+```
+
+    ## Warning: Expected 3 pieces. Missing pieces filled with `NA` in 2580 rows
+    ## [73467, 73468, 73469, 73470, 73471, 73472, 73473, 73474, 73475, 73476,
+    ## 73477, 73478, 73479, 73480, 73481, 73482, 73483, 73484, 73485, 73486, ...].
+
+    ## # A tibble: 76,046 x 6
+    ##    country      year var   sex   age   value
+    ##  * <chr>       <int> <chr> <chr> <chr> <int>
+    ##  1 Afghanistan  1997 sp    m     014       0
+    ##  2 Afghanistan  1998 sp    m     014      30
+    ##  3 Afghanistan  1999 sp    m     014       8
+    ##  4 Afghanistan  2000 sp    m     014      52
+    ##  5 Afghanistan  2001 sp    m     014     129
+    ##  6 Afghanistan  2002 sp    m     014      90
+    ##  7 Afghanistan  2003 sp    m     014     127
+    ##  8 Afghanistan  2004 sp    m     014     139
+    ##  9 Afghanistan  2005 sp    m     014     151
+    ## 10 Afghanistan  2006 sp    m     014     193
+    ## # ... with 76,036 more rows
 
 ### 3. I claimed that iso2 and iso3 were redundant with country. Confirm this claim.
 
+To confirm this claim, we can first identify the number of unique values in each of the three columns. Then, we can compare the number of unique combinations of country, iso2, and iso3 that are present in the data using group\_by(). When we compare these metrics, they are all equal to 219, proving that iso2 and iso3 are reduntant with country.
+
+``` r
+# see how many unique values for country, iso2, and iso3 there are
+length(unique(who$country))
+```
+
+    ## [1] 219
+
+``` r
+length(unique(who$iso2))
+```
+
+    ## [1] 219
+
+``` r
+length(unique(who$iso3))
+```
+
+    ## [1] 219
+
+``` r
+# find out how many unique groupings of country, iso2, and iso3 there are
+who %>%
+  group_by(country, iso2, iso3) %>%
+  count() %>%
+  nrow()
+```
+
+    ## [1] 219
+
 ### 4. For each country, year, and sex compute the total number of cases of TB. Make an informative visualisation of the data.
+
+Below I use group\_by() and summarize() to compute the total number of cases of TB by country, year, and sex. We can feed this into ggplot() to make a visualization. However, it is difficult to make something informative that combines all of these variables, due to the large number of countries and years to display. I tried to do this in the plot below, by depicting the number of TB cases over time, grouped by country, and faceted by sex. I had to remove the legend for the countries because it was occupying too much space. Looking at the plot, we can see two countries with high number of TB cases rising from 2000 and onwards, with a higher occurance in males compared to females.
+
+``` r
+# store the tidy version of who in an object
+tidy_who <- who %>%
+  gather(code, value, new_sp_m014:newrel_f65, na.rm = TRUE) %>% 
+  mutate(code = stringr::str_replace(code, "newrel", "new_rel")) %>%
+  separate(code, c("new", "var", "sexage")) %>% 
+  select(-new, -iso2, -iso3) %>% 
+  separate(sexage, c("sex", "age"), sep = 1)
+
+# count the total number of cases for each country, year and sex
+total_TB <- tidy_who %>%
+  group_by(country, year, sex) %>%
+  summarize(
+    total_TB_cases = sum(value, na.rm = T)
+  )
+
+# plot the data
+total_TB %>%
+  ggplot(aes (x = year, y = total_TB_cases))+
+  geom_line(aes(color = country))+ 
+  theme(legend.position="none")+
+  facet_wrap(~sex)
+```
+
+![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/country_year_sex_TB_cases-1.png)
+
+``` r
+# remove values before 1995 and then plot the data
+  total_TB %>%
+    filter( year > 1995 )%>%
+      ggplot(aes (x = year, y = total_TB_cases))+
+      geom_line(aes(color = country))+ 
+      theme(legend.position="none")+
+      facet_wrap(~sex)
+```
+
+![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/country_year_sex_TB_cases-2.png)
 
 Chapter 13 Relational Data
 ==========================
+
+If you've ever worked with SQL before, this chapter should be relatively familiar to you. Here we learn about the different ways to work with relational data in R, using dplyr functions. Quoted from the book, the different types of thins you can perform are:
+
+-   "Mutating joins, which add new variables to one data frame from matching observations in another."
+-   "Filtering joins, which filter observations from one data frame based on whether or not they match an observation in the other table."
+-   "Set operations, which treat observations as if they were set elements."
+
+``` r
+library("tidyverse")
+library("nycflights13")
+# devtools::install_github("bergant/datamodelr")
+library("datamodelr")
+```
+
+The flights dataset in `nycflights13` has tibbles that can be used to practice relational data management:
+
+``` r
+# the complete flights table
+flights
+```
+
+    ## # A tibble: 336,776 x 19
+    ##     year month   day dep_time sched_dep_time dep_delay arr_time
+    ##    <int> <int> <int>    <int>          <int>     <dbl>    <int>
+    ##  1  2013     1     1      517            515         2      830
+    ##  2  2013     1     1      533            529         4      850
+    ##  3  2013     1     1      542            540         2      923
+    ##  4  2013     1     1      544            545        -1     1004
+    ##  5  2013     1     1      554            600        -6      812
+    ##  6  2013     1     1      554            558        -4      740
+    ##  7  2013     1     1      555            600        -5      913
+    ##  8  2013     1     1      557            600        -3      709
+    ##  9  2013     1     1      557            600        -3      838
+    ## 10  2013     1     1      558            600        -2      753
+    ## # ... with 336,766 more rows, and 12 more variables: sched_arr_time <int>,
+    ## #   arr_delay <dbl>, carrier <chr>, flight <int>, tailnum <chr>,
+    ## #   origin <chr>, dest <chr>, air_time <dbl>, distance <dbl>, hour <dbl>,
+    ## #   minute <dbl>, time_hour <dttm>
+
+``` r
+# info on airlines
+airlines
+```
+
+    ## # A tibble: 16 x 2
+    ##    carrier name                       
+    ##    <chr>   <chr>                      
+    ##  1 9E      Endeavor Air Inc.          
+    ##  2 AA      American Airlines Inc.     
+    ##  3 AS      Alaska Airlines Inc.       
+    ##  4 B6      JetBlue Airways            
+    ##  5 DL      Delta Air Lines Inc.       
+    ##  6 EV      ExpressJet Airlines Inc.   
+    ##  7 F9      Frontier Airlines Inc.     
+    ##  8 FL      AirTran Airways Corporation
+    ##  9 HA      Hawaiian Airlines Inc.     
+    ## 10 MQ      Envoy Air                  
+    ## 11 OO      SkyWest Airlines Inc.      
+    ## 12 UA      United Air Lines Inc.      
+    ## 13 US      US Airways Inc.            
+    ## 14 VX      Virgin America             
+    ## 15 WN      Southwest Airlines Co.     
+    ## 16 YV      Mesa Airlines Inc.
+
+``` r
+# info on airports
+airports
+```
+
+    ## # A tibble: 1,458 x 8
+    ##    faa   name                   lat    lon   alt    tz dst   tzone        
+    ##    <chr> <chr>                <dbl>  <dbl> <int> <dbl> <chr> <chr>        
+    ##  1 04G   Lansdowne Airport     41.1  -80.6  1044    -5 A     America/New_…
+    ##  2 06A   Moton Field Municip…  32.5  -85.7   264    -6 A     America/Chic…
+    ##  3 06C   Schaumburg Regional   42.0  -88.1   801    -6 A     America/Chic…
+    ##  4 06N   Randall Airport       41.4  -74.4   523    -5 A     America/New_…
+    ##  5 09J   Jekyll Island Airpo…  31.1  -81.4    11    -5 A     America/New_…
+    ##  6 0A9   Elizabethton Munici…  36.4  -82.2  1593    -5 A     America/New_…
+    ##  7 0G6   Williams County Air…  41.5  -84.5   730    -5 A     America/New_…
+    ##  8 0G7   Finger Lakes Region…  42.9  -76.8   492    -5 A     America/New_…
+    ##  9 0P2   Shoestring Aviation…  39.8  -76.6  1000    -5 U     America/New_…
+    ## 10 0S9   Jefferson County In…  48.1 -123.    108    -8 A     America/Los_…
+    ## # ... with 1,448 more rows
+
+``` r
+# info on individual planes
+planes
+```
+
+    ## # A tibble: 3,322 x 9
+    ##    tailnum  year type      manufacturer  model  engines seats speed engine
+    ##    <chr>   <int> <chr>     <chr>         <chr>    <int> <int> <int> <chr> 
+    ##  1 N10156   2004 Fixed wi… EMBRAER       EMB-1…       2    55    NA Turbo…
+    ##  2 N102UW   1998 Fixed wi… AIRBUS INDUS… A320-…       2   182    NA Turbo…
+    ##  3 N103US   1999 Fixed wi… AIRBUS INDUS… A320-…       2   182    NA Turbo…
+    ##  4 N104UW   1999 Fixed wi… AIRBUS INDUS… A320-…       2   182    NA Turbo…
+    ##  5 N10575   2002 Fixed wi… EMBRAER       EMB-1…       2    55    NA Turbo…
+    ##  6 N105UW   1999 Fixed wi… AIRBUS INDUS… A320-…       2   182    NA Turbo…
+    ##  7 N107US   1999 Fixed wi… AIRBUS INDUS… A320-…       2   182    NA Turbo…
+    ##  8 N108UW   1999 Fixed wi… AIRBUS INDUS… A320-…       2   182    NA Turbo…
+    ##  9 N109UW   1999 Fixed wi… AIRBUS INDUS… A320-…       2   182    NA Turbo…
+    ## 10 N110UW   1999 Fixed wi… AIRBUS INDUS… A320-…       2   182    NA Turbo…
+    ## # ... with 3,312 more rows
+
+``` r
+# weater information
+weather
+```
+
+    ## # A tibble: 26,130 x 15
+    ##    origin  year month   day  hour  temp  dewp humid wind_dir wind_speed
+    ##    <chr>  <dbl> <dbl> <int> <int> <dbl> <dbl> <dbl>    <dbl>      <dbl>
+    ##  1 EWR     2013     1     1     0  37.0  21.9  54.0      230      10.4 
+    ##  2 EWR     2013     1     1     1  37.0  21.9  54.0      230      13.8 
+    ##  3 EWR     2013     1     1     2  37.9  21.9  52.1      230      12.7 
+    ##  4 EWR     2013     1     1     3  37.9  23    54.5      230      13.8 
+    ##  5 EWR     2013     1     1     4  37.9  24.1  57.0      240      15.0 
+    ##  6 EWR     2013     1     1     6  39.0  26.1  59.4      270      10.4 
+    ##  7 EWR     2013     1     1     7  39.0  27.0  61.6      250       8.06
+    ##  8 EWR     2013     1     1     8  39.0  28.0  64.4      240      11.5 
+    ##  9 EWR     2013     1     1     9  39.9  28.0  62.2      250      12.7 
+    ## 10 EWR     2013     1     1    10  39.0  28.0  64.4      260      12.7 
+    ## # ... with 26,120 more rows, and 5 more variables: wind_gust <dbl>,
+    ## #   precip <dbl>, pressure <dbl>, visib <dbl>, time_hour <dttm>
+
+-   flights connects to planes via a single variable, tailnum.
+-   flights connects to airlines through the carrier variable.
+-   flights connects to airports in two ways: via the origin and dest variables.
+-   flights connects to weather via origin (the location), and year, month, day and hour (the time).
 
 13.2.1 Exercises
 ----------------
@@ -1827,10 +2685,87 @@ Chapter 13 Relational Data
 
 ### 4. We know that some days of the year are “special”, and fewer people than usual fly on them. How might you represent that data as a data frame? What would be the primary keys of that table? How would it connect to the existing tables?
 
+13.3 Keys
+---------
+
+A key is a value or combination of values that uniquely identifies an observation. From the book,
+
+-   "A primary key uniquely identifies an observation in its own table. For example, planes$tailnum is a primary key because it uniquely identifies each plane in the planes table."
+-   "A foreign key uniquely identifies an observation in another table. For example, the flights$tailnum is a foreign key because it appears in the flights table where it matches each flight to a unique plane."
+
+You can verify that a variable can serve as a primary key by verifying that they do uniquely identify each observation. The book uses a combination of count() and filter(). If there are any values with count &gt; 1, the variable is not a primary key.
+
+``` r
+planes %>% 
+  count(tailnum) %>% 
+  filter(n > 1)
+```
+
+    ## # A tibble: 0 x 2
+    ## # ... with 2 variables: tailnum <chr>, n <int>
+
+``` r
+weather %>% 
+  count(year, month, day, hour, origin) %>% 
+  filter(n > 1)
+```
+
+    ## # A tibble: 0 x 6
+    ## # ... with 6 variables: year <dbl>, month <dbl>, day <int>, hour <int>,
+    ## #   origin <chr>, n <int>
+
+If there are no variables in the dataset that can serve as primary keys, we can create a primary key with mutate() and row\_number(). This is called a surrogate key.
+
+``` r
+# combination of year, month, day, flight is not adequate as a primary key.
+# A surrogate key must be added. See 13.3.1 exercises for an example of adding a surrogate key.
+flights %>% 
+  count(year, month, day, flight) %>% 
+  filter(n > 1)
+```
+
+    ## # A tibble: 29,768 x 5
+    ##     year month   day flight     n
+    ##    <int> <int> <int>  <int> <int>
+    ##  1  2013     1     1      1     2
+    ##  2  2013     1     1      3     2
+    ##  3  2013     1     1      4     2
+    ##  4  2013     1     1     11     3
+    ##  5  2013     1     1     15     2
+    ##  6  2013     1     1     21     2
+    ##  7  2013     1     1     27     4
+    ##  8  2013     1     1     31     2
+    ##  9  2013     1     1     32     2
+    ## 10  2013     1     1     35     2
+    ## # ... with 29,758 more rows
+
+How a primary key from one table matches a foreign key in another table is what is called the relation. Depending on how they match, we can perform joins or other set operations, based on the values present in both keys.
+
 13.3.1 Exercises
 ----------------
 
 ### 1. Add a surrogate key to flights.
+
+``` r
+# add a surrogate key to flights, display vs flight
+flights %>%
+  transmute (flight, surrogate_key = row_number() )
+```
+
+    ## # A tibble: 336,776 x 2
+    ##    flight surrogate_key
+    ##     <int>         <int>
+    ##  1   1545             1
+    ##  2   1714             2
+    ##  3   1141             3
+    ##  4    725             4
+    ##  5    461             5
+    ##  6   1696             6
+    ##  7    507             7
+    ##  8   5708             8
+    ##  9     79             9
+    ## 10    301            10
+    ## # ... with 336,766 more rows
 
 ### 2. Identify the keys in the following datasets
 
@@ -1841,6 +2776,9 @@ Chapter 13 Relational Data
 -   ggplot2::diamonds (You might need to install some packages and read some documentation.)
 
 ### 3. Draw a diagram illustrating the connections between the Batting, Master, and Salaries tables in the Lahman package. Draw another diagram that shows the relationship between Master, Managers, AwardsManagers. How would you characterise the relationship between the Batting, Pitching, and Fielding tables?
+
+13.4 Mutating Joins
+-------------------
 
 13.4.6 Exercises
 ----------------
@@ -1864,7 +2802,7 @@ airports %>%
     ## 
     ##     map
 
-![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/unnamed-chunk-57-1.png)
+![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/map_of_US-1.png)
 
 (Don’t worry if you don’t understand what semi\_join() does — you’ll learn about it next.) You might want to use the size or colour of the points to display the average delay for each airport.
 
@@ -1875,6 +2813,9 @@ airports %>%
 ### 4. What weather conditions make it more likely to see a delay?
 
 ### 5. What happened on June 13 2013? Display the spatial pattern of delays, and then use Google to cross-reference with the weather.
+
+Filtering Joins
+---------------
 
 13.5.1 Exercises
 ----------------
@@ -1890,3 +2831,6 @@ airports %>%
 ### 5. What does anti\_join(flights, airports, by = c("dest" = "faa")) tell you? What does anti\_join(airports, flights, by = c("faa" = "dest")) tell you?
 
 ### 6. You might expect that there’s an implicit relationship between plane and airline, because each plane is flown by a single airline. Confirm or reject this hypothesis using the tools you’ve learned above.
+
+Join problems and set operations
+--------------------------------

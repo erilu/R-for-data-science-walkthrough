@@ -134,7 +134,7 @@ annoying <- tibble(
 annoying[,"1"]
 ```
 * Plotting a scatterplot of 1 vs 2.
-```{r}
+```{r scatterplot_1v2}
 ggplot(annoying, aes(`1`,`2`))+
   geom_point()
 ```
@@ -600,7 +600,7 @@ cbind (table4b, rate_1999, rate_2000)
 
 First, we need to tidy table2 so that we can use it with ggplot2, using the spread() function. Then, we can use the ggplot() function in the same manner as in the book example.
 
-```{r}
+```{r table2_recreate_casesovertime}
 table2 %>%
   spread(key = type, value = count) %>%
   ggplot(aes(year, cases)) + 
@@ -926,11 +926,15 @@ The case study presented uses the tidyr::who dataset, which is depicted below:
 who
 ```
 
+Below are the steps taken to "tidy" this dataset. The columns to the right of year are recorded cases of TB for each of the specified cohorts, which can be gathered. 
+
 ```{r}
 who1 <- who %>% 
   gather(new_sp_m014:newrel_f65, key = "key", value = "cases", na.rm = TRUE)
 who1
 ```
+
+In order to prepare for using separate on "key", we need to standardize the format of the values. Most of the values have two underscores: one after "new" and one before the age range. However, one cohort does not have the first underscore after "new". The underscore can be added using str_replace().
 
 ```{r}
 who2 <- who1 %>% 
@@ -938,12 +942,14 @@ who2 <- who1 %>%
 who2
 ```
 
+Now that the format is standardized, the new, type, and sexage can be separated:
 ```{r}
 who3 <- who2 %>% 
   separate(key, c("new", "type", "sexage"), sep = "_")
 who3
 ```
 
+The iso2 and iso3 columns look like different identifiers for country, so these can be dropped. 
 ```{r}
 who3 %>% 
   count(new)
@@ -952,12 +958,14 @@ who4 <- who3 %>%
   select(-new, -iso2, -iso3)
 ```
 
-
+The sexage column can be futher separated into sex and age:
 ```{r}
 who5 <- who4 %>% 
   separate(sexage, c("sex", "age"), sep = 1)
 who5
 ```
+
+We can combine all the steps above using the pipe:
 
 ```{r}
 who %>%
@@ -969,7 +977,6 @@ who %>%
 ```
 
 ## 12.6.1 Exercises
-
 
 ### 1. In this case study I set na.rm = TRUE just to make it easier to check that we had the correct values. Is this reasonable? Think about how missing values are represented in this dataset. Are there implicit missing values? What’s the difference between an NA and zero?
 
@@ -1012,6 +1019,8 @@ who %>%
 
 ### 3. I claimed that iso2 and iso3 were redundant with country. Confirm this claim.
 
+To confirm this claim, we can first identify the number of unique values in each of the three columns. Then, we can compare the number of unique combinations of country, iso2, and iso3 that are present in the data using group_by(). When we compare these metrics, they are all equal to 219, proving that iso2 and iso3 are reduntant with country.
+
 ```{r}
 # see how many unique values for country, iso2, and iso3 there are
 length(unique(who$country))
@@ -1023,14 +1032,15 @@ who %>%
   group_by(country, iso2, iso3) %>%
   count() %>%
   nrow()
-
 ```
 
 
 ### 4. For each country, year, and sex compute the total number of cases of TB. Make an informative visualisation of the data.
 
+Below I use group_by() and summarize() to compute the total number of cases of TB by country, year, and sex. We can feed this into ggplot() to make a visualization. However, it is difficult to make something informative that combines all of these variables, due to the large number of countries and years to display. I tried to do this in the plot below, by depicting the number of TB cases over time, grouped by country, and faceted by sex. I had to remove the legend for the countries because it was occupying too much space. Looking at the plot, we can see two countries with high number of TB cases rising from 2000 and onwards, with a higher occurance in males compared to females.
 
-```{r}
+```{r country_year_sex_TB_cases}
+# store the tidy version of who in an object
 tidy_who <- who %>%
   gather(code, value, new_sp_m014:newrel_f65, na.rm = TRUE) %>% 
   mutate(code = stringr::str_replace(code, "newrel", "new_rel")) %>%
@@ -1038,37 +1048,120 @@ tidy_who <- who %>%
   select(-new, -iso2, -iso3) %>% 
   separate(sexage, c("sex", "age"), sep = 1)
 
+# count the total number of cases for each country, year and sex
 total_TB <- tidy_who %>%
   group_by(country, year, sex) %>%
   summarize(
     total_TB_cases = sum(value, na.rm = T)
   )
 
+# plot the data
 total_TB %>%
   ggplot(aes (x = year, y = total_TB_cases))+
-  geom_jitter()
+  geom_line(aes(color = country))+ 
+  theme(legend.position="none")+
+  facet_wrap(~sex)
 
-
+# remove values before 1995 and then plot the data
+  total_TB %>%
+    filter( year > 1995 )%>%
+      ggplot(aes (x = year, y = total_TB_cases))+
+      geom_line(aes(color = country))+ 
+      theme(legend.position="none")+
+      facet_wrap(~sex)
 ```
 
 
-
 # Chapter 13 Relational Data
+
+If you've ever worked with SQL before, this chapter should be relatively familiar to you. Here we learn about the different ways to work with relational data in R, using dplyr functions. Quoted from the book, the different types of thins you can perform are:
+
+* "Mutating joins, which add new variables to one data frame from matching observations in another."
+* "Filtering joins, which filter observations from one data frame based on whether or not they match an observation in the other table."
+* "Set operations, which treat observations as if they were set elements."
+
+```{r}
+library("tidyverse")
+library("nycflights13")
+# devtools::install_github("bergant/datamodelr")
+library("datamodelr")
+```
+
+The flights dataset in ```nycflights13``` has tibbles that can be used to practice relational data management:
+
+```{r}
+# the complete flights table
+flights
+# info on airlines
+airlines
+# info on airports
+airports
+# info on individual planes
+planes
+# weater information
+weather
+```
+
+* flights connects to planes via a single variable, tailnum.
+* flights connects to airlines through the carrier variable.
+* flights connects to airports in two ways: via the origin and dest variables.
+* flights connects to weather via origin (the location), and year, month, day and hour (the time).
 
 ## 13.2.1 Exercises
 
 ### 1. Imagine you wanted to draw (approximately) the route each plane flies from its origin to its destination. What variables would you need? What tables would you need to combine?
 
+
+
 ### 2. I forgot to draw the relationship between weather and airports. What is the relationship and how should it appear in the diagram?
+
+
 
 ### 3. weather only contains information for the origin (NYC) airports. If it contained weather records for all airports in the USA, what additional relation would it define with flights?
 
+
+
 ### 4. We know that some days of the year are “special”, and fewer people than usual fly on them. How might you represent that data as a data frame? What would be the primary keys of that table? How would it connect to the existing tables?
 
+## 13.3 Keys
+
+A key is a value or combination of values that uniquely identifies an observation. From the book,
+
+* "A primary key uniquely identifies an observation in its own table. For example, planes$tailnum is a primary key because it uniquely identifies each plane in the planes table."
+* "A foreign key uniquely identifies an observation in another table. For example, the flights$tailnum is a foreign key because it appears in the flights table where it matches each flight to a unique plane."
+
+You can verify that a variable can serve as a primary key by verifying that they do uniquely identify each observation. The book uses a combination of count() and filter(). If there are any values with count > 1, the variable is not a primary key.
+
+```{r}
+planes %>% 
+  count(tailnum) %>% 
+  filter(n > 1)
+weather %>% 
+  count(year, month, day, hour, origin) %>% 
+  filter(n > 1)
+```
+
+If there are no variables in the dataset that can serve as primary keys, we can create a primary key with mutate() and row_number(). This is called a surrogate key.
+
+```{r}
+# combination of year, month, day, flight is not adequate as a primary key.
+# A surrogate key must be added. See 13.3.1 exercises for an example of adding a surrogate key.
+flights %>% 
+  count(year, month, day, flight) %>% 
+  filter(n > 1)
+```
+
+How a primary key from one table matches a foreign key in another table is what is called the relation. Depending on how they match, we can perform joins or other set operations, based on the values present in both keys.
 
 ## 13.3.1 Exercises
 
 ### 1. Add a surrogate key to flights.
+
+```{r}
+# add a surrogate key to flights, display vs flight
+flights %>%
+  transmute (flight, surrogate_key = row_number() )
+```
 
 ### 2. Identify the keys in the following datasets
 
@@ -1079,14 +1172,17 @@ total_TB %>%
 * ggplot2::diamonds
 (You might need to install some packages and read some documentation.)
 
+
 ### 3. Draw a diagram illustrating the connections between the Batting, Master, and Salaries tables in the Lahman package. Draw another diagram that shows the relationship between Master, Managers, AwardsManagers. How would you characterise the relationship between the Batting, Pitching, and Fielding tables?
+
+## 13.4 Mutating Joins
 
 
 
 ## 13.4.6 Exercises
 
 ### 1. Compute the average delay by destination, then join on the airports data frame so you can show the spatial distribution of delays. Here’s an easy way to draw a map of the United States:
-```{r}
+```{r map_of_US}
 library(nycflights13)
 airports %>%
   semi_join(flights, c("faa" = "dest")) %>%
@@ -1099,26 +1195,53 @@ airports %>%
 (Don’t worry if you don’t understand what semi_join() does — you’ll learn about it next.)
 You might want to use the size or colour of the points to display the average delay for each airport.
 
+
+
 ### 2. Add the location of the origin and destination (i.e. the lat and lon) to flights.
+
+
 
 ### 3. Is there a relationship between the age of a plane and its delays?
 
+
+
 ### 4. What weather conditions make it more likely to see a delay?
 
+
+
 ### 5. What happened on June 13 2013? Display the spatial pattern of delays, and then use Google to cross-reference with the weather.
+
+
+## Filtering Joins
+
+
 
 
 ## 13.5.1 Exercises
 ### 1. What does it mean for a flight to have a missing tailnum? What do the tail numbers that don’t have a matching record in planes have in common? (Hint: one variable explains ~90% of the problems.)
 
+
+
 ### 2. Filter flights to only show flights with planes that have flown at least 100 flights.
+
+
 
 ### 3. Combine fueleconomy::vehicles and fueleconomy::common to find only the records for the most common models.
 
+
+
 ### 4. Find the 48 hours (over the course of the whole year) that have the worst delays. Cross-reference it with the weather data. Can you see any patterns?
+
+
 
 ### 5. What does anti_join(flights, airports, by = c("dest" = "faa")) tell you? What does anti_join(airports, flights, by = c("faa" = "dest")) tell you?
 
+
+
 ### 6. You might expect that there’s an implicit relationship between plane and airline, because each plane is flown by a single airline. Confirm or reject this hypothesis using the tools you’ve learned above.
+
+
+## Join problems and set operations
+
 
 
