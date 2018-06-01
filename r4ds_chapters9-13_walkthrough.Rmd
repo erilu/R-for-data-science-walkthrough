@@ -1111,17 +1111,37 @@ weather
 
 ### 1. Imagine you wanted to draw (approximately) the route each plane flies from its origin to its destination. What variables would you need? What tables would you need to combine?
 
+You would need the variables tailnum, which defines individual planes, and the latitude and longitude values of the origin and destination variables. To do this, you can combine the ```flights``` table, which connects tailnum to origin and destination, with the ```airports``` table, which contains the latitude and longitude of each airport. Here is the join that can be performed:
+
+```{r}
+
+```
 
 
 ### 2. I forgot to draw the relationship between weather and airports. What is the relationship and how should it appear in the diagram?
 
+The ```airports``` table can be joined to the ```weather``` table, in which the primary key is ```origin``` in the weather table and the foreign key is the ```faa``` column in the airports table. For each observation in weather, information about the airport can be appended as a new column. For example:
+
+```{r}
+
+```
 
 
 ### 3. weather only contains information for the origin (NYC) airports. If it contained weather records for all airports in the USA, what additional relation would it define with flights?
 
+If it contained weather records for all airports, it could be joined with flights using the primary key consisting of the columns year, month, day, hour and origin in ```weather```, which could be connected with the foreign key year, month, day, hour, and either origin or dest in ```flights```. For example,
+```{r}
 
+```
 
 ### 4. We know that some days of the year are “special”, and fewer people than usual fly on them. How might you represent that data as a data frame? What would be the primary keys of that table? How would it connect to the existing tables?
+
+You could have a separate data frame containing the variables year, month, day, and "special", in which the "special" days would be designated TRUE and all other days in the data frame designated FALSE. This could be connected to the existing tables using the primary key consisting of year, month, and day. The value for the "special" column would be appended to the corresponding foriegn key values. For example, below is a table containing some special days of the year (Christmas, Thanksgiving, etc.), that is joined to the flights table.
+
+```{r}
+
+```
+
 
 ## 13.3 Keys
 
