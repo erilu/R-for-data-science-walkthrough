@@ -1083,8 +1083,6 @@ If you've ever worked with SQL before, this chapter should be relatively familia
 ```{r}
 library("tidyverse")
 library("nycflights13")
-# devtools::install_github("bergant/datamodelr")
-library("datamodelr")
 ```
 
 The flights dataset in ```nycflights13``` has tibbles that can be used to practice relational data management:
@@ -1115,33 +1113,38 @@ You would need the variables tailnum, which defines individual planes, and the l
 
 ```{r}
 
+flights_1 <- left_join(flights, airports, by = c("dest" = "faa"))
+flights_2 <- left_join(flights_1, airports, by = c("origin" = "faa"))
+flights_2
 ```
-
 
 ### 2. I forgot to draw the relationship between weather and airports. What is the relationship and how should it appear in the diagram?
 
 The ```airports``` table can be joined to the ```weather``` table, in which the primary key is ```origin``` in the weather table and the foreign key is the ```faa``` column in the airports table. For each observation in weather, information about the airport can be appended as a new column. For example:
 
 ```{r}
-
+weather_airports <- left_join(weather, airports, by = c("origin" = "faa"))
+weather_airports
 ```
-
 
 ### 3. weather only contains information for the origin (NYC) airports. If it contained weather records for all airports in the USA, what additional relation would it define with flights?
 
-If it contained weather records for all airports, it could be joined with flights using the primary key consisting of the columns year, month, day, hour and origin in ```weather```, which could be connected with the foreign key year, month, day, hour, and either origin or dest in ```flights```. For example,
-```{r}
-
-```
+If it contained weather records for all airports, it could be joined with flights using the primary key consisting of the columns year, month, day, hour and origin in ```weather```, which could be connected with the foreign key year, month, day, hour, and either origin or dest in ```flights```.
 
 ### 4. We know that some days of the year are “special”, and fewer people than usual fly on them. How might you represent that data as a data frame? What would be the primary keys of that table? How would it connect to the existing tables?
 
-You could have a separate data frame containing the variables year, month, day, and "special", in which the "special" days would be designated TRUE and all other days in the data frame designated FALSE. This could be connected to the existing tables using the primary key consisting of year, month, and day. The value for the "special" column would be appended to the corresponding foriegn key values. For example, below is a table containing some special days of the year (Christmas, Thanksgiving, etc.), that is joined to the flights table.
+You could have a separate data frame containing the variables month, day, and "special", in which the "special" days would be designated TRUE. This could be connected to the existing tables using the primary key consisting of month, and day (should probably include the year as well, depending on the holiday). The value for the "special" column would be appended to the corresponding foriegn key values as TRUE or FALSE. For example, below is a table containing some special days of the year (Christmas, New Years), that is joined to the flights table.
 
 ```{r}
-
+special <- tribble (
+  ~month, ~day, ~event,
+  12, 25, TRUE,
+  1, 1, TRUE
+)
+left_join(flights, special) %>%
+  select (year, month, day, flight, event) %>%
+  mutate ( event = (!is.na(event))) %>%
 ```
-
 
 ## 13.3 Keys
 
@@ -1185,18 +1188,45 @@ flights %>%
 
 ### 2. Identify the keys in the following datasets
 
-* Lahman::Batting,
+* Lahman::Batting
 * babynames::babynames
 * nasaweather::atmos
 * fueleconomy::vehicles
 * ggplot2::diamonds
 (You might need to install some packages and read some documentation.)
 
-
 ### 3. Draw a diagram illustrating the connections between the Batting, Master, and Salaries tables in the Lahman package. Draw another diagram that shows the relationship between Master, Managers, AwardsManagers. How would you characterise the relationship between the Batting, Pitching, and Fielding tables?
+
+We can draw the diagrams similar to the ones presented in the book using the package datamodelr:
+
+```{r}
+# devtools::install_github("bergant/datamodelr")
+library("datamodelr")
+```
+
 
 ## 13.4 Mutating Joins
 
+This section on mutating joins introduces the usage of the join functions and provides examples of how they could be used. Below are the provided examples.
+
+```{r}
+flights2 <- flights %>% 
+  select(year:day, hour, origin, dest, tailnum, carrier)
+flights2
+```
+
+
+```{r}
+flights2 %>%
+  select(-origin, -dest) %>% 
+  left_join(airlines, by = "carrier")
+```
+
+```{r}
+flights2 %>%
+  select(-origin, -dest) %>% 
+  mutate(name = airlines$name[match(carrier, airlines$carrier)])
+```
 
 
 ## 13.4.6 Exercises
