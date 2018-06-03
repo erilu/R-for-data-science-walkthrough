@@ -1186,46 +1186,119 @@ flights %>%
   transmute (flight, surrogate_key = row_number() )
 ```
 
-### 2. Identify the keys in the following datasets
+### 2. Identify the keys in the following datasets:
 
-* Lahman::Batting
-* babynames::babynames
-* nasaweather::atmos
-* fueleconomy::vehicles
-* ggplot2::diamonds
-(You might need to install some packages and read some documentation.)
+We can determine the primary keys by looking for unique groupings of variables that match the total number of observations in each table using group_by() and count(), and piping the ouput either to nrow() or filtering for groups that have n>1. If nrow() is equal to the total observations, or if filter(n>1) yields zero observations, then we have found the primary key.
+
+The primary key for Lahman::Batting is the combination of playerID, yearID, and stint.
+The primary key for babynames::babynames is year, sex, and name.
+The primary key for nasaweather::atmos is lat, long, year, and month.
+The primary key for fueleconomy::vehicles is id.
+For ggplot2::diamonds, there is no primary key. We can generate a surrogate key using mutate() and row_number().
+
+```{r}
+head(Lahman::Batting)
+# method 1
+dim(Lahman::Batting)
+group_by(Lahman::Batting, playerID, yearID,stint) %>%
+  count() %>%
+  nrow()
+# method 2
+group_by(Lahman::Batting, playerID, yearID,stint) %>%
+  count() %>%
+  nrow()
+
+babynames::babynames
+dim(babynames::babynames)
+group_by(babynames::babynames, year, sex,name) %>%
+  count() %>%
+  nrow()
+
+nasaweather::atmos
+dim(nasaweather::atmos)
+group_by(nasaweather::atmos, lat, long, year, month) %>%
+  count() %>%
+  nrow()
+
+fueleconomy::vehicles
+dim(fueleconomy::vehicles)
+group_by(fueleconomy::vehicles, id) %>%
+  count() %>%
+  nrow()
+
+ggplot2::diamonds
+diamonds_withkey <- ggplot2::diamonds %>%
+  mutate (surrogate_key = row_number())
+diamonds_withkey
+
+```
 
 ### 3. Draw a diagram illustrating the connections between the Batting, Master, and Salaries tables in the Lahman package. Draw another diagram that shows the relationship between Master, Managers, AwardsManagers. How would you characterise the relationship between the Batting, Pitching, and Fielding tables?
 
-We can draw the diagrams similar to the ones presented in the book using the package datamodelr:
+* Batting connects to Master using playerID, and with Salaries through playerID, yearID, teamID, and lgID. Master connects with Salaries through playerID.
+* Master connects with Managers and with AwardsManagers through playerID. Managers connects with AwardsManagers using playerID, year, and lgID.
+* Batting, Pitching, and Fielding all connect with each other through playerID, yearID, stint, teamID, and lgID. They are just variables for this key categorized into different tables based on the type of play. You could also just use playerID, yearID, and stint to get a unique key for these tables.
 
 ```{r}
-# devtools::install_github("bergant/datamodelr")
-library("datamodelr")
-```
+library(Lahman)
 
+as_tibble(Batting)
+as_tibble(Master)
+as_tibble(Salaries)
+as_tibble(Managers)
+as_tibble(AwardsManagers)
+as_tibble(Pitching)
+as_tibble(Fielding)
+
+Batting %>%
+  group_by(playerID, yearID, stint) %>%
+  count() %>%
+  filter(n>1)
+
+```
 
 ## 13.4 Mutating Joins
 
 This section on mutating joins introduces the usage of the join functions and provides examples of how they could be used. Below are the provided examples.
 
 ```{r}
+# make a truncated dataset to work with
 flights2 <- flights %>% 
   select(year:day, hour, origin, dest, tailnum, carrier)
 flights2
 ```
 
-
+Comparing how to perform joins using dplyr or baseR:
 ```{r}
+# left join using left_join() from dplyr
 flights2 %>%
   select(-origin, -dest) %>% 
   left_join(airlines, by = "carrier")
-```
-
-```{r}
+# left join using base R commands and mutate()
 flights2 %>%
   select(-origin, -dest) %>% 
   mutate(name = airlines$name[match(carrier, airlines$carrier)])
+```
+
+There are two classes of joins: inner joins, in which only observations with common key values are provided in the joined output, or outer joins, in which all observations from one or more of the tables are kept, in the joined output, and the rest of the missing values are filled in with NA. 
+
+From the text, the types of outer joins are defined as:
+
+"A left join keeps all observations in x.
+A right join keeps all observations in y.
+A full join keeps all observations in x and y."
+
+The "by" argument is important to modify depending on the type of join you want to perform and the keys you want to use between the two tables. The book provides the examples below on the different ways the "by" argument can be used.
+```{r}
+# left join, if "by" argument is unspecified, will perform natural join
+flights2 %>% 
+  left_join(weather)
+# left join specifying which column to use as key
+flights2 %>% 
+  left_join(planes, by = "tailnum")
+# left join specifying column to use as key, if named differently in the two tables
+flights2 %>% 
+  left_join(airports, c("dest" = "faa"))
 ```
 
 
