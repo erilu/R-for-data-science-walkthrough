@@ -1280,7 +1280,7 @@ flights2 %>%
   mutate(name = airlines$name[match(carrier, airlines$carrier)])
 ```
 
-There are two classes of joins: inner joins, in which only observations with common key values are provided in the joined output, or outer joins, in which all observations from one or more of the tables are kept, in the joined output, and the rest of the missing values are filled in with NA. 
+There are two classes of joins: inner joins, in which only observations with common key values are provided in the joined output, or outer joins, in which all observations from one or more of the tables are kept, in the joined output, and the rest of the missing values are filled in with NA.
 
 From the text, the types of outer joins are defined as:
 
@@ -1288,7 +1288,7 @@ From the text, the types of outer joins are defined as:
 A right join keeps all observations in y.
 A full join keeps all observations in x and y."
 
-The "by" argument is important to modify depending on the type of join you want to perform and the keys you want to use between the two tables. The book provides the examples below on the different ways the "by" argument can be used.
+These joins can be performed using dplyr commands (left_join(), right_join(), full_join(), inner_join(), semi_join(), anti_join()) or using the base R command merge(). The "by" argument is important to modify depending on the type of join you want to perform and the keys you want to use between the two tables. The book provides the examples below on the different ways the "by" argument can be used.
 ```{r}
 # left join, if "by" argument is unspecified, will perform natural join
 flights2 %>% 
@@ -1318,26 +1318,84 @@ airports %>%
 (Don’t worry if you don’t understand what semi_join() does — you’ll learn about it next.)
 You might want to use the size or colour of the points to display the average delay for each airport.
 
+```{r}
+
+avg_delay_byDest <- flights %>%
+  group_by(dest) %>%
+  summarize ( avg_delay = mean(arr_delay, na.rm=T) ) %>%
+  left_join(airports, by = c("dest" = "faa"))
+avg_delay_byDest
+
+avg_delay_byDest %>%
+  ggplot(aes(lon, lat)) +
+    borders("state") +
+    geom_point(aes(size = avg_delay, alpha = 1/5, color = avg_delay)) +
+    coord_quickmap()
+```
 
 
 ### 2. Add the location of the origin and destination (i.e. the lat and lon) to flights.
 
+```{r}
+lat_lon_airports <- airports %>%
+  select(faa, lat, lon)
+with_origin <- left_join(flights, lat_lon_airports, by = c("origin" = "faa"))
+with_origin
+with_origin_and_dest <- left_join(with_origin, lat_lon_airports, by = c("dest" = "faa"), suffix = c(".origin", ".dest"))
+with_origin_and_dest
+```
 
 
 ### 3. Is there a relationship between the age of a plane and its delays?
 
+First join the planes table with the flights table. Then we can visualize any relationships between the year variable (age) of the plane and the delays associated with it (or group by tailnum, then caluclate avg delay, then join the info from planes, then visualize).
+
+```{r}
+
+
+```
 
 
 ### 4. What weather conditions make it more likely to see a delay?
 
 
+Join the weather table with flights, and then we can visualize the relationship with delay and weather conditions.
+
 
 ### 5. What happened on June 13 2013? Display the spatial pattern of delays, and then use Google to cross-reference with the weather.
 
 
+
+
 ## Filtering Joins
 
+There are two types of filtering joins that can be performed, listed by the book:
 
+* "semi_join(x, y) keeps all observations in x that have a match in y."
+* anti_join(x, y) drops all observations in x that have a match in y."
+
+```{r}
+
+top_dest <- flights %>%
+  count(dest, sort = TRUE) %>%
+  head(10)
+top_dest
+
+flights %>% 
+  filter(dest %in% top_dest$dest)
+
+# semi join
+flights %>% 
+  semi_join(top_dest)
+```
+
+
+```{r}
+# anti join
+flights %>%
+  anti_join(planes, by = "tailnum") %>%
+  count(tailnum, sort = TRUE)
+```
 
 
 ## 13.5.1 Exercises
@@ -1365,6 +1423,37 @@ You might want to use the size or colour of the points to display the average de
 
 
 ## Join problems and set operations
+
+```{r}
+airports %>% count(alt, lon) %>% filter(n > 1)
+```
+
+
+
+* intersect(x, y): return only observations in both x and y.
+* union(x, y): return unique observations in x and y.
+* setdiff(x, y): return observations in x, but not in y.
+
+```{r}
+df1 <- tribble(
+  ~x, ~y,
+   1,  1,
+   2,  1
+)
+df2 <- tribble(
+  ~x, ~y,
+   1,  1,
+   1,  2
+)
+```
+
+```{r}
+intersect(df1, df2)
+
+union(df1, df2)
+setdiff(df1, df2)
+setdiff(df2, df1)
+```
 
 
 
