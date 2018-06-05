@@ -1284,9 +1284,9 @@ There are two classes of joins: inner joins, in which only observations with com
 
 From the text, the types of outer joins are defined as:
 
-"A left join keeps all observations in x.
-A right join keeps all observations in y.
-A full join keeps all observations in x and y."
+* "A left join keeps all observations in x."
+* "A right join keeps all observations in y."
+* "A full join keeps all observations in x and y."
 
 These joins can be performed using dplyr commands (left_join(), right_join(), full_join(), inner_join(), semi_join(), anti_join()) or using the base R command merge(). The "by" argument is important to modify depending on the type of join you want to perform and the keys you want to use between the two tables. The book provides the examples below on the different ways the "by" argument can be used.
 ```{r}
@@ -1372,26 +1372,28 @@ Join the weather table with flights, and then we can visualize the relationship 
 There are two types of filtering joins that can be performed, listed by the book:
 
 * "semi_join(x, y) keeps all observations in x that have a match in y."
-* anti_join(x, y) drops all observations in x that have a match in y."
+* "anti_join(x, y) drops all observations in x that have a match in y."
 
+The semi_join() function is useful when you want to filter a table for observations that match a certain criteria set by a second table. The provided example in the book is finding top destinations, then looking for the observations in the orginal data table that corresponded to the top destinations. You could use filter() but this might become difficult when analzying multiple variables.
 ```{r}
-
+# find top destinations
 top_dest <- flights %>%
   count(dest, sort = TRUE) %>%
   head(10)
 top_dest
 
+# use filter() to find observations in flights that have matched key in top destinations table
 flights %>% 
   filter(dest %in% top_dest$dest)
 
-# semi join
+# use semi_join() to find obseravtions in flights that have matched key in top destinations table
 flights %>% 
   semi_join(top_dest)
 ```
 
-
+The opposite of the semi_join() function is the anti_join() function, which will return mismatches between the two tables (which values in x do not have a matched key in y?). The book uses anti_join() to find which flights do not have a match in the planes data table.
 ```{r}
-# anti join
+# anti join to find which observations in flights do not have a match in the planes table
 flights %>%
   anti_join(planes, by = "tailnum") %>%
   count(tailnum, sort = TRUE)
@@ -1424,15 +1426,19 @@ flights %>%
 
 ## Join problems and set operations
 
-```{r}
-airports %>% count(alt, lon) %>% filter(n > 1)
-```
+The book recommends the following process for setting up your data to perform join operations.
 
+1. First, identify the variables that form the primary key in each table, usually thinking about the types of variables that would make sense to be keys (id, or a date/time, etc.).
+2. See if there are any missing values in the variable(s) for your primary key. Since values cannot be joined to missing values, this might result in issues.
+3. Make sure that all the values of the keys match between the tables you are joining. If a value for a key in one of the tables was missing due to a data entry error or other reason, the value will be lost in the subsequent join. Values that are not consistent between keys can be assessed using anti_join().
 
+The last segment of the chapter focuses on set operations. Below are the functions listed by the book for performing set operations. They treat the observations (rows) of two tables that have the same variables as sets.
 
 * intersect(x, y): return only observations in both x and y.
 * union(x, y): return unique observations in x and y.
 * setdiff(x, y): return observations in x, but not in y.
+
+Here are the examples provided by the book for the set operations described above:
 
 ```{r}
 df1 <- tribble(
