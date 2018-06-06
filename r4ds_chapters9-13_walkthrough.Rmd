@@ -1318,14 +1318,17 @@ airports %>%
 (Don’t worry if you don’t understand what semi_join() does — you’ll learn about it next.)
 You might want to use the size or colour of the points to display the average delay for each airport.
 
-```{r}
+I first grouped by destination and computed the average delay per destination, and then joined the airports data to this metric using left_join(). Then, we can use this table to create a plot displaying the relative average delays at airports across the US by modifying the code provided by the book above.
 
+```{r}
+# caluclate average delay by destination and join airports data
 avg_delay_byDest <- flights %>%
   group_by(dest) %>%
   summarize ( avg_delay = mean(arr_delay, na.rm=T) ) %>%
   left_join(airports, by = c("dest" = "faa"))
 avg_delay_byDest
 
+# plot the results on top of the map of the US
 avg_delay_byDest %>%
   ggplot(aes(lon, lat)) +
     borders("state") +
@@ -1335,6 +1338,8 @@ avg_delay_byDest %>%
 
 
 ### 2. Add the location of the origin and destination (i.e. the lat and lon) to flights.
+
+To do this, I first make a smaller table from airports containing just the variables that we need: faa, lat, and lon. Then, I join this table to flights using origin to add the lat + lon values for origin. I join again using dest this time, to add the lat + lon values for dest. In order to label the lat and lon values according to origin or dest airport, I specify ```suffix =  c(".origin", ".dest")```.
 
 ```{r}
 lat_lon_airports <- airports %>%
@@ -1351,15 +1356,46 @@ with_origin_and_dest
 First join the planes table with the flights table. Then we can visualize any relationships between the year variable (age) of the plane and the delays associated with it (or group by tailnum, then caluclate avg delay, then join the info from planes, then visualize).
 
 ```{r}
+# first join, then visualize
+flights_planes <- left_join(flights, planes, by = "tailnum") %>%
+  select ( tailnum, year.y, dep_delay, arr_delay)
+flights_planes
 
+# first group by tailnum, then join, then visualize
+avg_delay_plane <- flights %>%
+  group_by(tailnum) %>%
+  summarize(
+    avg_delay_dep = mean (dep_delay, na.rm = T),
+    avg_delay_arr = mean (arr_delay, na.rm = T)
+  ) %>%
+  left_join(planes, by = "tailnum")
+avg_delay_plane
+
+# dep_delay vs year of plane
+avg_delay_plane %>%
+  ggplot( aes ( year, avg_delay_dep )) +
+    geom_point() +
+    geom_smooth()
+# arr_delay vs year of plane
+avg_delay_plane %>%
+  ggplot( aes ( year, avg_delay_arr )) +
+    geom_point() +
+    geom_smooth()
 
 ```
 
 
 ### 4. What weather conditions make it more likely to see a delay?
 
-
 Join the weather table with flights, and then we can visualize the relationship with delay and weather conditions.
+
+```{r}
+
+# join weather table with flights, using natural join (no "by" argument specified)
+flights %>%
+  left_join(weather)
+
+```
 
 
 ### 5. What happened on June 13 2013? Display the spatial pattern of delays, and then use Google to cross-reference with the weather.
