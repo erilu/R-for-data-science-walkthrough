@@ -1,0 +1,56 @@
+---
+title: "R for Data Science Walkthrough Chapters 14-16"
+author: "Erick Lu"
+output: 
+  github_document:
+    html_preview: false
+    toc: true
+    toc_depth: 2
+    fig_width: 5
+    fig_height: 3.5
+---
+
+This my walkthrough for chapters 14-16 for the book: _R for Data Science_ by Hadley Wickham and Garrett Grolemund. Here I provide solutions to their exercises and some of my own notes and explorations.
+
+# Chapter 14 Strings
+
+## 14.2.5 Exercises
+
+### 1. In code that doesn’t use stringr, you’ll often see paste() and paste0(). What’s the difference between the two functions? What stringr function are they equivalent to? How do the functions differ in their handling of NA?
+
+The paste() function and paste0() functions are used to concatenate vectors after converting to character. In other words, combine converted strings together into one string. paste0() differs from paste() in that it always combines the strings without  a separating value, whereas paste() allows you to specify the ```sep``` argument. When sep = "", paste() provides the same output as paste0(). The stringr function they are equivalent to is str_c(). 
+
+```{r}
+p = NA
+paste("the value of p is ", p)
+str_c("the value of p is ", p)
+```
+
+### 2. In your own words, describe the difference between the sep and collapse arguments to str_c().
+
+The sep argument allows you to specify what types of characters will lie between the items being joined. For example, you can choose to separate things with commas rather than the default no-space "". These separators will be inserted between each separate item fed into str_c, and will not be placed if a pre-vectorized argument is provided. If you have a premade vector that you want to join into one string with a specified separator, the collapse argument should be used, in which you specify the type of separator you want inserted. Below is an example illustrating these points.
+
+```{r}
+join_me <- c(88, "hello", "world")
+str_c(88, "hello", "world")
+str_c(88, "hello", "world", sep = ", ")
+# sep does not place the commas if a premade vector is fed into str_c
+str_c(join_me, sep = ", ")
+
+# use collapse instead if you want to place separators into premade vector
+str_c(join_me, collapse = ", ")
+
+```
+
+
+### 3. Use str_length() and str_sub() to extract the middle character from a string. What will you do if the string has an even number of characters?
+
+### 4. What does str_wrap() do? When might you want to use it?
+
+### 5. What does str_trim() do? What’s the opposite of str_trim()?
+
+### 6. Write a function that turns (e.g.) a vector c("a", "b", "c") into the string a, b, and c. Think carefully about what it should do if given a vector of length 0, 1, or 2.
+
+
+
+
