@@ -1353,15 +1353,10 @@ with_origin_and_dest
 
 ### 3. Is there a relationship between the age of a plane and its delays?
 
-First join the planes table with the flights table. Then we can visualize any relationships between the year variable (age) of the plane and the delays associated with it (or group by tailnum, then caluclate avg delay, then join the info from planes, then visualize).
+First group by tailnum, then calculate avg delays for arr_delay and dep_delay, then join the info from planes. Then we can visualize any relationships between the year variable (age) of the plane and the delays associated with it.
 
 ```{r}
-# first join, then visualize
-flights_planes <- left_join(flights, planes, by = "tailnum") %>%
-  select ( tailnum, year.y, dep_delay, arr_delay)
-flights_planes
-
-# first group by tailnum, then join, then visualize
+# first group by tailnum, calculate avg delays, then join with planes data
 avg_delay_plane <- flights %>%
   group_by(tailnum) %>%
   summarize(
@@ -1371,12 +1366,12 @@ avg_delay_plane <- flights %>%
   left_join(planes, by = "tailnum")
 avg_delay_plane
 
-# dep_delay vs year of plane
+# vizualize dep_delay vs year of plane
 avg_delay_plane %>%
   ggplot( aes ( year, avg_delay_dep )) +
     geom_point() +
     geom_smooth()
-# arr_delay vs year of plane
+# vizualize arr_delay vs year of plane
 avg_delay_plane %>%
   ggplot( aes ( year, avg_delay_arr )) +
     geom_point() +
@@ -1387,13 +1382,29 @@ avg_delay_plane %>%
 
 ### 4. What weather conditions make it more likely to see a delay?
 
-Join the weather table with flights, and then we can visualize the relationship with delay and weather conditions.
+Join the weather table with flights, and then we can visualize the relationship with delay and weather conditions. One way to do so is with a correlogram, which shows the correlation between each of the variables in a matrix. After joining weather with flights, we can remove the time variables (year, month, day, hour, etc) and use as.matrix() to turn the tibble into a matrix. Then, we can use the ggcorrplot package to plot a nice looking correllogram. From this plot, we can observe that variable in weather with the highest positive correlation with dep_delay is precip, at roughly 0.05. While this is a very small number (between 0-1), over a large number of observations it is still meaningful. This also makes sense since high precipitation values often make visibility an issue, which may lead to delayed flights.
 
 ```{r}
-
+# install.packages("ggcorrplot")
+library(ggcorrplot)
 # join weather table with flights, using natural join (no "by" argument specified)
-flights %>%
-  left_join(weather)
+weatherdelays <- flights %>%
+  select(year, month, day, hour, time_hour, origin, dep_delay) %>%
+  left_join(weather)%>%
+  select(-year,-month,-day,-hour,-time_hour,-origin)
+weatherdelays
+rm_na_weatherdelays <- as.matrix (na.omit(weatherdelays))
+head(rm_na_weatherdelays)
+corr_weather <- cor(rm_na_weatherdelays)
+
+ggcorrplot(corr_weather, hc.order = TRUE, 
+           type = "lower", 
+           lab = TRUE, 
+           lab_size = 3, 
+           method="circle", 
+           colors = c("steelblue", "white", "orangered3"), 
+           title="Correlogram", 
+           ggtheme=theme_bw)
 
 ```
 
@@ -1497,5 +1508,8 @@ setdiff(df1, df2)
 setdiff(df2, df1)
 ```
 
+---
+
+Thanks for reading! I hope you found my solutions to the exercises informative. A walkthrough of chapters 14 - 16 can be found at [r4ds_chapters14-16_walkthrough.md](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_chapters14-16_walkthrough.md).
 
 
