@@ -1406,11 +1406,56 @@ ggcorrplot(corr_weather, hc.order = TRUE,
            title="Correlogram", 
            ggtheme=theme_bw)
 
+weatherdelays %>%
+  ggplot( aes (x = precip, y = dep_delay))+
+    geom_point()+
+    geom_smooth(se = F)
+weatherdelays %>%
+  ggplot( aes (x = humid, y = dep_delay))+
+    geom_point()+
+    geom_smooth(se = F)
 ```
 
 
 ### 5. What happened on June 13 2013? Display the spatial pattern of delays, and then use Google to cross-reference with the weather.
 
+First filter flights for observations from June 13, 2013 using filter(). We can see that there were only flights comming out of EWR, JFK, and LGA on this day! Furthermore, all the flights were considerably delayed (high dep_delay value). I initially found this by overlaying the average dep_delay for the filtered data table onto the map of the US, and was surprised that there were so few origin airports on the map. Looking at the opposite, grouping by destination and looking at arr_delay values, we can see that there are many, many more airports in the destination variable. Most flights flew out of only a few airports (EWR, JFK, and LGA) but arrived at many different destinations, and these arrivals were delayed as well.
+
+```{r}
+flights %>%
+  filter (year == 2013, month == 6, day == 13) %>%
+   group_by(origin) %>%
+  summarize ( avg_delay = mean(dep_delay, na.rm=T) )
+
+
+avg_delay_byDest <- flights %>%
+  filter (year == 2013, month == 6, day == 13) %>%
+   group_by(dest) %>%
+  summarize ( avg_delay = mean(arr_delay, na.rm=T) ) %>%
+  left_join(airports, by = c("dest" = "faa"))
+avg_delay_byDest
+
+# plot the results on top of the map of the US
+avg_delay_byDest %>%
+  ggplot(aes(lon, lat)) +
+    borders("state") +
+    geom_point(aes(size = avg_delay, alpha = 1/5, color = avg_delay)) +
+    coord_quickmap()
+
+avg_delay_byorigin <- flights %>%
+  filter (year == 2013, month == 6, day == 13) %>%
+   group_by(origin) %>%
+  summarize ( avg_delay = mean(dep_delay, na.rm=T) ) %>%
+  left_join(airports, by = c("origin" = "faa"))
+avg_delay_byorigin
+
+# plot the results on top of the map of the US
+avg_delay_byorigin %>%
+  ggplot(aes(lon, lat)) +
+    borders("state") +
+    geom_point(aes(size = avg_delay, alpha = 1/5, color = avg_delay)) +
+    coord_quickmap()
+```
 
 
 
