@@ -1427,6 +1427,19 @@ flights %>%
    group_by(origin) %>%
   summarize ( avg_delay = mean(dep_delay, na.rm=T) )
 
+avg_delay_byorigin <- flights %>%
+  filter (year == 2013, month == 6, day == 13) %>%
+   group_by(origin) %>%
+  summarize ( avg_delay = mean(dep_delay, na.rm=T) ) %>%
+  left_join(airports, by = c("origin" = "faa"))
+avg_delay_byorigin
+
+# plot the results on top of the map of the US
+avg_delay_byorigin %>%
+  ggplot(aes(lon, lat)) +
+    borders("state") +
+    geom_point(aes(size = avg_delay, alpha = 1/5, color = avg_delay)) +
+    coord_quickmap()
 
 avg_delay_byDest <- flights %>%
   filter (year == 2013, month == 6, day == 13) %>%
@@ -1442,19 +1455,7 @@ avg_delay_byDest %>%
     geom_point(aes(size = avg_delay, alpha = 1/5, color = avg_delay)) +
     coord_quickmap()
 
-avg_delay_byorigin <- flights %>%
-  filter (year == 2013, month == 6, day == 13) %>%
-   group_by(origin) %>%
-  summarize ( avg_delay = mean(dep_delay, na.rm=T) ) %>%
-  left_join(airports, by = c("origin" = "faa"))
-avg_delay_byorigin
 
-# plot the results on top of the map of the US
-avg_delay_byorigin %>%
-  ggplot(aes(lon, lat)) +
-    borders("state") +
-    geom_point(aes(size = avg_delay, alpha = 1/5, color = avg_delay)) +
-    coord_quickmap()
 ```
 
 
@@ -1495,6 +1496,32 @@ flights %>%
 ## 13.5.1 Exercises
 ### 1. What does it mean for a flight to have a missing tailnum? What do the tail numbers that don’t have a matching record in planes have in common? (Hint: one variable explains ~90% of the problems.)
 
+The flights that have a missing tailnum can be found by filtering the ```flights``` table using filter(is.na(tailnum)). We can observe that these entries also have missing values for dep_time, suggesting that these flights were cancelled. If we remove all flights that have a missing dep_time, we observe that the flights with missing tailnum are also removed as well.
+
+To find the tail numbers that don't have a matching record in planes, we can use the anti_join() function. Then, we can examine the columns of the resulting table to see if any particular variables are enriched. We observe that some carriers are particularly enriched in the flights that have tailnums that are not recorded in the ```planes``` table, including MQ and AA.
+
+```{r}
+# find flights that have a missing tailnum
+flights %>%
+  filter(is.na(tailnum))
+
+# remove flights with missing dep_time and look at whether missing tailnums still exist
+not_cancelled <- flights %>% 
+  filter(!is.na(dep_time))
+not_cancelled %>%
+    filter(is.na(tailnum))
+
+# anti join to find which observations in flights do not have a match in the planes table
+flights %>%
+  anti_join(planes, by = "tailnum") %>%
+  count(tailnum, sort = T)
+# observe that some carriers are enriched
+flights %>%
+  anti_join(planes, by = "tailnum") %>%
+  count(carrier, sort = T) %>%
+  ggplot (aes (x = carrier, y = n))+
+  geom_bar( stat = "identity", aes(fill = carrier))
+```
 
 
 ### 2. Filter flights to only show flights with planes that have flown at least 100 flights.
