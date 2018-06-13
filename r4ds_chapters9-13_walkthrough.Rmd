@@ -1143,7 +1143,7 @@ special <- tribble (
 )
 left_join(flights, special) %>%
   select (year, month, day, flight, event) %>%
-  mutate ( event = (!is.na(event))) %>%
+  mutate ( event = (!is.na(event)))
 ```
 
 ## 13.3 Keys
@@ -1526,14 +1526,43 @@ flights %>%
 
 ### 2. Filter flights to only show flights with planes that have flown at least 100 flights.
 
+We can do this by using the semi_join() function. First, we have to identify which tailnums (planes) have flown at least 100 flights, using count() and filter(). We can store this output in a separate table which I call ```flights_100```, then use semi_join() to keep only the observations in flights that also have an entry in ```flights_100```.
+
+```{r}
+# make a separate table containing tailnums that have over 100 flights
+flights_100 <- flights %>%
+  count(tailnum) %>%
+  filter(n>100)
+
+# use semi join to keep only tailnums in flights that exist in our flights_100 table
+flights %>%
+  semi_join (flights_100)
+```
 
 
 ### 3. Combine fueleconomy::vehicles and fueleconomy::common to find only the records for the most common models.
 
+We can use the semi_join() function to combine vehicles and common, which will keep only the records in vehicles that also have a match in the common table.
+
+```{r}
+library(fueleconomy)
+semi_join(vehicles,common)
+```
 
 
 ### 4. Find the 48 hours (over the course of the whole year) that have the worst delays. Cross-reference it with the weather data. Can you see any patterns?
 
+
+
+```{r}
+
+flights %>%
+  group_by(year, month, day) %>%
+  summarize ( delay_per_day = sum( dep_delay, na.rm=T))%>%
+  mutate ( delay_48hr = delay_per_day + lag(delay_per_day)) %>%
+  arrange(desc(delay_48hr)) %>%
+  left_join(weather, by = c("year", "month", "day"))
+```
 
 
 ### 5. What does anti_join(flights, airports, by = c("dest" = "faa")) tell you? What does anti_join(airports, flights, by = c("faa" = "dest")) tell you?
