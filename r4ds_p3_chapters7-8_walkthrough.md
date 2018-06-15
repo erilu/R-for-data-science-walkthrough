@@ -54,7 +54,7 @@ ggplot(data = diamonds) +
 
 ``` r
 # manual version:
-diamonds %>% 
+diamonds %>%
   count(cut)
 ```
 
@@ -79,7 +79,7 @@ ggplot(data = diamonds) +
 
 ``` r
 # manual version:
-diamonds %>% 
+diamonds %>%
   count(cut_width(carat, 0.5))
 ```
 
@@ -102,7 +102,7 @@ You can change the size of the bins in a histogram by modifying binwidth:
 
 ``` r
 # filter dataset to only keep observations with carat < 3
-smaller <- diamonds %>% 
+smaller <- diamonds %>%
   filter(carat < 3)
 # plot histogram using smaller bin width
 ggplot(data = smaller, mapping = aes(x = carat)) +
@@ -130,7 +130,7 @@ If there are clusters visible in your data, such as in the dataset, faithful:
 
 ``` r
 # example of histogram with 2 clusters
-ggplot(data = faithful, mapping = aes(x = eruptions)) + 
+ggplot(data = faithful, mapping = aes(x = eruptions)) +
   geom_histogram(binwidth = 0.25)
 ```
 
@@ -146,7 +146,7 @@ You might want to ask the following questions about the clusters:
 Sometimes histograms will reveal outliers or other unusual values. For example, why are the majority of values on the lefthand side of this plot?
 
 ``` r
-ggplot(diamonds) + 
+ggplot(diamonds) +
   geom_histogram(mapping = aes(x = y), binwidth = 0.5)
 ```
 
@@ -155,7 +155,7 @@ ggplot(diamonds) +
 The histogram will plot all values, so if there are 1 or 2 values ith very high 'y' in a dataset with thousands of observations, these will still get plotted and not be immediately visible. A way to see them is to use coor\_cartesian(), as shown in the book.
 
 ``` r
-ggplot(diamonds) + 
+ggplot(diamonds) +
   geom_histogram(mapping = aes(x = y), binwidth = 0.5) +
   coord_cartesian(ylim = c(0, 50))
 ```
@@ -163,8 +163,8 @@ ggplot(diamonds) +
 ![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/coord_cartesian_y-1.png) We can see now that there are some outlier values with very high 'y' values, which are the cause of the funny-looking histogram. You can pull out unusual values or outliers using dplyr commands (from chapter 4-6), to figure out why they are deviating from the rest of the data.
 
 ``` r
-unusual <- diamonds %>% 
-  filter(y < 3 | y > 20) %>% 
+unusual <- diamonds %>%
+  filter(y < 3 | y > 20) %>%
   select(price, x, y, z) %>%
   arrange(y)
 unusual
@@ -218,11 +218,11 @@ ggplot(diamonds, aes (x = z))+
 library(reshape2)
 ```
 
-    ## 
+    ##
     ## Attaching package: 'reshape2'
 
     ## The following object is masked from 'package:tidyr':
-    ## 
+    ##
     ##     smiths
 
 ``` r
@@ -261,7 +261,7 @@ summary(diamonds)
     ##  Mean   : 5.735   Mean   : 3.539  
     ##  3rd Qu.: 6.540   3rd Qu.: 4.040  
     ##  Max.   :58.900   Max.   :31.800  
-    ## 
+    ##
 
 ``` r
 # see how x correlates with y or z
@@ -337,7 +337,7 @@ When using ylim() to zoom in with the same parameters as coord\_cartesian, the v
 
 ``` r
 # coord_cartesian() to zoom (book provided example)
-ggplot(diamonds) + 
+ggplot(diamonds) +
   geom_histogram(mapping = aes(x = y), binwidth = 0.5) +
   coord_cartesian(ylim = c(0, 50))
 ```
@@ -346,7 +346,7 @@ ggplot(diamonds) +
 
 ``` r
 # use  xlim() and ylim() to zoom
-ggplot(diamonds) + 
+ggplot(diamonds) +
   geom_histogram(mapping = aes(x = y), binwidth = 0.5)+
   ylim(0,50)
 ```
@@ -357,7 +357,7 @@ ggplot(diamonds) +
 
 ``` r
 #Use xlim and ylim, leave binwidth unset
-ggplot(diamonds) + 
+ggplot(diamonds) +
   geom_histogram(mapping = aes(x = y))+
   ylim(0,10000)+
   xlim(0,10)
@@ -371,7 +371,7 @@ ggplot(diamonds) +
 
 ``` r
 # leave binwidth unset, cut ylim off in the middle of a bar (it dissapears!)
-ggplot(diamonds) + 
+ggplot(diamonds) +
   geom_histogram(mapping = aes(x = y))+
   ylim(0,7500)+
   xlim(0,10)
@@ -392,17 +392,17 @@ If there are unusual values in your dataset, you can either filter them out usin
 
 ``` r
 # remove using filter()
-diamonds2 <- diamonds %>% 
+diamonds2 <- diamonds %>%
   filter(between(y, 3, 20))
 # replace with NA using mutate and ifelse()
-diamonds2 <- diamonds %>% 
+diamonds2 <- diamonds %>%
   mutate(y = ifelse(y < 3 | y > 20, NA, y))
 ```
 
 I find that ifelse() is particularly useful, since you can use it to replace only a subset of values in any column of choice. For example, if we wanted to raise the price of all diamonds with a currrent price over 2000 by 3000, we could say:
 
 ``` r
-(raise_price <- diamonds %>% 
+(raise_price <- diamonds %>%
   mutate(price = ifelse(price > 2000, price+3000, price)))
 ```
 
@@ -424,14 +424,14 @@ I find that ifelse() is particularly useful, since you can use it to replace onl
 Missing values may provide some insight into the data, even though they do not have values. For example, the presence of a missing value in a column such as dep\_time in the nycflights13 dataset suggests the flight was cancelled. You can then compare how the other attributes of a cancelled flight differ from a non-cancelled flight. The example provided by the book compares the distribution of sched\_dep\_time for cancelled vs non-cancelled flights:
 
 ``` r
-nycflights13::flights %>% 
+nycflights13::flights %>%
   mutate(
     cancelled = is.na(dep_time),
     sched_hour = sched_dep_time %/% 100,
     sched_min = sched_dep_time %% 100,
     sched_dep_time = sched_hour + sched_min / 60
-  ) %>% 
-  ggplot(mapping = aes(sched_dep_time)) + 
+  ) %>%
+  ggplot(mapping = aes(sched_dep_time)) +
     geom_freqpoly(mapping = aes(colour = cancelled), binwidth = 1/4)
 ```
 
@@ -558,14 +558,14 @@ Covariation is how the values of two or more variables are related - in other wo
 Default for geom\_freqpoly() is to plot the individual groups by count, so if any one group has a lot of observations, it might mask effects in groups that have small numbers of observations. Below, since ideal cuts have the majority of counts, it looks overrepresented in the freqpoly() graph.
 
 ``` r
-ggplot(data = diamonds, mapping = aes(x = price)) + 
+ggplot(data = diamonds, mapping = aes(x = price)) +
   geom_freqpoly(mapping = aes(colour = cut), binwidth = 500)
 ```
 
 ![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/freq_poly_bycount-1.png)
 
 ``` r
-ggplot(diamonds) + 
+ggplot(diamonds) +
   geom_bar(mapping = aes(x = cut))
 ```
 
@@ -574,7 +574,7 @@ ggplot(diamonds) +
 To normalize all the counts and plot the distributions by density, use y= ..density..
 
 ``` r
-ggplot(data = diamonds, mapping = aes(x = price, y = ..density..)) + 
+ggplot(data = diamonds, mapping = aes(x = price, y = ..density..)) +
   geom_freqpoly(mapping = aes(colour = cut), binwidth = 500)
 ```
 
@@ -629,14 +629,14 @@ ggplot(data = mpg) +
 The provided geom\_freqpoly() visualization for cancelled vs non-cancelled flights had the issue of there being many more non-cancelled flights than cancelled flights. To fix this, we will use y = ..density.. instead of the total count for the graph, so that we can better see the how the trends compare in each of the groups.
 
 ``` r
-nycflights13::flights %>% 
+nycflights13::flights %>%
   mutate(
     cancelled = is.na(dep_time),
     sched_hour = sched_dep_time %/% 100,
     sched_min = sched_dep_time %% 100,
     sched_dep_time = sched_hour + sched_min / 60
-  ) %>% 
-  ggplot(mapping = aes(sched_dep_time, y = ..density..)) + 
+  ) %>%
+  ggplot(mapping = aes(sched_dep_time, y = ..density..)) +
     geom_freqpoly(mapping = aes(colour = cancelled), binwidth = 1/4)
 ```
 
@@ -690,11 +690,11 @@ I plotted the graph from part 2 using either coord\_flip() or geom\_boxploth() f
 library(ggstance)
 ```
 
-    ## 
+    ##
     ## Attaching package: 'ggstance'
 
     ## The following objects are masked from 'package:ggplot2':
-    ## 
+    ##
     ##     geom_errorbarh, GeomErrorbarh
 
 ``` r
@@ -781,7 +781,7 @@ The plots generated by geom\_jitter() are very similar to the stripchart() from 
     ##    <dbl> <ord>     <ord> <ord>   <dbl> <dbl> <int> <dbl> <dbl> <dbl>
     ##  1  0.32 Ideal     D     VS2      62.2    55   758  4.37  4.41  2.73
     ##  2  0.7  Ideal     E     SI1      61.9    55  2537  5.74  5.77  3.56
-    ##  3  0.53 Ideal     D     VS2      61.2    55  1956  5.25  5.21  3.2 
+    ##  3  0.53 Ideal     D     VS2      61.2    55  1956  5.25  5.21  3.2
     ##  4  0.51 Premium   D     VVS2     62.4    59  2387  5.13  5.06  3.18
     ##  5  0.7  Premium   D     SI2      59.3    59  2562  5.79  5.74  3.42
     ##  6  0.3  Premium   D     SI2      60.9    58   574  4.32  4.29  2.62
@@ -840,7 +840,7 @@ ggplot(data = diamonds) +
 The other example in the book is to first count each of the pairs then plot using a heatmap, or geom\_tile(). This shows basically the same information as the plot above, except instead of the size of the dot being bigger with larger counts, the color of the tile changes.
 
 ``` r
-diamonds %>% 
+diamonds %>%
   count(color, cut)
 ```
 
@@ -860,7 +860,7 @@ diamonds %>%
     ## # ... with 25 more rows
 
 ``` r
-diamonds %>% 
+diamonds %>%
   count(color, cut) %>%  
   ggplot(mapping = aes(x = color, y = cut)) +
     geom_tile(mapping = aes(fill = n)) +
@@ -878,7 +878,7 @@ Depending on the distribution you want to observe, you can: within a color, disp
 
 ``` r
 # show distribution of color within cut
-diamonds %>% 
+diamonds %>%
   count(color, cut) %>%  
   group_by(cut) %>%
   mutate (by_cut_prop = n/sum(n)) %>%
@@ -891,7 +891,7 @@ diamonds %>%
 
 ``` r
 # barplot distribution of color within cut
-diamonds %>% 
+diamonds %>%
   ggplot(aes(x = cut, fill = color))+
   geom_bar(position = 'fill')
 ```
@@ -900,7 +900,7 @@ diamonds %>%
 
 ``` r
 # show distribution of cut within color
-diamonds %>% 
+diamonds %>%
   count(color, cut) %>%  
   group_by(color) %>%
   mutate (by_color_prop = n/sum(n)) %>%
@@ -913,7 +913,7 @@ diamonds %>%
 
 ``` r
 # barplot distribution of cut within color
-diamonds %>% 
+diamonds %>%
   ggplot(aes(x = color, fill = cut))+
   geom_bar(position = 'fill')
 ```
@@ -942,7 +942,7 @@ One reason is that the axis labels are less likely to overlap if cut is on the y
 
 ``` r
 # provided example, x = color, y = cut
-diamonds %>% 
+diamonds %>%
   count(color, cut) %>%  
   ggplot(mapping = aes(x = color, y = cut)) +
     geom_tile(mapping = aes(fill = n))
@@ -952,7 +952,7 @@ diamonds %>%
 
 ``` r
 # switch axes, x = cut, y = color
-diamonds %>% 
+diamonds %>%
   count(color, cut) %>%  
   ggplot(mapping = aes(x = cut, y = color)) +
     geom_tile(mapping = aes(fill = n))
@@ -975,7 +975,7 @@ ggplot(data = diamonds) +
 
 ``` r
 # make points transparent
-ggplot(data = diamonds) + 
+ggplot(data = diamonds) +
   geom_point(mapping = aes(x = carat, y = price), alpha = 1 / 100)
 ```
 
@@ -1002,11 +1002,11 @@ The book also suggests binning one of the continuous variables and plotting boxp
 
 ``` r
 # filter dataset to only keep observations with carat < 3
-smaller <- diamonds %>% 
+smaller <- diamonds %>%
   filter(carat < 3)
 
 # cut_width binning
-ggplot(data = smaller, mapping = aes(x = carat, y = price)) + 
+ggplot(data = smaller, mapping = aes(x = carat, y = price)) +
   geom_boxplot(mapping = aes(group = cut_width(carat, 0.1)))
 ```
 
@@ -1014,7 +1014,7 @@ ggplot(data = smaller, mapping = aes(x = carat, y = price)) +
 
 ``` r
 # cut_number binning
-ggplot(data = smaller, mapping = aes(x = carat, y = price)) + 
+ggplot(data = smaller, mapping = aes(x = carat, y = price)) +
   geom_boxplot(mapping = aes(group = cut_number(carat, 20)))
 ```
 
@@ -1053,7 +1053,7 @@ To get this distribution, switch carat and price in the code from the previous q
 
 ``` r
 # visualize distribution of carat, binning price, cut_number()
-ggplot(smaller, aes(x = carat, y = ..density..)) + 
+ggplot(smaller, aes(x = carat, y = ..density..)) +
   geom_freqpoly(aes(color = cut_number(price, 10)))
 ```
 
@@ -1063,7 +1063,7 @@ ggplot(smaller, aes(x = carat, y = ..density..)) +
 
 ``` r
 # visualize distribution of carat, binning price, cut_width()
-ggplot(smaller, aes(x = carat, y = ..density..)) + 
+ggplot(smaller, aes(x = carat, y = ..density..)) +
   geom_freqpoly(aes(color = cut_width(price, 5000)))
 ```
 
@@ -1160,8 +1160,8 @@ library(modelr)
 
 mod <- lm(log(price) ~ log(carat), data = diamonds)
 
-(diamonds2 <- diamonds %>% 
-  add_residuals(mod) %>% 
+(diamonds2 <- diamonds %>%
+  add_residuals(mod) %>%
   mutate(resid = exp(resid)))
 ```
 
@@ -1181,7 +1181,7 @@ mod <- lm(log(price) ~ log(carat), data = diamonds)
     ## # ... with 53,930 more rows
 
 ``` r
-ggplot(data = diamonds2) + 
+ggplot(data = diamonds2) +
   geom_boxplot(mapping = aes(x = cut, y = resid))
 ```
 
@@ -1201,4 +1201,4 @@ Whether you choose to use this feature or not, it is important to stay organized
 
 ------------------------------------------------------------------------
 
-Thanks for reading through my walkthrough of chapter 7-8! I hope you found my solutions to the exercises informative. A walkthrough of chapters 9-13 can be found at [r4ds\_chapters9-13\_walkthrough.md](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_chapters9-13_walkthrough.md).
+Thanks for reading through my walkthrough of chapter 7-8! I hope you found my solutions to the exercises informative. A walkthrough of chapters 9-13 can be found at [r4ds\_p4\_chapters9-13\_walkthrough.md](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_p4_chapters9-13_walkthrough.md).

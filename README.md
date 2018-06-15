@@ -8,9 +8,10 @@ I've written my notes and answers in R markdown ```.Rmd``` files, which I've ren
 
 The files are split up into groups of chapters within the book which focus on a common topic, listed below:
 
-* [Chapters 1-3](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_chapters1-3_walkthrough.md) Data Visualization using ggplot2
-* [Chapters 4-6](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_chapters4-6_walkthrough.md) Data Transformation using dplyr
-* [Chapters 7-8](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_chapters7-8_walkthrough.md) Exploratory Data Analysis
-* [Chapters 9-13](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_chapters9-13_walkthrough.md) Data Wranging Part 1 - Tibbles, Data Import, Tidy Data, and Relational Data (In progress)
+* [Chapters 1-3](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_p1_chapters1-3_walkthrough.md) Data Visualization using ggplot2
+* [Chapters 4-6](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_p2_chapters4-6_walkthrough.md) Data Transformation using dplyr
+* [Chapters 7-8](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_p3_chapters7-8_walkthrough.md) Exploratory Data Analysis
+* [Chapters 9-13](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_p4_chapters9-13_walkthrough.md) Data Wranging Part 1 - Tibbles, Data Import, Tidy Data, and Relational Data.
+* [Chapters 14-16](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_p5_chapters14-16_walkthrough.md) Data Wranging Part 2 - Strings, Factors, Dates, and Times (in progress)
 
 Thanks for stopping by! I hope my notes have helped you in your journey to learn techniques data science!

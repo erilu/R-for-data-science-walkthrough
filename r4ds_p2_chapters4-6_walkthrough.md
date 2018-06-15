@@ -58,7 +58,7 @@ library(tidyverse)
     ## ✖ dplyr::lag()    masks stats::lag()
 
 ``` r
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy))
 ```
 
@@ -1286,10 +1286,10 @@ Since no columns in the flights data frame have the uppercase TIME in them, noth
 # View(flights)
 
 # select a subset of columns so data is easier to work with for demonstration purposes
-flights_sml <- select(flights, 
-  year:day, 
-  ends_with("delay"), 
-  distance, 
+flights_sml <- select(flights,
+  year:day,
+  ends_with("delay"),
+  distance,
   air_time
 )
 flights_sml
@@ -1323,15 +1323,15 @@ mutate(flights_sml,
     ## # A tibble: 336,776 x 10
     ##     year month   day dep_delay arr_delay distance air_time  gain hours
     ##    <int> <int> <int>     <dbl>     <dbl>    <dbl>    <dbl> <dbl> <dbl>
-    ##  1  2013     1     1         2        11     1400      227     9 3.78 
-    ##  2  2013     1     1         4        20     1416      227    16 3.78 
-    ##  3  2013     1     1         2        33     1089      160    31 2.67 
-    ##  4  2013     1     1        -1       -18     1576      183   -17 3.05 
-    ##  5  2013     1     1        -6       -25      762      116   -19 1.93 
+    ##  1  2013     1     1         2        11     1400      227     9 3.78
+    ##  2  2013     1     1         4        20     1416      227    16 3.78
+    ##  3  2013     1     1         2        33     1089      160    31 2.67
+    ##  4  2013     1     1        -1       -18     1576      183   -17 3.05
+    ##  5  2013     1     1        -6       -25      762      116   -19 1.93
     ##  6  2013     1     1        -4        12      719      150    16 2.5  
-    ##  7  2013     1     1        -5        19     1065      158    24 2.63 
+    ##  7  2013     1     1        -5        19     1065      158    24 2.63
     ##  8  2013     1     1        -3       -14      229       53   -11 0.883
-    ##  9  2013     1     1        -3        -8      944      140    -5 2.33 
+    ##  9  2013     1     1        -3        -8      944      140    -5 2.33
     ## 10  2013     1     1        -2         8      733      138    10 2.3  
     ## # ... with 336,766 more rows, and 1 more variable: gain_per_hour <dbl>
 
@@ -1350,12 +1350,12 @@ transmute(flights,
     ##    <dbl> <dbl>         <dbl>
     ##  1     9 3.78           2.38
     ##  2    16 3.78           4.23
-    ##  3    31 2.67          11.6 
+    ##  3    31 2.67          11.6
     ##  4   -17 3.05          -5.57
     ##  5   -19 1.93          -9.83
-    ##  6    16 2.5            6.4 
+    ##  6    16 2.5            6.4
     ##  7    24 2.63           9.11
-    ##  8   -11 0.883        -12.5 
+    ##  8   -11 0.883        -12.5
     ##  9    -5 2.33          -2.14
     ## 10    10 2.3            4.35
     ## # ... with 336,766 more rows
@@ -1502,7 +1502,7 @@ transmute (flights, dep_time, sched_dep_time, dep_delay, my_dep_delay = ((dep_ti
 I suppose we could arrange dep\_delay to find the top most delayed flights. Using min\_rank() will rank the delayed flights - if we rank the delayed flights and then sort on the rank, we see that the most delayed flight is rank 328521, with a delay of 1301 minutes. The default ties.method for min\_rank is "min".
 
 ``` r
-transmute(flights, dep_delay, rank_delay = min_rank(dep_delay)) 
+transmute(flights, dep_delay, rank_delay = min_rank(dep_delay))
 ```
 
     ## # A tibble: 336,776 x 2
@@ -1589,9 +1589,9 @@ summarise(by_day, delay = mean(dep_delay, na.rm = TRUE))
     ## # Groups:   year, month [?]
     ##     year month   day delay
     ##    <int> <int> <int> <dbl>
-    ##  1  2013     1     1 11.5 
-    ##  2  2013     1     2 13.9 
-    ##  3  2013     1     3 11.0 
+    ##  1  2013     1     1 11.5
+    ##  2  2013     1     2 13.9
+    ##  3  2013     1     3 11.0
     ##  4  2013     1     4  8.95
     ##  5  2013     1     5  5.73
     ##  6  2013     1     6  7.15
@@ -1620,17 +1620,17 @@ delay <- filter(delay, count > 20, dest != "HNL")
 
 ``` r
 # using pipes
-delay <- flights %>% 
-  group_by(dest) %>% 
+delay <- flights %>%
+  group_by(dest) %>%
   summarise(
     count = n(),
     dist = mean(distance, na.rm = TRUE),
     delay = mean(arr_delay, na.rm = TRUE)
-  ) %>% 
+  ) %>%
   filter(count > 20, dest != "HNL")
 
-# It looks like delays increase with distance up to ~750 miles 
-# and then decrease. Maybe as flights get longer there's more 
+# It looks like delays increase with distance up to ~750 miles
+# and then decrease. Maybe as flights get longer there's more
 # ability to make up delays in the air?
 ggplot(data = delay, mapping = aes(x = dist, y = delay)) +
   geom_point(aes(size = count), alpha = 1/3) +
@@ -1651,8 +1651,8 @@ Without setting na.rm, the following code does not produce any means using summa
 
 ``` r
 # without na.rm
-flights %>% 
-  group_by(year, month, day) %>% 
+flights %>%
+  group_by(year, month, day) %>%
   summarise(mean = mean(dep_delay))
 ```
 
@@ -1674,8 +1674,8 @@ flights %>%
 
 ``` r
 # with na.rm
-flights %>% 
-  group_by(year, month, day) %>% 
+flights %>%
+  group_by(year, month, day) %>%
   summarise(mean = mean(dep_delay, na.rm = TRUE))
 ```
 
@@ -1683,9 +1683,9 @@ flights %>%
     ## # Groups:   year, month [?]
     ##     year month   day  mean
     ##    <int> <int> <int> <dbl>
-    ##  1  2013     1     1 11.5 
-    ##  2  2013     1     2 13.9 
-    ##  3  2013     1     3 11.0 
+    ##  1  2013     1     1 11.5
+    ##  2  2013     1     2 13.9
+    ##  3  2013     1     3 11.0
     ##  4  2013     1     4  8.95
     ##  5  2013     1     5  5.73
     ##  6  2013     1     6  7.15
@@ -1699,7 +1699,7 @@ To get a data frame without any of the NA values (cancelled flights):
 
 ``` r
 # 2 ways to use filter() to get the non-cancelled flights
-(not_cancelled <- flights %>% 
+(not_cancelled <- flights %>%
   filter(!is.na(dep_delay), !is.na(arr_delay)))
 ```
 
@@ -1722,7 +1722,7 @@ To get a data frame without any of the NA values (cancelled flights):
     ## #   minute <dbl>, time_hour <dttm>
 
 ``` r
-(not_cancelled2 <- flights %>% 
+(not_cancelled2 <- flights %>%
   filter(!(is.na(dep_delay) | is.na(arr_delay))))
 ```
 
@@ -1745,8 +1745,8 @@ To get a data frame without any of the NA values (cancelled flights):
     ## #   minute <dbl>, time_hour <dttm>
 
 ``` r
-not_cancelled %>% 
-  group_by(year, month, day) %>% 
+not_cancelled %>%
+  group_by(year, month, day) %>%
   summarise(mean = mean(dep_delay))
 ```
 
@@ -1754,9 +1754,9 @@ not_cancelled %>%
     ## # Groups:   year, month [?]
     ##     year month   day  mean
     ##    <int> <int> <int> <dbl>
-    ##  1  2013     1     1 11.4 
-    ##  2  2013     1     2 13.7 
-    ##  3  2013     1     3 10.9 
+    ##  1  2013     1     1 11.4
+    ##  2  2013     1     2 13.7
+    ##  3  2013     1     3 10.9
     ##  4  2013     1     4  8.97
     ##  5  2013     1     5  5.73
     ##  6  2013     1     6  7.15
@@ -1771,13 +1771,13 @@ not_cancelled %>%
 When using summarise, its important to know how many observations each summary value was being computed on. If the counts are low, the variance of the summary value might be very high, and the results may not be as interpretable or reliable.
 
 ``` r
-delays <- not_cancelled %>% 
-  group_by(tailnum) %>% 
+delays <- not_cancelled %>%
+  group_by(tailnum) %>%
   summarise(
     delay = mean(arr_delay)
   )
 
-ggplot(data = delays, mapping = aes(x = delay)) + 
+ggplot(data = delays, mapping = aes(x = delay)) +
   geom_freqpoly(binwidth = 10)
 ```
 
@@ -1786,15 +1786,15 @@ ggplot(data = delays, mapping = aes(x = delay)) +
 Here we see that some flights have very high delay values, but these flights also don't have very many counts. To count how many observations each summary value was computed on, use the n() function in summarize().
 
 ``` r
-delays <- not_cancelled %>% 
-  group_by(tailnum) %>% 
+delays <- not_cancelled %>%
+  group_by(tailnum) %>%
   summarise(
     delay = mean(arr_delay, na.rm = TRUE),
     n = n()
   )
 
 # basically the previous graph flipped on its side
-ggplot(data = delays, mapping = aes(x = n, y = delay)) + 
+ggplot(data = delays, mapping = aes(x = n, y = delay)) +
   geom_point(alpha = 1/10)
 ```
 
@@ -1803,9 +1803,9 @@ ggplot(data = delays, mapping = aes(x = n, y = delay)) +
 We can filter out the observations based on less than 25 counts using filter(), and then pipe the result into ggplot.
 
 ``` r
-delays %>% 
-  filter(n > 25) %>% 
-  ggplot(mapping = aes(x = n, y = delay)) + 
+delays %>%
+  filter(n > 25) %>%
+  ggplot(mapping = aes(x = n, y = delay)) +
     geom_point(alpha = 1/10) +
     geom_smooth(se = FALSE)
 ```
@@ -1822,8 +1822,8 @@ When subsetting, it is important not to be confused between getting the mean of 
 
 ``` r
 # get mean delay of flights delayed by more than 60 hours
-not_cancelled %>% 
-  group_by(year, month, day) %>% 
+not_cancelled %>%
+  group_by(year, month, day) %>%
   summarise(
     avg_delay_over60 = mean(arr_delay[arr_delay > 60]) # the average positive delay
   )
@@ -1833,22 +1833,22 @@ not_cancelled %>%
     ## # Groups:   year, month [?]
     ##     year month   day avg_delay_over60
     ##    <int> <int> <int>            <dbl>
-    ##  1  2013     1     1            131. 
-    ##  2  2013     1     2            116. 
-    ##  3  2013     1     3            109. 
-    ##  4  2013     1     4            104. 
-    ##  5  2013     1     5            103. 
+    ##  1  2013     1     1            131.
+    ##  2  2013     1     2            116.
+    ##  3  2013     1     3            109.
+    ##  4  2013     1     4            104.
+    ##  5  2013     1     5            103.
     ##  6  2013     1     6             90.5
-    ##  7  2013     1     7            106. 
-    ##  8  2013     1     8            100. 
-    ##  9  2013     1     9            165. 
-    ## 10  2013     1    10            183. 
+    ##  7  2013     1     7            106.
+    ##  8  2013     1     8            100.
+    ##  9  2013     1     9            165.
+    ## 10  2013     1    10            183.
     ## # ... with 355 more rows
 
 ``` r
 # get proportion of flights delayed for more than 60 hours
-not_cancelled %>% 
-  group_by(year, month, day) %>% 
+not_cancelled %>%
+  group_by(year, month, day) %>%
   summarise(hour_perc = mean(arr_delay > 60))
 ```
 
@@ -1872,10 +1872,10 @@ The example in the book provides two ways to find the min & max observation for 
 
 ``` r
 # using summarise()
-not_cancelled %>% 
-  group_by(year, month, day) %>% 
+not_cancelled %>%
+  group_by(year, month, day) %>%
   summarise(
-    first_dep = first(dep_time), 
+    first_dep = first(dep_time),
     last_dep = last(dep_time)
   )
 ```
@@ -1898,9 +1898,9 @@ not_cancelled %>%
 
 ``` r
 # using mutate() & filter()
-not_cancelled %>% 
-  group_by(year, month, day) %>% 
-  mutate(r = min_rank(desc(dep_time))) %>% 
+not_cancelled %>%
+  group_by(year, month, day) %>%
+  mutate(r = min_rank(desc(dep_time))) %>%
   filter(r %in% range(r))
 ```
 
@@ -1927,7 +1927,7 @@ Also, I thought it was very useful how you can weight counts based on another va
 
 ``` r
 # sum using weighted counts()
-not_cancelled %>% 
+not_cancelled %>%
   count(tailnum, wt = distance)
 ```
 
@@ -1971,9 +1971,9 @@ not_cancelled %>%
 To count unique values, use n\_distinct():
 
 ``` r
-not_cancelled %>% 
-  group_by(dest) %>% 
-  summarise(carriers = n_distinct(carrier)) %>% 
+not_cancelled %>%
+  group_by(dest) %>%
+  summarise(carriers = n_distinct(carrier)) %>%
   arrange(desc(carriers))
 ```
 
@@ -2054,7 +2054,7 @@ daily <- group_by(flights, year, month, day)
 
 ``` r
 # ungroup the data
-daily %>% 
+daily %>%
   ungroup() %>%             # no longer grouped by date
   summarise(flights = n())  # all flights
 ```
@@ -2337,17 +2337,17 @@ by_carrier
     ## # A tibble: 16 x 2
     ##    carrier avg_delay
     ##    <chr>       <dbl>
-    ##  1 F9          20.2 
-    ##  2 EV          20.0 
-    ##  3 YV          19.0 
-    ##  4 FL          18.7 
-    ##  5 WN          17.7 
-    ##  6 9E          16.7 
-    ##  7 B6          13.0 
-    ##  8 VX          12.9 
-    ##  9 OO          12.6 
-    ## 10 UA          12.1 
-    ## 11 MQ          10.6 
+    ##  1 F9          20.2
+    ##  2 EV          20.0
+    ##  3 YV          19.0
+    ##  4 FL          18.7
+    ##  5 WN          17.7
+    ##  6 9E          16.7
+    ##  7 B6          13.0
+    ##  8 VX          12.9
+    ##  9 OO          12.6
+    ## 10 UA          12.1
+    ## 11 MQ          10.6
     ## 12 DL           9.26
     ## 13 AA           8.59
     ## 14 AS           5.80
@@ -2401,8 +2401,8 @@ If you set sort = TRUE in count(), it will return the output sorted in descendin
 You can use the group\_by() function for purposes other than piping into summarize(). For example, you can use group\_by() with filter() to find which items within a group satisfy a certain condition.
 
 ``` r
-popular_dests <- flights %>% 
-  group_by(dest) %>% 
+popular_dests <- flights %>%
+  group_by(dest) %>%
   filter(n() > 365)
 popular_dests
 ```
@@ -2442,9 +2442,9 @@ length(unique(popular_dests$dest))
 This resulting filtered data frame can be further analyzed for per-group metrics.
 
 ``` r
-popular_dests %>% 
-  filter(arr_delay > 0) %>% 
-  mutate(prop_delay = arr_delay / sum(arr_delay)) %>% 
+popular_dests %>%
+  filter(arr_delay > 0) %>%
+  mutate(prop_delay = arr_delay / sum(arr_delay)) %>%
   select(year:day, dest, arr_delay, prop_delay)
 ```
 
@@ -2452,16 +2452,16 @@ popular_dests %>%
     ## # Groups:   dest [77]
     ##     year month   day dest  arr_delay prop_delay
     ##    <int> <int> <int> <chr>     <dbl>      <dbl>
-    ##  1  2013     1     1 IAH          11  0.000111 
-    ##  2  2013     1     1 IAH          20  0.000201 
-    ##  3  2013     1     1 MIA          33  0.000235 
+    ##  1  2013     1     1 IAH          11  0.000111
+    ##  2  2013     1     1 IAH          20  0.000201
+    ##  3  2013     1     1 MIA          33  0.000235
     ##  4  2013     1     1 ORD          12  0.0000424
     ##  5  2013     1     1 FLL          19  0.0000938
     ##  6  2013     1     1 ORD           8  0.0000283
     ##  7  2013     1     1 LAX           7  0.0000344
-    ##  8  2013     1     1 DFW          31  0.000282 
+    ##  8  2013     1     1 DFW          31  0.000282
     ##  9  2013     1     1 ATL          12  0.0000400
-    ## 10  2013     1     1 DTW          16  0.000116 
+    ## 10  2013     1     1 DTW          16  0.000116
     ## # ... with 131,096 more rows
 
 ``` r
@@ -2672,16 +2672,16 @@ flights %>%
     ## # Groups:   dest [103]
     ##    dest  flight dep_delay prop_delay
     ##    <chr>  <int>     <dbl>      <dbl>
-    ##  1 ABQ       65         9   0.00221 
-    ##  2 ABQ       65        16   0.00393 
+    ##  1 ABQ       65         9   0.00221
+    ##  2 ABQ       65        16   0.00393
     ##  3 ABQ       65         1   0.000245
-    ##  4 ABQ       65        10   0.00245 
+    ##  4 ABQ       65        10   0.00245
     ##  5 ABQ       65        53   0.0130  
     ##  6 ABQ       65       105   0.0258  
-    ##  7 ABQ       65        14   0.00343 
-    ##  8 ABQ       65        18   0.00442 
+    ##  7 ABQ       65        14   0.00343
+    ##  8 ABQ       65        18   0.00442
     ##  9 ABQ       65         3   0.000736
-    ## 10 ABQ       65        17   0.00417 
+    ## 10 ABQ       65        17   0.00417
     ## # ... with 128,422 more rows
 
 ### 5. Delays are typically temporally correlated: even once the problem that caused the initial delay has been resolved, later flights are delayed to allow earlier flights to leave. Using lag() explore how the delay of a flight is related to the delay of the immediately preceding flight.
@@ -2712,10 +2712,10 @@ Flights that are suspiciously fast will have an air\_time value that is very sma
 # if the sched_arr_time was past midnight, we have to add 2400 to the value before subtracting.
 # to fix this, I use ifelse() within the mutate function.
 expected_times <- not_cancelled %>%
-  mutate (expected_air_time = ifelse(sched_arr_time < sched_dep_time, 
-                                     ((((sched_arr_time+2400) %/% 100)*60 + (sched_arr_time+2400) %% 100) 
-                                      - ((sched_dep_time %/% 100)*60 + sched_dep_time %% 100)), 
-                                     (((sched_arr_time %/% 100)*60 + sched_arr_time %% 100) 
+  mutate (expected_air_time = ifelse(sched_arr_time < sched_dep_time,
+                                     ((((sched_arr_time+2400) %/% 100)*60 + (sched_arr_time+2400) %% 100)
+                                      - ((sched_dep_time %/% 100)*60 + sched_dep_time %% 100)),
+                                     (((sched_arr_time %/% 100)*60 + sched_arr_time %% 100)
                                       - ((sched_dep_time %/% 100)*60 + sched_dep_time %% 100))))
 # use grouped arrange() to find suspicous flights with large prop_time_saved for each destination.
 expected_times %>%
@@ -2745,13 +2745,13 @@ expected_times %>%
 To compute air time to a flight relative to shortest flight to the destination, I would first take a ratio of the air\_time to distance, find out what this value is for the shortest flight (smallest distance), then compare it with the suspicious flights. To find the flights most delayed in the air, subtract arr\_delay from dep\_delay and compare these values.
 
 ``` r
-# compare distance traveled over time 
+# compare distance traveled over time
 not_cancelled %>%
   group_by(dest) %>%
   mutate ( dist_over_time = distance/air_time,
            shortest_dest_flight = min (air_time, na.rm = T)) %>%
   arrange (desc(dist_over_time)) %>%
-  slice (1:5) %>% 
+  slice (1:5) %>%
   select( dest, flight, distance, air_time, dist_over_time, shortest_dest_flight)
 ```
 
@@ -2777,7 +2777,7 @@ not_cancelled %>%
   group_by(dest) %>%
   mutate (in_air_delay = arr_delay - dep_delay) %>%
   arrange (desc(in_air_delay)) %>%
-  slice (1:5) %>% 
+  slice (1:5) %>%
   select( dest, flight, arr_delay, dep_delay, in_air_delay))
 ```
 
@@ -2992,4 +2992,4 @@ joined_delay %>%
 
 ------------------------------------------------------------------------
 
-Thanks for reading through my walkthrough of chapters 4 - 6! I hope you found my solutions to the exercises informative. A walkthrough of chapters 7 - 8 can be found at [r4ds\_chapters7-8\_walkthrough.md](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_chapters7-8_walkthrough.md).
+Thanks for reading through my walkthrough of chapters 4 - 6! I hope you found my solutions to the exercises informative. A walkthrough of chapters 7 - 8 can be found at [r4ds\_p3\_chapters7-8\_walkthrough.md](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_p3_chapters7-8_walkthrough.md).

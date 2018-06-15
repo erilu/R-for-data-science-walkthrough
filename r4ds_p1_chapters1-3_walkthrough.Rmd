@@ -1,7 +1,7 @@
 ---
 title: "R for Data Science Walkthrough Chapters 1-3"
 author: "Erick Lu"
-output: 
+output:
   github_document:
     html_preview: false
     toc: true
@@ -53,7 +53,7 @@ head(mpg)
 Plot mileage (hwy) against engine displacement (displ):
 
 ```{r displ_vs_hwy}
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes (x=displ, y=hwy)) +
   ggtitle("Engine displacement (x-axis) vs Mileage (y-axis)") +
   theme(plot.title = element_text(hjust = 0.5))
@@ -62,7 +62,7 @@ ggplot(data = mpg) +
 I added a title to the ggplot (ggtitle) and centered the title by adding a theme parameter. I also found that it was not required to have the "data =" or "mapping =" in the ggplot() or geom_point() parameters. Since there was a inverse correlation, I was interested to see what a linear model would look like if fitted to the data. Here is how I added a trend line to the plot above.
 
 ```{r mpg_plot_with_lm_line}
-ggplot(data = mpg, aes (x = displ, y = hwy)) + 
+ggplot(data = mpg, aes (x = displ, y = hwy)) +
   geom_point() +
   ggtitle("Engine displacement (x-axis) vs Mileage (y-axis)") +
   theme(plot.title = element_text(hjust = 0.5)) +
@@ -97,7 +97,7 @@ The ```drv``` column specifies whether the car is "f = front-wheel drive, r = re
 
 4.Make a scatterplot of hwy vs cyl.
 ```{r hwy_vs_cyl}
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes (x=cyl, y=hwy)) +
   ggtitle("Number of Cylinders (x-axis) vs Mileage (y-axis)") +
   theme(plot.title = element_text(hjust = 0.5))
@@ -108,7 +108,7 @@ There is an inverse correlation with the number of cylinders and how much mileag
 ### 5. What happens if you make a scatterplot of class vs drv? Why is the plot not useful?
 
 ```{r class_vs_drv}
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes (x=class, y=drv)) +
   ggtitle("Number of Class (x-axis) vs Type of Drive (y-axis)") +
   theme(plot.title = element_text(hjust = 0.5))
@@ -120,7 +120,7 @@ The data is not particularly useful since these are two categorical variables, a
 
 Color-code the points in the scatterplot by another variable in the data set.
 ```{r color_code_by_class}
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, color = class))
 ```
 
@@ -129,7 +129,7 @@ The plot shows that SUVs have low highway mileage and high engine displacement a
 Another example, this time color coding based on the ```drv``` variable.
 
 ```{r color_code_by_drv}
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, color = drv))
 ```
 
@@ -138,7 +138,7 @@ We can see that the front wheel drive cars on average have low engine displaceme
 Using size variable to further categorize in the graph (you can combine multiple parameters for the cateogrization! This is pretty cool). If you try to use a categorical/discrete variable for size, an error will be displayed.
 
 ```{r color_shape_transparency_mpg}
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, size = cyl, color = class, alpha = drv))
 ```
 
@@ -147,14 +147,14 @@ ggplot(data = mpg) +
 ### 1. What’s gone wrong with this code? Why are the points not blue?
 
 ```{r chp3_exercise_1}
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, color = "blue"))
 ```
 
 The points are not blue because the "color =" parameter lies within aes(). This means the function will be looking for a column within the mpg dataset called "blue", which does not exist. So to fix this, place the "color =" parameter outside aes(), but within geom_point().
 
 ```{r chp3_exercise_2}
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy), color = "blue")
 ```
 
@@ -175,15 +175,15 @@ I mapped the continuous variable, "cty", city miles per gallon, using color and 
 # install gridExtra package to plot multiple graphs side by side, could also use cowplots package
 # install.packages("gridExtra")
 library(gridExtra)
-byColor <- ggplot(data = mpg) + 
+byColor <- ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, color = cty)) +
   ggtitle("City miles mapped by color")
-bySize <- ggplot(data = mpg) + 
+bySize <- ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, size = cty)) +
   ggtitle("City miles mapped by size")
 
 grid.arrange(byColor, bySize, ncol=2)
-byShape <- ggplot(data = mpg) + 
+byShape <- ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, shape = class))+
   ggtitle("Number of Class (x-axis) vs Type of Drive (y-axis)")
 byShape
@@ -196,7 +196,7 @@ byShape
 The points will all lie on the same area of the spectrum for each aesthetic.
 
 ```{r chp3_exercise_4}
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, size = cyl, color = cyl, alpha = cyl))
 ```
 
@@ -205,7 +205,7 @@ ggplot(data = mpg) +
 The stroke will modify the width of the border for geom_points that have a border. Below I increase the size of the points after categorizing by the drv variable.
 
 ```{r chp3_exercise_5}
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, shape = drv, stroke = 3))
 ```
 
@@ -215,9 +215,9 @@ ggplot(data = mpg) +
 The aesthetic will be mapped to the output of the argument. Displ < 5 will return TRUE for all points less than 5, and these points will be mapped to a separate color. Below is an example of displ < 5 and cyl < 5.
 
 ```{r chp3_exercise_6}
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, color = displ < 5))
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, color = cyl < 5))
 ```
 
@@ -227,16 +227,16 @@ ggplot(data = mpg) +
 Split data up into subplots based on a discrete variable: 1 dimensional facet. This allows us to focus in on subsets of the data (say for example, you wanted to quickly compare midsize vars vs minivans) Can add aesthetic mappings as well ontop of this!
 
 ```{r 1D_facet}
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy, color = drv)) + 
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy, color = drv)) +
   facet_wrap(~ class, nrow = 2)
 ```
 
 Instead of adding the aesthetic mapping, we can also make a 2D facet. This lets us add yet another mapping on top. So useful!
 
 ```{r 2D_facet}
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy, color = trans)) + 
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy, color = trans)) +
   facet_grid(drv ~ cyl)
 ```
 
@@ -247,8 +247,8 @@ ggplot(data = mpg) +
 Let's try faceting on city miles per gallon (cty):
 
 ```{r continuous_facet}
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy)) + 
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy)) +
   facet_grid(drv ~ cty)
 ```
 
@@ -259,19 +259,19 @@ It looks like ggplot2 will still spit out a graph, but the graph is not very int
 The empty cells in facet_grid(drv~cyl) mean that there are no points that satisfy both of the conditions specified for drv and cyl. In the plot below, you can identify the same blank facet plots as the crosshairs that do not have points (for example, cars with 4 cylinders and rear wheel drive).
 
 ```{r drv_vs_cyl}
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes(x = drv, y = cyl))
 ```
-  
-  
+
+
 ### 3. What plots does the following code make? What does . do?
 
 Based on the output, I assume that . means to perform a 1D facet plot using the variable supplied. Although having the . vs not having it doesn't change the output when using the form (~ drv). Switching between . ~ drv and drv ~ . flips the orientation of the graphs. Worth to note that facet_map(~ drv, ncol = 3) provides the same output as facet_grid(. ~ drv).
 ```{r chp3_exercise_dot}
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy)) +
   facet_grid(drv ~ .)
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy)) +
   facet_grid(. ~ drv)
 ```
@@ -280,8 +280,8 @@ ggplot(data = mpg) +
 ### 4. Take the first faceted plot in this section:
 
 ```{r 1D_facet_example}
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy)) + 
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy)) +
   facet_wrap(~ class)
 ```
 
@@ -303,11 +303,11 @@ Data can be visualized in different ways using different geom_ functions:
 
 ```{r geom_point_vs_smooth}
 # left
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy))
 
 # right
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_smooth(mapping = aes(x = displ, y = hwy))
 ```
 
@@ -315,12 +315,12 @@ Geom functions can be combined! Also, the better coding practice is to declare g
 
 ```{r combine_point_smooth}
 # declaring locally
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes (x = displ, y = hwy, color = drv)) +
   geom_smooth(mapping = aes(x = displ, y = hwy, linetype = drv, color = drv))
 
 # declaring globally and locally
-ggplot(data = mpg, mapping = aes (x = displ, y = hwy, color = drv)) + 
+ggplot(data = mpg, mapping = aes (x = displ, y = hwy, color = drv)) +
   geom_point() +
   geom_smooth(mapping = aes(linetype = drv))
 
@@ -342,11 +342,11 @@ Line chart would use geom_line(), a boxplot would use geom_boxplot(), a histogra
 I predict that hwy will be plotted against displ as a scatter plot, with the color of the dot depending on the drv variable. superimposed on these points will be a smoothened conditional mean line, also colored based on the drv variable, since these were declared globally.
 
 ```{r chp3_exercise_predict}
-ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) + 
-  geom_point() + 
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) +
+  geom_point() +
   geom_smooth(se = FALSE)
 ```
-  
+
 ### 3. What does show.legend = FALSE do? What happens if you remove it?
 Why do you think I used it earlier in the chapter?
 
@@ -359,12 +359,12 @@ Based on the ?geom_smooth documentation, the se argument tells the graph to eith
 ### 5. Will these two graphs look different? Why/why not?
 
 ```{r chp3_exercise_diff}
-ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
-  geom_point() + 
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+  geom_point() +
   geom_smooth()
 
-ggplot() + 
-  geom_point(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+ggplot() +
+  geom_point(data = mpg, mapping = aes(x = displ, y = hwy)) +
   geom_smooth(data = mpg, mapping = aes(x = displ, y = hwy))
 ```
 
@@ -424,7 +424,7 @@ ggplot(data = demo) +
 Or plot the barplot as a proportion (kind of like a histogram would, except this uses discrete variables on the x axis):
 
 ```{r barplot_proportion}
-ggplot(data = diamonds) + 
+ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut, y = ..prop.., group = 1))
 ```
 
@@ -432,7 +432,7 @@ This is how to provide a stat summary manually using stat_summary(). It might be
 
 ```{r stat_summary_vs_boxplot}
 # stat summary
-ggplot(data = diamonds) + 
+ggplot(data = diamonds) +
   stat_summary(
     mapping = aes(x = cut, y = depth),
     fun.ymin = min,
@@ -485,9 +485,9 @@ ggplot(data = mpg, aes(x = displ, y = hwy)) +
 Without the group = 1, each of the proportions that are calculated for every category in cut will be equal to 1. This is because geom_bar is calculating the proportion of each category in cut within that same category (ie: what proportion of "Fair" is in "Fair"). By forcing the group to be 1, the proper proportions as part of the total number of observations will be displayed. Changing the group size to an arbitrary number doesnt seem to change the graph.
 
 ```{r chp3_exercise_barchart_group}
-ggplot(data = diamonds) + 
+ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut, y = ..prop..))
-ggplot(data = diamonds) + 
+ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut, fill = color, y = ..prop..))
 ```
 
@@ -499,18 +499,18 @@ To apply a separate color to each bar, specify either "color" or "fill" within a
 
 ```{r colored_bar_charts}
 # border, specify color parameter
-ggplot(data = diamonds) + 
+ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut, colour = cut))
 
 #fill, specify fill parameter
-ggplot(data = diamonds) + 
+ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut, fill = cut))
 ```
 
 If you color by a variable other than what was on the x axis, each bar will be split into colors:
 
 ```{r color_bar_diffvar}
-ggplot(data = diamonds) + 
+ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut, fill = clarity))
 ```
 
@@ -519,27 +519,27 @@ Note that this is plotting the raw counts, and not the proportions. Trying to do
 If you want to see the relative contribution in a different way (not stacked), set the position parameter to "identity". This will overlap the bars and make them all start from 0. To visualize them, you must either make the bars transparent or have no fill.
 
 ```{r position_alpha_fill_NA}
-ggplot(data = diamonds, mapping = aes(x = cut, fill = clarity)) + 
+ggplot(data = diamonds, mapping = aes(x = cut, fill = clarity)) +
   geom_bar(alpha = 1/5, position = "identity")
-ggplot(data = diamonds, mapping = aes(x = cut, colour = clarity)) + 
+ggplot(data = diamonds, mapping = aes(x = cut, colour = clarity)) +
   geom_bar(fill = NA, position = "identity")
 ```
 Alternatively, you can have all the bars go to the same height so you can see what the differences in proportion are between the subgroups of each item on the x axis (position = fill). Or, you can have each of the subgroups plotted side by side within each bar (position = dodge).
 
 ```{r position_fill_dodge}
 # position = fill
-ggplot(data = diamonds) + 
+ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut, fill = clarity), position = "fill")
 
 # position = dodge
-ggplot(data = diamonds) + 
+ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut, fill = clarity), position = "dodge")
 ```
 
 On scatterplots, overlapping points can be overlooked quite easily. One way to get around this is to jitter all the points, so that the number of overlapping points can be better visualized. The jitter parameter adds some normally distributed noise to each of the values in the dataset.
 
 ```{r mpg_jitter}
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy), position = "jitter")
 ```
 
@@ -547,14 +547,14 @@ ggplot(data = mpg) +
 
 ### 1. What is the problem with this plot? How could you improve it?
 ```{r chp3_exercise_jitter}
-ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
   geom_point()
 ```
 
 A lot of the data points are overlapping, so we have no sense of how weighted each point is. A better version of the plot would be one that uses the jitter parameter:
 
 ```{r chp3_exercise_jitter_better}
-ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
   geom_point(position = "jitter")
 
 ```
@@ -568,11 +568,11 @@ Based on ?geom_jitter, the "width" and "height" parameters for geom_jitter will 
 
 ```{r compare_geom_jitter_count}
 # geom jitter
-ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
   geom_jitter()
 
 # geom count
-ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
   geom_count()
 
 ```
@@ -604,11 +604,11 @@ Sometimes we want to swap the axes, for various reasons (one being that the x-la
 
 ```{r swap_axis}
 # vertical boxplots
-ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) +
   geom_boxplot()
 
 # horizontal boxplots
-ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) +
   geom_boxplot() +
   coord_flip()
 ```
@@ -616,19 +616,19 @@ ggplot(data = mpg, mapping = aes(x = class, y = hwy)) +
 We also might want to change bar plots into pie charts:
 
 ```{r bar_into_pie}
-bar <- ggplot(data = diamonds) + 
+bar <- ggplot(data = diamonds) +
   geom_bar(
-    mapping = aes(x = cut, fill = cut), 
+    mapping = aes(x = cut, fill = cut),
     show.legend = FALSE,
     width = 1
-  ) + 
+  ) +
   theme(aspect.ratio = 1) +
   labs(x = NULL, y = NULL)
 
 bar + coord_flip()
 bar + coord_polar()
 
-# 
+#
 
 ```
 
@@ -640,13 +640,13 @@ The previous chart is a coxcomb plot, not what you would usually expect to see w
 
 ```{r regular_pie_chart}
 # make a stacked bar chart with one bar
-bar <- ggplot(data = diamonds) + 
+bar <- ggplot(data = diamonds) +
   geom_bar(
     mapping = aes(x = factor(1), fill = cut), # factor(1) can be "" or anything not specifying a variable in the dataset.
     width = 1 #, -> if you want a transparent pie chart, uncomment these!
-    # position = 'identity', 
+    # position = 'identity',
     # alpha = .2
-  ) + 
+  ) +
   theme(aspect.ratio = 1) +
   labs(x = NULL, y = NULL)
 
@@ -669,19 +669,19 @@ The plot below tells us that there is a positive correlation between city and hi
 ```{r chp3_geom_abline}
 # provided example
 ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
-  geom_point() + 
+  geom_point() +
   geom_abline() +
   coord_fixed()
 
 # modified the abline to plot a simple linear regression ontop of the points.
 ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
-  geom_point() + 
+  geom_point() +
   geom_abline(intercept = lm(hwy ~ cty, data = mpg)$coeff[1], slope = lm(hwy ~ cty, data = mpg)$coeff[2]) +
   coord_fixed()
 
 # used geom_smooth instead of geom_abline to get the same result
 ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
-  geom_point() + 
+  geom_point() +
   geom_smooth (method = 'lm', se = F)+
   coord_fixed()
 
@@ -689,4 +689,4 @@ ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
 
 ---
 
-This concludes my walkthrough of chapters 1-3 of _R for Data Science_! Thanks for reading! A walkthrough of chapters 4 - 6 can be found at [r4ds_chapters4-6_walkthrough.md](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_chapters4-6_walkthrough.md).
+This concludes my walkthrough of chapters 1-3 of _R for Data Science_! Thanks for reading! A walkthrough of chapters 4 - 6 can be found at [r4ds_p2_chapters4-6_walkthrough.md](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_p2_chapters4-6_walkthrough.md).

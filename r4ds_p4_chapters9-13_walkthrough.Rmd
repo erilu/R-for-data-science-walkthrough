@@ -1,7 +1,7 @@
 ---
 title: "R for Data Science Walkthrough Chapters 9-13"
 author: "Erick Lu"
-output: 
+output:
   github_document:
     html_preview: false
     toc: true
@@ -27,8 +27,8 @@ You can create tibbles from existing data frames using as_tibble(), or create br
 
 ```{r}
 tibble(
-  x = 1:5, 
-  y = 1, 
+  x = 1:5,
+  y = 1,
   z = x ^ 2 + y
 )
 ```
@@ -48,7 +48,7 @@ You can also use non-syntactic names for variables in tibbles:
 
 ```{r}
 tb <- tibble(
-  `:)` = "smile", 
+  `:)` = "smile",
   ` ` = "space",
   `2000` = "number"
 )
@@ -182,7 +182,7 @@ To practice various utilities for reading in files, we can use inline csv design
 ```{r}
 # basic read_csv()
 read_csv("a,b,c
-         1,2,3 
+         1,2,3
          4,5,6")
 # read in data, ignoring metadata lines
 read_csv("The first line of metadata
@@ -340,7 +340,7 @@ There are three types of parsers for these purposes which spit out a combination
 
 ```{r}
 # date-time
-# requires input as year, month, day (mandatory), time-(optional)-hour, minute, second, 
+# requires input as year, month, day (mandatory), time-(optional)-hour, minute, second,
 parse_datetime("2010-10-01T2010")
 parse_datetime("20101010")
 ```
@@ -485,7 +485,7 @@ The values for column x after row 1000 seem to be doubles, rather than integers.
 
 ```{r}
 challenge <- read_csv(
-  readr_example("challenge.csv"), 
+  readr_example("challenge.csv"),
   col_types = cols(
     x = col_double(),
     y = col_date()
@@ -499,7 +499,7 @@ typeof(challenge$y)
 Hadley recommends that we should always examine the output of the read_() function and re-specify the col_parsers to match what is appropriate for the data. One strategy around this that he describes, which I think would probably be more straightforward if you have many, many columns of data, is to read everything in as a character, then use type_convert() on the table to convert to the appropriate types. We can see in the example below that type_convert() properly converts column x to double and column y to date formats.
 
 ```{r}
-challenge2 <- read_csv(readr_example("challenge.csv"), 
+challenge2 <- read_csv(readr_example("challenge.csv"),
   col_types = cols(.default = col_character())
 )
 challenge2
@@ -543,7 +543,7 @@ table4a # cases
 table4b # population
 ```
 
-The three rules that must be satisfied for data to be "tidy" are: 
+The three rules that must be satisfied for data to be "tidy" are:
 
 * Each variable must have its own column.
 * Each observation must have its own row.
@@ -569,7 +569,7 @@ Using these rules, the a tidy dataset from above is ```table1```. The packages i
 
 Which representation is easiest to work with? Which is hardest? Why?
 
-I will try doing the above operations without using tidyr functions. 
+I will try doing the above operations without using tidyr functions.
 
 For table2, we can first filter for the TB cases using filter(), then filter for the population per country using filter() as well. Then we can divide the two, multiply by 10000, and bind the results back to the original table2 by using cbind(). Since there are two rows in table2 corresponding to the same rate value, we must duplicate each rate twice using ```rep( each = 2 )``` before binding to table2. This preserves the original structure of table2, and has the rate stored in the appropriate places. Using the spread() function in tidyr to generate tidy data and then using mutate() is much easier!
 
@@ -603,8 +603,8 @@ First, we need to tidy table2 so that we can use it with ggplot2, using the spre
 ```{r table2_recreate_casesovertime}
 table2 %>%
   spread(key = type, value = count) %>%
-  ggplot(aes(year, cases)) + 
-    geom_line(aes(group = country), colour = "grey50") + 
+  ggplot(aes(year, cases)) +
+    geom_line(aes(group = country), colour = "grey50") +
     geom_point(aes(colour = country))
 ```
 
@@ -613,10 +613,10 @@ table2 %>%
 If some column names are not names of variables, but rather values of variables, it will be helful to "gather" these columns into a single column and map the values accordingly. For example, table4a and table4b has values for 1999 and 2000 split across multiple columns. To gather the values, use gather() by specifying the names of the columns to gather, and the names of the variable that is being gathered (key) and the value (value) that is being redistributed.
 
 ```{r}
-table4a %>% 
+table4a %>%
   gather(`1999`, `2000`, key = "year", value = "cases")
 
-table4b %>% 
+table4b %>%
   gather(`1999`, `2000`, key = "year", value = "population")
 ```
 
@@ -636,10 +636,10 @@ stocks <- tibble(
   return = c(1.88, 0.59, 0.92, 0.17)
 )
 stocks
-stocks %>% 
+stocks %>%
   spread(year, return)
-stocks %>% 
-  spread(year, return) %>% 
+stocks %>%
+  spread(year, return) %>%
   gather("year", "return", `2015`:`2016`)
 ```
 (Hint: look at the variable types and think about column names.)
@@ -651,14 +651,14 @@ Both spread() and gather() have a convert argument. What does it do?
 If set to TRUE (the default is FALSE), then the function type.convert() with asis = TRUE will be run on each of the new columns in the spread() or gather() output. This will try to convert the columns to variables of the appropriate type. For example, using convert = TRUE on the example above causes the year column to become an <int> rather than <chr>.
 
 ```{r}
-stocks %>% 
-  spread(year, return) %>% 
+stocks %>%
+  spread(year, return) %>%
   gather("year", "return", `2015`:`2016`, convert = TRUE)
 ```
 
 ### 2. Why does this code fail?
 ```{r}
-# table4a %>% 
+# table4a %>%
 #   gather(1999, 2000, key = "year", value = "cases")
 #> Error in combine_vars(vars, ind_list): Position must be between 0 and n
 ```
@@ -666,7 +666,7 @@ stocks %>%
 The code fails because the variables passed into gather(), 1999 and 2000, are not written correctly. They should be encased in backticks, like this: `1999` and `2000`. The code below works.
 
 ```{r}
-table4a %>% 
+table4a %>%
    gather(`1999`, `2000`, key = "year", value = "cases")
 ```
 
@@ -733,16 +733,16 @@ In table3, the data for population and cases are combined into one column, rate.
 Separate() separates one column into multiple columns, by splitting based on a separator character. If the separator is the only non-numerical character for each observation, it does not have to be specified.
 
 ```{r}
-table3 %>% 
+table3 %>%
   separate(rate, into = c("cases", "population"))
 ```
 
 Similar to spread() and gather(), separate() has a convert argument that can try to convert the columns to the appropriate types. You can also specify the index to separate the values on, using a number instead of string value for the sep argument.
 
 ```{r}
-table3 %>% 
+table3 %>%
   separate(rate, into = c("cases", "population"), convert = TRUE)
-table3 %>% 
+table3 %>%
   separate(year, into = c("century", "year"), sep = 2)
 ```
 
@@ -753,21 +753,21 @@ Unite() is the opposite of separating, and will combine two columns together usi
 table5 %>%
   unite(new, century,year)
 # specify sep = "" to combine the two columns with no separation
-table5 %>% 
+table5 %>%
   unite(new, century, year, sep = "")
 ```
 
 ## 12.4.3 Exercises
 ### 1. What do the extra and fill arguments do in separate()? Experiment with the various options for the following two toy datasets.
 ```{r}
-tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
+tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>%
   separate(x, c("one", "two", "three"))
 
-tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
+tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
   separate(x, c("one", "two", "three"))
 ```
 
-In the examples above, the tibbles created are 1 column, 3 rows, with strings as observations. Within each string, commas separate the letters. The separate(x, c("one", "two", "three")) will try to split each string using the comma into three columns. However, in the first tibble, there is a row with four values separated by commas (an extra value). This is where the ```extra``` argument comes into play. 
+In the examples above, the tibbles created are 1 column, 3 rows, with strings as observations. Within each string, commas separate the letters. The separate(x, c("one", "two", "three")) will try to split each string using the comma into three columns. However, in the first tibble, there is a row with four values separated by commas (an extra value). This is where the ```extra``` argument comes into play.
 
 The documentation for extra states that:
 * "warn" (the default): emit a warning and drop extra values.
@@ -786,15 +786,15 @@ The default for both extra and fill is "warn", which just provides a warning abo
 
 ```{r}
 # tibble with extra value
-tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
+tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>%
   separate(x, c("one", "two", "three"), extra = "drop")
-tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
+tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>%
   separate(x, c("one", "two", "three"), extra = "merge")
 
 # tible with missing value
-tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
+tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
   separate(x, c("one", "two", "three"), fill = "right")
-tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
+tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
   separate(x, c("one", "two", "three"), fill = "left")
 ```
 
@@ -803,7 +803,7 @@ tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
 The documentation states that "If TRUE, remove input column from output data frame." The column with the values that were split is by default removed from the resulting table, but if this parameter is set to FALSE, the column remains. You might want to set it to FALSE if you want to have a record of what the original column looked like or want to separate the column a different way. Below is an exmaple of setting remove = FALSE on table3. We can see that the rate column still exists in the output.
 
 ```{r}
-table3 %>% 
+table3 %>%
   separate(rate, into = c("cases", "population"), convert = TRUE, remove = FALSE)
 ```
 
@@ -840,7 +840,7 @@ In which there is an explicitly missing value for year 2015 quarter 4, and an im
 We can expose the implicitly missing value by spreading the data:
 
 ```{r}
-stocks %>% 
+stocks %>%
   spread(year, return)
 ```
 
@@ -850,15 +850,15 @@ Now we see two explicitly missing values. We can also omit NA values entirely by
 # get rid of NA values using na.omit()
 na.omit(stocks)
 # get rid of NA values using spread and gather( na.rm = T )
-stocks %>% 
-  spread(year, return) %>% 
+stocks %>%
+  spread(year, return) %>%
   gather(year, return, `2015`:`2016`, na.rm = TRUE)
 ```
 
 A very useful tool is the complete() function in tidyr! It will look for all combinations of the variables specified and find implicitly missing values in the data, and turn them explicit. This is much cleaner-looking than spreading and gathering.
 
 ```{r}
-stocks %>% 
+stocks %>%
   complete(year, qtr)
 ```
 
@@ -873,7 +873,7 @@ treatment <- tribble(
   "Katherine Burke",  1,           4
 )
 treatment
-treatment %>% 
+treatment %>%
   fill(person)
 ```
 
@@ -888,10 +888,10 @@ For the spread() function, the documentation for the fill argument states that:
 In other words, you can replace the missing values with a value of your choice, specified by the fill argument. For example:
 
 ```{r}
-stocks %>% 
+stocks %>%
   spread(year, return, fill = "MISSING")
 # turns out you can supply more than one value, but this doesnt seem to work that great. use complete() instead for multiple values.
-stocks %>% 
+stocks %>%
   spread(year, return, fill = c("NO_2015","NO_2016"))
 ```
 
@@ -902,7 +902,7 @@ For the complete() function, the documentation for the fill argument states that
 In other words, you can supply the fill argument with a list that has one entry for each of the columns in your data frame. Depending on where the missing value is located, it will be replaced by the appropriate NA value. In the example below, I replace any NA values in the year column with "NO_YEAR", in the qtr column with "NO_QTR", and in the return column with "NO_RETURN".
 
 ```{r}
-stocks %>% 
+stocks %>%
   complete(year, qtr, fill = list(year = "NO_YEAR", qtr = "NO_QTR", return = "NO_RETURN"))
 ```
 
@@ -913,7 +913,7 @@ The documentation for the direction argument in fill() states: "Direction in whi
 So if we specify direction = "up" for the example provided earlier, the NA values will be filled with the 2nd patient (Katherine Burke), not the 1st patient.
 
 ```{r}
-treatment %>% 
+treatment %>%
   fill(person, .direction = "up")
 ```
 
@@ -926,10 +926,10 @@ The case study presented uses the tidyr::who dataset, which is depicted below:
 who
 ```
 
-Below are the steps taken to "tidy" this dataset. The columns to the right of year are recorded cases of TB for each of the specified cohorts, which can be gathered. 
+Below are the steps taken to "tidy" this dataset. The columns to the right of year are recorded cases of TB for each of the specified cohorts, which can be gathered.
 
 ```{r}
-who1 <- who %>% 
+who1 <- who %>%
   gather(new_sp_m014:newrel_f65, key = "key", value = "cases", na.rm = TRUE)
 who1
 ```
@@ -937,30 +937,30 @@ who1
 In order to prepare for using separate on "key", we need to standardize the format of the values. Most of the values have two underscores: one after "new" and one before the age range. However, one cohort does not have the first underscore after "new". The underscore can be added using str_replace().
 
 ```{r}
-who2 <- who1 %>% 
+who2 <- who1 %>%
   mutate(key = stringr::str_replace(key, "newrel", "new_rel"))
 who2
 ```
 
 Now that the format is standardized, the new, type, and sexage can be separated:
 ```{r}
-who3 <- who2 %>% 
+who3 <- who2 %>%
   separate(key, c("new", "type", "sexage"), sep = "_")
 who3
 ```
 
-The iso2 and iso3 columns look like different identifiers for country, so these can be dropped. 
+The iso2 and iso3 columns look like different identifiers for country, so these can be dropped.
 ```{r}
-who3 %>% 
+who3 %>%
   count(new)
 
-who4 <- who3 %>% 
+who4 <- who3 %>%
   select(-new, -iso2, -iso3)
 ```
 
 The sexage column can be futher separated into sex and age:
 ```{r}
-who5 <- who4 %>% 
+who5 <- who4 %>%
   separate(sexage, c("sex", "age"), sep = 1)
 who5
 ```
@@ -969,10 +969,10 @@ We can combine all the steps above using the pipe:
 
 ```{r}
 who %>%
-  gather(code, value, new_sp_m014:newrel_f65, na.rm = TRUE) %>% 
+  gather(code, value, new_sp_m014:newrel_f65, na.rm = TRUE) %>%
   mutate(code = stringr::str_replace(code, "newrel", "new_rel")) %>%
-  separate(code, c("new", "var", "sexage")) %>% 
-  select(-new, -iso2, -iso3) %>% 
+  separate(code, c("new", "var", "sexage")) %>%
+  select(-new, -iso2, -iso3) %>%
   separate(sexage, c("sex", "age"), sep = 1)
 ```
 
@@ -986,10 +986,10 @@ To find the number of implicit missing values, first make version of the tidy wh
 
 ```{r}
 clean_who <- who %>%
-  gather(code, value, new_sp_m014:newrel_f65) %>% 
+  gather(code, value, new_sp_m014:newrel_f65) %>%
   mutate(code = stringr::str_replace(code, "newrel", "new_rel")) %>%
-  separate(code, c("new", "var", "sexage")) %>% 
-  select(-new, -iso2, -iso3) %>% 
+  separate(code, c("new", "var", "sexage")) %>%
+  select(-new, -iso2, -iso3) %>%
   separate(sexage, c("sex", "age"), sep = 1)
 
 # Use complete to convert implicity missing values into explicitly missing values
@@ -1010,9 +1010,9 @@ The mutate() step is required to allow the separate() function to be applied in 
 
 ```{r}
 who %>%
-  gather(code, value, new_sp_m014:newrel_f65, na.rm = TRUE) %>% 
-  separate(code, c("new", "var", "sexage")) %>% 
-  select(-new, -iso2, -iso3) %>% 
+  gather(code, value, new_sp_m014:newrel_f65, na.rm = TRUE) %>%
+  separate(code, c("new", "var", "sexage")) %>%
+  select(-new, -iso2, -iso3) %>%
   separate(sexage, c("sex", "age"), sep = 1)
 ```
 
@@ -1042,10 +1042,10 @@ Below I use group_by() and summarize() to compute the total number of cases of T
 ```{r country_year_sex_TB_cases}
 # store the tidy version of who in an object
 tidy_who <- who %>%
-  gather(code, value, new_sp_m014:newrel_f65, na.rm = TRUE) %>% 
+  gather(code, value, new_sp_m014:newrel_f65, na.rm = TRUE) %>%
   mutate(code = stringr::str_replace(code, "newrel", "new_rel")) %>%
-  separate(code, c("new", "var", "sexage")) %>% 
-  select(-new, -iso2, -iso3) %>% 
+  separate(code, c("new", "var", "sexage")) %>%
+  select(-new, -iso2, -iso3) %>%
   separate(sexage, c("sex", "age"), sep = 1)
 
 # count the total number of cases for each country, year and sex
@@ -1058,7 +1058,7 @@ total_TB <- tidy_who %>%
 # plot the data
 total_TB %>%
   ggplot(aes (x = year, y = total_TB_cases))+
-  geom_line(aes(color = country))+ 
+  geom_line(aes(color = country))+
   theme(legend.position="none")+
   facet_wrap(~sex)
 
@@ -1066,7 +1066,7 @@ total_TB %>%
   total_TB %>%
     filter( year > 1995 )%>%
       ggplot(aes (x = year, y = total_TB_cases))+
-      geom_line(aes(color = country))+ 
+      geom_line(aes(color = country))+
       theme(legend.position="none")+
       facet_wrap(~sex)
 ```
@@ -1156,11 +1156,11 @@ A key is a value or combination of values that uniquely identifies an observatio
 You can verify that a variable can serve as a primary key by verifying that they do uniquely identify each observation. The book uses a combination of count() and filter(). If there are any values with count > 1, the variable is not a primary key.
 
 ```{r}
-planes %>% 
-  count(tailnum) %>% 
+planes %>%
+  count(tailnum) %>%
   filter(n > 1)
-weather %>% 
-  count(year, month, day, hour, origin) %>% 
+weather %>%
+  count(year, month, day, hour, origin) %>%
   filter(n > 1)
 ```
 
@@ -1169,8 +1169,8 @@ If there are no variables in the dataset that can serve as primary keys, we can 
 ```{r}
 # combination of year, month, day, flight is not adequate as a primary key.
 # A surrogate key must be added. See 13.3.1 exercises for an example of adding a surrogate key.
-flights %>% 
-  count(year, month, day, flight) %>% 
+flights %>%
+  count(year, month, day, flight) %>%
   filter(n > 1)
 ```
 
@@ -1263,7 +1263,7 @@ This section on mutating joins introduces the usage of the join functions and pr
 
 ```{r}
 # make a truncated dataset to work with
-flights2 <- flights %>% 
+flights2 <- flights %>%
   select(year:day, hour, origin, dest, tailnum, carrier)
 flights2
 ```
@@ -1272,11 +1272,11 @@ Comparing how to perform joins using dplyr or baseR:
 ```{r}
 # left join using left_join() from dplyr
 flights2 %>%
-  select(-origin, -dest) %>% 
+  select(-origin, -dest) %>%
   left_join(airlines, by = "carrier")
 # left join using base R commands and mutate()
 flights2 %>%
-  select(-origin, -dest) %>% 
+  select(-origin, -dest) %>%
   mutate(name = airlines$name[match(carrier, airlines$carrier)])
 ```
 
@@ -1291,13 +1291,13 @@ From the text, the types of outer joins are defined as:
 These joins can be performed using dplyr commands (left_join(), right_join(), full_join(), inner_join(), semi_join(), anti_join()) or using the base R command merge(). The "by" argument is important to modify depending on the type of join you want to perform and the keys you want to use between the two tables. The book provides the examples below on the different ways the "by" argument can be used.
 ```{r}
 # left join, if "by" argument is unspecified, will perform natural join
-flights2 %>% 
+flights2 %>%
   left_join(weather)
 # left join specifying which column to use as key
-flights2 %>% 
+flights2 %>%
   left_join(planes, by = "tailnum")
 # left join specifying column to use as key, if named differently in the two tables
-flights2 %>% 
+flights2 %>%
   left_join(airports, c("dest" = "faa"))
 ```
 
@@ -1399,13 +1399,13 @@ rm_na_weatherdelays <- as.matrix (na.omit(weatherdelays))
 head(rm_na_weatherdelays)
 corr_weather <- cor(rm_na_weatherdelays)
 
-ggcorrplot(corr_weather, hc.order = TRUE, 
-           type = "lower", 
-           lab = TRUE, 
-           lab_size = 3, 
-           method="circle", 
-           colors = c("steelblue", "white", "orangered3"), 
-           title="Correlogram", 
+ggcorrplot(corr_weather, hc.order = TRUE,
+           type = "lower",
+           lab = TRUE,
+           lab_size = 3,
+           method="circle",
+           colors = c("steelblue", "white", "orangered3"),
+           title="Correlogram",
            ggtheme=theme_bw)
 
 weatherdelays %>%
@@ -1478,11 +1478,11 @@ top_dest <- flights %>%
 top_dest
 
 # use filter() to find observations in flights that have matched key in top destinations table
-flights %>% 
+flights %>%
   filter(dest %in% top_dest$dest)
 
 # use semi_join() to find obseravtions in flights that have matched key in top destinations table
-flights %>% 
+flights %>%
   semi_join(top_dest)
 ```
 
@@ -1508,7 +1508,7 @@ flights %>%
   filter(is.na(tailnum))
 
 # remove flights with missing dep_time and look at whether missing tailnums still exist
-not_cancelled <- flights %>% 
+not_cancelled <- flights %>%
   filter(!is.na(dep_time))
 not_cancelled %>%
     filter(is.na(tailnum))
@@ -1554,7 +1554,7 @@ semi_join(vehicles,common)
 
 ### 4. Find the 48 hours (over the course of the whole year) that have the worst delays. Cross-reference it with the weather data. Can you see any patterns?
 
-To find the 48 hours that have the worst delays, we can use group_by() and summarize() to find the total delay per day, then combine the total delay per day with lag() to get the total delay per 48 hours. There will be a missing value for the first day of the year, since the method that I use will sum the total delay for the current day with the previous day. Sorting this table will identify the days with the worst dep_delay over 48 hours, which turns out to be March 7-8th, 2013, with a total delay of 84713 min. We can left_join() the weather conditions to this table, and then analyze the weather patterns for this day in particular. We can see that on average, higher 48hr delays are associated with higher humidity values, higher dewpoint, lower pressure, and lower visibility.
+To find the 48 hours that have the worst delays, we can use group_by() and summarize() to find the total delay per day, then combine the total delay per day with lag() to get the total delay per 48 hours. There will be a missing value for the first day of the year, since the method that I use will sum the total delay for the current day with the previous day. Sorting this table will identify the days with the worst dep_delay over 48 hours, which turns out to be March 7-8th, 2013, with a total delay of 84713 min. We can left_join() the weather conditions to this table, and then analyze the weather patterns for this day in particular. We can see that on average, higher 48hr delays are associated with higher humidity values, higher temp/dewpoint, lower pressure, and lower visibility, based on both the correlogram and scatterplots.
 
 ```{r worst_48hr_delays}
 # identify the 48 hrs with highest combined dep_delay, then join weather conditions
@@ -1580,30 +1580,50 @@ most_delayed_48 %>%
   geom_point()+
   geom_smooth(method = "lm", se = F)
 
+# plot a correlogram to observe how delay_48hr is associated with other weather variables
+library(ggcorrplot)
+weatherdelays <- most_delayed_48 %>%
+  select(-day,-hour,-delay_per_day,-origin, -time_hour)
+rm_na_weatherdelays <- as.matrix (na.omit(weatherdelays)[,-c(1:2)])
+corr_weather <- cor(rm_na_weatherdelays)
+
+ggcorrplot(corr_weather, hc.order = TRUE,
+           type = "lower",
+           lab = TRUE,
+           lab_size = 3,
+           method="circle",
+           colors = c("steelblue", "white", "orangered3"),
+           title="Correlogram",
+           ggtheme=theme_bw)
+
 ```
 
 
 ### 5. What does anti_join(flights, airports, by = c("dest" = "faa")) tell you? What does anti_join(airports, flights, by = c("faa" = "dest")) tell you?
 
+```anti_join(flights, airports, by = c("dest" = "faa"))``` tells you which observations in flights do not have a destination that is listed in the 'faa' variable of the ```airports``` table.
+
+```anti_join(airports, flights, by = c("faa" = "dest"))``` tells you which observations in airports do not have a 'faa' value that is present in the 'dest' variable of the ```flights``` table.
 
 ```{r}
-
 anti_join(flights, airports, by = c("dest" = "faa"))
-
 anti_join(airports, flights, by = c("faa" = "dest"))
-
 ```
-
 
 ### 6. You might expect that there’s an implicit relationship between plane and airline, because each plane is flown by a single airline. Confirm or reject this hypothesis using the tools you’ve learned above.
 
+To explore whether each plane exclusively flies with a single airline, we can group the flights table by tailnum, then by carrier. Counting this grouped table will yield the number of flights each plane made with its carrier or carriers. We can group this table again by tailnum, then count how many carriers it flew with. If the hypothesis is true, then we would expect that there would be no entries with more than one carrier per plane. However, when we filter this table for planes with carriers > 1, we observe that 17 planes have flown with 2 carriers. Out of the roughly 4000 planes, this is only a very small fraction. This evidence supports our hypothesis that, in general, there is an association between plane and airline. Most of the time, planes only fly with a single carrier. However, a small amount of planes have flown with multiple airlines. This may have occured if an airline sold their planes to another airline.
 
 ```{r}
-
+# find the number of carriers that each plane has flown with
+flights %>%
+  group_by (tailnum, carrier) %>%
+  count() %>%
+  group_by(tailnum)%>%
+  count() %>%
+  arrange(desc(nn)) %>%
+  filter(nn>1)
 ```
-
-
-
 
 ## Join problems and set operations
 
@@ -1644,6 +1664,4 @@ setdiff(df2, df1)
 
 ---
 
-Thanks for reading! I hope you found my solutions to the exercises informative. A walkthrough of chapters 14 - 16 can be found at [r4ds_chapters14-16_walkthrough.md](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_chapters14-16_walkthrough.md).
-
-
+Thanks for reading! I hope you found my solutions to the exercises informative. A walkthrough of chapters 14 - 16 can be found at [r4ds_p5_chapters14-16_walkthrough.md](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_chapters14-16_walkthrough.md).

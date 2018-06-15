@@ -69,42 +69,42 @@ Now use `dput()` to learn how this data frame was constructed.
 dput(mtcars) # get the code used to build the actual data frame
 ```
 
-    ## structure(list(mpg = c(21, 21, 22.8, 21.4, 18.7, 18.1, 14.3, 
-    ## 24.4, 22.8, 19.2, 17.8, 16.4, 17.3, 15.2, 10.4, 10.4, 14.7, 32.4, 
-    ## 30.4, 33.9, 21.5, 15.5, 15.2, 13.3, 19.2, 27.3, 26, 30.4, 15.8, 
-    ## 19.7, 15, 21.4), cyl = c(6, 6, 4, 6, 8, 6, 8, 4, 4, 6, 6, 8, 
-    ## 8, 8, 8, 8, 8, 4, 4, 4, 4, 8, 8, 8, 8, 4, 4, 4, 8, 6, 8, 4), 
-    ##     disp = c(160, 160, 108, 258, 360, 225, 360, 146.7, 140.8, 
-    ##     167.6, 167.6, 275.8, 275.8, 275.8, 472, 460, 440, 78.7, 75.7, 
-    ##     71.1, 120.1, 318, 304, 350, 400, 79, 120.3, 95.1, 351, 145, 
-    ##     301, 121), hp = c(110, 110, 93, 110, 175, 105, 245, 62, 95, 
-    ##     123, 123, 180, 180, 180, 205, 215, 230, 66, 52, 65, 97, 150, 
-    ##     150, 245, 175, 66, 91, 113, 264, 175, 335, 109), drat = c(3.9, 
-    ##     3.9, 3.85, 3.08, 3.15, 2.76, 3.21, 3.69, 3.92, 3.92, 3.92, 
-    ##     3.07, 3.07, 3.07, 2.93, 3, 3.23, 4.08, 4.93, 4.22, 3.7, 2.76, 
+    ## structure(list(mpg = c(21, 21, 22.8, 21.4, 18.7, 18.1, 14.3,
+    ## 24.4, 22.8, 19.2, 17.8, 16.4, 17.3, 15.2, 10.4, 10.4, 14.7, 32.4,
+    ## 30.4, 33.9, 21.5, 15.5, 15.2, 13.3, 19.2, 27.3, 26, 30.4, 15.8,
+    ## 19.7, 15, 21.4), cyl = c(6, 6, 4, 6, 8, 6, 8, 4, 4, 6, 6, 8,
+    ## 8, 8, 8, 8, 8, 4, 4, 4, 4, 8, 8, 8, 8, 4, 4, 4, 8, 6, 8, 4),
+    ##     disp = c(160, 160, 108, 258, 360, 225, 360, 146.7, 140.8,
+    ##     167.6, 167.6, 275.8, 275.8, 275.8, 472, 460, 440, 78.7, 75.7,
+    ##     71.1, 120.1, 318, 304, 350, 400, 79, 120.3, 95.1, 351, 145,
+    ##     301, 121), hp = c(110, 110, 93, 110, 175, 105, 245, 62, 95,
+    ##     123, 123, 180, 180, 180, 205, 215, 230, 66, 52, 65, 97, 150,
+    ##     150, 245, 175, 66, 91, 113, 264, 175, 335, 109), drat = c(3.9,
+    ##     3.9, 3.85, 3.08, 3.15, 2.76, 3.21, 3.69, 3.92, 3.92, 3.92,
+    ##     3.07, 3.07, 3.07, 2.93, 3, 3.23, 4.08, 4.93, 4.22, 3.7, 2.76,
     ##     3.15, 3.73, 3.08, 4.08, 4.43, 3.77, 4.22, 3.62, 3.54, 4.11
-    ##     ), wt = c(2.62, 2.875, 2.32, 3.215, 3.44, 3.46, 3.57, 3.19, 
-    ##     3.15, 3.44, 3.44, 4.07, 3.73, 3.78, 5.25, 5.424, 5.345, 2.2, 
-    ##     1.615, 1.835, 2.465, 3.52, 3.435, 3.84, 3.845, 1.935, 2.14, 
-    ##     1.513, 3.17, 2.77, 3.57, 2.78), qsec = c(16.46, 17.02, 18.61, 
-    ##     19.44, 17.02, 20.22, 15.84, 20, 22.9, 18.3, 18.9, 17.4, 17.6, 
-    ##     18, 17.98, 17.82, 17.42, 19.47, 18.52, 19.9, 20.01, 16.87, 
+    ##     ), wt = c(2.62, 2.875, 2.32, 3.215, 3.44, 3.46, 3.57, 3.19,
+    ##     3.15, 3.44, 3.44, 4.07, 3.73, 3.78, 5.25, 5.424, 5.345, 2.2,
+    ##     1.615, 1.835, 2.465, 3.52, 3.435, 3.84, 3.845, 1.935, 2.14,
+    ##     1.513, 3.17, 2.77, 3.57, 2.78), qsec = c(16.46, 17.02, 18.61,
+    ##     19.44, 17.02, 20.22, 15.84, 20, 22.9, 18.3, 18.9, 17.4, 17.6,
+    ##     18, 17.98, 17.82, 17.42, 19.47, 18.52, 19.9, 20.01, 16.87,
     ##     17.3, 15.41, 17.05, 18.9, 16.7, 16.9, 14.5, 15.5, 14.6, 18.6
-    ##     ), vs = c(0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 
-    ##     0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1), am = c(1, 
-    ##     1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 
-    ##     0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1), gear = c(4, 4, 4, 3, 
-    ##     3, 3, 3, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 4, 4, 4, 3, 3, 3, 
-    ##     3, 3, 4, 5, 5, 5, 5, 5, 4), carb = c(4, 4, 1, 1, 2, 1, 4, 
-    ##     2, 2, 4, 4, 3, 3, 3, 4, 4, 4, 1, 2, 1, 1, 2, 2, 4, 2, 1, 
-    ##     2, 2, 4, 6, 8, 2)), row.names = c("Mazda RX4", "Mazda RX4 Wag", 
-    ## "Datsun 710", "Hornet 4 Drive", "Hornet Sportabout", "Valiant", 
-    ## "Duster 360", "Merc 240D", "Merc 230", "Merc 280", "Merc 280C", 
-    ## "Merc 450SE", "Merc 450SL", "Merc 450SLC", "Cadillac Fleetwood", 
-    ## "Lincoln Continental", "Chrysler Imperial", "Fiat 128", "Honda Civic", 
-    ## "Toyota Corolla", "Toyota Corona", "Dodge Challenger", "AMC Javelin", 
-    ## "Camaro Z28", "Pontiac Firebird", "Fiat X1-9", "Porsche 914-2", 
-    ## "Lotus Europa", "Ford Pantera L", "Ferrari Dino", "Maserati Bora", 
+    ##     ), vs = c(0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0,
+    ##     0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1), am = c(1,
+    ##     1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1,
+    ##     0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1), gear = c(4, 4, 4, 3,
+    ##     3, 3, 3, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 4, 4, 4, 3, 3, 3,
+    ##     3, 3, 4, 5, 5, 5, 5, 5, 4), carb = c(4, 4, 1, 1, 2, 1, 4,
+    ##     2, 2, 4, 4, 3, 3, 3, 4, 4, 4, 1, 2, 1, 1, 2, 2, 4, 2, 1,
+    ##     2, 2, 4, 6, 8, 2)), row.names = c("Mazda RX4", "Mazda RX4 Wag",
+    ## "Datsun 710", "Hornet 4 Drive", "Hornet Sportabout", "Valiant",
+    ## "Duster 360", "Merc 240D", "Merc 230", "Merc 280", "Merc 280C",
+    ## "Merc 450SE", "Merc 450SL", "Merc 450SLC", "Cadillac Fleetwood",
+    ## "Lincoln Continental", "Chrysler Imperial", "Fiat 128", "Honda Civic",
+    ## "Toyota Corolla", "Toyota Corona", "Dodge Challenger", "AMC Javelin",
+    ## "Camaro Z28", "Pontiac Firebird", "Fiat X1-9", "Porsche 914-2",
+    ## "Lotus Europa", "Ford Pantera L", "Ferrari Dino", "Maserati Bora",
     ## "Volvo 142E"), class = "data.frame")
 
 We can see that the data frame was constructed by merging lists of each of the parameters (displ, hwy, etc..) into columns, then naming each of the columns and rows.
@@ -134,7 +134,7 @@ head(mpg)
 Plot mileage (hwy) against engine displacement (displ):
 
 ``` r
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes (x=displ, y=hwy)) +
   ggtitle("Engine displacement (x-axis) vs Mileage (y-axis)") +
   theme(plot.title = element_text(hjust = 0.5))
@@ -145,7 +145,7 @@ ggplot(data = mpg) +
 I added a title to the ggplot (ggtitle) and centered the title by adding a theme parameter. I also found that it was not required to have the "data =" or "mapping =" in the ggplot() or geom\_point() parameters. Since there was a inverse correlation, I was interested to see what a linear model would look like if fitted to the data. Here is how I added a trend line to the plot above.
 
 ``` r
-ggplot(data = mpg, aes (x = displ, y = hwy)) + 
+ggplot(data = mpg, aes (x = displ, y = hwy)) +
   geom_point() +
   ggtitle("Engine displacement (x-axis) vs Mileage (y-axis)") +
   theme(plot.title = element_text(hjust = 0.5)) +
@@ -190,7 +190,7 @@ The `drv` column specifies whether the car is "f = front-wheel drive, r = rear w
 4.Make a scatterplot of hwy vs cyl.
 
 ``` r
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes (x=cyl, y=hwy)) +
   ggtitle("Number of Cylinders (x-axis) vs Mileage (y-axis)") +
   theme(plot.title = element_text(hjust = 0.5))
@@ -203,7 +203,7 @@ There is an inverse correlation with the number of cylinders and how much mileag
 ### 5. What happens if you make a scatterplot of class vs drv? Why is the plot not useful?
 
 ``` r
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes (x=class, y=drv)) +
   ggtitle("Number of Class (x-axis) vs Type of Drive (y-axis)") +
   theme(plot.title = element_text(hjust = 0.5))
@@ -219,7 +219,7 @@ The data is not particularly useful since these are two categorical variables, a
 Color-code the points in the scatterplot by another variable in the data set.
 
 ``` r
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, color = class))
 ```
 
@@ -230,7 +230,7 @@ The plot shows that SUVs have low highway mileage and high engine displacement a
 Another example, this time color coding based on the `drv` variable.
 
 ``` r
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, color = drv))
 ```
 
@@ -241,7 +241,7 @@ We can see that the front wheel drive cars on average have low engine displaceme
 Using size variable to further categorize in the graph (you can combine multiple parameters for the cateogrization! This is pretty cool). If you try to use a categorical/discrete variable for size, an error will be displayed.
 
 ``` r
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, size = cyl, color = class, alpha = drv))
 ```
 
@@ -253,7 +253,7 @@ ggplot(data = mpg) +
 ### 1. What’s gone wrong with this code? Why are the points not blue?
 
 ``` r
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, color = "blue"))
 ```
 
@@ -262,7 +262,7 @@ ggplot(data = mpg) +
 The points are not blue because the "color =" parameter lies within aes(). This means the function will be looking for a column within the mpg dataset called "blue", which does not exist. So to fix this, place the "color =" parameter outside aes(), but within geom\_point().
 
 ``` r
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy), color = "blue")
 ```
 
@@ -308,18 +308,18 @@ I mapped the continuous variable, "cty", city miles per gallon, using color and 
 library(gridExtra)
 ```
 
-    ## 
+    ##
     ## Attaching package: 'gridExtra'
 
     ## The following object is masked from 'package:dplyr':
-    ## 
+    ##
     ##     combine
 
 ``` r
-byColor <- ggplot(data = mpg) + 
+byColor <- ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, color = cty)) +
   ggtitle("City miles mapped by color")
-bySize <- ggplot(data = mpg) + 
+bySize <- ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, size = cty)) +
   ggtitle("City miles mapped by size")
 
@@ -329,7 +329,7 @@ grid.arrange(byColor, bySize, ncol=2)
 ![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_3-1.png)
 
 ``` r
-byShape <- ggplot(data = mpg) + 
+byShape <- ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, shape = class))+
   ggtitle("Number of Class (x-axis) vs Type of Drive (y-axis)")
 byShape
@@ -348,7 +348,7 @@ byShape
 The points will all lie on the same area of the spectrum for each aesthetic.
 
 ``` r
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, size = cyl, color = cyl, alpha = cyl))
 ```
 
@@ -359,7 +359,7 @@ ggplot(data = mpg) +
 The stroke will modify the width of the border for geom\_points that have a border. Below I increase the size of the points after categorizing by the drv variable.
 
 ``` r
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, shape = drv, stroke = 3))
 ```
 
@@ -370,14 +370,14 @@ ggplot(data = mpg) +
 The aesthetic will be mapped to the output of the argument. Displ &lt; 5 will return TRUE for all points less than 5, and these points will be mapped to a separate color. Below is an example of displ &lt; 5 and cyl &lt; 5.
 
 ``` r
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, color = displ < 5))
 ```
 
 ![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_6-1.png)
 
 ``` r
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, color = cyl < 5))
 ```
 
@@ -389,8 +389,8 @@ ggplot(data = mpg) +
 Split data up into subplots based on a discrete variable: 1 dimensional facet. This allows us to focus in on subsets of the data (say for example, you wanted to quickly compare midsize vars vs minivans) Can add aesthetic mappings as well ontop of this!
 
 ``` r
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy, color = drv)) + 
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy, color = drv)) +
   facet_wrap(~ class, nrow = 2)
 ```
 
@@ -399,8 +399,8 @@ ggplot(data = mpg) +
 Instead of adding the aesthetic mapping, we can also make a 2D facet. This lets us add yet another mapping on top. So useful!
 
 ``` r
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy, color = trans)) + 
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy, color = trans)) +
   facet_grid(drv ~ cyl)
 ```
 
@@ -414,8 +414,8 @@ ggplot(data = mpg) +
 Let's try faceting on city miles per gallon (cty):
 
 ``` r
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy)) + 
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy)) +
   facet_grid(drv ~ cty)
 ```
 
@@ -428,7 +428,7 @@ It looks like ggplot2 will still spit out a graph, but the graph is not very int
 The empty cells in facet\_grid(drv~cyl) mean that there are no points that satisfy both of the conditions specified for drv and cyl. In the plot below, you can identify the same blank facet plots as the crosshairs that do not have points (for example, cars with 4 cylinders and rear wheel drive).
 
 ``` r
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes(x = drv, y = cyl))
 ```
 
@@ -439,7 +439,7 @@ ggplot(data = mpg) +
 Based on the output, I assume that . means to perform a 1D facet plot using the variable supplied. Although having the . vs not having it doesn't change the output when using the form (~ drv). Switching between . ~ drv and drv ~ . flips the orientation of the graphs. Worth to note that facet\_map(~ drv, ncol = 3) provides the same output as facet\_grid(. ~ drv).
 
 ``` r
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy)) +
   facet_grid(drv ~ .)
 ```
@@ -447,7 +447,7 @@ ggplot(data = mpg) +
 ![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_dot-1.png)
 
 ``` r
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy)) +
   facet_grid(. ~ drv)
 ```
@@ -457,8 +457,8 @@ ggplot(data = mpg) +
 ### 4. Take the first faceted plot in this section:
 
 ``` r
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy)) + 
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy)) +
   facet_wrap(~ class)
 ```
 
@@ -483,7 +483,7 @@ Data can be visualized in different ways using different geom\_ functions:
 
 ``` r
 # left
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy))
 ```
 
@@ -491,7 +491,7 @@ ggplot(data = mpg) +
 
 ``` r
 # right
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_smooth(mapping = aes(x = displ, y = hwy))
 ```
 
@@ -503,7 +503,7 @@ Geom functions can be combined! Also, the better coding practice is to declare g
 
 ``` r
 # declaring locally
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes (x = displ, y = hwy, color = drv)) +
   geom_smooth(mapping = aes(x = displ, y = hwy, linetype = drv, color = drv))
 ```
@@ -514,7 +514,7 @@ ggplot(data = mpg) +
 
 ``` r
 # declaring globally and locally
-ggplot(data = mpg, mapping = aes (x = displ, y = hwy, color = drv)) + 
+ggplot(data = mpg, mapping = aes (x = displ, y = hwy, color = drv)) +
   geom_point() +
   geom_smooth(mapping = aes(linetype = drv))
 ```
@@ -546,8 +546,8 @@ Line chart would use geom\_line(), a boxplot would use geom\_boxplot(), a histog
 I predict that hwy will be plotted against displ as a scatter plot, with the color of the dot depending on the drv variable. superimposed on these points will be a smoothened conditional mean line, also colored based on the drv variable, since these were declared globally.
 
 ``` r
-ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) + 
-  geom_point() + 
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) +
+  geom_point() +
   geom_smooth(se = FALSE)
 ```
 
@@ -568,8 +568,8 @@ Based on the ?geom\_smooth documentation, the se argument tells the graph to eit
 ### 5. Will these two graphs look different? Why/why not?
 
 ``` r
-ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
-  geom_point() + 
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+  geom_point() +
   geom_smooth()
 ```
 
@@ -578,8 +578,8 @@ ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
 ![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_diff-1.png)
 
 ``` r
-ggplot() + 
-  geom_point(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+ggplot() +
+  geom_point(data = mpg, mapping = aes(x = displ, y = hwy)) +
   geom_smooth(data = mpg, mapping = aes(x = displ, y = hwy))
 ```
 
@@ -671,7 +671,7 @@ ggplot(data = demo) +
 Or plot the barplot as a proportion (kind of like a histogram would, except this uses discrete variables on the x axis):
 
 ``` r
-ggplot(data = diamonds) + 
+ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut, y = ..prop.., group = 1))
 ```
 
@@ -681,7 +681,7 @@ This is how to provide a stat summary manually using stat\_summary(). It might b
 
 ``` r
 # stat summary
-ggplot(data = diamonds) + 
+ggplot(data = diamonds) +
   stat_summary(
     mapping = aes(x = cut, y = depth),
     fun.ymin = min,
@@ -744,14 +744,14 @@ ggplot(data = mpg, aes(x = displ, y = hwy)) +
 Without the group = 1, each of the proportions that are calculated for every category in cut will be equal to 1. This is because geom\_bar is calculating the proportion of each category in cut within that same category (ie: what proportion of "Fair" is in "Fair"). By forcing the group to be 1, the proper proportions as part of the total number of observations will be displayed. Changing the group size to an arbitrary number doesnt seem to change the graph.
 
 ``` r
-ggplot(data = diamonds) + 
+ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut, y = ..prop..))
 ```
 
 ![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/chp3_exercise_barchart_group-1.png)
 
 ``` r
-ggplot(data = diamonds) + 
+ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut, fill = color, y = ..prop..))
 ```
 
@@ -766,7 +766,7 @@ To apply a separate color to each bar, specify either "color" or "fill" within a
 
 ``` r
 # border, specify color parameter
-ggplot(data = diamonds) + 
+ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut, colour = cut))
 ```
 
@@ -774,7 +774,7 @@ ggplot(data = diamonds) +
 
 ``` r
 #fill, specify fill parameter
-ggplot(data = diamonds) + 
+ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut, fill = cut))
 ```
 
@@ -783,7 +783,7 @@ ggplot(data = diamonds) +
 If you color by a variable other than what was on the x axis, each bar will be split into colors:
 
 ``` r
-ggplot(data = diamonds) + 
+ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut, fill = clarity))
 ```
 
@@ -794,14 +794,14 @@ Note that this is plotting the raw counts, and not the proportions. Trying to do
 If you want to see the relative contribution in a different way (not stacked), set the position parameter to "identity". This will overlap the bars and make them all start from 0. To visualize them, you must either make the bars transparent or have no fill.
 
 ``` r
-ggplot(data = diamonds, mapping = aes(x = cut, fill = clarity)) + 
+ggplot(data = diamonds, mapping = aes(x = cut, fill = clarity)) +
   geom_bar(alpha = 1/5, position = "identity")
 ```
 
 ![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/position_alpha_fill_NA-1.png)
 
 ``` r
-ggplot(data = diamonds, mapping = aes(x = cut, colour = clarity)) + 
+ggplot(data = diamonds, mapping = aes(x = cut, colour = clarity)) +
   geom_bar(fill = NA, position = "identity")
 ```
 
@@ -809,7 +809,7 @@ ggplot(data = diamonds, mapping = aes(x = cut, colour = clarity)) +
 
 ``` r
 # position = fill
-ggplot(data = diamonds) + 
+ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut, fill = clarity), position = "fill")
 ```
 
@@ -817,7 +817,7 @@ ggplot(data = diamonds) +
 
 ``` r
 # position = dodge
-ggplot(data = diamonds) + 
+ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut, fill = clarity), position = "dodge")
 ```
 
@@ -826,7 +826,7 @@ ggplot(data = diamonds) +
 On scatterplots, overlapping points can be overlooked quite easily. One way to get around this is to jitter all the points, so that the number of overlapping points can be better visualized. The jitter parameter adds some normally distributed noise to each of the values in the dataset.
 
 ``` r
-ggplot(data = mpg) + 
+ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy), position = "jitter")
 ```
 
@@ -838,7 +838,7 @@ ggplot(data = mpg) +
 ### 1. What is the problem with this plot? How could you improve it?
 
 ``` r
-ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
   geom_point()
 ```
 
@@ -847,7 +847,7 @@ ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
 A lot of the data points are overlapping, so we have no sense of how weighted each point is. A better version of the plot would be one that uses the jitter parameter:
 
 ``` r
-ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
   geom_point(position = "jitter")
 ```
 
@@ -861,7 +861,7 @@ Based on ?geom\_jitter, the "width" and "height" parameters for geom\_jitter wil
 
 ``` r
 # geom jitter
-ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
   geom_jitter()
 ```
 
@@ -869,7 +869,7 @@ ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
 
 ``` r
 # geom count
-ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
   geom_count()
 ```
 
@@ -906,7 +906,7 @@ Sometimes we want to swap the axes, for various reasons (one being that the x-la
 
 ``` r
 # vertical boxplots
-ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) +
   geom_boxplot()
 ```
 
@@ -914,7 +914,7 @@ ggplot(data = mpg, mapping = aes(x = class, y = hwy)) +
 
 ``` r
 # horizontal boxplots
-ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) +
   geom_boxplot() +
   coord_flip()
 ```
@@ -924,12 +924,12 @@ ggplot(data = mpg, mapping = aes(x = class, y = hwy)) +
 We also might want to change bar plots into pie charts:
 
 ``` r
-bar <- ggplot(data = diamonds) + 
+bar <- ggplot(data = diamonds) +
   geom_bar(
-    mapping = aes(x = cut, fill = cut), 
+    mapping = aes(x = cut, fill = cut),
     show.legend = FALSE,
     width = 1
-  ) + 
+  ) +
   theme(aspect.ratio = 1) +
   labs(x = NULL, y = NULL)
 
@@ -945,7 +945,7 @@ bar + coord_polar()
 ![](r4ds_chapters1-3_walkthrough_files/figure-markdown_github/bar_into_pie-2.png)
 
 ``` r
-# 
+#
 ```
 
 3.9.1 Exercises
@@ -957,13 +957,13 @@ The previous chart is a coxcomb plot, not what you would usually expect to see w
 
 ``` r
 # make a stacked bar chart with one bar
-bar <- ggplot(data = diamonds) + 
+bar <- ggplot(data = diamonds) +
   geom_bar(
     mapping = aes(x = factor(1), fill = cut), # factor(1) can be "" or anything not specifying a variable in the dataset.
     width = 1 #, -> if you want a transparent pie chart, uncomment these!
-    # position = 'identity', 
+    # position = 'identity',
     # alpha = .2
-  ) + 
+  ) +
   theme(aspect.ratio = 1) +
   labs(x = NULL, y = NULL)
 
@@ -987,7 +987,7 @@ The plot below tells us that there is a positive correlation between city and hi
 ``` r
 # provided example
 ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
-  geom_point() + 
+  geom_point() +
   geom_abline() +
   coord_fixed()
 ```
@@ -997,7 +997,7 @@ ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
 ``` r
 # modified the abline to plot a simple linear regression ontop of the points.
 ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
-  geom_point() + 
+  geom_point() +
   geom_abline(intercept = lm(hwy ~ cty, data = mpg)$coeff[1], slope = lm(hwy ~ cty, data = mpg)$coeff[2]) +
   coord_fixed()
 ```
@@ -1007,7 +1007,7 @@ ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
 ``` r
 # used geom_smooth instead of geom_abline to get the same result
 ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
-  geom_point() + 
+  geom_point() +
   geom_smooth (method = 'lm', se = F)+
   coord_fixed()
 ```
@@ -1016,4 +1016,4 @@ ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
 
 ------------------------------------------------------------------------
 
-This concludes my walkthrough of chapters 1-3 of *R for Data Science*! Thanks for reading! A walkthrough of chapters 4 - 6 can be found at [r4ds\_chapters4-6\_walkthrough.md](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_chapters4-6_walkthrough.md).
+This concludes my walkthrough of chapters 1-3 of *R for Data Science*! Thanks for reading! A walkthrough of chapters 4 - 6 can be found at [r4ds\_p2\_chapters4-6\_walkthrough.md](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_p2_chapters4-6_walkthrough.md).
