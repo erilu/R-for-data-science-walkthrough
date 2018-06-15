@@ -1462,7 +1462,7 @@ avg_delay_byDest %>%
 
 
 
-## Filtering Joins
+## 13.5 Filtering Joins
 
 There are two types of filtering joins that can be performed, listed by the book:
 
@@ -1625,7 +1625,7 @@ flights %>%
   filter(nn>1)
 ```
 
-## Join problems and set operations
+## 13.6 & 13.7 Join problems and set operations
 
 The book recommends the following process for setting up your data to perform join operations.
 

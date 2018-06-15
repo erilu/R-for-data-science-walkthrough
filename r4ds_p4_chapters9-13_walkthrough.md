@@ -3721,7 +3721,7 @@ avg_delay_byDest %>%
 
 ![](r4ds_p4_chapters9-13_walkthrough_files/figure-markdown_github/june_13_2013_map-2.png)
 
-Filtering Joins
+13.5 Filtering Joins
 ---------------
 
 There are two types of filtering joins that can be performed, listed by the book:
@@ -4147,7 +4147,7 @@ flights %>%
     ## 17 N990AT      2
     ## 18 N994AT      2
 
-Join problems and set operations
+13.6 & 13.7 Join problems and set operations
 --------------------------------
 
 The book recommends the following process for setting up your data to perform join operations.
