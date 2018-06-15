@@ -106,7 +106,7 @@ tb
 
     ## # A tibble: 1 x 3
     ##   `:)`  ` `   `2000`
-    ##   <chr> <chr> <chr> 
+    ##   <chr> <chr> <chr>
     ## 1 smile space number
 
 When compared to a data.frame in baseR, the tibble looks more user-friendly. Calling a tibble automatically provides only the beginning chunk of the data rather than filling up your entire console (think if it as default head(data.frame) display). Other nice features include not converting strings to factors or changing variable names.
@@ -243,16 +243,16 @@ diamonds[,var]
     ## # A tibble: 53,940 x 1
     ##    carat
     ##    <dbl>
-    ##  1 0.23 
-    ##  2 0.21 
-    ##  3 0.23 
+    ##  1 0.23
+    ##  2 0.21
+    ##  3 0.23
     ##  4 0.290
-    ##  5 0.31 
-    ##  6 0.24 
-    ##  7 0.24 
-    ##  8 0.26 
-    ##  9 0.22 
-    ## 10 0.23 
+    ##  5 0.31
+    ##  6 0.24
+    ##  7 0.24
+    ##  8 0.26
+    ##  9 0.22
+    ## 10 0.23
     ## # ... with 53,930 more rows
 
 ``` r
@@ -388,13 +388,13 @@ enframe(x)
     ## # A tibble: 100 x 2
     ##    name   value
     ##    <chr>  <dbl>
-    ##  1 5      1.64 
+    ##  1 5      1.64
     ##  2 6      0.424
-    ##  3 7     -1.06 
+    ##  3 7     -1.06
     ##  4 8      0.210
     ##  5 9     -0.888
-    ##  6 10    -1.43 
-    ##  7 11    -1.90 
+    ##  6 10    -1.43
+    ##  7 11    -1.90
     ##  8 12     0.747
     ##  9 13     0.604
     ## 10 14    -0.469
@@ -775,7 +775,7 @@ x
     ## attr(,"problems")
     ## # A tibble: 2 x 4
     ##     row   col expected               actual
-    ##   <int> <int> <chr>                  <chr> 
+    ##   <int> <int> <chr>                  <chr>
     ## 1     3    NA an integer             abc   
     ## 2     4    NA no trailing characters .45
 
@@ -785,7 +785,7 @@ problems(x)
 
     ## # A tibble: 2 x 4
     ##     row   col expected               actual
-    ##   <int> <int> <chr>                  <chr> 
+    ##   <int> <int> <chr>                  <chr>
     ## 1     3    NA an integer             abc   
     ## 2     4    NA no trailing characters .45
 
@@ -1284,16 +1284,16 @@ challenge2
     ## # A tibble: 2,000 x 2
     ##    x     y    
     ##    <chr> <chr>
-    ##  1 404   <NA> 
-    ##  2 4172  <NA> 
-    ##  3 3004  <NA> 
-    ##  4 787   <NA> 
-    ##  5 37    <NA> 
-    ##  6 2332  <NA> 
-    ##  7 2489  <NA> 
-    ##  8 1449  <NA> 
-    ##  9 3665  <NA> 
-    ## 10 3863  <NA> 
+    ##  1 404   <NA>
+    ##  2 4172  <NA>
+    ##  3 3004  <NA>
+    ##  4 787   <NA>
+    ##  5 37    <NA>
+    ##  6 2332  <NA>
+    ##  7 2489  <NA>
+    ##  8 1449  <NA>
+    ##  9 3665  <NA>
+    ## 10 3863  <NA>
     ## # ... with 1,990 more rows
 
 ``` r
@@ -1495,10 +1495,10 @@ table2 %>%
     ##   country      year  cases population  rate
     ##   <chr>       <int>  <int>      <int> <dbl>
     ## 1 Afghanistan  1999    745   19987071 0.373
-    ## 2 Afghanistan  2000   2666   20595360 1.29 
-    ## 3 Brazil       1999  37737  172006362 2.19 
-    ## 4 Brazil       2000  80488  174504898 4.61 
-    ## 5 China        1999 212258 1272915272 1.67 
+    ## 2 Afghanistan  2000   2666   20595360 1.29
+    ## 3 Brazil       1999  37737  172006362 2.19
+    ## 4 Brazil       2000  80488  174504898 4.61
+    ## 5 China        1999 212258 1272915272 1.67
     ## 6 China        2000 213766 1280428583 1.67
 
 ``` r
@@ -1780,8 +1780,8 @@ table3 %>%
     ## * <chr>       <int> <chr>  <chr>     
     ## 1 Afghanistan  1999 745    19987071  
     ## 2 Afghanistan  2000 2666   20595360  
-    ## 3 Brazil       1999 37737  172006362 
-    ## 4 Brazil       2000 80488  174504898 
+    ## 3 Brazil       1999 37737  172006362
+    ## 4 Brazil       2000 80488  174504898
     ## 5 China        1999 212258 1272915272
     ## 6 China        2000 213766 1280428583
 
@@ -1881,7 +1881,7 @@ tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
     ##   one   two   three
     ##   <chr> <chr> <chr>
     ## 1 a     b     c    
-    ## 2 d     e     <NA> 
+    ## 2 d     e     <NA>
     ## 3 f     g     i
 
 In the examples above, the tibbles created are 1 column, 3 rows, with strings as observations. Within each string, commas separate the letters. The separate(x, c("one", "two", "three")) will try to split each string using the comma into three columns. However, in the first tibble, there is a row with four values separated by commas (an extra value). This is where the `extra` argument comes into play.
@@ -1933,7 +1933,7 @@ tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
     ##   one   two   three
     ##   <chr> <chr> <chr>
     ## 1 a     b     c    
-    ## 2 d     e     <NA> 
+    ## 2 d     e     <NA>
     ## 3 f     g     i
 
 ``` r
@@ -1983,12 +1983,12 @@ table3 %>%
     ## 4, 5, 6].
 
     ## # A tibble: 6 x 3
-    ##   country      year cases 
-    ## * <chr>       <int> <chr> 
+    ##   country      year cases
+    ## * <chr>       <int> <chr>
     ## 1 Afghanistan  1999 745   
     ## 2 Afghanistan  2000 2666  
-    ## 3 Brazil       1999 37737 
-    ## 4 Brazil       2000 80488 
+    ## 3 Brazil       1999 37737
+    ## 4 Brazil       2000 80488
     ## 5 China        1999 212258
     ## 6 China        2000 213766
 
@@ -1999,12 +1999,12 @@ table3 %>%
 ```
 
     ## # A tibble: 6 x 3
-    ##   country      year cases 
-    ## * <chr>       <int> <chr> 
+    ##   country      year cases
+    ## * <chr>       <int> <chr>
     ## 1 Afghanistan  1999 745   
     ## 2 Afghanistan  2000 2666  
-    ## 3 Brazil       1999 37737 
-    ## 4 Brazil       2000 80488 
+    ## 3 Brazil       1999 37737
+    ## 4 Brazil       2000 80488
     ## 5 China        1999 212258
     ## 6 China        2000 213766
 
@@ -2154,7 +2154,7 @@ stocks %>%
 ```
 
     ## # A tibble: 4 x 3
-    ##     qtr `2015`  `2016` 
+    ##     qtr `2015`  `2016`
     ##   <dbl> <chr>   <chr>  
     ## 1     1 1.88    MISSING
     ## 2     2 0.59    0.92   
@@ -2171,7 +2171,7 @@ stocks %>%
     ## first element will be used
 
     ## # A tibble: 4 x 3
-    ##     qtr `2015`  `2016` 
+    ##     qtr `2015`  `2016`
     ##   <dbl> <chr>   <chr>  
     ## 1     1 1.88    NO_2016
     ## 2     2 0.59    0.92   
@@ -2633,7 +2633,7 @@ planes
 
     ## # A tibble: 3,322 x 9
     ##    tailnum  year type      manufacturer  model  engines seats speed engine
-    ##    <chr>   <int> <chr>     <chr>         <chr>    <int> <int> <int> <chr> 
+    ##    <chr>   <int> <chr>     <chr>         <chr>    <int> <int> <int> <chr>
     ##  1 N10156   2004 Fixed wi… EMBRAER       EMB-1…       2    55    NA Turbo…
     ##  2 N102UW   1998 Fixed wi… AIRBUS INDUS… A320-…       2   182    NA Turbo…
     ##  3 N103US   1999 Fixed wi… AIRBUS INDUS… A320-…       2   182    NA Turbo…
@@ -2654,16 +2654,16 @@ weather
     ## # A tibble: 26,130 x 15
     ##    origin  year month   day  hour  temp  dewp humid wind_dir wind_speed
     ##    <chr>  <dbl> <dbl> <int> <int> <dbl> <dbl> <dbl>    <dbl>      <dbl>
-    ##  1 EWR     2013     1     1     0  37.0  21.9  54.0      230      10.4 
-    ##  2 EWR     2013     1     1     1  37.0  21.9  54.0      230      13.8 
-    ##  3 EWR     2013     1     1     2  37.9  21.9  52.1      230      12.7 
-    ##  4 EWR     2013     1     1     3  37.9  23    54.5      230      13.8 
-    ##  5 EWR     2013     1     1     4  37.9  24.1  57.0      240      15.0 
-    ##  6 EWR     2013     1     1     6  39.0  26.1  59.4      270      10.4 
+    ##  1 EWR     2013     1     1     0  37.0  21.9  54.0      230      10.4
+    ##  2 EWR     2013     1     1     1  37.0  21.9  54.0      230      13.8
+    ##  3 EWR     2013     1     1     2  37.9  21.9  52.1      230      12.7
+    ##  4 EWR     2013     1     1     3  37.9  23    54.5      230      13.8
+    ##  5 EWR     2013     1     1     4  37.9  24.1  57.0      240      15.0
+    ##  6 EWR     2013     1     1     6  39.0  26.1  59.4      270      10.4
     ##  7 EWR     2013     1     1     7  39.0  27.0  61.6      250       8.06
-    ##  8 EWR     2013     1     1     8  39.0  28.0  64.4      240      11.5 
-    ##  9 EWR     2013     1     1     9  39.9  28.0  62.2      250      12.7 
-    ## 10 EWR     2013     1     1    10  39.0  28.0  64.4      260      12.7 
+    ##  8 EWR     2013     1     1     8  39.0  28.0  64.4      240      11.5
+    ##  9 EWR     2013     1     1     9  39.9  28.0  62.2      250      12.7
+    ## 10 EWR     2013     1     1    10  39.0  28.0  64.4      260      12.7
     ## # ... with 26,120 more rows, and 5 more variables: wind_gust <dbl>,
     ## #   precip <dbl>, pressure <dbl>, visib <dbl>, time_hour <dttm>
 
@@ -2718,16 +2718,16 @@ weather_airports
     ## # A tibble: 26,130 x 22
     ##    origin  year month   day  hour  temp  dewp humid wind_dir wind_speed
     ##    <chr>  <dbl> <dbl> <int> <int> <dbl> <dbl> <dbl>    <dbl>      <dbl>
-    ##  1 EWR     2013     1     1     0  37.0  21.9  54.0      230      10.4 
-    ##  2 EWR     2013     1     1     1  37.0  21.9  54.0      230      13.8 
-    ##  3 EWR     2013     1     1     2  37.9  21.9  52.1      230      12.7 
-    ##  4 EWR     2013     1     1     3  37.9  23    54.5      230      13.8 
-    ##  5 EWR     2013     1     1     4  37.9  24.1  57.0      240      15.0 
-    ##  6 EWR     2013     1     1     6  39.0  26.1  59.4      270      10.4 
+    ##  1 EWR     2013     1     1     0  37.0  21.9  54.0      230      10.4
+    ##  2 EWR     2013     1     1     1  37.0  21.9  54.0      230      13.8
+    ##  3 EWR     2013     1     1     2  37.9  21.9  52.1      230      12.7
+    ##  4 EWR     2013     1     1     3  37.9  23    54.5      230      13.8
+    ##  5 EWR     2013     1     1     4  37.9  24.1  57.0      240      15.0
+    ##  6 EWR     2013     1     1     6  39.0  26.1  59.4      270      10.4
     ##  7 EWR     2013     1     1     7  39.0  27.0  61.6      250       8.06
-    ##  8 EWR     2013     1     1     8  39.0  28.0  64.4      240      11.5 
-    ##  9 EWR     2013     1     1     9  39.9  28.0  62.2      250      12.7 
-    ## 10 EWR     2013     1     1    10  39.0  28.0  64.4      260      12.7 
+    ##  8 EWR     2013     1     1     8  39.0  28.0  64.4      240      11.5
+    ##  9 EWR     2013     1     1     9  39.9  28.0  62.2      250      12.7
+    ## 10 EWR     2013     1     1    10  39.0  28.0  64.4      260      12.7
     ## # ... with 26,120 more rows, and 12 more variables: wind_gust <dbl>,
     ## #   precip <dbl>, pressure <dbl>, visib <dbl>, time_hour <dttm>,
     ## #   name <chr>, lat <dbl>, lon <dbl>, alt <int>, tz <dbl>, dst <chr>,
@@ -2757,16 +2757,16 @@ left_join(flights, special) %>%
     ## # A tibble: 336,776 x 5
     ##     year month   day flight event
     ##    <int> <dbl> <dbl>  <int> <lgl>
-    ##  1  2013     1     1   1545 TRUE 
-    ##  2  2013     1     1   1714 TRUE 
-    ##  3  2013     1     1   1141 TRUE 
-    ##  4  2013     1     1    725 TRUE 
-    ##  5  2013     1     1    461 TRUE 
-    ##  6  2013     1     1   1696 TRUE 
-    ##  7  2013     1     1    507 TRUE 
-    ##  8  2013     1     1   5708 TRUE 
-    ##  9  2013     1     1     79 TRUE 
-    ## 10  2013     1     1    301 TRUE 
+    ##  1  2013     1     1   1545 TRUE
+    ##  2  2013     1     1   1714 TRUE
+    ##  3  2013     1     1   1141 TRUE
+    ##  4  2013     1     1    725 TRUE
+    ##  5  2013     1     1    461 TRUE
+    ##  6  2013     1     1   1696 TRUE
+    ##  7  2013     1     1    507 TRUE
+    ##  8  2013     1     1   5708 TRUE
+    ##  9  2013     1     1     79 TRUE
+    ## 10  2013     1     1    301 TRUE
     ## # ... with 336,766 more rows
 
 13.3 Keys
@@ -3080,7 +3080,7 @@ as_tibble(Master)
     ##  3 aaronto01      1939          8        5 USA          AL        
     ##  4 aasedo01       1954          9        8 USA          CA        
     ##  5 abadan01       1972          8       25 USA          FL        
-    ##  6 abadfe01       1985         12       17 D.R.         La Romana 
+    ##  6 abadfe01       1985         12       17 D.R.         La Romana
     ##  7 abadijo01      1850         11        4 USA          PA        
     ##  8 abbated01      1877          4       15 USA          PA        
     ##  9 abbeybe01      1869         11       11 USA          VT        
@@ -3369,11 +3369,11 @@ airports %>%
     coord_quickmap()
 ```
 
-    ## 
+    ##
     ## Attaching package: 'maps'
 
     ## The following object is masked from 'package:purrr':
-    ## 
+    ##
     ##     map
 
 ![](r4ds_p4_chapters9-13_walkthrough_files/figure-markdown_github/map_of_US-1.png)
@@ -3491,8 +3491,8 @@ avg_delay_plane
     ## # A tibble: 4,044 x 11
     ##    tailnum avg_delay_dep avg_delay_arr  year type      manufacturer  model
     ##    <chr>           <dbl>         <dbl> <int> <chr>     <chr>         <chr>
-    ##  1 D942DN         31.5          31.5      NA <NA>      <NA>          <NA> 
-    ##  2 N0EGMQ          8.49          9.98     NA <NA>      <NA>          <NA> 
+    ##  1 D942DN         31.5          31.5      NA <NA>      <NA>          <NA>
+    ##  2 N0EGMQ          8.49          9.98     NA <NA>      <NA>          <NA>
     ##  3 N10156         17.8          12.7    2004 Fixed wi… EMBRAER       EMB-…
     ##  4 N102UW          8             2.94   1998 Fixed wi… AIRBUS INDUS… A320…
     ##  5 N103US         -3.20         -6.93   1999 Fixed wi… AIRBUS INDUS… A320…
@@ -4217,4 +4217,4 @@ setdiff(df2, df1)
 
 ------------------------------------------------------------------------
 
-Thanks for reading! I hope you found my solutions to the exercises informative. A walkthrough of chapters 14 - 16 can be found at [r4ds\_p5\_chapters14-16\_walkthrough.md](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_chapters14-16_walkthrough.md).
+Thanks for reading! I hope you found my solutions to the exercises informative. A walkthrough of chapters 14 - 16 can be found at [r4ds\_p5\_chapters14-16\_walkthrough.md](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_p5_chapters14-16_walkthrough.md).
