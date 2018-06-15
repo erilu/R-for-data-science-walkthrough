@@ -106,7 +106,7 @@ tb
 
     ## # A tibble: 1 x 3
     ##   `:)`  ` `   `2000`
-    ##   <chr> <chr> <chr>
+    ##   <chr> <chr> <chr> 
     ## 1 smile space number
 
 When compared to a data.frame in baseR, the tibble looks more user-friendly. Calling a tibble automatically provides only the beginning chunk of the data rather than filling up your entire console (think if it as default head(data.frame) display). Other nice features include not converting strings to factors or changing variable names.
@@ -142,19 +142,19 @@ df <- tibble(
 df$x
 ```
 
-    ## [1] 0.7443005 0.6885614 0.8900624 0.2157728 0.1647140
+    ## [1] 0.73636469 0.01561075 0.03938153 0.81427482 0.12377345
 
 ``` r
 df[["x"]]
 ```
 
-    ## [1] 0.7443005 0.6885614 0.8900624 0.2157728 0.1647140
+    ## [1] 0.73636469 0.01561075 0.03938153 0.81427482 0.12377345
 
 ``` r
 df[[1]]
 ```
 
-    ## [1] 0.7443005 0.6885614 0.8900624 0.2157728 0.1647140
+    ## [1] 0.73636469 0.01561075 0.03938153 0.81427482 0.12377345
 
 10.5 Exercises
 --------------
@@ -243,16 +243,16 @@ diamonds[,var]
     ## # A tibble: 53,940 x 1
     ##    carat
     ##    <dbl>
-    ##  1 0.23
-    ##  2 0.21
-    ##  3 0.23
+    ##  1 0.23 
+    ##  2 0.21 
+    ##  3 0.23 
     ##  4 0.290
-    ##  5 0.31
-    ##  6 0.24
-    ##  7 0.24
-    ##  8 0.26
-    ##  9 0.22
-    ## 10 0.23
+    ##  5 0.31 
+    ##  6 0.24 
+    ##  7 0.24 
+    ##  8 0.26 
+    ##  9 0.22 
+    ## 10 0.23 
     ## # ... with 53,930 more rows
 
 ``` r
@@ -330,7 +330,7 @@ ggplot(annoying, aes(`1`,`2`))+
   geom_point()
 ```
 
-![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/scatterplot_1v2-1.png)
+![](r4ds_p4_chapters9-13_walkthrough_files/figure-markdown_github/scatterplot_1v2-1.png)
 
 -   Creating a new column called 3 which is 2 divided by 1.
 
@@ -340,18 +340,18 @@ annoying %>%
 ```
 
     ## # A tibble: 10 x 3
-    ##      `1`    `2`   `3`
-    ##    <int>  <dbl> <dbl>
-    ##  1     1  0.989 0.989
-    ##  2     2  5.20  2.60
-    ##  3     3  5.62  1.87
-    ##  4     4  9.12  2.28
-    ##  5     5 11.7   2.34
-    ##  6     6 11.7   1.95
-    ##  7     7 13.8   1.97
-    ##  8     8 15.1   1.89
-    ##  9     9 19.4   2.16
-    ## 10    10 21.0   2.10
+    ##      `1`   `2`   `3`
+    ##    <int> <dbl> <dbl>
+    ##  1     1  1.66  1.66
+    ##  2     2  4.22  2.11
+    ##  3     3  7.53  2.51
+    ##  4     4  7.03  1.76
+    ##  5     5 10.4   2.09
+    ##  6     6 11.3   1.88
+    ##  7     7 12.8   1.82
+    ##  8     8 15.2   1.90
+    ##  9     9 18.2   2.03
+    ## 10    10 18.3   1.83
 
 -   Renaming the columns to one, two and three.
 
@@ -362,18 +362,18 @@ annoying %>%
 ```
 
     ## # A tibble: 10 x 3
-    ##      one    two three
-    ##    <int>  <dbl> <dbl>
-    ##  1     1  0.989 0.989
-    ##  2     2  5.20  2.60
-    ##  3     3  5.62  1.87
-    ##  4     4  9.12  2.28
-    ##  5     5 11.7   2.34
-    ##  6     6 11.7   1.95
-    ##  7     7 13.8   1.97
-    ##  8     8 15.1   1.89
-    ##  9     9 19.4   2.16
-    ## 10    10 21.0   2.10
+    ##      one   two three
+    ##    <int> <dbl> <dbl>
+    ##  1     1  1.66  1.66
+    ##  2     2  4.22  2.11
+    ##  3     3  7.53  2.51
+    ##  4     4  7.03  1.76
+    ##  5     5 10.4   2.09
+    ##  6     6 11.3   1.88
+    ##  7     7 12.8   1.82
+    ##  8     8 15.2   1.90
+    ##  9     9 18.2   2.03
+    ## 10    10 18.3   1.83
 
 ### 5. What does tibble::enframe() do? When might you use it?
 
@@ -386,18 +386,18 @@ enframe(x)
 ```
 
     ## # A tibble: 100 x 2
-    ##    name    value
-    ##    <chr>   <dbl>
-    ##  1 5      1.91  
-    ##  2 6      0.868
-    ##  3 7      0.438
-    ##  4 8      2.03  
-    ##  5 9      0.0487
-    ##  6 10     0.971
-    ##  7 11     0.692
-    ##  8 12     2.79  
-    ##  9 13    -1.91  
-    ## 10 14     0.481
+    ##    name   value
+    ##    <chr>  <dbl>
+    ##  1 5      1.64 
+    ##  2 6      0.424
+    ##  3 7     -1.06 
+    ##  4 8      0.210
+    ##  5 9     -0.888
+    ##  6 10    -1.43 
+    ##  7 11    -1.90 
+    ##  8 12     0.747
+    ##  9 13     0.604
+    ## 10 14    -0.469
     ## # ... with 90 more rows
 
 ``` r
@@ -775,7 +775,7 @@ x
     ## attr(,"problems")
     ## # A tibble: 2 x 4
     ##     row   col expected               actual
-    ##   <int> <int> <chr>                  <chr>
+    ##   <int> <int> <chr>                  <chr> 
     ## 1     3    NA an integer             abc   
     ## 2     4    NA no trailing characters .45
 
@@ -785,7 +785,7 @@ problems(x)
 
     ## # A tibble: 2 x 4
     ##     row   col expected               actual
-    ##   <int> <int> <chr>                  <chr>
+    ##   <int> <int> <chr>                  <chr> 
     ## 1     3    NA an integer             abc   
     ## 2     4    NA no trailing characters .45
 
@@ -1284,16 +1284,16 @@ challenge2
     ## # A tibble: 2,000 x 2
     ##    x     y    
     ##    <chr> <chr>
-    ##  1 404   <NA>
-    ##  2 4172  <NA>
-    ##  3 3004  <NA>
-    ##  4 787   <NA>
-    ##  5 37    <NA>
-    ##  6 2332  <NA>
-    ##  7 2489  <NA>
-    ##  8 1449  <NA>
-    ##  9 3665  <NA>
-    ## 10 3863  <NA>
+    ##  1 404   <NA> 
+    ##  2 4172  <NA> 
+    ##  3 3004  <NA> 
+    ##  4 787   <NA> 
+    ##  5 37    <NA> 
+    ##  6 2332  <NA> 
+    ##  7 2489  <NA> 
+    ##  8 1449  <NA> 
+    ##  9 3665  <NA> 
+    ## 10 3863  <NA> 
     ## # ... with 1,990 more rows
 
 ``` r
@@ -1495,10 +1495,10 @@ table2 %>%
     ##   country      year  cases population  rate
     ##   <chr>       <int>  <int>      <int> <dbl>
     ## 1 Afghanistan  1999    745   19987071 0.373
-    ## 2 Afghanistan  2000   2666   20595360 1.29
-    ## 3 Brazil       1999  37737  172006362 2.19
-    ## 4 Brazil       2000  80488  174504898 4.61
-    ## 5 China        1999 212258 1272915272 1.67
+    ## 2 Afghanistan  2000   2666   20595360 1.29 
+    ## 3 Brazil       1999  37737  172006362 2.19 
+    ## 4 Brazil       2000  80488  174504898 4.61 
+    ## 5 China        1999 212258 1272915272 1.67 
     ## 6 China        2000 213766 1280428583 1.67
 
 ``` r
@@ -1534,7 +1534,7 @@ table2 %>%
     geom_point(aes(colour = country))
 ```
 
-![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/table2_recreate_casesovertime-1.png)
+![](r4ds_p4_chapters9-13_walkthrough_files/figure-markdown_github/table2_recreate_casesovertime-1.png)
 
 12.3.1 Spreading and Gathering
 ------------------------------
@@ -1780,8 +1780,8 @@ table3 %>%
     ## * <chr>       <int> <chr>  <chr>     
     ## 1 Afghanistan  1999 745    19987071  
     ## 2 Afghanistan  2000 2666   20595360  
-    ## 3 Brazil       1999 37737  172006362
-    ## 4 Brazil       2000 80488  174504898
+    ## 3 Brazil       1999 37737  172006362 
+    ## 4 Brazil       2000 80488  174504898 
     ## 5 China        1999 212258 1272915272
     ## 6 China        2000 213766 1280428583
 
@@ -1881,7 +1881,7 @@ tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
     ##   one   two   three
     ##   <chr> <chr> <chr>
     ## 1 a     b     c    
-    ## 2 d     e     <NA>
+    ## 2 d     e     <NA> 
     ## 3 f     g     i
 
 In the examples above, the tibbles created are 1 column, 3 rows, with strings as observations. Within each string, commas separate the letters. The separate(x, c("one", "two", "three")) will try to split each string using the comma into three columns. However, in the first tibble, there is a row with four values separated by commas (an extra value). This is where the `extra` argument comes into play.
@@ -1933,7 +1933,7 @@ tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
     ##   one   two   three
     ##   <chr> <chr> <chr>
     ## 1 a     b     c    
-    ## 2 d     e     <NA>
+    ## 2 d     e     <NA> 
     ## 3 f     g     i
 
 ``` r
@@ -1983,12 +1983,12 @@ table3 %>%
     ## 4, 5, 6].
 
     ## # A tibble: 6 x 3
-    ##   country      year cases
-    ## * <chr>       <int> <chr>
+    ##   country      year cases 
+    ## * <chr>       <int> <chr> 
     ## 1 Afghanistan  1999 745   
     ## 2 Afghanistan  2000 2666  
-    ## 3 Brazil       1999 37737
-    ## 4 Brazil       2000 80488
+    ## 3 Brazil       1999 37737 
+    ## 4 Brazil       2000 80488 
     ## 5 China        1999 212258
     ## 6 China        2000 213766
 
@@ -1999,12 +1999,12 @@ table3 %>%
 ```
 
     ## # A tibble: 6 x 3
-    ##   country      year cases
-    ## * <chr>       <int> <chr>
+    ##   country      year cases 
+    ## * <chr>       <int> <chr> 
     ## 1 Afghanistan  1999 745   
     ## 2 Afghanistan  2000 2666  
-    ## 3 Brazil       1999 37737
-    ## 4 Brazil       2000 80488
+    ## 3 Brazil       1999 37737 
+    ## 4 Brazil       2000 80488 
     ## 5 China        1999 212258
     ## 6 China        2000 213766
 
@@ -2154,7 +2154,7 @@ stocks %>%
 ```
 
     ## # A tibble: 4 x 3
-    ##     qtr `2015`  `2016`
+    ##     qtr `2015`  `2016` 
     ##   <dbl> <chr>   <chr>  
     ## 1     1 1.88    MISSING
     ## 2     2 0.59    0.92   
@@ -2171,7 +2171,7 @@ stocks %>%
     ## first element will be used
 
     ## # A tibble: 4 x 3
-    ##     qtr `2015`  `2016`
+    ##     qtr `2015`  `2016` 
     ##   <dbl> <chr>   <chr>  
     ## 1     1 1.88    NO_2016
     ## 2     2 0.59    0.92   
@@ -2528,7 +2528,7 @@ total_TB %>%
   facet_wrap(~sex)
 ```
 
-![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/country_year_sex_TB_cases-1.png)
+![](r4ds_p4_chapters9-13_walkthrough_files/figure-markdown_github/country_year_sex_TB_cases-1.png)
 
 ``` r
 # remove values before 1995 and then plot the data
@@ -2540,7 +2540,7 @@ total_TB %>%
       facet_wrap(~sex)
 ```
 
-![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/country_year_sex_TB_cases-2.png)
+![](r4ds_p4_chapters9-13_walkthrough_files/figure-markdown_github/country_year_sex_TB_cases-2.png)
 
 Chapter 13 Relational Data
 ==========================
@@ -2633,7 +2633,7 @@ planes
 
     ## # A tibble: 3,322 x 9
     ##    tailnum  year type      manufacturer  model  engines seats speed engine
-    ##    <chr>   <int> <chr>     <chr>         <chr>    <int> <int> <int> <chr>
+    ##    <chr>   <int> <chr>     <chr>         <chr>    <int> <int> <int> <chr> 
     ##  1 N10156   2004 Fixed wi… EMBRAER       EMB-1…       2    55    NA Turbo…
     ##  2 N102UW   1998 Fixed wi… AIRBUS INDUS… A320-…       2   182    NA Turbo…
     ##  3 N103US   1999 Fixed wi… AIRBUS INDUS… A320-…       2   182    NA Turbo…
@@ -2654,16 +2654,16 @@ weather
     ## # A tibble: 26,130 x 15
     ##    origin  year month   day  hour  temp  dewp humid wind_dir wind_speed
     ##    <chr>  <dbl> <dbl> <int> <int> <dbl> <dbl> <dbl>    <dbl>      <dbl>
-    ##  1 EWR     2013     1     1     0  37.0  21.9  54.0      230      10.4
-    ##  2 EWR     2013     1     1     1  37.0  21.9  54.0      230      13.8
-    ##  3 EWR     2013     1     1     2  37.9  21.9  52.1      230      12.7
-    ##  4 EWR     2013     1     1     3  37.9  23    54.5      230      13.8
-    ##  5 EWR     2013     1     1     4  37.9  24.1  57.0      240      15.0
-    ##  6 EWR     2013     1     1     6  39.0  26.1  59.4      270      10.4
+    ##  1 EWR     2013     1     1     0  37.0  21.9  54.0      230      10.4 
+    ##  2 EWR     2013     1     1     1  37.0  21.9  54.0      230      13.8 
+    ##  3 EWR     2013     1     1     2  37.9  21.9  52.1      230      12.7 
+    ##  4 EWR     2013     1     1     3  37.9  23    54.5      230      13.8 
+    ##  5 EWR     2013     1     1     4  37.9  24.1  57.0      240      15.0 
+    ##  6 EWR     2013     1     1     6  39.0  26.1  59.4      270      10.4 
     ##  7 EWR     2013     1     1     7  39.0  27.0  61.6      250       8.06
-    ##  8 EWR     2013     1     1     8  39.0  28.0  64.4      240      11.5
-    ##  9 EWR     2013     1     1     9  39.9  28.0  62.2      250      12.7
-    ## 10 EWR     2013     1     1    10  39.0  28.0  64.4      260      12.7
+    ##  8 EWR     2013     1     1     8  39.0  28.0  64.4      240      11.5 
+    ##  9 EWR     2013     1     1     9  39.9  28.0  62.2      250      12.7 
+    ## 10 EWR     2013     1     1    10  39.0  28.0  64.4      260      12.7 
     ## # ... with 26,120 more rows, and 5 more variables: wind_gust <dbl>,
     ## #   precip <dbl>, pressure <dbl>, visib <dbl>, time_hour <dttm>
 
@@ -2718,16 +2718,16 @@ weather_airports
     ## # A tibble: 26,130 x 22
     ##    origin  year month   day  hour  temp  dewp humid wind_dir wind_speed
     ##    <chr>  <dbl> <dbl> <int> <int> <dbl> <dbl> <dbl>    <dbl>      <dbl>
-    ##  1 EWR     2013     1     1     0  37.0  21.9  54.0      230      10.4
-    ##  2 EWR     2013     1     1     1  37.0  21.9  54.0      230      13.8
-    ##  3 EWR     2013     1     1     2  37.9  21.9  52.1      230      12.7
-    ##  4 EWR     2013     1     1     3  37.9  23    54.5      230      13.8
-    ##  5 EWR     2013     1     1     4  37.9  24.1  57.0      240      15.0
-    ##  6 EWR     2013     1     1     6  39.0  26.1  59.4      270      10.4
+    ##  1 EWR     2013     1     1     0  37.0  21.9  54.0      230      10.4 
+    ##  2 EWR     2013     1     1     1  37.0  21.9  54.0      230      13.8 
+    ##  3 EWR     2013     1     1     2  37.9  21.9  52.1      230      12.7 
+    ##  4 EWR     2013     1     1     3  37.9  23    54.5      230      13.8 
+    ##  5 EWR     2013     1     1     4  37.9  24.1  57.0      240      15.0 
+    ##  6 EWR     2013     1     1     6  39.0  26.1  59.4      270      10.4 
     ##  7 EWR     2013     1     1     7  39.0  27.0  61.6      250       8.06
-    ##  8 EWR     2013     1     1     8  39.0  28.0  64.4      240      11.5
-    ##  9 EWR     2013     1     1     9  39.9  28.0  62.2      250      12.7
-    ## 10 EWR     2013     1     1    10  39.0  28.0  64.4      260      12.7
+    ##  8 EWR     2013     1     1     8  39.0  28.0  64.4      240      11.5 
+    ##  9 EWR     2013     1     1     9  39.9  28.0  62.2      250      12.7 
+    ## 10 EWR     2013     1     1    10  39.0  28.0  64.4      260      12.7 
     ## # ... with 26,120 more rows, and 12 more variables: wind_gust <dbl>,
     ## #   precip <dbl>, pressure <dbl>, visib <dbl>, time_hour <dttm>,
     ## #   name <chr>, lat <dbl>, lon <dbl>, alt <int>, tz <dbl>, dst <chr>,
@@ -2757,16 +2757,16 @@ left_join(flights, special) %>%
     ## # A tibble: 336,776 x 5
     ##     year month   day flight event
     ##    <int> <dbl> <dbl>  <int> <lgl>
-    ##  1  2013     1     1   1545 TRUE
-    ##  2  2013     1     1   1714 TRUE
-    ##  3  2013     1     1   1141 TRUE
-    ##  4  2013     1     1    725 TRUE
-    ##  5  2013     1     1    461 TRUE
-    ##  6  2013     1     1   1696 TRUE
-    ##  7  2013     1     1    507 TRUE
-    ##  8  2013     1     1   5708 TRUE
-    ##  9  2013     1     1     79 TRUE
-    ## 10  2013     1     1    301 TRUE
+    ##  1  2013     1     1   1545 TRUE 
+    ##  2  2013     1     1   1714 TRUE 
+    ##  3  2013     1     1   1141 TRUE 
+    ##  4  2013     1     1    725 TRUE 
+    ##  5  2013     1     1    461 TRUE 
+    ##  6  2013     1     1   1696 TRUE 
+    ##  7  2013     1     1    507 TRUE 
+    ##  8  2013     1     1   5708 TRUE 
+    ##  9  2013     1     1     79 TRUE 
+    ## 10  2013     1     1    301 TRUE 
     ## # ... with 336,766 more rows
 
 13.3 Keys
@@ -3080,7 +3080,7 @@ as_tibble(Master)
     ##  3 aaronto01      1939          8        5 USA          AL        
     ##  4 aasedo01       1954          9        8 USA          CA        
     ##  5 abadan01       1972          8       25 USA          FL        
-    ##  6 abadfe01       1985         12       17 D.R.         La Romana
+    ##  6 abadfe01       1985         12       17 D.R.         La Romana 
     ##  7 abadijo01      1850         11        4 USA          PA        
     ##  8 abbated01      1877          4       15 USA          PA        
     ##  9 abbeybe01      1869         11       11 USA          VT        
@@ -3369,14 +3369,14 @@ airports %>%
     coord_quickmap()
 ```
 
-    ##
+    ## 
     ## Attaching package: 'maps'
 
     ## The following object is masked from 'package:purrr':
-    ##
+    ## 
     ##     map
 
-![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/map_of_US-1.png)
+![](r4ds_p4_chapters9-13_walkthrough_files/figure-markdown_github/map_of_US-1.png)
 
 (Don’t worry if you don’t understand what semi\_join() does — you’ll learn about it next.) You might want to use the size or colour of the points to display the average delay for each airport.
 
@@ -3417,7 +3417,7 @@ avg_delay_byDest %>%
 
     ## Warning: Removed 5 rows containing missing values (geom_point).
 
-![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/avg_delay_map_US-1.png)
+![](r4ds_p4_chapters9-13_walkthrough_files/figure-markdown_github/avg_delay_map_US-1.png)
 
 ### 2. Add the location of the origin and destination (i.e. the lat and lon) to flights.
 
@@ -3491,8 +3491,8 @@ avg_delay_plane
     ## # A tibble: 4,044 x 11
     ##    tailnum avg_delay_dep avg_delay_arr  year type      manufacturer  model
     ##    <chr>           <dbl>         <dbl> <int> <chr>     <chr>         <chr>
-    ##  1 D942DN         31.5          31.5      NA <NA>      <NA>          <NA>
-    ##  2 N0EGMQ          8.49          9.98     NA <NA>      <NA>          <NA>
+    ##  1 D942DN         31.5          31.5      NA <NA>      <NA>          <NA> 
+    ##  2 N0EGMQ          8.49          9.98     NA <NA>      <NA>          <NA> 
     ##  3 N10156         17.8          12.7    2004 Fixed wi… EMBRAER       EMB-…
     ##  4 N102UW          8             2.94   1998 Fixed wi… AIRBUS INDUS… A320…
     ##  5 N103US         -3.20         -6.93   1999 Fixed wi… AIRBUS INDUS… A320…
@@ -3518,7 +3518,7 @@ avg_delay_plane %>%
 
     ## Warning: Removed 798 rows containing missing values (geom_point).
 
-![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/age_plane_delay_corr-1.png)
+![](r4ds_p4_chapters9-13_walkthrough_files/figure-markdown_github/age_plane_delay_corr-1.png)
 
 ``` r
 # vizualize arr_delay vs year of plane
@@ -3534,7 +3534,7 @@ avg_delay_plane %>%
 
     ## Warning: Removed 798 rows containing missing values (geom_point).
 
-![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/age_plane_delay_corr-2.png)
+![](r4ds_p4_chapters9-13_walkthrough_files/figure-markdown_github/age_plane_delay_corr-2.png)
 
 ### 4. What weather conditions make it more likely to see a delay?
 
@@ -3607,7 +3607,7 @@ ggcorrplot(corr_weather, hc.order = TRUE,
            ggtheme=theme_bw)
 ```
 
-![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/weather_delay_corr-1.png)
+![](r4ds_p4_chapters9-13_walkthrough_files/figure-markdown_github/weather_delay_corr-1.png)
 
 ``` r
 weatherdelays %>%
@@ -3622,7 +3622,7 @@ weatherdelays %>%
 
     ## Warning: Removed 201649 rows containing missing values (geom_point).
 
-![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/weather_delay_corr-2.png)
+![](r4ds_p4_chapters9-13_walkthrough_files/figure-markdown_github/weather_delay_corr-2.png)
 
 ``` r
 weatherdelays %>%
@@ -3637,7 +3637,7 @@ weatherdelays %>%
 
     ## Warning: Removed 201649 rows containing missing values (geom_point).
 
-![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/weather_delay_corr-3.png)
+![](r4ds_p4_chapters9-13_walkthrough_files/figure-markdown_github/weather_delay_corr-3.png)
 
 ### 5. What happened on June 13 2013? Display the spatial pattern of delays, and then use Google to cross-reference with the weather.
 
@@ -3682,7 +3682,7 @@ avg_delay_byorigin %>%
     coord_quickmap()
 ```
 
-![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/june_13_2013_map-1.png)
+![](r4ds_p4_chapters9-13_walkthrough_files/figure-markdown_github/june_13_2013_map-1.png)
 
 ``` r
 avg_delay_byDest <- flights %>%
@@ -3719,7 +3719,7 @@ avg_delay_byDest %>%
 
     ## Warning: Removed 7 rows containing missing values (geom_point).
 
-![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/june_13_2013_map-2.png)
+![](r4ds_p4_chapters9-13_walkthrough_files/figure-markdown_github/june_13_2013_map-2.png)
 
 Filtering Joins
 ---------------
@@ -3906,7 +3906,7 @@ flights %>%
   geom_bar( stat = "identity", aes(fill = carrier))
 ```
 
-![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/missing_tailnum_planes-1.png)
+![](r4ds_p4_chapters9-13_walkthrough_files/figure-markdown_github/missing_tailnum_planes-1.png)
 
 ### 2. Filter flights to only show flights with planes that have flown at least 100 flights.
 
@@ -4014,7 +4014,7 @@ most_delayed_48 %>%
 
     ## Warning: Removed 859 rows containing missing values (geom_point).
 
-![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/worst_48hr_delays-1.png)
+![](r4ds_p4_chapters9-13_walkthrough_files/figure-markdown_github/worst_48hr_delays-1.png)
 
 ``` r
 most_delayed_48 %>%
@@ -4027,7 +4027,7 @@ most_delayed_48 %>%
 
     ## Warning: Removed 858 rows containing missing values (geom_point).
 
-![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/worst_48hr_delays-2.png)
+![](r4ds_p4_chapters9-13_walkthrough_files/figure-markdown_github/worst_48hr_delays-2.png)
 
 ``` r
 most_delayed_48 %>%
@@ -4040,7 +4040,7 @@ most_delayed_48 %>%
 
     ## Warning: Removed 3477 rows containing missing values (geom_point).
 
-![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/worst_48hr_delays-3.png)
+![](r4ds_p4_chapters9-13_walkthrough_files/figure-markdown_github/worst_48hr_delays-3.png)
 
 ``` r
 # plot a correlogram to observe how delay_48hr is associated with other weather variables
@@ -4060,7 +4060,7 @@ ggcorrplot(corr_weather, hc.order = TRUE,
            ggtheme=theme_bw)
 ```
 
-![](r4ds_chapters9-13_walkthrough_files/figure-markdown_github/worst_48hr_delays-4.png)
+![](r4ds_p4_chapters9-13_walkthrough_files/figure-markdown_github/worst_48hr_delays-4.png)
 
 ### 5. What does anti\_join(flights, airports, by = c("dest" = "faa")) tell you? What does anti\_join(airports, flights, by = c("faa" = "dest")) tell you?
 
@@ -4217,4 +4217,4 @@ setdiff(df2, df1)
 
 ------------------------------------------------------------------------
 
-Thanks for reading! I hope you found my solutions to the exercises informative. A walkthrough of chapters 14 - 16 can be found at [r4ds\_p5\_chapters14-16\_walkthrough.md](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_p5_chapters14-16_walkthrough.md).
+Thanks for reading! I hope you found my solutions to the exercises informative. A walkthrough of chapters 14 - 16 can be found at [r4ds\_p5\_chapters14-16\_walkthrough.md](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_chapters14-16_walkthrough.md).

@@ -50,11 +50,11 @@ ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut))
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/example_discrete_bins-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/example_discrete_bins-1.png)
 
 ``` r
 # manual version:
-diamonds %>%
+diamonds %>% 
   count(cut)
 ```
 
@@ -75,11 +75,11 @@ ggplot(data = diamonds) +
   geom_histogram(mapping = aes(x = carat), binwidth = 0.5)
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/example_continuous_bins-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/example_continuous_bins-1.png)
 
 ``` r
 # manual version:
-diamonds %>%
+diamonds %>% 
   count(cut_width(carat, 0.5))
 ```
 
@@ -102,14 +102,14 @@ You can change the size of the bins in a histogram by modifying binwidth:
 
 ``` r
 # filter dataset to only keep observations with carat < 3
-smaller <- diamonds %>%
+smaller <- diamonds %>% 
   filter(carat < 3)
 # plot histogram using smaller bin width
 ggplot(data = smaller, mapping = aes(x = carat)) +
   geom_histogram(binwidth = 0.1)
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/filtered_data_hist-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/filtered_data_hist-1.png)
 
 You can also overlay histogram-like data using geom\_freqpoly(). Here, the aesthetic mapping is further subgrouped by cut, using color. Each line shows up as a different color corresponding to the type of cut. We can see that the majority of ideal cuts have lower carats.
 
@@ -118,7 +118,7 @@ ggplot(data = smaller, mapping = aes(x = carat, colour = cut)) +
   geom_freqpoly(binwidth = 0.1)
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/geom_freqpoly_example-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/geom_freqpoly_example-1.png)
 
 Some of the common questions you can ask based on this type of data are:
 
@@ -130,11 +130,11 @@ If there are clusters visible in your data, such as in the dataset, faithful:
 
 ``` r
 # example of histogram with 2 clusters
-ggplot(data = faithful, mapping = aes(x = eruptions)) +
+ggplot(data = faithful, mapping = aes(x = eruptions)) + 
   geom_histogram(binwidth = 0.25)
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/example_faithful_cluster-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/example_faithful_cluster-1.png)
 
 You might want to ask the following questions about the clusters:
 
@@ -146,25 +146,25 @@ You might want to ask the following questions about the clusters:
 Sometimes histograms will reveal outliers or other unusual values. For example, why are the majority of values on the lefthand side of this plot?
 
 ``` r
-ggplot(diamonds) +
+ggplot(diamonds) + 
   geom_histogram(mapping = aes(x = y), binwidth = 0.5)
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/y_dist_diamonds-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/y_dist_diamonds-1.png)
 
 The histogram will plot all values, so if there are 1 or 2 values ith very high 'y' in a dataset with thousands of observations, these will still get plotted and not be immediately visible. A way to see them is to use coor\_cartesian(), as shown in the book.
 
 ``` r
-ggplot(diamonds) +
+ggplot(diamonds) + 
   geom_histogram(mapping = aes(x = y), binwidth = 0.5) +
   coord_cartesian(ylim = c(0, 50))
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/coord_cartesian_y-1.png) We can see now that there are some outlier values with very high 'y' values, which are the cause of the funny-looking histogram. You can pull out unusual values or outliers using dplyr commands (from chapter 4-6), to figure out why they are deviating from the rest of the data.
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/coord_cartesian_y-1.png) We can see now that there are some outlier values with very high 'y' values, which are the cause of the funny-looking histogram. You can pull out unusual values or outliers using dplyr commands (from chapter 4-6), to figure out why they are deviating from the rest of the data.
 
 ``` r
-unusual <- diamonds %>%
-  filter(y < 3 | y > 20) %>%
+unusual <- diamonds %>% 
+  filter(y < 3 | y > 20) %>% 
   select(price, x, y, z) %>%
   arrange(y)
 unusual
@@ -196,21 +196,21 @@ ggplot(diamonds, aes (x = x))+
   geom_histogram(binwidth = 0.2)
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/x_y_z_distribution-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/x_y_z_distribution-1.png)
 
 ``` r
 ggplot(diamonds, aes (x = y))+
   geom_histogram(binwidth = 0.2)
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/x_y_z_distribution-2.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/x_y_z_distribution-2.png)
 
 ``` r
 ggplot(diamonds, aes (x = z))+
   geom_histogram(binwidth = 0.2)
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/x_y_z_distribution-3.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/x_y_z_distribution-3.png)
 
 ``` r
 # or, reshape the data and plot a boxplot of the three variables side by side
@@ -218,11 +218,11 @@ ggplot(diamonds, aes (x = z))+
 library(reshape2)
 ```
 
-    ##
+    ## 
     ## Attaching package: 'reshape2'
 
     ## The following object is masked from 'package:tidyr':
-    ##
+    ## 
     ##     smiths
 
 ``` r
@@ -231,7 +231,7 @@ ggplot(x_y_z_melt)+
   geom_boxplot(aes(x = variable, y = value))
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/x_y_z_distribution-4.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/x_y_z_distribution-4.png)
 
 ``` r
 # get a numeric summary for all the columns in diamonds
@@ -261,7 +261,7 @@ summary(diamonds)
     ##  Mean   : 5.735   Mean   : 3.539  
     ##  3rd Qu.: 6.540   3rd Qu.: 4.040  
     ##  Max.   :58.900   Max.   :31.800  
-    ##
+    ## 
 
 ``` r
 # see how x correlates with y or z
@@ -270,7 +270,7 @@ ggplot (diamonds, aes(x = x, y = y)) +
   geom_smooth(method = 'lm', se = F)
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/x_y_z_distribution-5.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/x_y_z_distribution-5.png)
 
 ``` r
 ggplot (diamonds, aes(x = x, y = z)) +
@@ -278,7 +278,7 @@ ggplot (diamonds, aes(x = x, y = z)) +
   geom_smooth(method = 'lm', se = F)
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/x_y_z_distribution-6.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/x_y_z_distribution-6.png)
 
 ### 2. Explore the distribution of price. Do you discover anything unusual or surprising? (Hint: Carefully think about the binwidth and make sure you try a wide range of values.)
 
@@ -290,21 +290,21 @@ ggplot (diamonds, aes (x = price))+
   geom_histogram(binwidth = 10)
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/price_hist_dist-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/price_hist_dist-1.png)
 
 ``` r
 ggplot (diamonds, aes (x = price))+
   geom_histogram(binwidth = 50)
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/price_hist_dist-2.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/price_hist_dist-2.png)
 
 ``` r
 ggplot (diamonds, aes (x = price))+
   geom_histogram(binwidth = 500)
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/price_hist_dist-3.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/price_hist_dist-3.png)
 
 ``` r
 # zoom in on diamonds which are less than 2500 to examine the anomaly
@@ -312,7 +312,7 @@ ggplot(filter(diamonds, price < 2500), aes (x = price))+
   geom_histogram(binwidth = 5)
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/price_hist_dist-4.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/price_hist_dist-4.png)
 
 ### 3. How many diamonds are 0.99 carat? How many are 1 carat? What do you think is the cause of the difference?
 
@@ -337,27 +337,27 @@ When using ylim() to zoom in with the same parameters as coord\_cartesian, the v
 
 ``` r
 # coord_cartesian() to zoom (book provided example)
-ggplot(diamonds) +
+ggplot(diamonds) + 
   geom_histogram(mapping = aes(x = y), binwidth = 0.5) +
   coord_cartesian(ylim = c(0, 50))
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/coord_cartesian_vs_xylim-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/coord_cartesian_vs_xylim-1.png)
 
 ``` r
 # use  xlim() and ylim() to zoom
-ggplot(diamonds) +
+ggplot(diamonds) + 
   geom_histogram(mapping = aes(x = y), binwidth = 0.5)+
   ylim(0,50)
 ```
 
     ## Warning: Removed 11 rows containing missing values (geom_bar).
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/coord_cartesian_vs_xylim-2.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/coord_cartesian_vs_xylim-2.png)
 
 ``` r
 #Use xlim and ylim, leave binwidth unset
-ggplot(diamonds) +
+ggplot(diamonds) + 
   geom_histogram(mapping = aes(x = y))+
   ylim(0,10000)+
   xlim(0,10)
@@ -367,11 +367,11 @@ ggplot(diamonds) +
 
     ## Warning: Removed 5 rows containing non-finite values (stat_bin).
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/coord_cartesian_vs_xylim-3.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/coord_cartesian_vs_xylim-3.png)
 
 ``` r
 # leave binwidth unset, cut ylim off in the middle of a bar (it dissapears!)
-ggplot(diamonds) +
+ggplot(diamonds) + 
   geom_histogram(mapping = aes(x = y))+
   ylim(0,7500)+
   xlim(0,10)
@@ -383,7 +383,7 @@ ggplot(diamonds) +
 
     ## Warning: Removed 1 rows containing missing values (geom_bar).
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/coord_cartesian_vs_xylim-4.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/coord_cartesian_vs_xylim-4.png)
 
 7.4 Missing Values
 ------------------
@@ -392,17 +392,17 @@ If there are unusual values in your dataset, you can either filter them out usin
 
 ``` r
 # remove using filter()
-diamonds2 <- diamonds %>%
+diamonds2 <- diamonds %>% 
   filter(between(y, 3, 20))
 # replace with NA using mutate and ifelse()
-diamonds2 <- diamonds %>%
+diamonds2 <- diamonds %>% 
   mutate(y = ifelse(y < 3 | y > 20, NA, y))
 ```
 
 I find that ifelse() is particularly useful, since you can use it to replace only a subset of values in any column of choice. For example, if we wanted to raise the price of all diamonds with a currrent price over 2000 by 3000, we could say:
 
 ``` r
-(raise_price <- diamonds %>%
+(raise_price <- diamonds %>% 
   mutate(price = ifelse(price > 2000, price+3000, price)))
 ```
 
@@ -424,18 +424,18 @@ I find that ifelse() is particularly useful, since you can use it to replace onl
 Missing values may provide some insight into the data, even though they do not have values. For example, the presence of a missing value in a column such as dep\_time in the nycflights13 dataset suggests the flight was cancelled. You can then compare how the other attributes of a cancelled flight differ from a non-cancelled flight. The example provided by the book compares the distribution of sched\_dep\_time for cancelled vs non-cancelled flights:
 
 ``` r
-nycflights13::flights %>%
+nycflights13::flights %>% 
   mutate(
     cancelled = is.na(dep_time),
     sched_hour = sched_dep_time %/% 100,
     sched_min = sched_dep_time %% 100,
     sched_dep_time = sched_hour + sched_min / 60
-  ) %>%
-  ggplot(mapping = aes(sched_dep_time)) +
+  ) %>% 
+  ggplot(mapping = aes(sched_dep_time)) + 
     geom_freqpoly(mapping = aes(colour = cancelled), binwidth = 1/4)
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/example_canc_flight_freqpoly-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/example_canc_flight_freqpoly-1.png)
 
 7.4.1 Exercises
 ---------------
@@ -450,13 +450,13 @@ x <- data.frame(x = rnorm(100,5,3))
 head(x)
 ```
 
-    ##          x
-    ## 1 5.882593
-    ## 2 4.401981
-    ## 3 5.082233
-    ## 4 2.940216
-    ## 5 3.823540
-    ## 6 1.701539
+    ##            x
+    ## 1  0.9324145
+    ## 2 10.3333901
+    ## 3  9.3036595
+    ## 4  3.7702227
+    ## 5  2.8741061
+    ## 6  1.8365465
 
 ``` r
 ggplot(x, aes(x))+
@@ -465,7 +465,7 @@ ggplot(x, aes(x))+
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/introduce_NA_hist_bin-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/introduce_NA_hist_bin-1.png)
 
 ``` r
 # replace a chunk of values with NA and see what that does to the histogram.
@@ -473,13 +473,13 @@ add_na <- mutate(x, x = ifelse(x > 5 & x <8, NA, x))
 head(add_na)
 ```
 
-    ##          x
-    ## 1       NA
-    ## 2 4.401981
-    ## 3       NA
-    ## 4 2.940216
-    ## 5 3.823540
-    ## 6 1.701539
+    ##            x
+    ## 1  0.9324145
+    ## 2 10.3333901
+    ## 3  9.3036595
+    ## 4  3.7702227
+    ## 5  2.8741061
+    ## 6  1.8365465
 
 ``` r
 ggplot(add_na, aes(x))+
@@ -488,9 +488,9 @@ ggplot(add_na, aes(x))+
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-    ## Warning: Removed 20 rows containing non-finite values (stat_bin).
+    ## Warning: Removed 27 rows containing non-finite values (stat_bin).
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/introduce_NA_hist_bin-2.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/introduce_NA_hist_bin-2.png)
 
 ### 2. What does na.rm = TRUE do in mean() and sum()?
 
@@ -558,27 +558,27 @@ Covariation is how the values of two or more variables are related - in other wo
 Default for geom\_freqpoly() is to plot the individual groups by count, so if any one group has a lot of observations, it might mask effects in groups that have small numbers of observations. Below, since ideal cuts have the majority of counts, it looks overrepresented in the freqpoly() graph.
 
 ``` r
-ggplot(data = diamonds, mapping = aes(x = price)) +
+ggplot(data = diamonds, mapping = aes(x = price)) + 
   geom_freqpoly(mapping = aes(colour = cut), binwidth = 500)
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/freq_poly_bycount-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/freq_poly_bycount-1.png)
 
 ``` r
-ggplot(diamonds) +
+ggplot(diamonds) + 
   geom_bar(mapping = aes(x = cut))
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/freq_poly_bycount-2.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/freq_poly_bycount-2.png)
 
 To normalize all the counts and plot the distributions by density, use y= ..density..
 
 ``` r
-ggplot(data = diamonds, mapping = aes(x = price, y = ..density..)) +
+ggplot(data = diamonds, mapping = aes(x = price, y = ..density..)) + 
   geom_freqpoly(mapping = aes(colour = cut), binwidth = 500)
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/freqpoly_density-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/freqpoly_density-1.png)
 
 The book notes that there is something surprising about this plot. It shows that diamonds with an ideal cut cost on average lower than diamonds with a fair cut, which is initially counterintuitive. We would have expected that ideal cuts, because of their higher quality cut, cost more. What might be happening here is that there is a hidden 3rd variable that is related to cut and price. Perhaps ideal cuts are on average smaller in size, and prices of small diamonds tend to be small.
 
@@ -589,7 +589,7 @@ ggplot(data = diamonds, mapping = aes(x = cut, y = price)) +
   geom_boxplot()
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/price_cut_boxplot-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/price_cut_boxplot-1.png)
 
 We can see again that ideal diamonds have a lower median price than fair diamonds, as we learned from the individual freqpoly graphs.
 
@@ -600,7 +600,7 @@ ggplot(data = mpg, mapping = aes(x = class, y = hwy)) +
   geom_boxplot()
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/mtcars_boxplot_unordered-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/mtcars_boxplot_unordered-1.png)
 
 A useful way to reorganize the categorical variables on the x-axis is to use reorder(). I think organized graphs are great! We can order the x axis based on a statistic, in this case the median:
 
@@ -609,7 +609,7 @@ ggplot(data = mpg) +
   geom_boxplot(mapping = aes(x = reorder(class, hwy, FUN = median), y = hwy))
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/mtcars_boxplot_ordered-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/mtcars_boxplot_ordered-1.png)
 
 We learned this in chapter 3, but a way to flip the axes is to add a coord\_flip() function to your ggplot. This is useful when you have long axis labels. I prefer tilting the labels by 45 degrees by modifying the tilt using `theme(axis.text.x = element_text(angle = 45, hjust = 1))`.
 
@@ -619,7 +619,7 @@ ggplot(data = mpg) +
   coord_flip()
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/mtcars_boxplot_coordflip-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/mtcars_boxplot_coordflip-1.png)
 
 7.5.1.1 Exercises
 -----------------
@@ -629,18 +629,18 @@ ggplot(data = mpg) +
 The provided geom\_freqpoly() visualization for cancelled vs non-cancelled flights had the issue of there being many more non-cancelled flights than cancelled flights. To fix this, we will use y = ..density.. instead of the total count for the graph, so that we can better see the how the trends compare in each of the groups.
 
 ``` r
-nycflights13::flights %>%
+nycflights13::flights %>% 
   mutate(
     cancelled = is.na(dep_time),
     sched_hour = sched_dep_time %/% 100,
     sched_min = sched_dep_time %% 100,
     sched_dep_time = sched_hour + sched_min / 60
-  ) %>%
-  ggplot(mapping = aes(sched_dep_time, y = ..density..)) +
+  ) %>% 
+  ggplot(mapping = aes(sched_dep_time, y = ..density..)) + 
     geom_freqpoly(mapping = aes(colour = cancelled), binwidth = 1/4)
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/cancelled_flights_freqpoly_density-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/cancelled_flights_freqpoly_density-1.png)
 
 From the overlaid & normalized graphs, we observe that more cancellations occur for flights scheduled to depart between hours 15-22.
 
@@ -676,7 +676,7 @@ ggplot(diamonds, aes(x = reorder(cut, carat, FUN = median), y = carat))+
   geom_boxplot()
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/boxplot_carat_cut-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/boxplot_carat_cut-1.png)
 
 From this graph we see that ideal cuts have the lowest carat, whereas the fair cuts have the largest carat. By pairing this information with the positive correlation between carat and price, this suggests that ideal cuts on average cost less than fair cuts, because ideal cuts have, on average, lower carat. This explains what we saw in the geom\_freqpoly() plot earlier in the chapter, in which we were puzzled as to why ideal cuts had a lower median price than fair cuts. It is because the ideal cut diamonds were smaller on average!
 
@@ -690,11 +690,11 @@ I plotted the graph from part 2 using either coord\_flip() or geom\_boxploth() f
 library(ggstance)
 ```
 
-    ##
+    ## 
     ## Attaching package: 'ggstance'
 
     ## The following objects are masked from 'package:ggplot2':
-    ##
+    ## 
     ##     geom_errorbarh, GeomErrorbarh
 
 ``` r
@@ -704,7 +704,7 @@ ggplot(diamonds, aes(x = reorder(cut, carat, FUN = median), y = carat))+
   coord_flip()
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/boxplot_ggstance-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/boxplot_ggstance-1.png)
 
 ``` r
 # horizontal boxplot from question #2, using ggstance geom_boxploth()
@@ -712,7 +712,7 @@ ggplot(diamonds, aes(x = carat, y = reorder(cut, carat, FUN = median)))+
   geom_boxploth()
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/boxplot_ggstance-2.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/boxplot_ggstance-2.png)
 
 ### 4. One problem with boxplots is that they were developed in an era of much smaller datasets and tend to display a prohibitively large number of “outlying values”. One approach to remedy this problem is the letter value plot. Install the lvplot package, and try using geom\_lv() to display the distribution of price vs cut. What do you learn? How do you interpret the plots?
 
@@ -727,7 +727,7 @@ ggplot(diamonds, aes(x = cut, y = price))+
   geom_lv()
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/lvplot_cut_price-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/lvplot_cut_price-1.png)
 
 ### 5. Compare and contrast geom\_violin() with a facetted geom\_histogram(), or a coloured geom\_freqpoly(). What are the pros and cons of each method?
 
@@ -739,7 +739,7 @@ ggplot(diamonds, aes(cut, price))+
   geom_violin()
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/violin_facet_freqpoly-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/violin_facet_freqpoly-1.png)
 
 ``` r
 # geom_histogram + facet_wrap()
@@ -748,7 +748,7 @@ ggplot(diamonds)+
   facet_wrap(~ cut)
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/violin_facet_freqpoly-2.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/violin_facet_freqpoly-2.png)
 
 ``` r
 # geom_histogram + facet_wrap()
@@ -757,7 +757,7 @@ ggplot(diamonds)+
   facet_wrap(~ cut)
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/violin_facet_freqpoly-3.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/violin_facet_freqpoly-3.png)
 
 ``` r
 # geom_freqpoly()
@@ -765,7 +765,7 @@ ggplot(diamonds, aes(x = price, y = ..density.., color = cut))+
   geom_freqpoly(binwidth = 500)
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/violin_facet_freqpoly-4.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/violin_facet_freqpoly-4.png)
 
 ### 6. If you have a small dataset, it’s sometimes useful to use geom\_jitter() to see the relationship between a continuous and categorical variable. The ggbeeswarm package provides a number of methods similar to geom\_jitter(). List them and briefly describe what each one does.
 
@@ -779,16 +779,16 @@ The plots generated by geom\_jitter() are very similar to the stripchart() from 
     ## # A tibble: 1,000 x 10
     ##    carat cut       color clarity depth table price     x     y     z
     ##    <dbl> <ord>     <ord> <ord>   <dbl> <dbl> <int> <dbl> <dbl> <dbl>
-    ##  1  0.32 Ideal     D     VS2      62.2    55   758  4.37  4.41  2.73
-    ##  2  0.7  Ideal     E     SI1      61.9    55  2537  5.74  5.77  3.56
-    ##  3  0.53 Ideal     D     VS2      61.2    55  1956  5.25  5.21  3.2
-    ##  4  0.51 Premium   D     VVS2     62.4    59  2387  5.13  5.06  3.18
-    ##  5  0.7  Premium   D     SI2      59.3    59  2562  5.79  5.74  3.42
-    ##  6  0.3  Premium   D     SI2      60.9    58   574  4.32  4.29  2.62
-    ##  7  1.02 Ideal     G     SI1      62.1    55  5426  6.46  6.49  4.02
-    ##  8  1.21 Ideal     E     SI1      61.8    56  8863  6.82  6.86  4.23
-    ##  9  0.68 Very Good G     VS1      60.7    58  2114  5.68  5.75  3.47
-    ## 10  1.01 Ideal     F     VS1      63.2    56  7209  6.35  6.41  4.03
+    ##  1 0.4   Ideal     I     IF       62.4    56   982  4.7   4.73  2.94
+    ##  2 0.36  Ideal     G     VS1      60.6    57   761  4.58  4.62  2.79
+    ##  3 0.6   Premium   H     SI1      60.1    61  1219  5.43  5.39  3.25
+    ##  4 0.59  Ideal     D     VS1      60.9    56  2175  5.39  5.44  3.3 
+    ##  5 0.570 Ideal     E     VS2      61      54  2319  5.43  5.39  3.3 
+    ##  6 0.52  Very Good E     VS2      63.3    56  1670  5.12  5.08  3.23
+    ##  7 0.71  Premium   G     VS2      60.3    60  2694  5.81  5.76  3.49
+    ##  8 1.04  Very Good D     VVS2     58.3    61  9254  6.63  6.69  3.88
+    ##  9 1.02  Premium   D     SI2      59.5    62  4912  6.56  6.52  3.89
+    ## 10 0.3   Ideal     E     VS1      61.1    58   673  4.3   4.34  2.64
     ## # ... with 990 more rows
 
 ``` r
@@ -797,14 +797,14 @@ ggplot(smaller_diamonds, aes(cut,price))+
   geom_jitter()
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/geom_jitter_beeswarm-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/geom_jitter_beeswarm-1.png)
 
 ``` r
 # base R stripchart
 stripchart(price~cut, data = smaller_diamonds, method = "jitter", jitter = 0.1, vertical = TRUE)
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/geom_jitter_beeswarm-2.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/geom_jitter_beeswarm-2.png)
 
 ``` r
 #install.packages("ggbeeswarm")
@@ -815,7 +815,7 @@ ggplot(smaller_diamonds, aes(cut,price))+
   geom_quasirandom()
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/geom_jitter_beeswarm-3.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/geom_jitter_beeswarm-3.png)
 
 ``` r
 # ggbeeswarm geom_beeswarm()
@@ -823,7 +823,7 @@ ggplot(smaller_diamonds, aes(cut,price))+
   geom_beeswarm()
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/geom_jitter_beeswarm-4.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/geom_jitter_beeswarm-4.png)
 
 7.5.2 Two categorical variables
 -------------------------------
@@ -835,12 +835,12 @@ ggplot(data = diamonds) +
   geom_count(mapping = aes(x = cut, y = color))
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/two_categorical_dot-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/two_categorical_dot-1.png)
 
 The other example in the book is to first count each of the pairs then plot using a heatmap, or geom\_tile(). This shows basically the same information as the plot above, except instead of the size of the dot being bigger with larger counts, the color of the tile changes.
 
 ``` r
-diamonds %>%
+diamonds %>% 
   count(color, cut)
 ```
 
@@ -860,14 +860,14 @@ diamonds %>%
     ## # ... with 25 more rows
 
 ``` r
-diamonds %>%
+diamonds %>% 
   count(color, cut) %>%  
   ggplot(mapping = aes(x = color, y = cut)) +
     geom_tile(mapping = aes(fill = n)) +
     coord_flip()
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/two_categorical_tile-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/two_categorical_tile-1.png)
 
 7.5.2.1 Exercises
 -----------------
@@ -878,7 +878,7 @@ Depending on the distribution you want to observe, you can: within a color, disp
 
 ``` r
 # show distribution of color within cut
-diamonds %>%
+diamonds %>% 
   count(color, cut) %>%  
   group_by(cut) %>%
   mutate (by_cut_prop = n/sum(n)) %>%
@@ -887,20 +887,20 @@ diamonds %>%
     coord_flip()  
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/rescale_tile_stackedbar-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/rescale_tile_stackedbar-1.png)
 
 ``` r
 # barplot distribution of color within cut
-diamonds %>%
+diamonds %>% 
   ggplot(aes(x = cut, fill = color))+
   geom_bar(position = 'fill')
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/rescale_tile_stackedbar-2.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/rescale_tile_stackedbar-2.png)
 
 ``` r
 # show distribution of cut within color
-diamonds %>%
+diamonds %>% 
   count(color, cut) %>%  
   group_by(color) %>%
   mutate (by_color_prop = n/sum(n)) %>%
@@ -909,16 +909,16 @@ diamonds %>%
     coord_flip()  
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/rescale_tile_stackedbar-3.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/rescale_tile_stackedbar-3.png)
 
 ``` r
 # barplot distribution of cut within color
-diamonds %>%
+diamonds %>% 
   ggplot(aes(x = color, fill = cut))+
   geom_bar(position = 'fill')
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/rescale_tile_stackedbar-4.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/rescale_tile_stackedbar-4.png)
 
 ### 2. Use geom\_tile() together with dplyr to explore how average flight delays vary by destination and month of year. What makes the plot difficult to read? How could you improve it?
 
@@ -934,7 +934,7 @@ flights %>%
   coord_flip()
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/flights_geom_tile-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/flights_geom_tile-1.png)
 
 ### 3. Why is it slightly better to use aes(x = color, y = cut) rather than aes(x = cut, y = color) in the example above?
 
@@ -942,23 +942,23 @@ One reason is that the axis labels are less likely to overlap if cut is on the y
 
 ``` r
 # provided example, x = color, y = cut
-diamonds %>%
+diamonds %>% 
   count(color, cut) %>%  
   ggplot(mapping = aes(x = color, y = cut)) +
     geom_tile(mapping = aes(fill = n))
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/color_cut_x_y_comp-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/color_cut_x_y_comp-1.png)
 
 ``` r
 # switch axes, x = cut, y = color
-diamonds %>%
+diamonds %>% 
   count(color, cut) %>%  
   ggplot(mapping = aes(x = cut, y = color)) +
     geom_tile(mapping = aes(fill = n))
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/color_cut_x_y_comp-2.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/color_cut_x_y_comp-2.png)
 
 7.5.3 Two continuous variables
 ------------------------------
@@ -971,15 +971,15 @@ ggplot(data = diamonds) +
   geom_point(mapping = aes(x = carat, y = price))
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/scatterplot_example-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/scatterplot_example-1.png)
 
 ``` r
 # make points transparent
-ggplot(data = diamonds) +
+ggplot(data = diamonds) + 
   geom_point(mapping = aes(x = carat, y = price), alpha = 1 / 100)
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/scatterplot_example-2.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/scatterplot_example-2.png)
 
 Another way to plot the observations if there are too many points is to use geom\_bin2d. As the name suggests, the plot is binned and colored based on how many observations fall into each bin. This looks similar to a density plot, in which you can see where the majority of points lie. geom\_hex() looks like a fancy version of geom\_bin2d().
 
@@ -988,7 +988,7 @@ ggplot(data = diamonds) +
   geom_bin2d(mapping = aes(x = carat, y = price))
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/bin2d_geom_hex-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/bin2d_geom_hex-1.png)
 
 ``` r
 # install.packages("hexbin")
@@ -996,29 +996,29 @@ ggplot(data = diamonds) +
   geom_hex(mapping = aes(x = carat, y = price))
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/bin2d_geom_hex-2.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/bin2d_geom_hex-2.png)
 
 The book also suggests binning one of the continuous variables and plotting boxplots for the other variable for each bin created. There are two ways to bin, using either cut\_width() or cut\_number(). cut\_width() keeps the increment the same for each bin, whereas cut\_number() keeps the number of observations the same.
 
 ``` r
 # filter dataset to only keep observations with carat < 3
-smaller <- diamonds %>%
+smaller <- diamonds %>% 
   filter(carat < 3)
 
 # cut_width binning
-ggplot(data = smaller, mapping = aes(x = carat, y = price)) +
+ggplot(data = smaller, mapping = aes(x = carat, y = price)) + 
   geom_boxplot(mapping = aes(group = cut_width(carat, 0.1)))
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/boxplot_continuous_cut-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/boxplot_continuous_cut-1.png)
 
 ``` r
 # cut_number binning
-ggplot(data = smaller, mapping = aes(x = carat, y = price)) +
+ggplot(data = smaller, mapping = aes(x = carat, y = price)) + 
   geom_boxplot(mapping = aes(group = cut_number(carat, 20)))
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/boxplot_continuous_cut-2.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/boxplot_continuous_cut-2.png)
 
 7.5.3.1 Exercises
 -----------------
@@ -1035,7 +1035,7 @@ ggplot(smaller, aes(x = price, y = ..density..,)) +
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/price_carat_partition-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/price_carat_partition-1.png)
 
 ``` r
 # visualize price binning by carat, cut_number(), 10 bins
@@ -1045,7 +1045,7 @@ ggplot(smaller, aes(x = price, y = ..density..,)) +
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/price_carat_partition-2.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/price_carat_partition-2.png)
 
 ### 2. Visualise the distribution of carat, partitioned by price.
 
@@ -1053,23 +1053,23 @@ To get this distribution, switch carat and price in the code from the previous q
 
 ``` r
 # visualize distribution of carat, binning price, cut_number()
-ggplot(smaller, aes(x = carat, y = ..density..)) +
+ggplot(smaller, aes(x = carat, y = ..density..)) + 
   geom_freqpoly(aes(color = cut_number(price, 10)))
 ```
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/carat_price_partition-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/carat_price_partition-1.png)
 
 ``` r
 # visualize distribution of carat, binning price, cut_width()
-ggplot(smaller, aes(x = carat, y = ..density..)) +
+ggplot(smaller, aes(x = carat, y = ..density..)) + 
   geom_freqpoly(aes(color = cut_width(price, 5000)))
 ```
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/carat_price_partition-2.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/carat_price_partition-2.png)
 
 ### 3. How does the price distribution of very large diamonds compare to small diamonds. Is it as you expect, or does it surprise you?
 
@@ -1086,7 +1086,7 @@ ggplot (diamonds, aes(carat, price))+
   facet_wrap(~cut)
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/cut_carat_price_facet-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/cut_carat_price_facet-1.png)
 
 ``` r
 # visualize price binning by carat, cut_number(), 10 bins
@@ -1097,7 +1097,7 @@ ggplot(diamonds, aes(x = price, y = ..density..)) +
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/cut_carat_price_facet-2.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/cut_carat_price_facet-2.png)
 
 ``` r
 # visualize price vs cut, binning by carat, 3 bins
@@ -1107,7 +1107,7 @@ ggplot(diamonds, aes(x = cut, y = price)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/cut_carat_price_facet-3.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/cut_carat_price_facet-3.png)
 
 ### 5. Two dimensional plots reveal outliers that are not visible in one dimensional plots. For example, some points in the plot below have an unusual combination of x and y values, which makes the points outliers even though their x and y values appear normal when examined separately. Why is a scatterplot a better display than a binned plot for this case?
 
@@ -1122,7 +1122,7 @@ ggplot(data = diamonds) +
   coord_cartesian(xlim = c(4, 11), ylim = c(4, 11))
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/x_vs_y_scatter_example-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/x_vs_y_scatter_example-1.png)
 
 ``` r
 # bin using geom_hex. default graph is quite ugly and bins include outliers
@@ -1131,7 +1131,7 @@ ggplot(data = diamonds) +
   coord_cartesian(xlim = c(4, 11), ylim = c(4, 11))
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/x_vs_y_scatter_example-2.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/x_vs_y_scatter_example-2.png)
 
 ``` r
 # a binned boxplot of the same data
@@ -1140,7 +1140,7 @@ ggplot(data = diamonds) +
   coord_cartesian(xlim = c(4, 11), ylim = c(4, 11))
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/x_vs_y_scatter_example-3.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/x_vs_y_scatter_example-3.png)
 
 7.6 Patterns and models
 -----------------------
@@ -1160,8 +1160,8 @@ library(modelr)
 
 mod <- lm(log(price) ~ log(carat), data = diamonds)
 
-(diamonds2 <- diamonds %>%
-  add_residuals(mod) %>%
+(diamonds2 <- diamonds %>% 
+  add_residuals(mod) %>% 
   mutate(resid = exp(resid)))
 ```
 
@@ -1181,11 +1181,11 @@ mod <- lm(log(price) ~ log(carat), data = diamonds)
     ## # ... with 53,930 more rows
 
 ``` r
-ggplot(data = diamonds2) +
+ggplot(data = diamonds2) + 
   geom_boxplot(mapping = aes(x = cut, y = resid))
 ```
 
-![](r4ds_chapters7-8_walkthrough_files/figure-markdown_github/subtract_model_boxplot_example-1.png)
+![](r4ds_p3_chapters7-8_walkthrough_files/figure-markdown_github/subtract_model_boxplot_example-1.png)
 
 Chapter 8 - Workflow: Projects
 ==============================
