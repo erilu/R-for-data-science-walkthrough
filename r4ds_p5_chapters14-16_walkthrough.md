@@ -6,6 +6,8 @@ Erick Lu
     -   [14.2.5 Exercises](#exercises)
     -   [14.3.1.1 Exercises](#exercises-1)
     -   [14.3.2.1 Exercises](#exercises-2)
+    -   [14.3.3.1 Exercises](#exercises-3)
+    -   [14.3.4.1 Exercises](#exercises-4)
 
 This my walkthrough for chapters 14-16 for the book: *R for Data Science* by Hadley Wickham and Garrett Grolemund. Here I provide solutions to their exercises and some of my own notes and explorations.
 
@@ -182,9 +184,51 @@ convert_str(c())
 
 ### 1. Explain why each of these strings don’t match a : "", "\\", "\\".
 
+To match a literal `\`, you need to use four backslashes, "\\\\". One backslash, two backslashes, and 3 backslashes wont work! One backslash "" won't work because it will "escape" the quotation, resulting in an error. Using 3 backslashes "\\" will also result in an error, and using 4 backslashes "\\\\" will finally let us match the single literal .
+
+``` r
+literal_backslash <- "hello_\\_world"
+writeLines(literal_backslash)
+```
+
+    ## hello_\_world
+
+``` r
+# str_view(literal_backslash, "\\\\")
+
+# errors
+# x <- "\"
+# x <- "\\\"
+```
+
 ### 2. How would you match the sequence "'?
 
+I would use the regex: ""'\\\\". This escapes the ", escapes the ', then uses the four backslashes to identify the literal .
+
+``` r
+example <- "hello_\"\'\\_world"
+writeLines(example)
+```
+
+    ## hello_"'\_world
+
+``` r
+# str_view(example, "\"\'\\\\" )
+```
+
 ### 3. What patterns will the regular expression ...... match? How would you represent it as a string?
+
+If interepreted as a regular expression and not as the string-form of a regular expression, this will match a period `\.`, followed by any character `.`, followed by another period, any character, another period, and then any character. Below, I've represented it as a string in R. Because of the backslash convention, it will error if you try to plug `\..\..\..` in directly.
+
+``` r
+# test <- "\..\..\.." # errors
+
+# need to double backslash within the string
+test <- "\\..\\..\\.."
+writeLines(test)
+```
+
+    ## \..\..\..
 
 14.3.2.1 Exercises
 ------------------
@@ -197,3 +241,41 @@ convert_str(c())
 -   End with “x”
 -   Are exactly three letters long. (Don’t cheat by using str\_length()!)
 -   Have seven letters or more. Since this list is long, you might want to use the match argument to str\_view() to show only the matching or non-matching words.
+
+14.3.3.1 Exercises
+------------------
+
+### 1. Create regular expressions to find all words that:
+
+-   Start with a vowel.
+-   That only contain consonants. (Hint: thinking about matching “not”-vowels.)
+-   End with ed, but not with eed.
+-   End with ing or ise.
+
+### 2. Empirically verify the rule “i before e except after c”.
+
+### 3. Is “q” always followed by a “u”?
+
+### 4. Write a regular expression that matches a word if it’s probably written in British English, not American English.
+
+### 5. Create a regular expression that will match telephone numbers as commonly written in your country.
+
+14.3.4.1 Exercises
+------------------
+
+### 1. Describe the equivalents of ?, +, \* in {m,n} form.
+
+### 2. Describe in words what these regular expressions match: (read carefully to see if I’m using a regular expression or a string that defines a regular expression.)
+
+-   `^.*$`
+-   `"\\{.+\\}"`
+-   `\d{4}-\d{2}-\d{2}`
+-   `"\\\\{4}"`
+
+### 3. Create regular expressions to find all words that:
+
+-   Start with three consonants.
+-   Have three or more vowels in a row.
+-   Have two or more vowel-consonant pairs in a row.
+
+### 4. Solve the beginner regexp crosswords at <https://regexcrossword.com/challenges/beginner>.
