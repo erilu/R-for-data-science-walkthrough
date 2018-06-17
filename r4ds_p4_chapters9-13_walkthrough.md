@@ -28,9 +28,9 @@ Erick Lu
     -   [13.3.1 Exercises](#exercises-9)
     -   [13.4 Mutating Joins](#mutating-joins)
     -   [13.4.6 Exercises](#exercises-10)
-    -   [Filtering Joins](#filtering-joins)
+    -   [13.5 Filtering Joins](#filtering-joins)
     -   [13.5.1 Exercises](#exercises-11)
-    -   [Join problems and set operations](#join-problems-and-set-operations)
+    -   [13.6 & 13.7 Join problems and set operations](#join-problems-and-set-operations)
 
 This my walkthrough for chapters 9-13 for the book: *R for Data Science* by Hadley Wickham and Garrett Grolemund. Here I provide solutions to their exercises and some of my own notes and explorations.
 
