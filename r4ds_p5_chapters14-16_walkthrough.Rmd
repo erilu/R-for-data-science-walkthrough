@@ -14,6 +14,11 @@ This my walkthrough for chapters 14-16 for the book: _R for Data Science_ by Had
 
 # Chapter 14 Strings
 
+```{r}
+library(tidyverse)
+```
+
+
 ## 14.2.5 Exercises
 
 ### 1. In code that doesn’t use stringr, you’ll often see paste() and paste0(). What’s the difference between the two functions? What stringr function are they equivalent to? How do the functions differ in their handling of NA?
@@ -45,6 +50,8 @@ str_c(join_me, collapse = ", ")
 
 ### 3. Use str_length() and str_sub() to extract the middle character from a string. What will you do if the string has an even number of characters?
 
+To extract the middle character from a string, we can use str_length()/2 to find the middle index of the string, then use str_sub() to extract the character at that index. For even character strings, it would make sense to extract the two characters at the very center of the string. I wrote a function get_middle() that would test whether a string has an even number or odd number of characters using %%, then apply the appropriate str_sub() command to get the middle character or middle two characters.
+
 ```{r}
 get_middle <- function (my_str) {
   if (str_length(my_str)%%2 != 0){
@@ -60,15 +67,50 @@ get_middle ("qwerty")
 
 ### 4. What does str_wrap() do? When might you want to use it?
 
+str_wrap(), as the name suggests, wraps a string into a paragraph. You can specify how wide to make each line of the paragraph using the width argument. It does so by inserting a newline '\n' at the appropriate positions. This would be useful for printing very long strings. Below is an example of using str_wrap().
+
 ```{r}
+long_string <- 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+
+long_string
+str_wrap(long_string, width = 30)
 
 ```
 
-
 ### 5. What does str_trim() do? What’s the opposite of str_trim()?
 
+str_trim() will remove whitespace from the start and end of a string. The opposite of str_trim() is str_pad(), which can be used to add whitespace to either the left, right, or both sides of a string. Below is an example of using both functions.
+
+```{r}
+whitespace <- "  why is there whitespace on both sides?   "
+whitespace
+str_trim(whitespace)
+str_pad("add some whitespace to the left!", 40, side = "left")
+```
 
 ### 6. Write a function that turns (e.g.) a vector c("a", "b", "c") into the string a, b, and c. Think carefully about what it should do if given a vector of length 0, 1, or 2.
+
+We can write a function that checks the length of the vector using length() and uses if else statements to perform the appropriate action. For vectors of length 0, we should return an empty string "". For vectors of length 1, we should just return the single item as-is. For vectors of length > 1, we should return the output specified in the question: "item-1, item-2, ... item-n-1, and item-n". To combine the items in the vector appropriately, we can first collapse the first n-1 items using str_c( collapse = ", "), then use str_c on this collapsed string with ", and ", and with the last item in the vector. This will insert the commas at the right locations, as well as the word "and" right before the last item in the vector.
+
+```{r}
+# function name is convert_str
+convert_str <- function (str_vector) {
+  if (length(str_vector) == 0) {
+    return ("")
+  } else if (length (str_vector) == 1) {
+    return (str_vector[1])
+  } else {
+    combined_minus_last <- str_c(str_vector[1:(length(str_vector)-1)], collapse = ", ") # collapse all items except the last one
+    return( str_c (combined_minus_last, ", and ", str_vector[length(str_vector)])) # concatenate the word "and" and the last item
+  }
+}
+
+convert_str(c("fee", "fi", "fo", "fum"))
+convert_str(c("fee"))
+convert_str(c())
+```
+
+
 
 ## 14.3.1.1 Exercises
 
