@@ -154,6 +154,15 @@ writeLines(test)
 
 ### 1. How would you match the literal string "$^$"?
 
+Below, i use ```"\\$\\^\\$"``` to match the literal string ```"$^$"```. This is because you have to double backslash the $ and ^ characters, which usually serve the purpose of matching the end or start of strings, respectively.
+
+```{r}
+test <- "$^$hello"
+writeLines(test)
+str_view(test, "\\$\\^\\$")
+```
+
+
 ### 2. Given the corpus of common words in stringr::words, create regular expressions that find all words that:
 
 * Start with “y”.
@@ -161,6 +170,17 @@ writeLines(test)
 * Are exactly three letters long. (Don’t cheat by using str_length()!)
 * Have seven letters or more.
 Since this list is long, you might want to use the match argument to str_view() to show only the matching or non-matching words.
+
+```{r}
+# display a sample of stringr::words
+head(words)
+
+# starts with "y"
+str_view(words, "^y", match = T)
+# ends with "x"
+str_view(words, "x$", match = T)
+
+```
 
 
 
