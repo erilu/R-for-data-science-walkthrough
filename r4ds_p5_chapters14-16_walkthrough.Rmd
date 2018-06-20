@@ -171,6 +171,8 @@ str_view(test, "\\$\\^\\$")
 * Have seven letters or more.
 Since this list is long, you might want to use the match argument to str_view() to show only the matching or non-matching words.
 
+To match words that start with y, use the "^" anchor before "y". To match words that end with x, use the "\$" anchor after "x". To match words that are exactly three letters long, we can use both anchors "^" and "\$" wrapped around 3 dots, which specify a series of any 3 characters. To match words that have seven letters or more, we can use the "^" anchor plus seven dots, which specify a series of any seven characters.
+
 ```{r}
 # display a sample of stringr::words
 head(words)
@@ -179,7 +181,10 @@ head(words)
 str_view(words, "^y", match = T)
 # ends with "x"
 str_view(words, "x$", match = T)
-
+# are exactly 3 letters long
+str_view(words, "^...$")
+# have seven letters or more
+str_view(words, "^.......")
 ```
 
 
