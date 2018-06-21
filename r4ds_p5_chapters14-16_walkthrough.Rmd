@@ -188,7 +188,6 @@ str_view(words, "^.......")
 ```
 
 
-
 ## 14.3.3.1 Exercises
 ### 1. Create regular expressions to find all words that:
 
@@ -197,7 +196,33 @@ str_view(words, "^.......")
 * End with ed, but not with eed.
 * End with ing or ise.
 
+
+
+```{r}
+# starts with a vowel
+str_view(words, "^[aeiou]")
+# only contain consonants
+str_view(words, "^[^aeiou]+$", match = T)
+# ends with ed, but not eed
+str_view(words, "[^e]ed$", match = T)
+# ends with ing or ise
+str_view(words, "ing$|ise$", match = T)
+
+```
+
 ### 2. Empirically verify the rule “i before e except after c”.
+
+```{r}
+# separate
+str_view(words, "cie", match = T)
+str_view(words, "cei", match = T)
+str_view(words, "[^c]ei", match = T)
+str_view(words, "[^c]ie", match = T)
+# combined
+str_view(words, "cei|[^c]ei", match = T)
+str_view(words, "cie|[^c]ie", match = T)
+```
+
 
 ### 3. Is “q” always followed by a “u”?
 
