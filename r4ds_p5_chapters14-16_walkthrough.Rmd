@@ -196,7 +196,7 @@ str_view(words, "^.......")
 * End with ed, but not with eed.
 * End with ing or ise.
 
-
+To find words that start with vowels, we can use the "^" anchor along with a selection of vowels using the brackets. To find words that only contain consonants, we can specify that, from start to end (using ^ and \$), there are no vowels (using ^ within brackets, along with the + sign, which means 1 or more of something). To find words that end in ed, but not eed, we can specify that we want words that end with ed, but have anything other than an e beforehand using [^e]. For words that end in ing or ise, we can use the "or" character "|" to combine two separate regexes, one that looks for ing\$ and one that looks for ise\$. Below are the regexes I have described in words above.
 
 ```{r}
 # starts with a vowel
@@ -212,23 +212,47 @@ str_view(words, "ing$|ise$", match = T)
 
 ### 2. Empirically verify the rule “i before e except after c”.
 
+To examine whether any words in the dataset break this rule, we can search for words with the sequence of characters "cie", which contain an i before e even after a c. This yields the words "science" an "society". This tells us that the rule is not 100% correct! Searching for "cei", which will show words that adhere to the rule, yields "receive", which tells us that the rule might be correct for certain words. Is i always before e, even after something that is not c? Searching for words that do not follow this convention (i AFTER e, after anything other than a c) using the regex "[^c]ei" yields the word "weigh", which again disproves the rule. Searching for words that follow the rule (ie before e, after anything other than a c) using the regex "[^c]ie" yields many results, which shows us that the rule applies for most words, but not all of them.
+
 ```{r}
-# separate
+# list words that contain i before e, after a c. if this yields matches, then the rule is false!
 str_view(words, "cie", match = T)
 str_view(words, "cei", match = T)
 str_view(words, "[^c]ei", match = T)
 str_view(words, "[^c]ie", match = T)
-# combined
-str_view(words, "cei|[^c]ei", match = T)
-str_view(words, "cie|[^c]ie", match = T)
-```
 
+```
 
 ### 3. Is “q” always followed by a “u”?
 
+In the words dataset, we can identify words that contain q followed by any character using the regex "q.". All the results contain "q" followed by a "u". Alternatively, we can identify words that contain q followed by anything other than a "u", using "q[^u]". Because this does not yield any results, it does seem like "q" is followed by a "u" in this dataset.
+
+```{r}
+# list words that contain q followed by any character
+str_view(words, "q.", match = T)
+# list words that contain q followed by something other than u (no matches)
+str_view(words, "q[^u]", match = T)
+```
+
 ### 4. Write a regular expression that matches a word if it’s probably written in British English, not American English.
 
+Some common differences between British and American English include colour instead of color, so we could look for the sequence "lou". Other differences include "summarize" vs "summarise", so we could also include a search for the sequence "ise". Of course, this will also fetch words such as "practice" that do not have two forms.
+
+```{r}
+str_view(words, "lou|ise", match = T)
+```
+
+
 ### 5. Create a regular expression that will match telephone numbers as commonly written in your country.
+
+Phone numbers in the US can have the form (XXX) XXX - XXXX. Below is the regex that can be used to identify, very strictly, numbers that adhere to this exact form (including spacing and parenthesis). Note the double backslash required to specify a digit.
+
+```{r}
+str_view ( c("(123) 456 - 7890 is a fake number,","and (555) 555 - 5555 is also a fake number"), "\\(\\d\\d\\d\\)\\s\\d\\d\\d\\s-\\s\\d\\d\\d\\d")
+
+writeLines("(\\d\\d\\d)\\d\\d\\d-\\d\\d\\d\\d")
+```
+
 
 
 ## 14.3.4.1 Exercises
