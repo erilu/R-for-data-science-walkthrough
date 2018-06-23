@@ -259,12 +259,27 @@ writeLines("(\\d\\d\\d)\\d\\d\\d-\\d\\d\\d\\d")
 
 ### 1. Describe the equivalents of ?, +, * in {m,n} form.
 
+? is equivalent to {0,1} in that it matches either 0 or 1 occurances of the preceding regex or character. + is equivalent to {1,} in that it matches 1 or more occurances of the character/regex. * is equivalent to {0,} in that it matches from 0 to any number of occurances of the character/regex.
+
 ### 2. Describe in words what these regular expressions match: (read carefully to see if I’m using a regular expression or a string that defines a regular expression.)
 
 * ```^.*$```
+This matches any series of characters of 0 to any length. The anchor ^ specifies the start of the string, the . specifies any character, and the * specifies that the previous regex, (.), can be of 0 to any length, and the $ specifies the end of the string.
+
 * ```"\\{.+\\}"```
+This matches a literal bracket, {,  followed by 1 or more series of any characters, followed by a literal closing bracket, }. This will match strings like: "{hello world}".
+
 * ```\d{4}-\d{2}-\d{2}```
 * ```"\\\\{4}"```
+
+Here are the above reg
+
+```{r}
+str_view(words, "^.*$")
+str_view(words, "\\{.+\\}")
+str_view(words, "\d{4}-\d{2}-\d{2}")
+str_view(words, "\\\\{4}")
+```
 
 ### 3. Create regular expressions to find all words that:
 
