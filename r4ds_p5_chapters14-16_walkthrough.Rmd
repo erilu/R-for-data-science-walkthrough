@@ -287,6 +287,19 @@ str_view(words, "\\\\{4}")
 * Have three or more vowels in a row.
 * Have two or more vowel-consonant pairs in a row.
 
+```{r}
+# three consonants
+'[^aeiou]{3}'
+
+#three or more vowels in a row:
+'[aeiou]{3,}'
+
+# two or more vowel-consonant pairs in a row:
+'([aeiou][^aeiou]|[^aeiou][aeiou]){2,}'
+
+
+```
+
 ### 4. Solve the beginner regexp crosswords at https://regexcrossword.com/challenges/beginner.
 
 
