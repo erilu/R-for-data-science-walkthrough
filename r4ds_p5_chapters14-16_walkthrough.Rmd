@@ -245,12 +245,15 @@ str_view(words, "lou|ise", match = T)
 
 ### 5. Create a regular expression that will match telephone numbers as commonly written in your country.
 
-Phone numbers in the US can have the form (XXX) XXX - XXXX. Below is the regex that can be used to identify, very strictly, numbers that adhere to this exact form (including spacing and parenthesis). Note the double backslash required to specify a digit.
+Phone numbers in the US can have the form (XXX) XXX - XXXX. Below is the regex that can be used to identify, very strictly, numbers that adhere to this exact form (including spacing and parenthesis). Note the double backslash required to specify a digit. There is a more efficient way to write the regex below using brackets {}, but that is covered in the next section!
 
 ```{r}
 str_view ( c("(123) 456 - 7890 is a fake number,","and (555) 555 - 5555 is also a fake number"), "\\(\\d\\d\\d\\)\\s\\d\\d\\d\\s-\\s\\d\\d\\d\\d")
 
-writeLines("(\\d\\d\\d)\\d\\d\\d-\\d\\d\\d\\d")
+# same regex using brackets
+str_view ( c("(123) 456 - 7890 is a fake number,","and (555) 555 - 5555 is also a fake number"), "\\(\\d{3}\\)\\s\\d{3}\\s-\\s\\d{4}")
+
+writeLines(c("(\\d\\d\\d)\\d\\d\\d-\\d\\d\\d\\d", "\\(\\d{3}\\)\\s\\d{3}\\s-\\s\\d{4}"))
 ```
 
 
@@ -270,15 +273,18 @@ This matches any series of characters of 0 to any length. The anchor ^ specifies
 This matches a literal bracket, {,  followed by 1 or more series of any characters, followed by a literal closing bracket, }. This will match strings like: "{hello world}".
 
 * ```\d{4}-\d{2}-\d{2}```
-* ```"\\\\{4}"```
+This will match 4 digits, followed by a hyphen, two digits, a hyphen, and another 2 digits. For example: "5555-55-55"
 
-Here are the above reg
+* ```"\\\\{4}"```
+This will match a literal backslash repeated 4 times. For example: ```\\\\```.
+
+Here are the above regexes and some sample input so you can see what types of character sequences they match:
 
 ```{r}
 str_view(words, "^.*$")
-str_view(words, "\\{.+\\}")
-str_view(words, "\d{4}-\d{2}-\d{2}")
-str_view(words, "\\\\{4}")
+str_view("hello world, {hello world} hello world", "\\{.+\\}")
+str_view("5555-55-55asdf", "\\d{4}-\\d{2}-\\d{2}")
+str_view("\\\\\\\\asdf", "\\\\{4}")
 ```
 
 ### 3. Create regular expressions to find all words that:
@@ -289,18 +295,119 @@ str_view(words, "\\\\{4}")
 
 ```{r}
 # three consonants
-'[^aeiou]{3}'
+str_view("street", '[^aeiou]{3}')
 
 #three or more vowels in a row:
-'[aeiou]{3,}'
+str_view("streeet", '[aeiou]{3,}')
 
 # two or more vowel-consonant pairs in a row:
-'([aeiou][^aeiou]|[^aeiou][aeiou]){2,}'
-
+str_view("streettttt", '([aeiou][^aeiou]|[^aeiou][aeiou]){2,}')
 
 ```
 
 ### 4. Solve the beginner regexp crosswords at https://regexcrossword.com/challenges/beginner.
+
+Here are the solutions with some explanations to how I arrived at the answers:
+
+Beginner puzzle 1, Beatles: row 1: HE|LL|O+, row2: [PLEASE]+, column 1: [^SPEAK]+, column 2: EP|IP|EF. Solution: row1: HE, row2: LP.
+
+Beginner puzzle 2, Naughty: row 1: ```.*M?O.*```, row2: (AN|FE|BE), column 1: ```(A|B|C)\1```, column 2: (AB|OE|SK). Solution: row1: BO, row2: BE.
+
+Beginner puzzle 3, Ghost: row 1: ```(.)+\1```, row2: [^ABRC]+, column 1: [COBRA]+, column 2: (AB|O|OR)+. Solution: row1: OO, row2: OO.
+
+Beginner puzzle 4, Symbolism: row 1: ```[*]+```, row2: /+, column 1: .?.+, column 2: .+. Solution: row1: ```**```, row2:```//```.
+
+Beginner puzzle 5, Airstrip One: row 1: 18|19|20, row2: ```[6789]\d```, column 1: ```\d[2480]```, column 2: 56|94|73. Solution: row1: 19, row2: 84.
+
+## 14.3.5.1 Exercises
+
+### 1. Describe, in words, what these expressions will match:
+
+* (.)\1\1
+* "(.)(.)\\2\\1"
+* (..)\1
+* "(.).\\1.\\1"
+* "(.)(.)(.).*\\3\\2\\1"
+
+### 2. Construct regular expressions to match words that:
+
+* Start and end with the same character.
+
+* Contain a repeated pair of letters (e.g. “church” contains “ch” repeated twice.)
+
+* Contain one letter repeated in at least three places (e.g. “eleven” contains three “e”s.)
+
+
+## 14.4.2 Exercises
+
+### 1. For each of the following challenges, try solving it by using both a single regular expression, and a combination of multiple str_detect() calls.
+
+* Find all words that start or end with x.
+
+* Find all words that start with a vowel and end with a consonant.
+
+* Are there any words that contain at least one of each different vowel?
+
+### 2. What word has the highest number of vowels? What word has the highest proportion of vowels? (Hint: what is the denominator?)
+
+
+## 14.4.3.1 Exercises
+
+### 1. In the previous example, you might have noticed that the regular expression matched “flickered”, which is not a colour. Modify the regex to fix the problem.
+
+### 2. From the Harvard sentences data, extract:
+
+* The first word from each sentence.
+* All words ending in ing.
+* All plurals.
+
+
+
+## 14.4.4.1 Exercises
+
+### 1. Find all words that come after a “number” like “one”, “two”, “three” etc. Pull out both the number and the word.
+
+### 2. Find all contractions. Separate out the pieces before and after the apostrophe.
+
+
+## 14.4.5.1 Exercises
+
+### 1. Replace all forward slashes in a string with backslashes.
+
+### 2. Implement a simple version of str_to_lower() using replace_all().
+
+### 3. Switch the first and last letters in words. Which of those strings are still words?
+
+## 14.4.6.1 Exercises
+
+### 1. Split up a string like "apples, pears, and bananas" into individual components.
+
+### 2. Why is it better to split up by boundary("word") than " "?
+
+### 3. What does splitting with an empty string ("") do? Experiment, and then read the documentation.
+
+## 14.5.1 Exercises
+
+### 1. How would you find all strings containing \ with regex() vs. with fixed()?
+
+### 2. What are the five most common words in sentences?
+
+## 14.7.1 Exercises
+
+### 1. Find the stringi functions that:
+
+* Count the number of words.
+* Find duplicated strings.
+* Generate random text.
+
+### 2. How do you control the language that stri_sort() uses for sorting?
+
+
+
+
+
+
+
 
 
 
