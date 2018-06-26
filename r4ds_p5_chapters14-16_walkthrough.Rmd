@@ -311,7 +311,11 @@ Here are the solutions with some explanations to how I arrived at the answers:
 
 Beginner puzzle 1, Beatles: row 1: HE|LL|O+, row2: [PLEASE]+, column 1: [^SPEAK]+, column 2: EP|IP|EF. Solution: row1: HE, row2: LP.
 
+First examine row 1 vs column 2- column 2 can either start with the letter E or I, but the only option in row 1 that will fit with this requirement is "HE". For row 2, the only letter that can be in the bottom left is L, since P, E, A, and S are not allowed by column 1. The bottom right can only contain letters from PLEASE, which means that the option EF for column 2 is not allowed. This leaves EP as the only possibility for column 2. So row 2 must be "LP".
+
 Beginner puzzle 2, Naughty: row 1: ```.*M?O.*```, row2: (AN|FE|BE), column 1: ```(A|B|C)\1```, column 2: (AB|OE|SK). Solution: row1: BO, row2: BE.
+
+
 
 Beginner puzzle 3, Ghost: row 1: ```(.)+\1```, row2: [^ABRC]+, column 1: [COBRA]+, column 2: (AB|O|OR)+. Solution: row1: OO, row2: OO.
 
@@ -324,7 +328,20 @@ Beginner puzzle 5, Airstrip One: row 1: 18|19|20, row2: ```[6789]\d```, column 1
 ### 1. Describe, in words, what these expressions will match:
 
 * (.)\1\1
+
+This will match any character repeated 3 times. For example, "ooo" in the string "woohooo!"
+```{r}
+str_view("woohooo!", "(.)\\1\\1")
+```
+
 * "(.)(.)\\2\\1"
+
+This will match a pair of characters followed by the reverse of the pair. For example, "elle" in "belle".
+
+```{r}
+str_view("belle", "(.)(.)\\2\\1")
+```
+
 * (..)\1
 * "(.).\\1.\\1"
 * "(.)(.)(.).*\\3\\2\\1"
