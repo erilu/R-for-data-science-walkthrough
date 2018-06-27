@@ -315,13 +315,19 @@ First examine row 1 vs column 2- column 2 can either start with the letter E or 
 
 Beginner puzzle 2, Naughty: row 1: ```.*M?O.*```, row2: (AN|FE|BE), column 1: ```(A|B|C)\1```, column 2: (AB|OE|SK). Solution: row1: BO, row2: BE.
 
-
+Row 1 specifies that there can be 0-1 of any character, followed by 0-1 of M, followed by O, followed by 0-1 of any character. The only stringent requirement is that there exist an O in row 1. Looking at column 1, this does not allow the letter O, so O must be in column 2 of row 1. The only option that allows this is the "OE" option in column 2. The two options for row 2 that end with letter E are "FE" or "BE". However, column 1 dictates that the first letter of row2 must be either A, B, or C. The only option that fits this is "BB" for column 2.
 
 Beginner puzzle 3, Ghost: row 1: ```(.)+\1```, row2: [^ABRC]+, column 1: [COBRA]+, column 2: (AB|O|OR)+. Solution: row1: OO, row2: OO.
 
+Row 1 specifies that 1 or more of any character should be repeated. Given the 2x2 box, this means a pair of letters. Column 1 gives COBRA as choices, but row2 specifies that ABRC cannot be present. This leaves us with O. Also, for column 2, the only option that is available that would not violate row2's rules is O+.
+
 Beginner puzzle 4, Symbolism: row 1: ```[*]+```, row2: /+, column 1: .?.+, column 2: .+. Solution: row1: ```**```, row2:```//```.
 
+Row1 wants 1 or more *, whereas row 2 wants one or more /. Column 1 states that any character can occur 0-1 times followed by another character at least 1 or more times. Column 2 states that any character must appear 1 or more times.
+
 Beginner puzzle 5, Airstrip One: row 1: 18|19|20, row2: ```[6789]\d```, column 1: ```\d[2480]```, column 2: 56|94|73. Solution: row1: 19, row2: 84.
+
+The only choice for row1 that would satisfy the requirements for column2 is 19 (row1 ends with 9 and col 2 begins with 9). This means that column2 downwards is 94. The only choice for the bottom left that satisfies row2, and column 1 is 8. This leaves us with 19 in row1 and 84 in row2 as the answer.
 
 ## 14.3.5.1 Exercises
 
@@ -342,9 +348,30 @@ This will match a pair of characters followed by the reverse of the pair. For ex
 str_view("belle", "(.)(.)\\2\\1")
 ```
 
-* (..)\1
-* "(.).\\1.\\1"
-* "(.)(.)(.).*\\3\\2\\1"
+* ```(..)\1```
+
+This will match any two characters repeated twice. For example, "caca" in "cacao beans".
+
+```{r}
+str_view("cacao beans", "(..)\\1")
+```
+
+* ```"(.).\\1.\\1"```
+
+This matches any character repeated every other character, such as "lulul" in "lululemon".
+
+```{r}
+str_view("lululemon", "(.).\\1.\\1")
+
+```
+
+* ```"(.)(.)(.).*\\3\\2\\1"```
+
+This matches 3 characters followed by any number of characters followed by the first 3 characters in reverse, such as "but the tub" in "but the tub is full".
+
+```{r}
+str_view("but the tub is full", "(.)(.)(.).*\\3\\2\\1")
+```
 
 ### 2. Construct regular expressions to match words that:
 
