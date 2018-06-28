@@ -362,7 +362,6 @@ This matches any character repeated every other character, such as "lulul" in "l
 
 ```{r}
 str_view("lululemon", "(.).\\1.\\1")
-
 ```
 
 * ```"(.)(.)(.).*\\3\\2\\1"```
@@ -377,9 +376,30 @@ str_view("but the tub is full", "(.)(.)(.).*\\3\\2\\1")
 
 * Start and end with the same character.
 
+```"^(.).*\\1$"``` performs this function. The ^ anchor specifies that any character (.) must also be present at the end of hte string using the \$ anchor after the backreference. Below, it will match "regular" but not "expression".
+
+```{r}
+str_view(c("regular","expressions", "a", "aa"), "^(.).*\\1$")
+```
+
 * Contain a repeated pair of letters (e.g. “church” contains “ch” repeated twice.)
 
+```"(..).*\\1"``` will work by specifying that any two characters (..) can be separated by any amount of characters .* followed by the same two characters using a backreference.
+
+```{r}
+str_view(c("church", "no repeats", "papaya"), "(..).*\\1")
+```
+
 * Contain one letter repeated in at least three places (e.g. “eleven” contains three “e”s.)
+
+```"(.).*\\1.*\\1"``` would work for single word strings. If there is a sentence with multiple words, this regex would match the first occurance of 3 characters, including whitespace, even if they were in different words. If we don't want this to happen, we would use a "anything except whitespace" instead of ```.*```. This would be a regexp for that purpose: ```"([^\\s])[^\\s]*\\1[^\\s]*\\1"```
+
+```{r}
+# this only works for individual words
+str_view(c("eleven", "apply", "papaya", "bananas", "will this match spaces?","letters next"), "(.).*\\1.*\\1")
+# this will exclude whitespace and only match if a word within a sentence has a letter repeated 3 times.
+str_view(c("eleven", "apply", "papaya", "bananas", "will this match spaces?", "letters next"), "([^\\s])[^\\s]*\\1[^\\s]*\\1")
+```
 
 
 ## 14.4.2 Exercises
