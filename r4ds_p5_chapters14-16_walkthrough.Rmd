@@ -408,11 +408,53 @@ str_view(c("eleven", "apply", "papaya", "bananas", "will this match spaces?", "l
 
 * Find all words that start or end with x.
 
+```{r}
+# single expression
+str_subset(words, "^x|x$")
+# multiple str_detect() calls
+c(words[str_detect(words, "^x")], words[str_detect(words, "x$")])
+```
+
 * Find all words that start with a vowel and end with a consonant.
+
+```{r}
+# single expression
+str_subset(words, "^[aeiou].*[^aeiou]$")
+# multiple str_detect() calls
+words [ str_detect(words, "^[aeiou]") & str_detect(words, "[^aeiou]$")]
+```
 
 * Are there any words that contain at least one of each different vowel?
 
+To determine whether there are any words that contain at least one of each vowel, we can look for words that have just one of each vowel to make things simpler (any words with more than one of any vowell will still be matched). This is much easier done using multiple str_detect() calls, beacuse we do not care where the vowels show up within the word. "a" can be before "i", or after "i", or between "o" and "u", which makes things complicated if we want to use a single regular expression. We would have to type out all the permutations and chain them using .* and OR (|). This would be a huge expression! Below is the simpler way of chaining multiple str_detect() calls. No words have at least one of each vowell, but some have a,e i, and o (no u).
+
+```{r}
+# multiple str_detect() calls
+words[str_detect(words, "a") & str_detect(words, "e") &  str_detect(words, "i") & str_detect(words, "o") & str_detect (words, "u")]
+# words with a, e, i, and o (no u)
+words[str_detect(words, "a") & str_detect(words, "e") &  str_detect(words, "i") & str_detect(words, "o") ]
+```
+
 ### 2. What word has the highest number of vowels? What word has the highest proportion of vowels? (Hint: what is the denominator?)
+
+To figure this out, we need a way to count the number of vowels in each word in ```words```, which we can do with str_count() and the regexp ```[aeiou]```. This will let us know the number of vowels in each word, but we also want to keep the information about what the original word was. This means we should perform str_count() on a data frame that contains the original words as well as their index. The book provides this as a tibble. We can perform a mutate() using str_count() and also get the length of each word using str_length(), then calculate the proportion by dividing the two metrics. Then we can use arrange() to find the words with the highest vowel count and vowel proportion. The highest vowel count is 5, which includes appropriate, associate, available, colleague, encourage, experience, individual, and television. The highest vowel proportion is the word "a", which has a proportion of 1 (it itself is a vowel). Non-1 letter words with the highest vowel proportion include area and idea, at 0.75.
+
+```{r}
+df <- tibble(
+  word = words, 
+  i = seq_along(word)
+)
+vowels <- df %>%
+  mutate ( num_vowels = str_count(words, "[aeiou]"),
+           length_word = str_length(words),
+           proportion_vowel = num_vowels/length_word)
+
+vowels %>%
+  arrange (desc(num_vowels))
+vowels %>%
+  arrange (desc(proportion_vowel))
+
+```
 
 
 ## 14.4.3.1 Exercises
@@ -434,6 +476,8 @@ str_view(c("eleven", "apply", "papaya", "bananas", "will this match spaces?", "l
 ### 2. Find all contractions. Separate out the pieces before and after the apostrophe.
 
 
+
+
 ## 14.4.5.1 Exercises
 
 ### 1. Replace all forward slashes in a string with backslashes.
@@ -441,6 +485,8 @@ str_view(c("eleven", "apply", "papaya", "bananas", "will this match spaces?", "l
 ### 2. Implement a simple version of str_to_lower() using replace_all().
 
 ### 3. Switch the first and last letters in words. Which of those strings are still words?
+
+
 
 ## 14.4.6.1 Exercises
 
@@ -450,11 +496,15 @@ str_view(c("eleven", "apply", "papaya", "bananas", "will this match spaces?", "l
 
 ### 3. What does splitting with an empty string ("") do? Experiment, and then read the documentation.
 
+
+
 ## 14.5.1 Exercises
 
 ### 1. How would you find all strings containing \ with regex() vs. with fixed()?
 
 ### 2. What are the five most common words in sentences?
+
+
 
 ## 14.7.1 Exercises
 
