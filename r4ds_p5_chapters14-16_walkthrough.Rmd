@@ -440,15 +440,17 @@ words[str_detect(words, "a") & str_detect(words, "e") &  str_detect(words, "i") 
 To figure this out, we need a way to count the number of vowels in each word in ```words```, which we can do with str_count() and the regexp ```[aeiou]```. This will let us know the number of vowels in each word, but we also want to keep the information about what the original word was. This means we should perform str_count() on a data frame that contains the original words as well as their index. The book provides this as a tibble. We can perform a mutate() using str_count() and also get the length of each word using str_length(), then calculate the proportion by dividing the two metrics. Then we can use arrange() to find the words with the highest vowel count and vowel proportion. The highest vowel count is 5, which includes appropriate, associate, available, colleague, encourage, experience, individual, and television. The highest vowel proportion is the word "a", which has a proportion of 1 (it itself is a vowel). Non-1 letter words with the highest vowel proportion include area and idea, at 0.75.
 
 ```{r}
+# create indexed words tibble
 df <- tibble(
   word = words, 
   i = seq_along(word)
 )
+# calculate number of vowels and proportion of vowels by word
 vowels <- df %>%
   mutate ( num_vowels = str_count(words, "[aeiou]"),
            length_word = str_length(words),
            proportion_vowel = num_vowels/length_word)
-
+# sort by words with highest number or proportion of vowels
 vowels %>%
   arrange (desc(num_vowels))
 vowels %>%
@@ -461,11 +463,40 @@ vowels %>%
 
 ### 1. In the previous example, you might have noticed that the regular expression matched “flickered”, which is not a colour. Modify the regex to fix the problem.
 
+We can modify the regex to detect only legitimate colors by adding a whitespace character on both sides of the name of each color. This will match sentences where a colour is only one word. However, dual-colors like "orangered" or "orange-red" will not be matched unless explicitly stated in the colours vector.
+
+```{r}
+colours <- c("red", "orange", "yellow", "green", "blue", "purple")
+colours_fixed <- str_c("\\s", colours, "\\s")
+colours_fixed
+colour_match <- str_c(colours_fixed, collapse = "|")
+has_colour <- str_subset(sentences, colour_match)
+has_colour
+
+more <- sentences[str_count(sentences, colour_match) > 1]
+str_view_all(more, colour_match)
+```
+
 ### 2. From the Harvard sentences data, extract:
 
 * The first word from each sentence.
+
+```{r}
+first_words <- str_extract(sentences, "^.+?\\s")
+head(first_words,20)
+```
+
 * All words ending in ing.
+
+```{r}
+with_ing <- str_subset(sentences, "ing\\s")
+with_ing
+words_ing <- str_extract(with_ing, "\\s.+?ing\\s")
+words_ing
+```
+
 * All plurals.
+
 
 
 
