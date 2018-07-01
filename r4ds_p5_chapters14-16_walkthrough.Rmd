@@ -392,7 +392,7 @@ str_view(c("church", "no repeats", "papaya"), "(..).*\\1")
 
 * Contain one letter repeated in at least three places (e.g. “eleven” contains three “e”s.)
 
-```"(.).*\\1.*\\1"``` would work for single word strings. If there is a sentence with multiple words, this regex would match the first occurance of 3 characters, including whitespace, even if they were in different words. If we don't want this to happen, we would use a "anything except whitespace" instead of ```.*```. This would be a regexp for that purpose: ```"([^\\s])[^\\s]*\\1[^\\s]*\\1"```
+```"(.).*\\1.*\\1"``` would work for single word strings. If there is a sentence with multiple words, this regex would match the first occurance of 3 characters, including whitespace, even if they were in different words. If we don't want this to happen, we would use a "anything except whitespace" instead of ```.*```. This would be a regexp for that purpose: ```"([^\\s])[^\\s]*\\1[^\\s]*\\1"```. We could also use the boundary regexp ```\\b```.
 
 ```{r}
 # this only works for individual words
@@ -463,7 +463,7 @@ vowels %>%
 
 ### 1. In the previous example, you might have noticed that the regular expression matched “flickered”, which is not a colour. Modify the regex to fix the problem.
 
-We can modify the regex to detect only legitimate colors by adding a whitespace character on both sides of the name of each color. This will match sentences where a colour is only one word. However, dual-colors like "orangered" or "orange-red" will not be matched unless explicitly stated in the colours vector.
+We can modify the regex to detect only legitimate colors by adding a whitespace character on both sides of the name of each color. This will match sentences where a colour is only one word. However, dual-colors like "orangered" or "orange-red" will not be matched unless explicitly stated in the colours vector. To do this, we could change the whitespace to a boundary regex ```"\\b"```.
 
 ```{r}
 colours <- c("red", "orange", "yellow", "green", "blue", "purple")
@@ -481,6 +481,8 @@ str_view_all(more, colour_match)
 
 * The first word from each sentence.
 
+To do this, use the ^ anchor and look for all characters that lie before the first whitespace.
+
 ```{r}
 first_words <- str_extract(sentences, "^.+?\\s")
 head(first_words,20)
@@ -488,21 +490,32 @@ head(first_words,20)
 
 * All words ending in ing.
 
+To do this, first find the subset of sentences that have "ing" before a boundary character. Then, within these sentences, extract the word containing "ing" before the boundary character.
+
 ```{r}
-with_ing <- str_subset(sentences, "ing\\s")
-with_ing
-words_ing <- str_extract(with_ing, "\\s.+?ing\\s")
+with_ing <- str_subset(sentences, "ing\\b")
+head(with_ing)
+words_ing <- str_extract(with_ing, "\\b\\w+ing\\b")
 words_ing
+
 ```
 
 * All plurals.
 
+Below is a way to find all words that end in "s", which should capture plurals that end in "s", as well as other non-plural words that also end in "s", such as "press". To decipher which of these are plurals of singular words, we could subtract the "s" from the words and see if the resulting word matches a dictionary of specified singular words, which we don't have here. To decipher which words are plurals using only a regex doesn't seem straightforward and would require something very convoluted.
 
-
+```{r}
+with_plural <- str_subset(sentences, "\\b\\w+s\\s")
+head(with_plural)
+words_plural <- str_extract(with_plural, "\\b\\w+s\\s")
+head(words_plural)
+```
 
 ## 14.4.4.1 Exercises
 
 ### 1. Find all words that come after a “number” like “one”, “two”, “three” etc. Pull out both the number and the word.
+
+
 
 ### 2. Find all contractions. Separate out the pieces before and after the apostrophe.
 
