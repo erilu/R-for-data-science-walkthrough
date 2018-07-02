@@ -515,11 +515,59 @@ head(words_plural)
 
 ### 1. Find all words that come after a “number” like “one”, “two”, “three” etc. Pull out both the number and the word.
 
+I modeled the answers after the example provided in the book, and modified the code to work with the new regex. The regex I made has numbers one - ten, then followed by a suffix "teen" for cases such as "fourteen" or "ty" for cases such as "sixty". There are some other cases that I added in that do not follow this convention such as "twenty" or "thirteen". This should be followed by a whitespace then 1 or more non-whitespace character. We can then extract the results using a combination of str_subset() and str_extract(). Str_match() or tidyr::extract() can pull out both the number and the words that are encased in the parenthesis.
+
+```{r}
+# regex to detect numbers with words after them
+afternumber <- "\\b((one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fifteen|eighteen|twenty|thirty|fifty|eighty)(ty|teen)?) ([^ ]+)"
+
+# find all sentences that have a match with the regex
+has_number <- sentences %>%
+  str_subset(afternumber) %>%
+  head(10)
+
+# display what the match for each sentence was
+has_number %>% 
+  str_extract(afternumber)
+# display the separate parts of each match.
+has_number %>% 
+  str_match(afternumber)
+# use tidyr::extract() to extract matches for each part of the regex and display output in a neat table
+tibble(sentence = sentences) %>% 
+  tidyr::extract(
+    sentence, c("complete_number", "number","teen_or_ty", "word"), afternumber, 
+    remove = FALSE
+  ) %>%
+  select(sentence, complete_number, word) %>%
+  na.omit()
+```
 
 
 ### 2. Find all contractions. Separate out the pieces before and after the apostrophe.
 
+```{r}
+contractions <- "\\b(\\w+)('|-)(\\w+)\\b"
+has_contraction <- sentences %>%
+  str_subset(contractions) %>%
+  head(10)
+has_contraction %>% 
+  str_extract(contractions)
 
+has_contraction %>% 
+  str_match(contractions)
+
+tibble(sentence = sentences) %>% 
+  tidyr::extract(
+    sentence, c("before_contraction", "contraction","after_contraction"), contractions, 
+    remove = FALSE
+  ) %>%
+  mutate (
+    complete = str_extract (sentence, contractions)
+  )%>%
+  na.omit()
+
+
+```
 
 
 ## 14.4.5.1 Exercises
