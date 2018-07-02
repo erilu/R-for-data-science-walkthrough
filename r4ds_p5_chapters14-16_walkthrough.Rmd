@@ -245,7 +245,7 @@ str_view(words, "lou|ise", match = T)
 
 ### 5. Create a regular expression that will match telephone numbers as commonly written in your country.
 
-Phone numbers in the US can have the form (XXX) XXX - XXXX. Below is the regex that can be used to identify, very strictly, numbers that adhere to this exact form (including spacing and parenthesis). Note the double backslash required to specify a digit. There is a more efficient way to write the regex below using brackets {}, but that is covered in the next section!
+Phone numbers in the US can have the form (XXX) XXX - XXXX. Below is the regex that can be used to identify, very strictly, numbers that adhere to this exact form (including spacing and parentheses). Note the double backslash required to specify a digit. There is a more efficient way to write the regex below using brackets {}, but that is covered in the next section!
 
 ```{r}
 str_view ( c("(123) 456 - 7890 is a fake number,","and (555) 555 - 5555 is also a fake number"), "\\(\\d\\d\\d\\)\\s\\d\\d\\d\\s-\\s\\d\\d\\d\\d")
@@ -515,7 +515,7 @@ head(words_plural)
 
 ### 1. Find all words that come after a “number” like “one”, “two”, “three” etc. Pull out both the number and the word.
 
-I modeled the answers after the example provided in the book, and modified the code to work with the new regex. The regex I made has numbers one - ten, then followed by a suffix "teen" for cases such as "fourteen" or "ty" for cases such as "sixty". There are some other cases that I added in that do not follow this convention such as "twenty" or "thirteen". This should be followed by a whitespace then 1 or more non-whitespace character. We can then extract the results using a combination of str_subset() and str_extract(). Str_match() or tidyr::extract() can pull out both the number and the words that are encased in the parenthesis.
+I modeled the answers after the example provided in the book, and modified the code to work with the new regex. The regex I made has numbers one - ten, then followed by a suffix "teen" for cases such as "fourteen" or "ty" for cases such as "sixty". There are some other cases that I added in that do not follow this convention such as "twenty" or "thirteen". This should be followed by a whitespace then 1 or more non-whitespace character. We can then extract the results using a combination of str_subset() and str_extract(). Str_match() or tidyr::extract() can pull out both the number and the words that are encased in the parentheses.
 
 ```{r}
 # regex to detect numbers with words after them
@@ -544,6 +544,8 @@ tibble(sentence = sentences) %>%
 
 
 ### 2. Find all contractions. Separate out the pieces before and after the apostrophe.
+
+To find contractions, we can search for a sequence of letters using ```\w```, followed by a contraction with either "' or -", and then another sequence of words after that, followed by a boundary. Using this regex we can then use str_subset(), str_extract(), str_match(), and tidyr::extract() to obtain the pieces before and after the apostrophe. If we don't care about hyphens, we can remove it from the regex.
 
 ```{r}
 contractions <- "\\b(\\w+)('|-)(\\w+)\\b"
@@ -574,10 +576,41 @@ tibble(sentence = sentences) %>%
 
 ### 1. Replace all forward slashes in a string with backslashes.
 
+```{r}
+sample <- "this/has/too/many/slashes/!"
+sample
+str_replace_all (sample, "/", "\\\\")
+```
+
 ### 2. Implement a simple version of str_to_lower() using replace_all().
+
+It looks like stringr doesn't have a "to lowercase" regex such as ```\\L``` in perl, which can convert a backreference to lower case (```\\U``` will convert it to uppercase). This makes us write bulky and inefficient code, having to specify "A = a", "B = b", etc. Instead of using str_replace_all(), we can use the baseR gsub(), and group all caps ([A-Z]) in parentheses, and then use ```"\\L\\1"``` to turn every instance of a capital to lowercase.
+
+```{r}
+sample <- "The CaPS iS gOiNg CrAZy!"
+
+# gsub does this more efficiently!
+gsub ("([A-Z])", "\\L\\1", perl=TRUE, sample)
+
+# this doesn't work in stringr!!
+str_replace_all ( sample, "([A-Z])", "\\L\\1")
+
+# if we must use stringr, we have to painfully write out all the replacements...
+str_replace_all (sample, c("A" ="a", "C" = "c", "T" = "t", "P" = "p", "S" = "s", "O" = "o", "N" = "n", "Z" = "z"))
+
+```
 
 ### 3. Switch the first and last letters in words. Which of those strings are still words?
 
+To swich the first and last letters, we can use paretheses along with anchor ^ and $, and then swap the backreferences. Then, we can use the function intersect() to determine which of these swapped words are still present in the original words dataset.
+
+```{r}
+# swap the first and last letters in the words dataset
+swapped <- str_replace (words, "^(.)(.*)(.)$", "\\3\\2\\1")
+head(swapped, 10)
+# find out which words in the swapped list still match words in the original words dataset
+intersect(words, swapped)
+```
 
 
 ## 14.4.6.1 Exercises
