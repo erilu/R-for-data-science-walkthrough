@@ -617,10 +617,28 @@ intersect(words, swapped)
 
 ### 1. Split up a string like "apples, pears, and bananas" into individual components.
 
+```{r}
+sample <- "apples, pears, and bananas"
+# use ", " to split the string
+str_split(sample, " ")[[1]]
+# use boundary() to split the string
+str_split(sample, boundary("word"))[[1]]
+```
+
 ### 2. Why is it better to split up by boundary("word") than " "?
+
+It is better to split up by boundary("word") than by " " because splitting by " " will cause some words to include puncutation marks, such as commmas or periods. boundary("word") takes these into consideration when splitting, and will not include them in the output. See the comparison provided in my answer to the previous exercise, which uses both ways to split the string.
 
 ### 3. What does splitting with an empty string ("") do? Experiment, and then read the documentation.
 
+Splitting with an empty string ("") will split the string into each individual character. The empty string can be thought of as the "space" between each individual character in the string. The documentation states that "an empty pattern, "", is equivalent to boundary("character")". Below I compare the two methods, which indeed provide the same output.
+
+```{r}
+sample <- "apples, pears, and bananas"
+# use ", " to split the string
+str_split(sample, "")[[1]]
+str_split(sample, boundary("character"))[[1]]
+```
 
 
 ## 14.5.1 Exercises
