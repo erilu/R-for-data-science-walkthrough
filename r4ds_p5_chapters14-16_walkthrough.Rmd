@@ -645,8 +645,20 @@ str_split(sample, boundary("character"))[[1]]
 
 ### 1. How would you find all strings containing \ with regex() vs. with fixed()?
 
+When using regex(), we must use four backslashes for the regex to detect literal backslashes in a string. When using fixed(), we can get away with only using two backslashes to detect literal backslashes in a string. Below is an example of using both regex() and fixed() in str_subset.
+
+```{r}
+sample <- c("this has a \\ backslash", "this doesn't have one", "this has a \\ backslash" )
+sample
+str_subset(sample, regex("\\\\"))
+str_subset(sample, fixed("\\"))
+```
+
 ### 2. What are the five most common words in sentences?
 
+```{r}
+
+```
 
 
 ## 14.7.1 Exercises
@@ -657,9 +669,18 @@ str_split(sample, boundary("character"))[[1]]
 * Find duplicated strings.
 * Generate random text.
 
+```{r}
+
+```
+
 ### 2. How do you control the language that stri_sort() uses for sorting?
 
+```{r}
 
+```
+
+
+# Chapter 15: Factors
 
 
 
