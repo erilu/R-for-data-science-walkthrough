@@ -656,8 +656,19 @@ str_subset(sample, fixed("\\"))
 
 ### 2. What are the five most common words in sentences?
 
-```{r}
+The top five most common words are "the"/"The", "of", "a", "to", and "and". To answer this question, we first use str_extract_all() with boundary("word"), to get all the words in a character matrix. Then, we convert the matrix into a vector, then in to a tibble so we can perform dplyr commands. Then, we can use group_by() to group by individual words, then count() to determine how many times each word was used, then arrange() to find the top words.
 
+```{r}
+# extract all the words in sentences
+word_matrix <- str_extract_all(sentences, boundary("word"), simplify = T)
+word_vector <- as.vector(word_matrix)
+head(word_vector)
+
+# use group_by, count(), and arrange() to find the top 5 words
+tibble(word_vector) %>%
+  group_by(word_vector) %>%
+  count() %>%
+  arrange(desc(n))
 ```
 
 
