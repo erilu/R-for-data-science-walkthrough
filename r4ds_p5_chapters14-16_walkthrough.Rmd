@@ -680,8 +680,18 @@ tibble(word_vector) %>%
 * Find duplicated strings.
 * Generate random text.
 
-```{r}
+To find these functions, first load the stringi package and type "stri_". If using rstudio, you can then see all the various functions that show up and read a short description if you hover over their names. Below are the functions that perform the actions specified.
 
+```{r}
+# count number of words
+stri_count_words(sentences) %>% head (10)
+
+# find duplicated strings
+sample <- c("hello", "hello", "world", "this", "hello")
+stri_duplicated(sample)
+
+# generate random text
+stri_rand_strings(5, 10)
 ```
 
 ### 2. How do you control the language that stri_sort() uses for sorting?
