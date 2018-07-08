@@ -45,6 +45,8 @@ library(tidyverse)
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
+For Chapter 14, since the github\_document R markdown format does not support html output, I will comment out the "str\_view()" commands and replace them with str\_extract() or str\_subset(), as appropriate. This will still let you observe which words or strings are matched by the regex. You can also type the str\_view() command into your own RStudio instance to observe the output.
+
 14.2.5 Exercises
 ----------------
 
@@ -204,12 +206,6 @@ To match a literal `\`, you need to use four backslashes, `"\\\\"`. One backslas
 
 ``` r
 literal_backslash <- "hello_\\_world"
-writeLines(literal_backslash)
-```
-
-    ## hello_\_world
-
-``` r
 # str_view(literal_backslash, "\\\\")
 str_extract(literal_backslash, "\\\\")
 ```
@@ -1310,7 +1306,7 @@ stri_duplicated(sample)
 stri_rand_strings(5, 10)
 ```
 
-    ## [1] "T6CeGfd8vd" "dMx9okRdNg" "yY6JeLthkp" "uapC9EaWXl" "rUiruJ0sva"
+    ## [1] "8XqqQD8Dqt" "QtgmOxhzLF" "aVuxVhWAwh" "JYo9wm9OXq" "imiHZ2evmi"
 
 ### 2. How do you control the language that stri\_sort() uses for sorting?
 
