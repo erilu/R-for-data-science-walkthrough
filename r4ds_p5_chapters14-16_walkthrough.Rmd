@@ -1,7 +1,6 @@
 ---
 title: "R for Data Science Walkthrough Chapters 14-16"
 author: "Erick Lu"
-always_allow_html: yes
 output:
   github_document:
     html_preview: false
@@ -19,6 +18,7 @@ This my walkthrough for chapters 14-16 for the book: _R for Data Science_ by Had
 library(tidyverse)
 ```
 
+For Chapter 14, since the github_document R markdown format does not support html output, I will comment out the "str_view()" commands and replace them with str_extract() or str_subset(), as appropriate. This will still let you observe which words or strings are matched by the regex. You can also type the str_view() command into your own RStudio instance to observe the output.
 
 ## 14.2.5 Exercises
 
@@ -121,8 +121,8 @@ To match a literal ```\```, you need to use four backslashes, ```"\\\\"```. One 
 
 ```{r}
 literal_backslash <- "hello_\\_world"
-writeLines(literal_backslash)
-str_view(literal_backslash, "\\\\")
+# str_view(literal_backslash, "\\\\")
+str_extract(literal_backslash, "\\\\")
 
 # errors
 # x <- "\"
@@ -136,7 +136,8 @@ I would use the regex: ```"\"\'\\\\"```. This escapes the ", escapes the ', then
 ```{r}
 example <- "hello_\"\'\\_world"
 writeLines(example)
-str_view(example, "\"\'\\\\" )
+# str_view(example, "\"\'\\\\" )
+str_extract(example, "\"\'\\\\" )
 ```
 
 ### 3. What patterns will the regular expression ```\..\..\..``` match? How would you represent it as a string?
@@ -160,7 +161,8 @@ Below, i use ```"\\$\\^\\$"``` to match the literal string ```"$^$"```. This is 
 ```{r}
 test <- "$^$hello"
 writeLines(test)
-str_view(test, "\\$\\^\\$")
+# str_view(test, "\\$\\^\\$")
+str_extract(test, "\\$\\^\\$")
 ```
 
 
@@ -179,13 +181,17 @@ To match words that start with y, use the "^" anchor before "y". To match words 
 head(words)
 
 # starts with "y"
-str_view(words, "^y", match = T)
+# str_view(words, "^y", match = T)
+str_subset(words, "^y")
 # ends with "x"
-str_view(words, "x$", match = T)
+# str_view(words, "x$", match = T)
+str_subset(words, "x$")
 # are exactly 3 letters long
-str_view(words, "^...$")
+# str_view(words, "^...$")
+str_subset(words, "^...$") %>% head(10)
 # have seven letters or more
-str_view(words, "^.......")
+# str_view(words, "^.......")
+str_subset(words, "^.......") %>% head(10)
 ```
 
 
@@ -201,14 +207,17 @@ To find words that start with vowels, we can use the "^" anchor along with a sel
 
 ```{r}
 # starts with a vowel
-str_view(words, "^[aeiou]")
+# str_view(words, "^[aeiou]")
+str_subset(words, "^[aeiou]") %>% head(10)
 # only contain consonants
-str_view(words, "^[^aeiou]+$", match = T)
+# str_view(words, "^[^aeiou]+$", match = T)
+str_subset(words, "^[^aeiou]+$")
 # ends with ed, but not eed
-str_view(words, "[^e]ed$", match = T)
+# str_view(words, "[^e]ed$", match = T)
+str_subset(words, "[^e]ed$")
 # ends with ing or ise
-str_view(words, "ing$|ise$", match = T)
-
+# str_view(words, "ing$|ise$", match = T)
+str_subset(words, "ing$|ise$")
 ```
 
 ### 2. Empirically verify the rule “i before e except after c”.
@@ -217,11 +226,15 @@ To examine whether any words in the dataset break this rule, we can search for w
 
 ```{r}
 # list words that contain i before e, after a c. if this yields matches, then the rule is false!
-str_view(words, "cie", match = T)
-str_view(words, "cei", match = T)
-str_view(words, "[^c]ei", match = T)
-str_view(words, "[^c]ie", match = T)
+# str_view(words, "cie", match = T)
+# str_view(words, "cei", match = T)
+# str_view(words, "[^c]ei", match = T)
+# str_view(words, "[^c]ie", match = T)
 
+str_subset(words, "cie")
+str_subset(words, "cei")
+str_subset(words, "[^c]ei")
+str_subset(words, "[^c]ie")
 ```
 
 ### 3. Is “q” always followed by a “u”?
@@ -230,9 +243,11 @@ In the words dataset, we can identify words that contain q followed by any chara
 
 ```{r}
 # list words that contain q followed by any character
-str_view(words, "q.", match = T)
+# str_view(words, "q.", match = T)
+str_subset(words, "q.")
 # list words that contain q followed by something other than u (no matches)
-str_view(words, "q[^u]", match = T)
+# str_view(words, "q[^u]", match = T)
+str_subset(words, "q[^u]")
 ```
 
 ### 4. Write a regular expression that matches a word if it’s probably written in British English, not American English.
@@ -240,7 +255,8 @@ str_view(words, "q[^u]", match = T)
 Some common differences between British and American English include colour instead of color, so we could look for the sequence "lou". Other differences include "summarize" vs "summarise", so we could also include a search for the sequence "ise". Of course, this will also fetch words such as "practice" that do not have two forms.
 
 ```{r}
-str_view(words, "lou|ise", match = T)
+# str_view(words, "lou|ise", match = T)
+str_subset(words, "lou|ise")
 ```
 
 
@@ -249,14 +265,15 @@ str_view(words, "lou|ise", match = T)
 Phone numbers in the US can have the form (XXX) XXX - XXXX. Below is the regex that can be used to identify, very strictly, numbers that adhere to this exact form (including spacing and parentheses). Note the double backslash required to specify a digit. There is a more efficient way to write the regex below using brackets ```{}```, but that is covered in the next section!
 
 ```{r}
-str_view ( c("(123) 456 - 7890 is a fake number,","and (555) 555 - 5555 is also a fake number"), "\\(\\d\\d\\d\\)\\s\\d\\d\\d\\s-\\s\\d\\d\\d\\d")
+# str_view ( c("(123) 456 - 7890 is a fake number,","and (555) 555 - 5555 is also a fake number"), "\\(\\d\\d\\d\\)\\s\\d\\d\\d\\s-\\s\\d\\d\\d\\d")
+str_extract ( c("(123) 456 - 7890 is a fake number,","and (555) 555 - 5555 is also a fake number"), "\\(\\d\\d\\d\\)\\s\\d\\d\\d\\s-\\s\\d\\d\\d\\d")
 
 # same regex using brackets
-str_view ( c("(123) 456 - 7890 is a fake number,","and (555) 555 - 5555 is also a fake number"), "\\(\\d{3}\\)\\s\\d{3}\\s-\\s\\d{4}")
+# str_view ( c("(123) 456 - 7890 is a fake number,","and (555) 555 - 5555 is also a fake number"), "\\(\\d{3}\\)\\s\\d{3}\\s-\\s\\d{4}")
+str_extract ( c("(123) 456 - 7890 is a fake number,","and (555) 555 - 5555 is also a fake number"), "\\(\\d{3}\\)\\s\\d{3}\\s-\\s\\d{4}")
 
 writeLines(c("(\\d\\d\\d)\\d\\d\\d-\\d\\d\\d\\d", "\\(\\d{3}\\)\\s\\d{3}\\s-\\s\\d{4}"))
 ```
-
 
 
 ## 14.3.4.1 Exercises
@@ -282,10 +299,15 @@ This will match a literal backslash repeated 4 times. For example: ```\\\\```.
 Here are the above regexes and some sample input so you can see what types of character sequences they match:
 
 ```{r}
-str_view(words, "^.*$")
-str_view("hello world, {hello world} hello world", "\\{.+\\}")
-str_view("5555-55-55asdf", "\\d{4}-\\d{2}-\\d{2}")
-str_view("\\\\\\\\asdf", "\\\\{4}")
+# str_view(words, "^.*$")
+# str_view("hello world, {hello world} hello world", "\\{.+\\}")
+# str_view("5555-55-55asdf", "\\d{4}-\\d{2}-\\d{2}")
+# str_view("\\\\\\\\asdf", "\\\\{4}")
+
+str_subset(words, "^.*$") %>% head(10)
+str_extract("hello world, {hello world} hello world", "\\{.+\\}")
+str_extract("5555-55-55asdf", "\\d{4}-\\d{2}-\\d{2}")
+str_extract("\\\\\\\\asdf", "\\\\{4}")
 ```
 
 ### 3. Create regular expressions to find all words that:
@@ -296,14 +318,16 @@ str_view("\\\\\\\\asdf", "\\\\{4}")
 
 ```{r}
 # three consonants
-str_view("street", '[^aeiou]{3}')
+# str_view("street", '[^aeiou]{3}')
+str_extract("street", '[^aeiou]{3}')
 
 #three or more vowels in a row:
-str_view("streeet", '[aeiou]{3,}')
+# str_view("streeet", '[aeiou]{3,}')
+str_extract("streeet", '[aeiou]{3,}')
 
 # two or more vowel-consonant pairs in a row:
-str_view("streettttt", '([aeiou][^aeiou]|[^aeiou][aeiou]){2,}')
-
+# str_view("streettttt", '([aeiou][^aeiou]|[^aeiou][aeiou]){2,}')
+str_extract("streettttt", '([aeiou][^aeiou]|[^aeiou][aeiou]){2,}')
 ```
 
 ### 4. Solve the beginner regexp crosswords at https://regexcrossword.com/challenges/beginner.
@@ -338,7 +362,8 @@ The only choice for row1 that would satisfy the requirements for column2 is 19 (
 
 This will match any character repeated 3 times. For example, "ooo" in the string "woohooo!"
 ```{r}
-str_view("woohooo!", "(.)\\1\\1")
+# str_view("woohooo!", "(.)\\1\\1")
+str_extract("woohooo!", "(.)\\1\\1")
 ```
 
 * ```"(.)(.)\\2\\1"```
@@ -346,7 +371,8 @@ str_view("woohooo!", "(.)\\1\\1")
 This will match a pair of characters followed by the reverse of the pair. For example, "elle" in "belle".
 
 ```{r}
-str_view("belle", "(.)(.)\\2\\1")
+# str_view("belle", "(.)(.)\\2\\1")
+str_extract("belle", "(.)(.)\\2\\1")
 ```
 
 * ```(..)\1```
@@ -354,7 +380,8 @@ str_view("belle", "(.)(.)\\2\\1")
 This will match any two characters repeated twice. For example, "caca" in "cacao beans".
 
 ```{r}
-str_view("cacao beans", "(..)\\1")
+# str_view("cacao beans", "(..)\\1")
+str_extract("cacao beans", "(..)\\1")
 ```
 
 * ```"(.).\\1.\\1"```
@@ -362,7 +389,8 @@ str_view("cacao beans", "(..)\\1")
 This matches any character repeated every other character, such as "lulul" in "lululemon".
 
 ```{r}
-str_view("lululemon", "(.).\\1.\\1")
+# str_view("lululemon", "(.).\\1.\\1")
+str_extract("lululemon", "(.).\\1.\\1")
 ```
 
 * ```"(.)(.)(.).*\\3\\2\\1"```
@@ -370,7 +398,8 @@ str_view("lululemon", "(.).\\1.\\1")
 This matches 3 characters followed by any number of characters followed by the first 3 characters in reverse, such as "but the tub" in "but the tub is full".
 
 ```{r}
-str_view("but the tub is full", "(.)(.)(.).*\\3\\2\\1")
+# str_view("but the tub is full", "(.)(.)(.).*\\3\\2\\1")
+str_extract("but the tub is full", "(.)(.)(.).*\\3\\2\\1")
 ```
 
 ### 2. Construct regular expressions to match words that:
@@ -380,7 +409,8 @@ str_view("but the tub is full", "(.)(.)(.).*\\3\\2\\1")
 ```"^(.).*\\1$"``` performs this function. The ^ anchor specifies that any character (.) must also be present at the end of the string using the ```\$``` anchor after the backreference. Below, it will match "regular" but not "expression".
 
 ```{r}
-str_view(c("regular","expressions", "a", "aa"), "^(.).*\\1$")
+# str_view(c("regular","expressions", "a", "aa"), "^(.).*\\1$")
+str_subset(c("regular","expressions", "a", "aa"), "^(.).*\\1$")
 ```
 
 * Contain a repeated pair of letters (e.g. “church” contains “ch” repeated twice.)
@@ -388,7 +418,8 @@ str_view(c("regular","expressions", "a", "aa"), "^(.).*\\1$")
 ```"(..).*\\1"``` will work by specifying that any two characters (..) can be separated by any amount of characters ```.*``` followed by the same two characters using a backreference.
 
 ```{r}
-str_view(c("church", "no repeats", "papaya"), "(..).*\\1")
+# str_view(c("church", "no repeats", "papaya"), "(..).*\\1")
+str_subset(c("church", "no repeats", "papaya"), "(..).*\\1")
 ```
 
 * Contain one letter repeated in at least three places (e.g. “eleven” contains three “e”s.)
@@ -397,9 +428,12 @@ str_view(c("church", "no repeats", "papaya"), "(..).*\\1")
 
 ```{r}
 # this only works for individual words
-str_view(c("eleven", "apply", "papaya", "bananas", "will this match spaces?","letters next"), "(.).*\\1.*\\1")
+# str_view(c("eleven", "apply", "papaya", "bananas", "will this match spaces?","letters next"), "(.).*\\1.*\\1")
+str_subset(c("eleven", "apply", "papaya", "bananas", "will this match spaces?","letters next"), "(.).*\\1.*\\1")
+
 # this will exclude whitespace and only match if a word within a sentence has a letter repeated 3 times.
-str_view(c("eleven", "apply", "papaya", "bananas", "will this match spaces?", "letters next"), "([^\\s])[^\\s]*\\1[^\\s]*\\1")
+# str_view(c("eleven", "apply", "papaya", "bananas", "will this match spaces?", "letters next"), "([^\\s])[^\\s]*\\1[^\\s]*\\1")
+str_subset(c("eleven", "apply", "papaya", "bananas", "will this match spaces?", "letters next"), "([^\\s])[^\\s]*\\1[^\\s]*\\1")
 ```
 
 
@@ -475,7 +509,8 @@ has_colour <- str_subset(sentences, colour_match)
 has_colour
 
 more <- sentences[str_count(sentences, colour_match) > 1]
-str_view_all(more, colour_match)
+# str_view_all(more, colour_match)
+str_extract_all (more, colour_match)
 ```
 
 ### 2. From the Harvard sentences data, extract:
