@@ -744,11 +744,36 @@ stri_sort(sentences, decreasing = TRUE, locale = "en_US") %>% head(10)
 
 # Chapter 15: Factors
 
-## 15.3.1 Exercise
+```{r}
+library(forcats)
+library(tidyverse)
+```
+
+## 15.3.1 Exercises
 
 ### 1. Explore the distribution of rincome (reported income). What makes the default bar chart hard to understand? How could you improve the plot?
 
+We can explore the distribution either by looking at summary(gss_cat$rincome) or by plotting the data using geom_bar(). rincome is a column of factors divided in to several categories. From the summary we can see that most people who reported their income lie in the 25,000 or more category, but a lot of people did not answer the survey or were not applicable as well. The names of each category are fairly long, and in the default plot the labels are overlapping. To improve the default plot, we can tilt the axis labels so that they are readable using the theme() option in ggplot2.
+
+```{r barplot_rincome}
+summary(gss_cat$rincome)
+ggplot(gss_cat, aes(rincome)) +
+  geom_bar() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
 ### 2. What is the most common relig in this survey? What’s the most common partyid?
+
+Based on the bar plots, the most common relig in this survey is Protestant. The most common partyid is Independent.
+
+```{r barplot_relig_partyid}
+ggplot(gss_cat, aes(relig)) +
+  geom_bar() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+ggplot(gss_cat, aes(partyid)) +
+  geom_bar() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
 
 ### 3. Which relig does denom (denomination) apply to? How can you find out with a table? How can you find out with a visualisation?
 
