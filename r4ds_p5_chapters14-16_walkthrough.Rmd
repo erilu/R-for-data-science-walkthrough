@@ -777,6 +777,23 @@ ggplot(gss_cat, aes(partyid)) +
 
 ### 3. Which relig does denom (denomination) apply to? How can you find out with a table? How can you find out with a visualisation?
 
+You can find out with a table by using dplyr commands, first grouping by denom, then finding the proportion of each religion within a denom. To find out with a visualization, you can use an aesthetic mapping in ggplot2 to fill in a barplot with colors based on the relig. To make the proportion easier to see, you can specify position = "fill".
+
+```{r}
+
+gss_cat %>%
+  group_by (denom, relig) %>%
+  count()
+
+ggplot(gss_cat, aes(denom)) +
+  geom_bar(aes(fill = relig)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+ggplot(gss_cat, aes(denom)) +
+  geom_bar(aes(fill = relig), position = "fill") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
 
 ## 15.4.1 Exercises
 
