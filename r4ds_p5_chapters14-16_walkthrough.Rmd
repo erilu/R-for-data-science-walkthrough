@@ -799,6 +799,14 @@ ggplot(gss_cat, aes(denom)) +
 
 ### 1. There are some suspiciously high numbers in tvhours. Is the mean a good summary?
 
+If there are very high outliers in any distribution, the mean will be inflated. Since the mean is the average of the numbers, any extremely high numbers will increase the mean. Therefore, the mean is not a good summary. In this instance, the median may give a better measure of where the data is centered. It is always a good idea to be aware of what types of outliers exist in your data. Plotting a histogram of ```tvhours``` below, we can see that in some cases there are over 20 hours of tv! The distribution is skewed to the right.
+
+```{r}
+ggplot(gss_cat, aes (tvhours)) +
+  geom_histogram()
+```
+
+
 ### 2. For each factor in gss_cat identify whether the order of the levels is arbitrary or principled.
 
 ### 3. Why did moving “Not applicable” to the front of the levels move it to the bottom of the plot?
