@@ -809,6 +809,18 @@ ggplot(gss_cat, aes (tvhours)) +
 
 ### 2. For each factor in gss_cat identify whether the order of the levels is arbitrary or principled.
 
+We can determine this by examining the levels of each one of the factor columns in gss_cat using levels(), and then determining whether there is a principle to the ordering listed. Here is my assessment: marital - arbitrary, race - arbitrary, rincome - principled (based on decreasing income levels), partyid - principled (going from strong republican, slowly towards strong democrat), relig - arbitrary, denom - arbitrary.
+
+```{r}
+levels(gss_cat$marital)
+levels(gss_cat$race)
+levels(gss_cat$rincome)
+levels(gss_cat$partyid)
+levels(gss_cat$relig)
+levels(gss_cat$denom)
+```
+
+
 ### 3. Why did moving “Not applicable” to the front of the levels move it to the bottom of the plot?
 
 
