@@ -823,6 +823,12 @@ levels(gss_cat$denom)
 
 ### 3. Why did moving “Not applicable” to the front of the levels move it to the bottom of the plot?
 
+In the text, the "after" argument was not specified, so the default value of ```after = OL``` was used, which puts "Not applicable" to the front. This results in it being placed before "No answer". The way that geom_point() plots the categories is such that the first level is plotted at the bottom. This is why "Not applicable" appears at the bottom of the plot. 
+
+```{r}
+levels(gss_cat$rincome)
+levels(fct_relevel(gss_cat$rincome, "Not applicable"))
+```
 
 
 ## 15.5.1 Exercises
