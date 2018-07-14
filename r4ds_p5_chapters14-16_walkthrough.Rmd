@@ -835,7 +835,11 @@ levels(fct_relevel(gss_cat$rincome, "Not applicable"))
 
 ### 1. How have the proportions of people identifying as Democrat, Republican, and Independent changed over time?
 
+To answer this, first lump together all the Democrat-associated categories into one category named "All Democrats", and likewise for Republican and Independent. Then, we can plot the change in the number of people that associate with these categories over time.
+
 ### 2. How could you collapse rincome into a small set of categories?
+
+We could make the income-blocks larger, by combining the income categories into blocks of "less than 5000", "5000 to 10000", "10000 to 25000", and "25000 or more". We could also lump together "Refused", "dont know", "no answer", and "not applicable" into an "other" category, although this may be dangerous. Some questions we might ask before lumping these groups together are: do people who refused to take the survey have behavioral differences that may matter in some contexts? Why did people not answer the survey--did they not have had the means to do so? Do these categories preferentially lie in specific districts?
 
 
 # Chapter 16: Dates and times
