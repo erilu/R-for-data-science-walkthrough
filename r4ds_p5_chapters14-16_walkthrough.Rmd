@@ -859,6 +859,28 @@ gss_cat %>%
 
 We could make the income-blocks larger, by combining the income categories into blocks of "less than 5000", "5000 to 10000", "10000 to 25000", and "25000 or more". We could also lump together "Refused", "dont know", "no answer", and "not applicable" into an "other" category, although this may be dangerous. Some questions we might ask before lumping these groups together are: do people who refused to take the survey have behavioral differences that may matter in some contexts? Why did people not answer the survey--did they not have had the means to do so? Do these categories preferentially lie in specific districts?
 
+```{r}
+gss_cat %>%
+  mutate(rincome = fct_recode(rincome,
+    "less than 5000"      = "Lt $1000",
+    "less than 5000" = "$1000 to 2999",
+    "less than 5000" = "$3000 to 3999",
+    "less than 5000"        = "$4000 to 4999",
+    "5000 to 10000"      = "$5000 to 5999",
+    "5000 to 10000"      = "$6000 to 6999",
+    "5000 to 10000"      = "$7000 to 7999",
+    "5000 to 10000"                 = "$8000 to 9999",
+    "10000 to 25000"                 = "$10000 - 14999",
+    "10000 to 25000"                 = "$15000 - 19999",
+    "10000 to 25000" = "$20000 - 24999",
+    "Other" = "No answer",
+    "Other" = "Don't know",
+    "Other" = "Refused",
+    "Other" = "Not applicable",
+  )) %>%
+  count(rincome)
+```
+
 
 # Chapter 16: Dates and times
 
