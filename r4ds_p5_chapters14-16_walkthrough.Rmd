@@ -865,13 +865,13 @@ gss_cat %>%
     "less than 5000"      = "Lt $1000",
     "less than 5000" = "$1000 to 2999",
     "less than 5000" = "$3000 to 3999",
-    "less than 5000"        = "$4000 to 4999",
-    "5000 to 10000"      = "$5000 to 5999",
-    "5000 to 10000"      = "$6000 to 6999",
-    "5000 to 10000"      = "$7000 to 7999",
-    "5000 to 10000"                 = "$8000 to 9999",
-    "10000 to 25000"                 = "$10000 - 14999",
-    "10000 to 25000"                 = "$15000 - 19999",
+    "less than 5000" = "$4000 to 4999",
+    "5000 to 10000"  = "$5000 to 5999",
+    "5000 to 10000"  = "$6000 to 6999",
+    "5000 to 10000"  = "$7000 to 7999",
+    "5000 to 10000"  = "$8000 to 9999",
+    "10000 to 25000" = "$10000 - 14999",
+    "10000 to 25000" = "$15000 - 19999",
     "10000 to 25000" = "$20000 - 24999",
     "Other" = "No answer",
     "Other" = "Don't know",
@@ -886,12 +886,15 @@ gss_cat %>%
 
 ```{r}
 library(lubridate)
+library(nycflights13)
 ```
-
 
 ## 16.2.4 Exercises
 
 ### 1. What happens if you parse a string that contains invalid dates?
+
+You get an error message telling you the number of strings that failed to parse. In this instance, the error message is "1 failed to parse." A vector is returned containing the strings of dates that parsed correctly with the invalid dates replaced with NA.
+
 ```{r}
 ymd(c("2010-10-10", "bananas"))
 ```
