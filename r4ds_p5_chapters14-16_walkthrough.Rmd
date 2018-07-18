@@ -876,7 +876,7 @@ gss_cat %>%
     "Other" = "No answer",
     "Other" = "Don't know",
     "Other" = "Refused",
-    "Other" = "Not applicable",
+    "Other" = "Not applicable"
   )) %>%
   count(rincome)
 ```
@@ -901,6 +901,15 @@ ymd(c("2010-10-10", "bananas"))
 
 
 ### 2. What does the tzone argument to today() do? Why is it important?
+
+The documentation states that the ```tzone``` argument in today() accepts a character vector specifying the time zone you would like to find the curent date of. It will default to the system time zone on your computer if left unspecified. This is important because, depending on the time zone, the date could be different. For example, the US west coast is 3 hours behind the US east coast. If it is 11PM on the west coast, the east coast is one day ahead. Below is the example provided in the documentation.
+
+```{r}
+today()
+today("GMT")
+today() == today("GMT") # not always true
+```
+
 
 ### 3. Use the appropriate lubridate function to parse each of the following dates:
 ```{r}
