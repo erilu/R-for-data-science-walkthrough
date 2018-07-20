@@ -932,7 +932,34 @@ mdy(d5)
 
 ## 16.3.4 Exercises
 
+```{r}
+make_datetime_100 <- function(year, month, day, time) {
+  make_datetime(year, month, day, time %/% 100, time %% 100)
+}
+
+flights_dt <- flights %>% 
+  filter(!is.na(dep_time), !is.na(arr_time)) %>% 
+  mutate(
+    dep_time = make_datetime_100(year, month, day, dep_time),
+    arr_time = make_datetime_100(year, month, day, arr_time),
+    sched_dep_time = make_datetime_100(year, month, day, sched_dep_time),
+    sched_arr_time = make_datetime_100(year, month, day, sched_arr_time)
+  ) %>% 
+  select(origin, dest, ends_with("delay"), ends_with("time"))
+
+flights_dt
+```
+
+
 ### 1. How does the distribution of flight times within a day change over the course of the year?
+
+```{r}
+flights_dt %>% 
+  mutate(yday = yday(dep_time)) %>% 
+  ggplot(aes(x = yday)) +
+    geom_bar()
+```
+
 
 ### 2. Compare dep_time, sched_dep_time and dep_delay. Are they consistent? Explain your findings.
 
