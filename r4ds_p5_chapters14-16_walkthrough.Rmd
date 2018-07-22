@@ -957,11 +957,22 @@ flights_dt
 flights_dt %>% 
   mutate(yday = yday(dep_time)) %>% 
   ggplot(aes(x = yday)) +
-    geom_bar()
+    geom_freqpoly()
 ```
 
 
 ### 2. Compare dep_time, sched_dep_time and dep_delay. Are they consistent? Explain your findings.
+
+First calculate our own version of dep_time by adding sched_dep_time and dep_delay together, then compare the result to the provided dep_time in the table.
+
+```{r}
+
+flights_dt %>%
+  mutate ( calculated_dep_time = sched_dep_time + dep_delay*60) %>%
+  select (calculated_dep_time, sched_dep_time, dep_delay, dep_time)
+
+```
+
 
 ### 3. Compare air_time with the duration between the departure and arrival. Explain your findings. (Hint: consider the location of the airport.)
 
