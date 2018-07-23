@@ -963,18 +963,31 @@ flights_dt %>%
 
 ### 2. Compare dep_time, sched_dep_time and dep_delay. Are they consistent? Explain your findings.
 
-First calculate our own version of dep_time by adding sched_dep_time and dep_delay together, then compare the result to the provided dep_time in the table.
+First calculate our own version of dep_time by adding sched_dep_time and dep_delay together, then compare the result to the provided dep_time in the table. When filtering for values in dep_time that do not match the calculated version, we find 1205 discrepancies out of the 328,063 observations. For the most part, they are consistent, but we should find out why the 1205 inconsistencies exist.
 
 ```{r}
 
 flights_dt %>%
   mutate ( calculated_dep_time = sched_dep_time + dep_delay*60) %>%
-  select (calculated_dep_time, sched_dep_time, dep_delay, dep_time)
+  select (calculated_dep_time, sched_dep_time, dep_delay, dep_time) %>%
+  filter ( calculated_dep_time != dep_time) %>%
+  count()
 
 ```
 
 
 ### 3. Compare air_time with the duration between the departure and arrival. Explain your findings. (Hint: consider the location of the airport.)
+
+Theoretically, the duration should match the difference between the arrival time and hte departure time, after accounting for time zone differences between airport locations. If the time zone difference is not accounted for, the air_time will not match the simple difference. This seems to be the case, because 327,150 of the 328,063 observations in the dataset have a reported air_time that does not match the difference between the arrival and departure times.
+
+```{r}
+flights_dt %>%
+  mutate ( calculated_air_time = arr_time - dep_time) %>%
+  select (calculated_air_time, air_time, arr_time, dep_time) %>%
+  filter (calculated_air_time != air_time)
+
+```
+
 
 ### 4. How does the average delay time change over the course of a day? Should you use dep_time or sched_dep_time? Why?
 
