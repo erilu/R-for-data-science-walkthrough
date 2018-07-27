@@ -991,6 +991,18 @@ flights_dt %>%
 
 ### 4. How does the average delay time change over the course of a day? Should you use dep_time or sched_dep_time? Why?
 
+Use the floor_date() function to group observations based on hour, then group by this parameter. Use this to calculate the average dep_delay per hour over the year. Plot using geom_line().
+
+```{r}
+flights_dt %>% 
+  mutate ( floor_hour = floor_date(dep_time, "hour") )%>%
+  group_by(floor_hour) %>%
+  summarize(avg_delay_hour = mean(dep_delay, na.rm = T)) %>% 
+  ggplot(aes(floor_hour, avg_delay_hour)) +
+    geom_line()
+```
+
+
 ### 5. On what day of the week should you leave if you want to minimise the chance of a delay?
 
 ### 6. What makes the distribution of diamonds$carat and flights$sched_dep_time similar?
