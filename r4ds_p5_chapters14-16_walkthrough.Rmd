@@ -991,19 +991,49 @@ flights_dt %>%
 
 ### 4. How does the average delay time change over the course of a day? Should you use dep_time or sched_dep_time? Why?
 
-Use the floor_date() function to group observations based on hour, then group by this parameter. Use this to calculate the average dep_delay per hour over the year. Plot using geom_line().
+Use the update() function to group observations based on hour, then group by this parameter. Use this to calculate the average dep_delay per hour over the year. Plot using geom_line(). This can also be achieved using date-time components function hour(), although the graph looks "smoothened" because there are only 24 points to connect rather than 1318.
 
 ```{r}
 flights_dt %>% 
-  mutate ( floor_hour = floor_date(dep_time, "hour") )%>%
-  group_by(floor_hour) %>%
+  mutate ( dep_hour = update(dep_time, yday = 1) )%>%
+  group_by(dep_hour) %>%
   summarize(avg_delay_hour = mean(dep_delay, na.rm = T)) %>% 
-  ggplot(aes(floor_hour, avg_delay_hour)) +
+  ggplot(aes(dep_hour, avg_delay_hour)) +
+    geom_line()
+flights_dt %>% 
+  mutate ( dep_hour = update(sched_dep_time, yday = 1) )%>%
+  group_by(dep_hour) %>%
+  summarize(avg_delay_hour = mean(dep_delay, na.rm = T)) %>% 
+  ggplot(aes(dep_hour, avg_delay_hour)) +
+    geom_line()
+
+flights_dt %>% 
+  mutate ( dep_hour = hour(dep_time) )%>%
+  group_by(dep_hour) %>%
+  summarize(avg_delay_hour = mean(dep_delay, na.rm = T)) %>% 
+  ggplot(aes(dep_hour, avg_delay_hour)) +
+    geom_line()
+flights_dt %>% 
+  mutate ( dep_hour = minute(dep_time) )%>%
+  group_by(dep_hour) %>%
+  summarize(avg_delay_hour = mean(dep_delay, na.rm = T)) %>% 
+  ggplot(aes(dep_hour, avg_delay_hour)) +
     geom_line()
 ```
 
 
 ### 5. On what day of the week should you leave if you want to minimise the chance of a delay?
+
+
+
+```{r}
+flights_dt %>% 
+  mutate(wday = wday(dep_time, label = TRUE)) %>% 
+  group_by(wday) %>%
+  summarize ( avg_delay_week = mean(dep_delay, na.rm = T))
+```
+
+
 
 ### 6. What makes the distribution of diamonds$carat and flights$sched_dep_time similar?
 
