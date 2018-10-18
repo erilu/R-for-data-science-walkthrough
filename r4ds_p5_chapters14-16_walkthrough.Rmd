@@ -779,7 +779,7 @@ ggplot(gss_cat, aes(partyid)) +
 
 You can find out with a table by using dplyr commands, first grouping by denom, then finding the proportion of each religion within a denom. To find out with a visualization, you can use an aesthetic mapping in ggplot2 to fill in a barplot with colors based on the relig. To make the proportion easier to see, you can specify position = "fill".
 
-```{r}
+```{r denom_relig_visualization}
 
 gss_cat %>%
   group_by (denom, relig) %>%
@@ -801,7 +801,7 @@ ggplot(gss_cat, aes(denom)) +
 
 If there are very high outliers in any distribution, the mean will be inflated. Since the mean is the average of the numbers, any extremely high numbers will increase the mean. Therefore, the mean is not a good summary. In this instance, the median may give a better measure of where the data is centered. It is always a good idea to be aware of what types of outliers exist in your data. Plotting a histogram of ```tvhours``` below, we can see that in some cases there are over 20 hours of tv! The distribution is skewed to the right.
 
-```{r}
+```{r tvhours_distribution}
 ggplot(gss_cat, aes (tvhours)) +
   geom_histogram()
 ```
@@ -837,7 +837,7 @@ levels(fct_relevel(gss_cat$rincome, "Not applicable"))
 
 To answer this, first lump together all the Democrat-associated categories into one category named "All Democrats", and likewise for Republican and Independent. Then, we can plot the change in the number of people that associate with these categories over time.
 
-```{r}
+```{r proportion_by_partyid}
 gss_cat %>%
   mutate(partyid = fct_recode(partyid,
     "Republican"    = "Strong republican",
@@ -953,7 +953,9 @@ flights_dt
 
 ### 1. How does the distribution of flight times within a day change over the course of the year?
 
-```{r}
+Within a day, we want to observe how the flight times differ. This means we should look at how flight times differ by the hour (ie how many flights are taking off at every hour of the day). Now, we want to see how this behavior changes over the course of the year (ie how does this graph look like when plotted monthly)?
+
+```{r dist_flight_within_day}
 flights_dt %>% 
   mutate(yday = yday(dep_time)) %>% 
   ggplot(aes(x = yday)) +
@@ -991,53 +993,69 @@ flights_dt %>%
 
 ### 4. How does the average delay time change over the course of a day? Should you use dep_time or sched_dep_time? Why?
 
-Use the update() function to group observations based on hour, then group by this parameter. Use this to calculate the average dep_delay per hour over the year. Plot using geom_line(). This can also be achieved using date-time components function hour(), although the graph looks "smoothened" because there are only 24 points to connect rather than 1318.
+Use the hour() function to group observations based on hour, then group by this parameter. Use this to calculate the average dep_delay per hour over the year. Plot using geom_line(). This can also be achieved using date-time components function update(), although this would change the number of points connected on the graph. I've plotted both results using either dep_time or sched_dep_time. You should use sched_dep_time instead of dep_time since this will tell you which scheduled flights might have a higher chance of being delayed. We observe that flights scheduled later on during the day have higher chances of being delayed, with a peak around hour 20 (8pm). Organizing by dep_time will let you know what time of the day most of the flights are delayed, which will intuitively occur later than the scheduled time as the flights start backing up. We observe that this is indeed the case, in which the peak of the late flights for dep_time occurs after the peak for the sched_dep_time plot, in which the flights are now delayed past midnight.
 
-```{r}
+```{r avg_delay_over_day}
+
 flights_dt %>% 
-  mutate ( dep_hour = update(dep_time, yday = 1) )%>%
+  mutate ( dep_hour = hour(sched_dep_time) )%>%
   group_by(dep_hour) %>%
   summarize(avg_delay_hour = mean(dep_delay, na.rm = T)) %>% 
   ggplot(aes(dep_hour, avg_delay_hour)) +
     geom_line()
-flights_dt %>% 
-  mutate ( dep_hour = update(sched_dep_time, yday = 1) )%>%
-  group_by(dep_hour) %>%
-  summarize(avg_delay_hour = mean(dep_delay, na.rm = T)) %>% 
-  ggplot(aes(dep_hour, avg_delay_hour)) +
-    geom_line()
-
 flights_dt %>% 
   mutate ( dep_hour = hour(dep_time) )%>%
   group_by(dep_hour) %>%
   summarize(avg_delay_hour = mean(dep_delay, na.rm = T)) %>% 
   ggplot(aes(dep_hour, avg_delay_hour)) +
     geom_line()
-flights_dt %>% 
-  mutate ( dep_hour = minute(dep_time) )%>%
-  group_by(dep_hour) %>%
-  summarize(avg_delay_hour = mean(dep_delay, na.rm = T)) %>% 
-  ggplot(aes(dep_hour, avg_delay_hour)) +
-    geom_line()
+
 ```
 
 
 ### 5. On what day of the week should you leave if you want to minimise the chance of a delay?
 
-
+To find days of the week that have the lowest average delay, first assign a day to each observation using wday(). Then group by the day of the week, and use summarize() to find the average delay time on for each day of the week. We see that Saturday has the lowest average delay at 7.61, and on average the flights even arrive earlier than expected!
 
 ```{r}
 flights_dt %>% 
-  mutate(wday = wday(dep_time, label = TRUE)) %>% 
+  mutate(wday = wday(sched_dep_time, label = TRUE)) %>% 
   group_by(wday) %>%
-  summarize ( avg_delay_week = mean(dep_delay, na.rm = T))
+  summarize ( avg_dep_delay_week = mean(dep_delay, na.rm = TRUE),
+              avg_arr_delay_week = mean(arr_delay, na.rm = TRUE))
 ```
-
-
 
 ### 6. What makes the distribution of diamonds$carat and flights$sched_dep_time similar?
 
+Let's first examine the distribution of each of these datasets, using histograms. We observe that there are no diamonds with a carat of 0, likewise there are no sched_dep_times with a value of 0. However the distribution of values between the two datasets is actually not very similar just by initial observation. The carat values are skewed to the right, but the sched_dep_time is not. I suppose one could argue that there are more flights with an earlier sched_dep_time, and likewise there are more diamonds with a low carat value.
+
+```{r dist_carat_vs_sched_dep_time}
+ggplot (diamonds, aes(x = carat)) +
+  geom_histogram()
+
+ggplot (flights, aes(x = sched_dep_time)) +
+  geom_histogram()
+
+```
+
+
 ### 7. Confirm my hypothesis that the early departures of flights in minutes 20-30 and 50-60 are caused by scheduled flights that leave early. Hint: create a binary variable that tells you whether or not a flight was delayed.
+
+To test this hypothesis, we need to see whether the total number of flights that departed early was increased during minutes 20-30 and 50-60. If this is true, then his hypothesis is supported. If this is not true, then maybe other factors are contributing more significantly to the lower flight delays during these time slots. To figure this out, we first use mutate() and ifelse() to assign whether or not a flight left early using TRUE or FALSE. Then, grouping by minute, we can count the number of flights that left early using sum(), and plot this value using ggplot(). We observe that there are indeed more flights leaving early during the 20-30 and 50-60 time slots (the graph looks like and inverted plot of the avg_delay by minute graph).
+
+```{r early_flights_by_min}
+flights_dt %>% 
+  mutate(minute = minute(dep_time),
+         early = ifelse(dep_delay>=0, FALSE, TRUE)) %>% 
+  group_by(minute) %>% 
+  summarise(
+    avg_delay = mean(arr_delay, na.rm = TRUE),
+    num_flights_early = sum(early),
+    n = n()) %>% 
+  ggplot(aes(minute, num_flights_early)) +
+    geom_line()
+```
+
 
 
 ## 16.4.5 Exercises
