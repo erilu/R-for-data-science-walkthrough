@@ -953,13 +953,26 @@ flights_dt
 
 ### 1. How does the distribution of flight times within a day change over the course of the year?
 
-Within a day, we want to observe how the flight times differ. This means we should look at how flight times differ by the hour (ie how many flights are taking off at every hour of the day). Now, we want to see how this behavior changes over the course of the year (ie how does this graph look like when plotted monthly)?
+Within a day, we want to observe how the flight times differ. This means we should look at how flight times differ by the hour (ie how many flights are taking off at every hour of the day). Now, we want to see how this behavior changes over the course of the year (ie how does this graph look like when plotted monthly)? We observe that the distribution of flights within a day does not significantly change over the course of the year. The same trend is followed in which there is a peak of flights around 8am, a dip in flights from 10am-12pm, and then a slow drop off in number of flights past 7pm.
 
 ```{r dist_flight_within_day}
+# flights per hour for the entire year
 flights_dt %>% 
-  mutate(yday = yday(dep_time)) %>% 
-  ggplot(aes(x = yday)) +
-    geom_freqpoly()
+  mutate(hour = hour(dep_time)) %>%
+  group_by(hour)%>%
+  summarize(numflights_per_hour = n())%>%
+  ggplot(aes(x = hour, y = numflights_per_hour)) +
+    geom_line()
+# split the above graph into months
+
+flights_dt %>% 
+  mutate(hour = hour(dep_time),
+         month = as.factor(month(dep_time))) %>%
+  group_by(month,hour)%>%
+  summarize(numflights_per_hour = n())%>%
+  ggplot(aes(x = hour, y = numflights_per_hour)) +
+    geom_line(aes(color = month))
+
 ```
 
 
@@ -1062,9 +1075,33 @@ flights_dt %>%
 
 ### 1. Why is there months() but no dmonths()?
 
+Durations must be standardized lengths of time. There is no dmonths() since months do not have a standard number of days. For example, February has a shorter number of days than January.
+
 ### 2. Explain days(overnight * 1) to someone who has just started learning R. How does it work?
 
+The days() function converts the input into a datetime, for example, days(5) returns "5d 0H 0M 0S". In this case, the input is ```overnight * 1```. The variable ```overnight``` corresponds to the output of ```arr_time < dep_time```, which is evaluated as a boolean (TRUE or FALSE). The multiplication with 1 will cause TRUE or FALSE to be converted to 1 or 0. Thus, days(overnight *1) will give you either 0 or 1 days in datetime form, which can then be added to arr_time.
+
+
+```{r}
+# proof of concepts
+days(5)
+TRUE*1
+FALSE*1
+days(1) + days (TRUE *1)
+
+# Example from text using days (overnight * 1)
+flights_dt <- flights_dt %>% 
+  mutate(
+    overnight = arr_time < dep_time,
+    arr_time = arr_time + days(overnight * 1),
+    sched_arr_time = sched_arr_time + days(overnight * 1)
+  )
+
+```
+
 ### 3. Create a vector of dates giving the first day of every month in 2015. Create a vector of dates giving the first day of every month in the current year.
+
+
 
 ### 4. Write a function that given your birthday (as a date), returns how old you are in years.
 
