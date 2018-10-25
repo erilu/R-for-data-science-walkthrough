@@ -1040,14 +1040,18 @@ flights_dt %>%
 
 ### 6. What makes the distribution of diamonds$carat and flights$sched_dep_time similar?
 
-Let's first examine the distribution of each of these datasets, using histograms. We observe that there are no diamonds with a carat of 0, likewise there are no sched_dep_times with a value of 0. However the distribution of values between the two datasets is actually not very similar just by initial observation. The carat values are skewed to the right, but the sched_dep_time is not. I suppose one could argue that there are more flights with an earlier sched_dep_time, and likewise there are more diamonds with a low carat value.
+Let's first examine the distribution of each of these datasets, using histograms. Using just the default value for binwidth, there is no apparent similarity between the distribution of values between the two datasets upon initial observation. The carat values are skewed to the right, but the sched_dep_time is not. I suppose one could argue that there are more flights with an earlier sched_dep_time, and likewise there are more diamonds with a low carat value. However, if we bin the values using smaller binwidth, we observe "spikes" of values in both datasets. This "spike" phenomenon occurs at carat 1, 1.5, 2, etc. and around flight times near the hour. This is likely an example of human "bias" for flights leaving at "nice" departure times, as mentioned by Hadley.
 
 ```{r dist_carat_vs_sched_dep_time}
 ggplot (diamonds, aes(x = carat)) +
   geom_histogram()
-
 ggplot (flights, aes(x = sched_dep_time)) +
   geom_histogram()
+
+ggplot (diamonds, aes(x = carat)) +
+  geom_freqpoly(binwidth = 0.1)
+ggplot (flights, aes(x = sched_dep_time)) +
+  geom_freqpoly(binwidth = 10)
 
 ```
 
@@ -1101,11 +1105,29 @@ flights_dt <- flights_dt %>%
 
 ### 3. Create a vector of dates giving the first day of every month in 2015. Create a vector of dates giving the first day of every month in the current year.
 
+To do this, we can use ymd() to create a date for January 1, 2015. Then we can add this to a vector of months in order to generate a vector of 1st days for every month in that year. To do the first day of everymonth for the current year, we should write code that will work no matter what year you run it. To do this, we can use the today() function to get todays date, then extract the year from this date. This can be done two ways. You can either use floor_date(), which can round the date to the nearest year if specified. Or, since the date object can be manipulated like a string, you can use substr() to extract the first 4 characters (the year), then use str_c() to add "-01-01" which will create "january 1st"" for the current year. Then we can add the vector of months as we did previously to get the vector of dates giving the first day of every month in the current year.
+
+```{r}
+first_days_2015 <- ymd('2015-01-01') + months(seq(0,11,1)) # months(0:11) also works
+first_days_2015
+
+# do it using strings, extracting the year from today()
+jan01_current <- str_c(substr(today(),1,4), "-01-01")
+ymd(jan01_current) + months(0:11)
+
+# do it using floor_date() to round today() to the current year
+floor_date(today(), "year") + months(0:11)
+
+```
+
 
 
 ### 4. Write a function that given your birthday (as a date), returns how old you are in years.
 
 ### 5. Why can’t (today() %--% (today() + years(1)) / months(1) work?
+
+
+
 
 ---
 
