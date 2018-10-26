@@ -1121,13 +1121,35 @@ floor_date(today(), "year") + months(0:11)
 ```
 
 
-
 ### 4. Write a function that given your birthday (as a date), returns how old you are in years.
+
+We can use intervals as described in the chapter to make this work. Another way is to extract the year by taking the first four characters of the date using substr, converting to integer, then subtracting the result from today() from the result from your birthday. However this wouldnt work if you were born prior to year 1000, or if today() was past year 9999. Given that this code probably wont be used in either of these cases, I'd say we're OK here.
+
+```{r}
+
+date <- ymd("1992-01-01")
+
+# method 1
+get_age_interval <- function(birthday) {
+  return( (birthday %--% today()) %/% years(1)   )
+}
+get_age_interval(date)
+
+# method 2
+get_age_string <- function(birthday) {
+  return(as.integer(substr(today(),1,4)) - as.integer(substr(birthday,1,4)))
+}
+get_age_string(date)
+
+```
 
 ### 5. Why can’t (today() %--% (today() + years(1)) / months(1) work?
 
+Aside from the missing parenthesis after "years(1))", this code doesn't throw any errors. It seems to work with either the / or %/% operators. Might be a version issue. We are adding one year interval to todays date, then calculating how many months there are between todays date and 1 year from today, which should be 12. The code returns the value 12.
 
-
+```{r}
+(today() %--% (today() + years(1))) / months(1)
+```
 
 ---
 
