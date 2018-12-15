@@ -1,0 +1,409 @@
+---
+title: "R for Data Science Walkthrough Chapters 17-21"
+author: "Erick Lu"
+output:
+  github_document:
+    html_preview: false
+    toc: true
+    toc_depth: 2
+    fig_width: 5
+    fig_height: 3.5
+---
+
+This my walkthrough for chapters 17-21 for the book: _R for Data Science_ by Hadley Wickham and Garrett Grolemund. Here I provide solutions to their exercises and some of my own notes and explorations.
+
+# Chapter 17, 18 - No Exercises
+
+# Chapter 19: Functions
+
+Learn about unit testing your functions - http://r-pkgs.had.co.nz/tests.html.
+
+## 19.2.1 Practice
+
+### 1. Why is TRUE not a parameter to rescale01()? What would happen if x contained a single missing value, and na.rm was FALSE?
+
+TRUE is not a parameter to rescale01() because it is an option for one of the arguments in the range() function. It can be specified within the function itself rather than having to be passed in as a function parameter. If na.rm was FALSE, NA values would not be "removed" from the analysis, and the function would produce a vector of NA values. Below, I show an example what would happen if na.rm was FALSE and a vector with an NA value was used.
+
+```{r}
+
+rescale01 <- function(x) {
+  rng <- range(x, na.rm = TRUE)
+  (x - rng[1]) / (rng[2] - rng[1])
+}
+
+rescale01_FALSE <- function(x) {
+  rng <- range(x, na.rm = FALSE)
+  (x - rng[1]) / (rng[2] - rng[1])
+}
+
+test <- c(1,2,3,NA,4,5)
+
+rescale01(test)
+rescale01_FALSE(test)
+
+
+
+```
+
+
+### 2. In the second variant of rescale01(), infinite values are left unchanged. Rewrite rescale01() so that -Inf is mapped to 0, and Inf is mapped to 1.
+
+To map Inf to 1 and -Inf to 0, we can search for the indicies which have these values and assign 0 or 1 accordingly, using the which() function in base R. We then return the modified vector using return().
+
+```{r}
+x <- c(1:10,Inf, c(1:3), Inf, c(1:5), -Inf)
+rescale01_mapInf <- function(x) {
+rng <- range(x, na.rm = TRUE, finite = TRUE) 
+x <- (x - rng[1]) / (rng[2] - rng[1])
+x[which(x==Inf)] <- 1
+x[which(x==-Inf)] <- 0
+return (x)
+}
+rescale01_mapInf(x)
+```
+
+
+### 3. Practice turning the following code snippets into functions. Think about what each function does. What would you call it? How many arguments does it need? Can you rewrite it to be more expressive or less duplicative?
+
+mean(is.na(x)) is a snippet that calculates what proportion of the values in a vector are NA values. is.na(x) will return a boolean for each value in x (FALSE if not NA, TRUE if NA). TRUE is 1 and FALSE is 0 when used in mean().
+
+```{r}
+x = c(1:5, NA, 1:2, NA, 1:3)
+mean(is.na(x))
+# rewrite the snippet into a function
+proportion_na <- function (x) {
+  sum(is.na(x))/length(x)
+}
+# see if the function output matches the snippet
+proportion_na(x)
+```
+
+x / sum(x, na.rm = TRUE) is a snippet that divides each of the values in X by the total sum of the non-NA values in x.
+
+```{r}
+x / sum(x, na.rm = TRUE)
+
+divide_by_sum <- function (x) {
+  x / sum(x, na.rm = TRUE)
+}
+divide_by_sum(x)
+
+```
+
+sd(x, na.rm = TRUE) / mean(x, na.rm = TRUE) is a snippet that divides the standard deviation of the values in x by the mean of the values in x.
+
+```{r}
+sd(x, na.rm = TRUE) / mean(x, na.rm = TRUE)
+
+sd_div_mean <- function (x) {
+  sd(x, na.rm = TRUE) / mean(x, na.rm = TRUE)
+}
+sd_div_mean(x)
+```
+Each of the functions only requires x as an input argument.
+
+### 4. Follow http://nicercode.github.io/intro/writing-functions.html to write your own functions to compute the variance and skew of a numeric vector.
+
+```{r}
+sample_vector 
+```
+
+
+### 5. Write both_na(), a function that takes two vectors of the same length and returns the number of positions that have an NA in both vectors.
+
+### 6. What do the following functions do? Why are they useful even though they are so short?
+
+```{r}
+is_directory <- function(x) file.info(x)$isdir
+is_readable <- function(x) file.access(x, 4) == 0
+```
+
+
+### 7. Read the complete lyrics to “Little Bunny Foo Foo”. There’s a lot of duplication in this song. Extend the initial piping example to recreate the complete song, and use functions to reduce the duplication.
+
+
+## 19.3.1 Exercises
+
+### 1. Read the source code for each of the following three functions, puzzle out what they do, and then brainstorm better names.
+
+```{r}
+f1 <- function(string, prefix) {
+  substr(string, 1, nchar(prefix)) == prefix
+}
+f2 <- function(x) {
+  if (length(x) <= 1) return(NULL)
+  x[-length(x)]
+}
+f3 <- function(x, y) {
+  rep(y, length.out = length(x))
+}
+```
+
+### 2. Take a function that you’ve written recently and spend 5 minutes brainstorming a better name for it and its arguments.
+
+### 3. Compare and contrast rnorm() and MASS::mvrnorm(). How could you make them more consistent?
+
+### 4. Make a case for why norm_r(), norm_d() etc would be better than rnorm(), dnorm(). Make a case for the opposite.
+
+## 19.4.4 Exercises
+
+### 1. What’s the difference between if and ifelse()? Carefully read the help and construct three examples that illustrate the key differences.
+
+### 2. Write a greeting function that says “good morning”, “good afternoon”, or “good evening”, depending on the time of day. (Hint: use a time argument that defaults to lubridate::now(). That will make it easier to test your function.)
+
+### 3. Implement a fizzbuzz function. It takes a single number as input. If the number is divisible by three, it returns “fizz”. If it’s divisible by five it returns “buzz”. If it’s divisible by three and five, it returns “fizzbuzz”. Otherwise, it returns the number. Make sure you first write working code before you create the function.
+
+### 4. How could you use cut() to simplify this set of nested if-else statements?
+
+```{r}
+if (temp <= 0) {
+  "freezing"
+} else if (temp <= 10) {
+  "cold"
+} else if (temp <= 20) {
+  "cool"
+} else if (temp <= 30) {
+  "warm"
+} else {
+  "hot"
+}
+```
+
+How would you change the call to cut() if I’d used < instead of <=? What is the other chief advantage of cut() for this problem? (Hint: what happens if you have many values in temp?)
+
+### 5. What happens if you use switch() with numeric values?
+
+### 6. What does this switch() call do? What happens if x is “e”?
+
+```{r}
+switch(x, 
+  a = ,
+  b = "ab",
+  c = ,
+  d = "cd"
+)
+```
+
+Experiment, then carefully read the documentation.
+
+
+## 19.5.5 Exercises
+
+### 1. What does commas(letters, collapse = "-") do? Why?
+
+### 2. It’d be nice if you could supply multiple characters to the pad argument, e.g. rule("Title", pad = "-+"). Why doesn’t this currently work? How could you fix it?
+
+### 3. What does the trim argument to mean() do? When might you use it?
+
+### 4. The default value for the method argument to cor() is c("pearson", "kendall", "spearman"). What does that mean? What value is used by default?
+
+
+# Chapter 20: Vectors
+
+
+## 20.3.5 Exercises
+
+### 1. Describe the difference between is.finite(x) and !is.infinite(x).
+
+### 2. Read the source code for dplyr::near() (Hint: to see the source code, drop the ()). How does it work?
+
+### 3. A logical vector can take 3 possible values. How many possible values can an integer vector take? How many possible values can a double take? Use google to do some research.
+
+### 4. Brainstorm at least four functions that allow you to convert a double to an integer. How do they differ? Be precise.
+
+### 5. What functions from the readr package allow you to turn a string into logical, integer, and double vector?
+
+
+## 20.4.6 Exercises
+
+### 1. What does mean(is.na(x)) tell you about a vector x? What about sum(!is.finite(x))?
+
+### 2. Carefully read the documentation of is.vector(). What does it actually test for? Why does is.atomic() not agree with the definition of atomic vectors above?
+
+### 3. Compare and contrast setNames() with purrr::set_names().
+
+### 4. Create functions that take a vector as input and returns:
+
+* The last value. Should you use [ or [[?
+
+* The elements at even numbered positions.
+
+* Every element except the last value.
+
+* Only even numbers (and no missing values).
+
+### 5. Why is x[-which(x > 0)] not the same as x[x <= 0]?
+
+### 6. What happens when you subset with a positive integer that’s bigger than the length of the vector? What happens when you subset with a name that doesn’t exist?
+
+
+## 20.5.4 Exercises
+### 1. Draw the following lists as nested sets:
+
+* list(a, b, list(c, d), list(e, f))
+* list(list(list(list(list(list(a))))))
+
+### 2. What happens if you subset a tibble as if you’re subsetting a list? What are the key differences between a list and a tibble?
+
+
+## 20.7.4 Exercises
+
+### 1. What does hms::hms(3600) return? How does it print? What primitive type is the augmented vector built on top of? What attributes does it use?
+
+### 2. Try and make a tibble that has columns with different lengths. What happens?
+
+### 3. Based on the definition above, is it ok to have a list as a column of a tibble?
+
+# Chapter 21
+
+## 21.2.1 Exercises
+
+### 3. Write for loops to:
+
+* Compute the mean of every column in mtcars.
+* Determine the type of each column in nycflights13::flights.
+* Compute the number of unique values in each column of iris.
+* Generate 10 random normals for each of μ=−10,0,10, and 100.
+
+Think about the output, sequence, and body before you start writing the loop.
+
+### 3. Eliminate the for loop in each of the following examples by taking advantage of an existing function that works with vectors:
+```{r}
+out <- ""
+for (x in letters) {
+  out <- stringr::str_c(out, x)
+}
+
+x <- sample(100)
+sd <- 0
+for (i in seq_along(x)) {
+  sd <- sd + (x[i] - mean(x)) ^ 2
+}
+sd <- sqrt(sd / (length(x) - 1))
+
+x <- runif(100)
+out <- vector("numeric", length(x))
+out[1] <- x[1]
+for (i in 2:length(x)) {
+  out[i] <- out[i - 1] + x[i]
+}
+```
+
+
+### 3. Combine your function writing and for loop skills:
+
+* Write a for loop that prints() the lyrics to the children’s song “Alice the camel”.
+
+* Convert the nursery rhyme “ten in the bed” to a function. Generalise it to any number of people in any sleeping structure.
+
+* Convert the song “99 bottles of beer on the wall” to a function. Generalise to any number of any vessel containing any liquid on any surface.
+
+### 3. It’s common to see for loops that don’t preallocate the output and instead increase the length of a vector at each step:
+```{r}
+output <- vector("integer", 0)
+for (i in seq_along(x)) {
+  output <- c(output, lengths(x[[i]]))
+}
+output
+```
+
+
+How does this affect performance? Design and execute an experiment.
+
+
+
+## 21.3.5 Exercises
+### 1. Imagine you have a directory full of CSV files that you want to read in. You have their paths in a vector, files <- dir("data/", pattern = "\\.csv$", full.names = TRUE), and now want to read each one with read_csv(). Write the for loop that will load them into a single data frame.
+
+### 2. What happens if you use for (nm in names(x)) and x has no names? What if only some of the elements are named? What if the names are not unique?
+
+### 3. Write a function that prints the mean of each numeric column in a data frame, along with its name. For example, show_mean(iris) would print:
+```{r}
+
+show_mean(iris)
+#> Sepal.Length: 5.84
+#> Sepal.Width:  3.06
+#> Petal.Length: 3.76
+#> Petal.Width:  1.20
+```
+
+(Extra challenge: what function did I use to make sure that the numbers lined up nicely, even though the variable names had different lengths?)
+
+### 4. What does this code do? How does it work?
+```{r}
+trans <- list( 
+  disp = function(x) x * 0.0163871,
+  am = function(x) {
+    factor(x, labels = c("auto", "manual"))
+  }
+)
+for (var in names(trans)) {
+  mtcars[[var]] <- trans[[var]](mtcars[[var]])
+}
+```
+
+
+## 21.4.1 Exercises
+
+### 1. Read the documentation for apply(). In the 2d case, what two for loops does it generalise?
+
+### 2. Adapt col_summary() so that it only applies to numeric columns You might want to start with an is_numeric() function that returns a logical vector that has a TRUE corresponding to each numeric column.
+
+
+## 21.5.3 Exercises
+### 1. Write code that uses one of the map functions to:
+
+* Compute the mean of every column in mtcars.
+* Determine the type of each column in nycflights13::flights.
+* Compute the number of unique values in each column of iris.
+* Generate 10 random normals for each of μ=−10,0,10, and 100.
+
+### 2. How can you create a single vector that for each column in a data frame indicates whether or not it’s a factor?
+
+### 3. What happens when you use the map functions on vectors that aren’t lists? What does map(1:5, runif) do? Why?
+
+### 4. What does map(-2:2, rnorm, n = 5) do? Why? What does map_dbl(-2:2, rnorm, n = 5) do? Why?
+
+### 5. Rewrite map(x, function(df) lm(mpg ~ wt, data = df)) to eliminate the anonymous function.
+
+
+
+## 21.9.3 Exercises
+
+### 1. Implement your own version of every() using a for loop. Compare it with purrr::every(). What does purrr’s version do that your version doesn’t?
+
+### 2. Create an enhanced col_summary() that applies a summary function to every numeric column in a data frame.
+
+### 3. A possible base R equivalent of col_summary() is:
+```{r}
+col_sum3 <- function(df, f) {
+  is_num <- sapply(df, is.numeric)
+  df_num <- df[, is_num]
+
+  sapply(df_num, f)
+}
+```
+
+But it has a number of bugs as illustrated with the following inputs:
+```{r}
+df <- tibble(
+  x = 1:3, 
+  y = 3:1,
+  z = c("a", "b", "c")
+)
+# OK
+col_sum3(df, mean)
+# Has problems: don't always return numeric vector
+col_sum3(df[1:2], mean)
+col_sum3(df[1], mean)
+col_sum3(df[0], mean)
+```
+
+What causes the bugs?
+
+# Chapter 22 - No Exercises
+
+
+---
+
+Thanks for reading! I hope you found my solutions to the exercises informative. A walkthrough of chapters 22 - 30 can be found at [r4ds_p7_chapters22-30_walkthrough.md](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_p7_chapters22-30_walkthrough.md).

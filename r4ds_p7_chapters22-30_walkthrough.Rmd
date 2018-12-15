@@ -1,0 +1,243 @@
+---
+title: "R for Data Science Walkthrough Chapters 22-30"
+author: "Erick Lu"
+output:
+  github_document:
+    html_preview: false
+    toc: true
+    toc_depth: 2
+    fig_width: 5
+    fig_height: 3.5
+---
+
+This my walkthrough for chapters 22-30 for the book: _R for Data Science_ by Hadley Wickham and Garrett Grolemund. Here I provide solutions to their exercises and some of my own notes and explorations.
+
+# Chapter 22 - No Exercises
+
+# Chapter 23
+
+## 23.2.1 Exercises
+
+### 1. One downside of the linear model is that it is sensitive to unusual values because the distance incorporates a squared term. Fit a linear model to the simulated data below, and visualise the results. Rerun a few times to generate different simulated datasets. What do you notice about the model?
+```{r}
+sim1a <- tibble(
+  x = rep(1:10, each = 3),
+  y = x * 1.5 + 6 + rt(length(x), df = 2)
+)
+```
+
+
+### 2. One way to make linear models more robust is to use a different distance measure. For example, instead of root-mean-squared distance, you could use mean-absolute distance:
+```{r}
+measure_distance <- function(mod, data) {
+  diff <- data$y - model1(mod, data)
+  mean(abs(diff))
+}
+```
+
+Use optim() to fit this model to the simulated data above and compare it to the linear model.
+
+### 3. One challenge with performing numerical optimisation is that it’s only guaranteed to find one local optimum. What’s the problem with optimising a three parameter model like this?
+```{r}
+model1 <- function(a, data) {
+  a[1] + data$x * a[2] + a[3]
+}
+```
+
+
+## 23.3.3 Exercises
+### 1. Instead of using lm() to fit a straight line, you can use loess() to fit a smooth curve. Repeat the process of model fitting, grid generation, predictions, and visualisation on sim1 using loess() instead of lm(). How does the result compare to geom_smooth()?
+
+### 2. add_predictions() is paired with gather_predictions() and spread_predictions(). How do these three functions differ?
+
+### 3. What does geom_ref_line() do? What package does it come from? Why is displaying a reference line in plots showing residuals useful and important?
+
+### 4. Why might you want to look at a frequency polygon of absolute residuals? What are the pros and cons compared to looking at the raw residuals?
+
+## 23.4.5 Exercises
+### 1. What happens if you repeat the analysis of sim2 using a model without an intercept. What happens to the model equation? What happens to the predictions?
+
+### 2. Use model_matrix() to explore the equations generated for the models I fit to sim3 and sim4. Why is * a good shorthand for interaction?
+
+### 3. Using the basic principles, convert the formulas in the following two models into functions. (Hint: start by converting the categorical variable into 0-1 variables.)
+```{r}
+
+mod1 <- lm(y ~ x1 + x2, data = sim3)
+mod2 <- lm(y ~ x1 * x2, data = sim3)
+```
+
+
+### 4. For sim4, which of mod1 and mod2 is better? I think mod2 does a slightly better job at removing patterns, but it’s pretty subtle. Can you come up with a plot to support my claim?
+
+# Chapter 24
+
+## 24.2.3 Exercises
+### 1. In the plot of lcarat vs. lprice, there are some bright vertical strips. What do they represent?
+
+### 2. If log(price) = a_0 + a_1 * log(carat), what does that say about the relationship between price and carat?
+
+### 3. Extract the diamonds that have very high and very low residuals. Is there anything unusual about these diamonds? Are they particularly bad or good, or do you think these are pricing errors?
+
+### 4. Does the final model, mod_diamond2, do a good job of predicting diamond prices? Would you trust it to tell you how much to spend if you were buying a diamond?
+
+
+## 24.3.5 Exercises
+### 1. Use your Google sleuthing skills to brainstorm why there were fewer than expected flights on Jan 20, May 26, and Sep 1. (Hint: they all have the same explanation.) How would these days generalise to another year?
+
+### 2. What do the three days with high positive residuals represent? How would these days generalise to another year?
+```{r}
+daily %>% 
+  top_n(3, resid)
+#> # A tibble: 3 x 5
+#>   date           n wday  resid term 
+#>   <date>     <int> <ord> <dbl> <fct>
+#> 1 2013-11-30   857 Sat   112.  fall 
+#> 2 2013-12-01   987 Sun    95.5 fall 
+#> 3 2013-12-28   814 Sat    69.4 fall
+```
+
+### 3. Create a new variable that splits the wday variable into terms, but only for Saturdays, i.e. it should have Thurs, Fri, but Sat-summer, Sat-spring, Sat-fall. How does this model compare with the model with every combination of wday and term?
+
+### 4. Create a new wday variable that combines the day of week, term (for Saturdays), and public holidays. What do the residuals of that model look like?
+
+### 5. What happens if you fit a day of week effect that varies by month (i.e. n ~ wday * month)? Why is this not very helpful?
+
+### 6. What would you expect the model n ~ wday + ns(date, 5) to look like? Knowing what you know about the data, why would you expect it to be not particularly effective?
+
+### 7. We hypothesised that people leaving on Sundays are more likely to be business travellers who need to be somewhere on Monday. Explore that hypothesis by seeing how it breaks down based on distance and time: if it’s true, you’d expect to see more Sunday evening flights to places that are far away.
+
+### 8. It’s a little frustrating that Sunday and Saturday are on separate ends of the plot. Write a small function to set the levels of the factor so that the week starts on Monday.
+
+## 25.2.5 Exercises
+### 1. A linear trend seems to be slightly too simple for the overall trend. Can you do better with a quadratic polynomial? How can you interpret the coefficients of the quadratic? (Hint you might want to transform year so that it has mean zero.)
+
+### 2. Explore other methods for visualising the distribution of R2 per continent. You might want to try the ggbeeswarm package, which provides similar methods for avoiding overlaps as jitter, but uses deterministic methods.
+
+### 3. To create the last plot (showing the data for the countries with the worst model fits), we needed two steps: we created a data frame with one row per country and then semi-joined it to the original dataset. It’s possible to avoid this join if we use unnest() instead of unnest(.drop = TRUE). How?
+
+# Chapter 25
+
+## 25.4.5 Exercises
+### 1. List all the functions that you can think of that take a atomic vector and return a list.
+
+### 2. Brainstorm useful summary functions that, like quantile(), return multiple values.
+
+### 3. What’s missing in the following data frame? How does quantile() return that missing piece? Why isn’t that helpful here?
+```{r}
+mtcars %>% 
+  group_by(cyl) %>% 
+  summarise(q = list(quantile(mpg))) %>% 
+  unnest()
+#> # A tibble: 15 x 2
+#>     cyl     q
+#>   <dbl> <dbl>
+#> 1     4  21.4
+#> 2     4  22.8
+#> 3     4  26  
+#> 4     4  30.4
+#> 5     4  33.9
+#> 6     6  17.8
+#> # ... with 9 more rows
+```
+
+### 4. What does this code do? Why might might it be useful?
+```{r}
+mtcars %>% 
+  group_by(cyl) %>% 
+  summarise_each(funs(list))
+```
+
+## 25.5.3 Exercises
+### 1. Why might the lengths() function be useful for creating atomic vector columns from list-columns?
+
+### 2. List the most common types of vector found in a data frame. What makes lists different?
+
+
+
+
+# Chapter 26 - No Exercises
+
+# Chapter 27
+
+## 27.2.1 Exercises
+### 1. Create a new notebook using File > New File > R Notebook. Read the instructions. Practice running the chunks. Verify that you can modify the code, re-run it, and see modified output.
+
+### 2. Create a new R Markdown document with File > New File > R Markdown… Knit it by clicking the appropriate button. Knit it by using the appropriate keyboard short cut. Verify that you can modify the input and see the output update.
+
+### 3. Compare and contrast the R notebook and R markdown files you created above. How are the outputs similar? How are they different? How are the inputs similar? How are they different? What happens if you copy the YAML header from one to the other?
+
+### 4. Create one new R Markdown document for each of the three built-in formats: HTML, PDF and Word. Knit each of the three documents. How does the output differ? How does the input differ? (You may need to install LaTeX in order to build the PDF output — RStudio will prompt you if this is necessary.)
+
+## 27.3.1 Exercises
+### 1. Practice what you’ve learned by creating a brief CV. The title should be your name, and you should include headings for (at least) education or employment. Each of the sections should include a bulleted list of jobs/degrees. Highlight the year in bold.
+
+### 2. Using the R Markdown quick reference, figure out how to:
+
+* Add a footnote.
+* Add a horizontal rule.
+* Add a block quote.
+
+### 3. Copy and paste the contents of diamond-sizes.Rmd from https://github.com/hadley/r4ds/tree/master/rmarkdown in to a local R markdown document. Check that you can run it, then add text after the frequency polygon that describes its most striking features.
+
+## 27.4.7 Exercises
+### 1. Add a section that explores how diamond sizes vary by cut, colour, and clarity. Assume you’re writing a report for someone who doesn’t know R, and instead of setting echo = FALSE on each chunk, set a global option.
+
+### 2. Download diamond-sizes.Rmd from https://github.com/hadley/r4ds/tree/master/rmarkdown. Add a section that describes the largest 20 diamonds, including a table that displays their most important attributes.
+
+### 3. Modify diamonds-sizes.Rmd to use comma() to produce nicely formatted output. Also include the percentage of diamonds that are larger than 2.5 carats.
+
+### 4. Set up a network of chunks where d depends on c and b, and both b and c depend on a. Have each chunk print lubridate::now(), set cache = TRUE, then verify your understanding of caching.
+
+# Chapter 28
+
+## 28.2.1 Exercises
+### 1. Create one plot on the fuel economy data with customised title, subtitle, caption, x, y, and colour labels.
+
+### 2. The geom_smooth() is somewhat misleading because the hwy for large engines is skewed upwards due to the inclusion of lightweight sports cars with big engines. Use your modelling tools to fit and display a better model.
+
+### 3. Take an exploratory graphic that you’ve created in the last month, and add informative titles to make it easier for others to understand.
+
+## 28.3.1 Exercises
+### 1. Use geom_text() with infinite positions to place text at the four corners of the plot.
+
+### 2. Read the documentation for annotate(). How can you use it to add a text label to a plot without having to create a tibble?
+
+### 3. How do labels with geom_text() interact with faceting? How can you add a label to a single facet? How can you put a different label in each facet? (Hint: think about the underlying data.)
+
+### 4. What arguments to geom_label() control the appearance of the background box?
+
+### 5. What are the four arguments to arrow()? How do they work? Create a series of plots that demonstrate the most important options.
+
+
+## 28.4.4 Exercises
+### 1. Why doesn’t the following code override the default scale?
+```{r}
+ggplot(df, aes(x, y)) +
+  geom_hex() +
+  scale_colour_gradient(low = "white", high = "red") +
+  coord_fixed()
+```
+
+
+### 2. What is the first argument to every scale? How does it compare to labs()?
+
+### 3. Change the display of the presidential terms by:
+
+* Combining the two variants shown above.
+* Improving the display of the y axis.
+* Labelling each term with the name of the president.
+* Adding informative plot labels.
+* Placing breaks every 4 years (this is trickier than it seems!).
+
+### 4. Use override.aes to make the legend on the following plot easier to see.
+```{r}
+
+ggplot(diamonds, aes(carat, price)) +
+  geom_point(aes(colour = cut), alpha = 1/20)
+```
+
+# Chapters 29, 30 - No Exercises
+
+---
+
+Thanks for reading! This concludes my walkthrough of the book.
