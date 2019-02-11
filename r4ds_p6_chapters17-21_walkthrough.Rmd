@@ -491,27 +491,67 @@ cor(x,y, method = "spearman")
 
 # Chapter 20: Vectors
 
-
 ## 20.3.5 Exercises
 
 ### 1. Describe the difference between is.finite(x) and !is.infinite(x).
 
+is.finite(x) should only evaluate to TRUE if the value is not NA, NaN, or +/-Inf. However, !is.infinite(x) will evaluate to TRUE if the value is NA, NaN, or a double/integer. 
+
+```{r}
+is.finite(0)
+is.finite(NA)
+!is.infinite(NA)
+```
+
 ### 2. Read the source code for dplyr::near() (Hint: to see the source code, drop the ()). How does it work?
+
+The source code is below:
+
+```{r}
+# function (x, y, tol = .Machine$double.eps^0.5) 
+# {
+#     abs(x - y) < tol
+# }
+# <bytecode: 0x10a60a198>
+# <environment: namespace:dplyr>
+```
+
+Based on the code, the function subtracts the input (x) with the number that you want to compare it to (y), takes the absolute value of that operation, and then checks to see if it is below a certain threshold (tol). If so, it returns TRUE. If not, it returns FALSE. You can toggle the size of the threshold to your liking by changing the tol parameter.
 
 ### 3. A logical vector can take 3 possible values. How many possible values can an integer vector take? How many possible values can a double take? Use google to do some research.
 
+The maximum possible values for integer and double values is related to the bit-representation of each type. For integers, there are 2^32 possible values since R uses 32-bit representation for integers. For doubles, R uses 64-bit representation so there would be 2^64 possible values.
+
 ### 4. Brainstorm at least four functions that allow you to convert a double to an integer. How do they differ? Be precise.
 
+A double could be converted to an integer by rounding either up or down (floor() or ceiling()). In the case of a tie value (doubles ending in .5) we could either round up or down, or towards the either the even or odd digit.
+
 ### 5. What functions from the readr package allow you to turn a string into logical, integer, and double vector?
+
+Respectively, the functions parse_logical(), parse_integer(), parse_double() will turn a string into a logical, integer, or double.
+
+```{r}
+library(readr)
+parse_logical(c("TRUE", "FALSE"))
+parse_integer(c("100", "200"))
+parse_double(c("100.3", "200"))
+```
+
 
 
 ## 20.4.6 Exercises
 
 ### 1. What does mean(is.na(x)) tell you about a vector x? What about sum(!is.finite(x))?
 
+
+
 ### 2. Carefully read the documentation of is.vector(). What does it actually test for? Why does is.atomic() not agree with the definition of atomic vectors above?
 
+
+
 ### 3. Compare and contrast setNames() with purrr::set_names().
+
+
 
 ### 4. Create functions that take a vector as input and returns:
 
@@ -525,7 +565,10 @@ cor(x,y, method = "spearman")
 
 ### 5. Why is x[-which(x > 0)] not the same as x[x <= 0]?
 
+
+
 ### 6. What happens when you subset with a positive integer that’s bigger than the length of the vector? What happens when you subset with a name that doesn’t exist?
+
 
 
 ## 20.5.4 Exercises
