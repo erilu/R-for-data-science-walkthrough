@@ -558,7 +558,6 @@ sum(!is.finite(x))
 ```
 
 
-
 ### 2. Carefully read the documentation of is.vector(). What does it actually test for? Why does is.atomic() not agree with the definition of atomic vectors above?
 
 
@@ -602,20 +601,33 @@ sum(!is.finite(x))
 
 ### 3. Based on the definition above, is it ok to have a list as a column of a tibble?
 
+
 # Chapter 21
 
 ## 21.2.1 Exercises
 
-### 3. Write for loops to:
+### 1. Write for loops to:
 
 * Compute the mean of every column in mtcars.
+
+```{r}
+# loop through each column of mtcars and compute mean
+for (column in 1:ncol(mtcars)) {
+  print (mean(mtcars[,column]))
+}
+```
+
 * Determine the type of each column in nycflights13::flights.
 * Compute the number of unique values in each column of iris.
 * Generate 10 random normals for each of μ=−10,0,10, and 100.
 
 Think about the output, sequence, and body before you start writing the loop.
 
-### 3. Eliminate the for loop in each of the following examples by taking advantage of an existing function that works with vectors:
+
+
+
+
+### 2. Eliminate the for loop in each of the following examples by taking advantage of an existing function that works with vectors:
 ```{r}
 out <- ""
 for (x in letters) {
@@ -720,7 +732,7 @@ Go to the store and buy some more, 99 bottles of beer on the wall.
 ```
 
 
-### 3. It’s common to see for loops that don’t preallocate the output and instead increase the length of a vector at each step:
+### 4. It’s common to see for loops that don’t preallocate the output and instead increase the length of a vector at each step:
 ```{r}
 output <- vector("integer", 0)
 for (i in seq_along(x)) {
