@@ -612,41 +612,79 @@ sum(!is.finite(x))
 
 ```{r}
 # loop through each column of mtcars and compute mean
-for (column in 1:ncol(mtcars)) {
-  print (mean(mtcars[,column]))
+for (column in colnames(mtcars)) {
+  print (c(column,mean(mtcars[,column])))
 }
 ```
 
 * Determine the type of each column in nycflights13::flights.
+
+```{r}
+for (column in colnames(nycflights13::flights)) {
+  print ( c(column,class(nycflights13::flights[[column]])) )
+}
+```
+
 * Compute the number of unique values in each column of iris.
+
+```{r}
+for (column in colnames(iris)) {
+  print (c(column, length(unique(iris[,column]))))
+}
+```
+
 * Generate 10 random normals for each of μ=−10,0,10, and 100.
 
-Think about the output, sequence, and body before you start writing the loop.
-
-
-
+```{r}
+means <- c(-10, 0, 10, 100)
+for (i in means) {
+  print(rnorm (10, i))
+}
+```
 
 
 ### 2. Eliminate the for loop in each of the following examples by taking advantage of an existing function that works with vectors:
+
 ```{r}
 out <- ""
 for (x in letters) {
   out <- stringr::str_c(out, x)
 }
+out
 
+# use str_c() with collapse to put all the letters together.
+str_c(letters, collapse = "")
+```
+
+
+```{r}
 x <- sample(100)
 sd <- 0
 for (i in seq_along(x)) {
   sd <- sd + (x[i] - mean(x)) ^ 2
 }
 sd <- sqrt(sd / (length(x) - 1))
+sd
 
+# if we only want to replace the for loop, then use: sum( (x-mean(x))^2 )
+sqrt( sum( (x-mean(x))^2 ) / (length(x) - 1) )
+
+# otherwise just use the sd() function instead of the for loop
+sd(x)
+```
+
+
+```{r}
 x <- runif(100)
 out <- vector("numeric", length(x))
 out[1] <- x[1]
 for (i in 2:length(x)) {
   out[i] <- out[i - 1] + x[i]
 }
+out
+
+# the same output can be achieved by calculating the cumulative sum (cumsum()):
+cumsum(x)
 ```
 
 
@@ -660,40 +698,6 @@ Alice the Camel has one hump.
 Alice the Camel has one hump.
 Go Alice go!
 
-Ruby the Rabbit has two ears.
-Ruby the Rabbit has two ears.
-Ruby the Rabbit has two ears.
-Go Ruby go!
-
-Sally the Sloth has two toes.
-Sally the Sloth has two toes.
-Sally the Sloth has two toes.
-Go Sally go?
-
-Felix the Fox has four legs.
-Felix the Fox has four legs.
-Felix the Fox has four legs.
-Go Felix go!
-
-Lilly the Ladybug has five spots.
-Lilly the Ladybug has five spots.
-Lilly the Ladybug has five spots.
-Go Lilly go!
-
-Andy the Ant has six legs.
-Andy the Ant has six legs.
-Andy the Ant has six legs.
-Go Andy go!
-
-Larry the Lizard has seven stripes.
-Larry the Lizard has seven stripes.
-Larry the Lizard has seven stripes.
-Go Larry go!
-
-Sammy the Spider has eight legs.
-Sammy the Spider has eight legs.
-Sammy the Spider has eight legs.
-Go Sammy go!
 ```
 
 * Convert the nursery rhyme “ten in the bed” to a function. Generalise it to any number of people in any sleeping structure.
