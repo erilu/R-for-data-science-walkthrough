@@ -543,6 +543,20 @@ parse_double(c("100.3", "200"))
 
 ### 1. What does mean(is.na(x)) tell you about a vector x? What about sum(!is.finite(x))?
 
+mean(is.na(x)) tells you what proportion of the values in the vector x are NA. 
+
+```{r}
+x <- c(NA, 1, 2, NA, 5:10, NA, NA, NA)
+is.na(x)
+mean(is.na(x))
+
+is.finite(x)
+!is.finite(x)
+sum(is.finite(x))
+sum(!is.finite(x))
+
+```
+
 
 
 ### 2. Carefully read the documentation of is.vector(). What does it actually test for? Why does is.atomic() not agree with the definition of atomic vectors above?
