@@ -543,7 +543,7 @@ parse_double(c("100.3", "200"))
 
 ### 1. What does mean(is.na(x)) tell you about a vector x? What about sum(!is.finite(x))?
 
-mean(is.na(x)) tells you what proportion of the values in the vector x are NA. 
+mean(is.na(x)) tells you what proportion of the values in the vector x are NA. sum(!is.finite(x)) tells you how many values in the vector are NA (total count), because NA is not a finite value.
 
 ```{r}
 x <- c(NA, 1, 2, NA, 5:10, NA, NA, NA)
@@ -558,31 +558,91 @@ sum(!is.finite(x))
 ```
 
 
-
 ### 2. Carefully read the documentation of is.vector(). What does it actually test for? Why does is.atomic() not agree with the definition of atomic vectors above?
 
+is.vector() tests for whether a vector is of the specified mode and has no attributes other than names. For example, the named vector 'x' below will return TRUE. See examples of use below. The definition above states that atomic vectors are homogenous, in which each value of the vector should be of the same type. One way that is.atomic() deviates from this definition of atomic vectors is that it still returns TRUE for named vectors, which can have character-based names for numerical values.
+
+```{r}
+x <- c(a = 1, b = 2)
+is.vector(x)
+is.atomic(x)
+
+x <- c(a = 1, b = "hello")
+is.vector(x, mode = "integer")
+is.vector(x, mode = "character")
+is.atomic(x)
+
+```
 
 
 ### 3. Compare and contrast setNames() with purrr::set_names().
 
+purrr::set_names() is a more flexible version of stats::setNames() that has more features. In the example below, setNames fails to work when the "names" are not explicitly provided as one vector of the same length as the vector to be named. purrr::set_names() still works when the names are provided separately.
 
+```{r}
+# using stats::setNames()
+setNames(1:4, c("a", "b", "c", "d"))
+setNames(1:4, "a", "b", "c", "d")
+```
+
+```{r}
+# using purrr::setNames()
+library(purrr)
+set_names(1:4, c("a", "b", "c", "d"))
+set_names(1:4, "a", "b", "c", "d")
+```
 
 ### 4. Create functions that take a vector as input and returns:
 
 * The last value. Should you use [ or [[?
 
+```{r}
+# we should use [, instead of [[]]
+example <- letters[1:10]
+return_last <- function (x) {
+  return (x[length(x)])
+}
+example
+return_last(example)
+```
+
 * The elements at even numbered positions.
+
+```{r}
+return_even <- function (x) {
+  
+}
+```
 
 * Every element except the last value.
 
+```{r}
+return_even <- function (x) {
+  
+}
+```
+
 * Only even numbers (and no missing values).
+
+```{r}
+example <- 1:20
+return_even <- function (x) {
+  
+}
+```
 
 ### 5. Why is x[-which(x > 0)] not the same as x[x <= 0]?
 
+```{r}
+
+```
 
 
 ### 6. What happens when you subset with a positive integer that’s bigger than the length of the vector? What happens when you subset with a name that doesn’t exist?
 
+```{r}
+
+```
 
 
 ## 20.5.4 Exercises
@@ -594,6 +654,8 @@ sum(!is.finite(x))
 ### 2. What happens if you subset a tibble as if you’re subsetting a list? What are the key differences between a list and a tibble?
 
 
+
+
 ## 20.7.4 Exercises
 
 ### 1. What does hms::hms(3600) return? How does it print? What primitive type is the augmented vector built on top of? What attributes does it use?
@@ -601,6 +663,8 @@ sum(!is.finite(x))
 ### 2. Try and make a tibble that has columns with different lengths. What happens?
 
 ### 3. Based on the definition above, is it ok to have a list as a column of a tibble?
+
+
 
 # Chapter 21
 
