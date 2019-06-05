@@ -697,8 +697,27 @@ Alice the Camel has one hump.
 Alice the Camel has one hump.
 Alice the Camel has one hump.
 Go Alice go!
-
 ```
+The package ```english``` has a nice function to convert numericals to their corresponding english words, which we can utilize to write out this poem. For example, the number 1 can be converted to "one" and written out. This makes looping through numbers and printing them out easy. The code below prints the poem out if Alice started out with 3 humps. This isn't exactly the same as the real poem, but you can get the idea.
+
+```{r}
+num_humps <- 3
+while (num_humps >=0) {
+  eng_num_humps <- english::as.english(num_humps)
+  if (num_humps == 0)
+    cat("Alice the Camel has no more humps! End of poem.")
+  else if (num_humps == 1){
+    cat(str_c(rep(paste("Alice the Camel has", eng_num_humps, "hump.\n"),3), collapse = ""))
+    cat("Go Alice go!\n\n")
+  }
+  else{
+    cat(str_c(rep(paste("Alice the Camel has", eng_num_humps, "humps.\n"),3), collapse = ""))
+    cat("Go Alice go!\n\n")
+  }
+  num_humps <- num_humps -1
+}
+```
+
 
 * Convert the nursery rhyme “ten in the bed” to a function. Generalise it to any number of people in any sleeping structure.
 
@@ -722,6 +741,28 @@ And the little one said,
 "Alone at last!"
 ```
 
+```{r}
+sleeping_people_poem <- function (num_people = 10, struct = "bed") {
+  while (num_people > 0) {
+    
+    if (num_people == 1) {
+      cat( paste0( "\nThere was ", english::as.english(num_people), " in the ", struct  ) )
+      cat( "\nAnd the little one said,\nAlone at last!" )
+
+    }
+    else {
+      cat( paste0( "\nThere were ", english::as.english(num_people), " in the ", struct  ) )
+      cat( "\nAnd the little one said,\nRoll over! Roll over!\nSo they all rolled over and one fell out\n" )
+    }
+    num_people <- num_people - 1
+  }
+}
+sleeping_people_poem()
+```
+
+
+We use a similar concept as above to generate the poem.
+
 * Convert the song “99 bottles of beer on the wall” to a function. Generalise to any number of any vessel containing any liquid on any surface.
 
 ```
@@ -733,6 +774,28 @@ Take one down and pass it around, 98 bottles of beer on the wall.
 No more bottles of beer on the wall, no more bottles of beer. 
 Go to the store and buy some more, 99 bottles of beer on the wall.
 
+```
+
+We use a similar concept as above, but to generalize for any number of any vessel for any liquid, we pass in parameters to a function containing the loop, with the defaults set to bottles of beer. So that this markdown document isn't insanely long, I've cut down the number of bottles to 3.
+
+```{r}
+count_down_poem <- function (num_vessels=99, vessel_type="bottles", liquid_type = "beer", surface_type = "wall" ){
+  item = paste0(vessel_type, " of ", liquid_type)
+  starting_vessels <- num_vessels
+  while (num_vessels >0) {
+    print (paste0( num_vessels," ", item, " on the ", surface_type, ", ", num_vessels," ", item, "." ))
+    num_vessels <- num_vessels-1
+    if(num_vessels == 0)
+      print( paste0( "Take one down and pass it around, no more ", item, " on the ", surface_type, "." ))
+    else
+      print ( paste0( "Take one down and pass it around, ", num_vessels, " ", item, " on the ", surface_type, "." ))
+  }
+  print(paste0("No more ", item, " on the ", surface_type, ", ", "no more ", item, ".") )
+  print(paste0("Go to the store and buy some more, ", starting_vessels, " ", item, " on the ", surface_type, ".") )
+  
+}
+count_down_poem(num_vessels = 3)
+count_down_poem(num_vessels = 3, vessel_type = "tanks", liquid_type = "water", surface_type = "farm")
 ```
 
 
