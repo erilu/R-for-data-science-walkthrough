@@ -783,15 +783,15 @@ count_down_poem <- function (num_vessels=99, vessel_type="bottles", liquid_type 
   item = paste0(vessel_type, " of ", liquid_type)
   starting_vessels <- num_vessels
   while (num_vessels >0) {
-    print (paste0( num_vessels," ", item, " on the ", surface_type, ", ", num_vessels," ", item, "." ))
+    cat (paste0( num_vessels," ", item, " on the ", surface_type, ", ", num_vessels," ", item, ".\n" ))
     num_vessels <- num_vessels-1
     if(num_vessels == 0)
-      print( paste0( "Take one down and pass it around, no more ", item, " on the ", surface_type, "." ))
+      cat( paste0( "Take one down and pass it around, no more ", item, " on the ", surface_type, ".\n\n" ))
     else
-      print ( paste0( "Take one down and pass it around, ", num_vessels, " ", item, " on the ", surface_type, "." ))
+      cat ( paste0( "Take one down and pass it around, ", num_vessels, " ", item, " on the ", surface_type, ".\n\n" ))
   }
-  print(paste0("No more ", item, " on the ", surface_type, ", ", "no more ", item, ".") )
-  print(paste0("Go to the store and buy some more, ", starting_vessels, " ", item, " on the ", surface_type, ".") )
+  cat(paste0("No more ", item, " on the ", surface_type, ", ", "no more ", item, ".\n") )
+  cat(paste0("Go to the store and buy some more, ", starting_vessels, " ", item, " on the ", surface_type, ".\n\n") )
   
 }
 count_down_poem(num_vessels = 3)
@@ -801,26 +801,91 @@ count_down_poem(num_vessels = 3, vessel_type = "tanks", liquid_type = "water", s
 
 ### 4. It’s common to see for loops that don’t preallocate the output and instead increase the length of a vector at each step:
 ```{r}
-output <- vector("integer", 0)
-for (i in seq_along(x)) {
-  output <- c(output, lengths(x[[i]]))
-}
-output
-```
 
+# make a list of 100000 lists of differing length
+x <- vector("list", 100000)
+for (i in seq_along(x)) {
+  n <- sample(100,1)
+  x[[i]] <- rnorm(n, 10, 1)
+}
+
+# time a loop that increases the length of a vector at each step:
+output <- vector("integer", 0)
+system.time(
+for (i in seq_along(x)) {
+  output <- c(output, lengths(x[i]))
+}
+)
+
+# time a loop that places the output inside a preallocated vector:
+output <- vector("integer", length(x))
+system.time(
+for (i in seq_along(x)) {
+  output[i] <- lengths(x[i])
+}
+)
+
+```
 
 How does this affect performance? Design and execute an experiment.
 
+Preallocation significantly increases the performance of the loop, especially when there are large numbers of iterations involved. I generate a list of 100,000 lists of differing length. The loops will assess the length of each list within the list. Using system.time to measure the time it takes to execute the for loop, we find that it takes roughly 17 seconds if the vector's length is increased at each step, whereas the loop takes less than a tenth of a second if preallocation is used. This is quite a significant performance improvement!
 
 
 ## 21.3.5 Exercises
 ### 1. Imagine you have a directory full of CSV files that you want to read in. You have their paths in a vector, files <- dir("data/", pattern = "\\.csv$", full.names = TRUE), and now want to read each one with read_csv(). Write the for loop that will load them into a single data frame.
 
+I wrote the ```diamonds``` dataset to a csv file twice and stored the files in a folder called test_output (this folder is part of .gitignore so it does not show up in this repo). The loop below should read the csv files, store the tables in a list, then bind the list into a data frame.
+
+```{r}
+#write.csv(diamonds, file = "diamonds.csv")
+files <- dir("test_output/", pattern = "\\.csv$", full.names = TRUE)
+files
+output <- vector("list", length(files))
+for (i in seq_along(files)) {
+  output[[i]] <- read_csv(files[i])
+}
+output <- bind_cols(output)
+```
+
+
+
 ### 2. What happens if you use for (nm in names(x)) and x has no names? What if only some of the elements are named? What if the names are not unique?
+
+If there are no names, names(x) is NULL and the loop does not execute. If only some of the elements are named, all elements of X are iterated through but nm will be NA for the elements that are unnamed. If the names are not unique, the loop acts normally--all elements will be iterated through and the non-unique names will still be used. Example below:
+
+```{r}
+print_names <- function (x){
+  for(nm in names(x)) {
+    print(nm)
+  }
+}
+
+
+# if x has no names:
+x <- c(1:10)
+print_names(x) # nothing happens
+
+names(x)[2:5] <- letters[1:4]
+print_names(x) # NA is printed when names do not exist
+
+names(x) <- c(letters[1:5], letters[1:5])
+print_names(x)
+```
+
+
 
 ### 3. Write a function that prints the mean of each numeric column in a data frame, along with its name. For example, show_mean(iris) would print:
 ```{r}
+print_means <- function (df) {
+  for (i in seq_along(df)) {
+    if (is.numeric(df[,i])){
+        print(paste0( colnames(df)[i], ": ", mean(df[,i])))
+    }
+  }
+}
 
+print_means(iris)
 # show_mean(iris)
 #> Sepal.Length: 5.84
 #> Sepal.Width:  3.06
@@ -830,6 +895,31 @@ How does this affect performance? Design and execute an experiment.
 
 (Extra challenge: what function did I use to make sure that the numbers lined up nicely, even though the variable names had different lengths?)
 
+If we want to make the numbers line up nicely, we can find the length of the longest column name and add spaces to the other column names to let them match up. The function that could do this (add spaces to strings) would be str_pad, part of ```stringr```. I would first find which column names correspond to numeric columns. Then, I would add the colon using str_c(). I would then determine the maximum str length using str_length() and max(), and then apply this length to the str_pad() function in order to add the appropriate number of spaces.
+
+```{r}
+print_means <- function (df) {
+  numeric_cols <- vector()
+  # find out which columns are numeric
+  for (i in seq_along(df)) {
+    if (is.numeric(df[,i])){
+        numeric_cols <- append(numeric_cols, colnames(df)[i])
+    }
+  }
+  # add the colon to the column name
+  padded_cols <- str_c(numeric_cols, ": ")
+  # determine lenth of each name
+  max_str_length <- max(str_length(padded_cols))
+  
+  # print out a padded version of the name with a rounded mean value
+  for (i in seq_along(padded_cols)) {
+    print(paste0( str_pad(padded_cols[i], max_str_length, "right"), round(mean(df[[numeric_cols[i]]]),2) ))
+  }
+}
+print_means(iris)
+```
+
+
 ### 4. What does this code do? How does it work?
 ```{r}
 trans <- list( 
@@ -838,10 +928,18 @@ trans <- list(
     factor(x, labels = c("auto", "manual"))
   }
 )
+head(mtcars[,c("disp", "am")])
+
 for (var in names(trans)) {
   mtcars[[var]] <- trans[[var]](mtcars[[var]])
 }
+head(mtcars[,c("disp", "am")])
+
 ```
+
+The first chunk of code defines a list called "trans" which contains two entries, one named "disp" which is a function that multiplies a value by 0.0163871, and another function named "am" which categorizes values based on whether they are equal to "auto" or "manual".
+
+Afterwards, the for loop iterates through the items in the list trans (which are "disp" and "am"), which both also happen to be names of columns in the built-in R dataset ```mtcars```. The code overwrites the existing columns with new values according to the function called by trans[[var]]. For example, trans[[disp]](mtcars[[disp]]) will multiply the disp column in mtcars by 0.0163871 and then update that column with the new value. The column "am" will be updated from 1 and 0 values to "manual" and "auto".
 
 
 ## 21.4.1 Exercises
