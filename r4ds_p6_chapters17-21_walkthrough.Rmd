@@ -1075,14 +1075,57 @@ map(x, ~ lm(mpg ~ wt, data = .))
 ### 1. Implement your own version of every() using a for loop. Compare it with purrr::every(). What does purrr’s version do that your version doesn’t?
 
 ```{r}
+# purrr::every()
+every(mtcars, is.numeric)
+every(mtcars, is.atomic)
 
+# my implementation
+my_every <- function (x, fun, ...) {
+  # default value to return is TRUE
+  is_every <- TRUE
+  for (i in seq_along(x)) {
+    # if an item in x does not satisfy the function, change is_every to FALSE
+    if (fun(x[[i]],...) == F) {
+     is_every <- FALSE 
+    }
+  }
+  is_every
+}
+
+my_every(mtcars, is.numeric)
+my_every(mtcars, is.atomic)
 ```
+
+When looking at the source code behind purrr:every(), I see that they tested whether there are any NA values in the input, and return NA if true. They also use is_false() instead of ```== F```, which seems to be safer. They also return a default value of TRUE unless one of the items in the input does not satisfy the logical function, which then ends the for loop early by returning FALSE. In retrospect, this method is much more efficient compared to my version because it will end the loop early rather than having to finish iterating through what could potentially be a very large loop.
 
 
 ### 2. Create an enhanced col_summary() that applies a summary function to every numeric column in a data frame.
 
 ```{r}
+col_summary_numeric <- function(df, fun) {
+  # first determine which columns are numeric
+  numeric_cols <- vector("logical", length(df))
+  for ( i in seq_along(df)) {
+    if ( is.numeric(df[[i]]) )
+      numeric_cols[i] <- T
+    else
+      numeric_cols[i] <- F
+  }
+  # subset the data based on only the numeric columns
+  df_numeric <- df[,numeric_cols]
+  
+  # apply the summary function to each of the columns in the subsetted data
+  out <- vector("double", length(df_numeric))
+  for (i in seq_along(df_numeric)) {
+    out[i] <- fun(df_numeric[[i]])
+  }
+  
+  # annotate and return the output
+  names(out) <- colnames(df_numeric)
+  out
+}
 
+col_summary_numeric(mtcars, mean)
 ```
 
 
@@ -1106,12 +1149,36 @@ df <- tibble(
 # OK
 col_sum3(df, mean)
 # Has problems: don't always return numeric vector
-# col_sum3(df[1:2], mean)
-# col_sum3(df[1], mean)
-# col_sum3(df[0], mean)
+ col_sum3(df[1:2], mean)
+ col_sum3(df[1], mean)
+ col_sum3(df[0], mean)
+ 
 ```
 
 What causes the bugs?
+
+To view the errors more in-depth, we can use purrr::safely() to observe what's going on. For the first two "problematic" entries, there does not seem to be an error, as the $error portion is NULL. Furthermore, using ```typeof( col_sum3(df[1:2], mean))``` returns "double", suggesting that the function is indeed returning a numeric vector in this instance. We do observe an error for col_sum3(df[0], mean), which tries to call the col_sum3 function on an empty data frame. The error comes from the line, ```df_num <- df[, is_num]```. This is because is_num is an emtpy list, and trying to subset an empty data frame with an empty list results in the error. The code below will walk through this phenomenon.
+
+```{r}
+safely_col_sum3 <- safely(col_sum3)
+
+safely_col_sum3(df[1:2], mean)
+safely_col_sum3(df[1], mean)
+safely_col_sum3(df[0], mean)
+```
+
+```{r}
+# df[0] creates an emtpy data frame
+df <- df[0]
+df
+
+# is_num is an empty list
+is_num <- sapply(df, is.numeric)
+is_num
+
+# this throws the error
+df_num <- df[, is_num]
+```
 
 # Chapter 22 - No Exercises
 
