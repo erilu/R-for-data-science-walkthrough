@@ -582,7 +582,8 @@ purrr::set_names() is a more flexible version of stats::setNames() that has more
 ```{r}
 # using stats::setNames()
 setNames(1:4, c("a", "b", "c", "d"))
-setNames(1:4, "a", "b", "c", "d")
+
+#setNames(1:4, "a", "b", "c", "d") # Error in setNames(1:4, "a", "b", "c", "d") :unused arguments ("b", "c", "d")
 ```
 
 ```{r}
@@ -663,7 +664,8 @@ x[12]
 # add names to x, then try a name that doesn't exist
 names(x) <- letters[1:length(x)]
 x
-x[l]
+
+# x[l] # Error: object 'l' not found
 
 ```
 
@@ -733,8 +735,10 @@ attributes(hms::hms(3600))
 Trying to make a tibble with differing column lengths results in an error.
 
 ```{r}
-tibble (a = c(1:5),
-        b = letters[1:3])
+# tibble (a = c(1:5),
+#         b = letters[1:3])
+
+# Error: Tibble columns must have consistent lengths, only values of length one are recycled: * Length 3: Column `b` * Length 5: Column `a`
 ```
 
 However, there is an exception to this, in which the values of length one are repeated until the column length matches the other columns. An example is below:
@@ -1210,7 +1214,7 @@ map(-2:2, rnorm, n = 5) calls rnorm(n=5,-2), rnorm(n=5,-1), rnorm(n=5,0), rnorm(
 
 ```{r}
 map(-2:2, rnorm, n = 5)
-map_dbl(-2:2, rnorm, n = 5)
+# map_dbl(-2:2, rnorm, n = 5) # Error: Result 1 must be a single double, not a double vector of length 5
 ```
 
 
@@ -1307,9 +1311,9 @@ df <- tibble(
 # OK
 col_sum3(df, mean)
 # Has problems: don't always return numeric vector
- col_sum3(df[1:2], mean)
- col_sum3(df[1], mean)
- col_sum3(df[0], mean)
+col_sum3(df[1:2], mean)
+col_sum3(df[1], mean)
+# col_sum3(df[0], mean) # Error: Can't subset with `[` using an object of class list.
  
 ```
 
@@ -1335,10 +1339,8 @@ is_num <- sapply(df, is.numeric)
 is_num
 
 # this throws the error
-df_num <- df[, is_num]
+# df_num <- df[, is_num] # Error: Can't subset with `[` using an object of class list.
 ```
-
-# Chapter 22 - No Exercises
 
 
 ---
