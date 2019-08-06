@@ -814,17 +814,24 @@ by_country <- gapminder %>%
 
 by_country
 
+## wrapper function to model lifeExp by year
 country_model <- function(df) {
   lm(lifeExp ~ year, data = df)
 }
 
+## add the model as a list-column to the nested data
 by_country <- by_country %>% 
   mutate(model = map(data, country_model))
 by_country
 
-by_country %>% 
-  filter(continent %in% c("Europe","Asia"))
-
+## calculate residuals based on the nested data and the associated model
+by_country <- by_country %>% 
+  mutate(
+    resids = map2(data, model, add_residuals)
+  )
+by_country
+resids <- unnest(by_country, resids)
+resids %>% group_by(country) %>% summarise (rsme = sqrt(mean(resid^2)))
 
 ```
 
@@ -833,54 +840,190 @@ by_country %>%
 
 ### 1. A linear trend seems to be slightly too simple for the overall trend. Can you do better with a quadratic polynomial? How can you interpret the coefficients of the quadratic? (Hint you might want to transform year so that it has mean zero.)
 
-```{r}
+We can fit a quadratic polynomial either by using the equation y ~ poly(x,2) or writing it out as y ~ I(x^2) + x. When we fit this model to the data, we see that the majority of the rmse values calculated using the residuals by country are reduced compared to the original linear model used in this chapter. This suggests that we are doing better.
 
+```{r}
+country_model_poly <- function(df) {
+  lm(lifeExp ~ poly(year,2), data = df)
+  # alternatively can use lm(lifeExp ~ I(year^2)+year, data = df) for raw polynomial
+}
+
+country_model_poly_centered <- function(df) {
+  lm(lifeExp ~ poly(year-mean(year),2), data = df)
+}
+
+by_country <- by_country %>% 
+  mutate(model2 = map(data, country_model_poly),
+         model3 = map(data, country_model_poly_centered)) %>%
+  mutate(resids2 = map2(data, model2, add_residuals))
+
+## residual freq-poly plot
+resids2 <- unnest(by_country, resids2)
+resids2 %>% 
+  ggplot(aes(year, resid)) +
+    geom_line(aes(group = country), alpha = 1 / 3) + 
+    geom_smooth(se = FALSE)
+
+## R-squared value
+glance <- by_country %>% 
+  mutate(glance = map(model2, broom::glance)) %>% 
+  unnest(glance, .drop = TRUE) 
+
+glance %>% ggplot(aes(continent, r.squared)) + 
+    geom_jitter(width = 0.5)
+  
+# rmse using the polynomial model
+resids2 %>% group_by(country) %>% summarise (rmse = sqrt(mean(resid^2)))
+# rmse using the original linear model
+resids %>% group_by(country) %>% summarise (rmse = sqrt(mean(resid^2)))
+```
+
+When we compare the model summaries for the centered (mean 0) model vs the non-centered model, the estimates for the coefficients are the same. Poly() creates orthogonal polynomials for the fit. The coefficients may be interpreted as the weight associated with a unit of change in year.
+ 
+```{r}
+summary(by_country$model2[[1]])
+summary(by_country$model3[[1]])
 ```
 
 
 ### 2. Explore other methods for visualising the distribution of R2 per continent. You might want to try the ggbeeswarm package, which provides similar methods for avoiding overlaps as jitter, but uses deterministic methods.
 
+To use the ggbeeswarm package, simply replace geom_jitter() with geom_beeswarm(). The output is below. We can augment the graph by adding additional graphics such as a boxplot.
+
+```{r}
+library(ggbeeswarm)
+glance %>% 
+  ggplot(aes(continent, r.squared)) + 
+    geom_beeswarm()
+
+glance %>% 
+  ggplot(aes(continent, r.squared)) + 
+    geom_boxplot( aes(color = continent))+
+    geom_beeswarm()
+
+```
+
 ### 3. To create the last plot (showing the data for the countries with the worst model fits), we needed two steps: we created a data frame with one row per country and then semi-joined it to the original dataset. It’s possible to avoid this join if we use unnest() instead of unnest(.drop = TRUE). How?
+
+Instead of using unnest(glance,.drop = TRUE), using unnest(glance) will retain the other columns in the dataset in addition to unnesting the glance column. This means that the list-column "data" will still be associated with the glance output, which contains the `year` and `lifeExp` variables that are needed to plot the final graph. We can then perform the filtering on the r.squared value, unnest the data, and then plot the graph, as shown below, without needing to semi-join.
+
+```{r}
+glance <- by_country %>% 
+  mutate(glance = map(model, broom::glance)) %>%
+  unnest(glance)
+glance
+
+bad_fit <- filter(glance, r.squared < 0.25)
+bad_fit
+
+bad_fit %>% unnest (data) %>%
+  ggplot(aes(year, lifeExp, colour = country)) +
+    geom_line()
+```
 
 
 ## 25.4.5 Exercises
 
 ### 1. List all the functions that you can think of that take a atomic vector and return a list.
 
+enframe() or as_tibble() will convert an atomic vector into a list. The map() function will return a list in which it applies a function that you specify on each element of the atomic vector (examples below). stringr functions return lists of strings, such as str_split(). You may also encounter package-specific functions which may create their own types of objects. For example, in the bioinformatics world, you may have DESeq2 objects (bulk RNA-sequencing) or Seurat objects (single cell RNA-sequencing), which are S4 objects which contain several data types, including lists. Other functions that return lists are those shown in this chapter, such as broom::glance(), although in this instance the input is a model and not an atomic vector. split() also returns a list when applied to a dataframe.
+
+```{r}
+my_atomic_vector <- c("hello","world")
+
+map(my_atomic_vector, length)
+str_split(my_atomic_vector, "l")
+
+typeof(as_tibble(my_atomic_vector))
+typeof(enframe(my_atomic_vector))
+summary(my_atomic_vector)
+
+mtcars %>% 
+  split(.$cyl)
+```
+
+
 ### 2. Brainstorm useful summary functions that, like quantile(), return multiple values.
+
+Summary functions in addition to quantile() include: summary(), range(), dim(), and coef() for linear models.
+
+```{r}
+x <- 1:10
+summary(x)
+range(x)
+dim(mtcars)
+coef(lm(mpg ~cyl, data = mtcars))
+
+
+```
+
 
 ### 3. What’s missing in the following data frame? How does quantile() return that missing piece? Why isn’t that helpful here?
 
+The data frame shows the output of unnesting the column `q`, which contains the quantile() values for each cylinder type in mtcars stored as a list-column. The important information that is missing is the label corresponding to each of the quantile values. For example, 21.4 (the first entry) corresponds to the 0% quantile. Without knowing how the function works, someone looking at the table would not know this important information. quantile() returns this information by naming the output vector with these labels. This is not helpful when creating list-columns, because the names are not stored automatically. 
+
 ```{r}
+# what quantile should return
+quantile(mtcars[which(mtcars$cyl==4),"mpg"])
+names(quantile(mtcars[which(mtcars$cyl==4),"mpg"]))
+
+# quantile is missing the labels for each of the statistics (0%, 25%, ...)
 mtcars %>% 
   group_by(cyl) %>% 
   summarise(q = list(quantile(mpg))) %>% 
   unnest()
-#> # A tibble: 15 x 2
-#>     cyl     q
-#>   <dbl> <dbl>
-#> 1     4  21.4
-#> 2     4  22.8
-#> 3     4  26  
-#> 4     4  30.4
-#> 5     4  33.9
-#> 6     6  17.8
-#> # ... with 9 more rows
+
+mtcars %>% 
+  group_by(cyl) %>% 
+  summarise(q = list(quantile(mpg))) %>% 
+  unnest()
 ```
 
 ### 4. What does this code do? Why might might it be useful?
 
+This code will group the dataset mtcars by cylinder type (in this case, 4, 6, or 8), then aggregate the values for each of the columns into a list. Specifically, there are 11 rows in the dataset that have a cyl value of 4, 7 rows that have a cyl value of 6, and 14 rows with a cyl value of 8. This is why the entries now look like <dbl [11]>, <dbl [7]>, and <dbl [14]>, respectively. Retrieving the value of <dbl[11]> at the first row of column `mpg`, for example, will return the 11 values associated with cylinder 4.
+
 ```{r}
-mtcars %>% 
+mtcars2 <- mtcars %>% 
   group_by(cyl) %>% 
   summarise_each(funs(list))
+mtcars2
+mtcars2$mpg[1]
 ```
 
 ## 25.5.3 Exercises
 
 ### 1. Why might the lengths() function be useful for creating atomic vector columns from list-columns?
 
+The lengths() function will return the length of each element in a list. This differs from the length() function which will return the number of elements contained in a list. For an example of the differences, see the code chunk below. However, for whatever reason, when lengths() is used with mutate() on a list-column, it will return the number of elements in the list rather than returning the vector with the lengths for each element in the list. In other words, when used with mutate(), lengths() performs what we normally would have thought length() would do. Even more confusing is how when length() is used with mutate, it breaks down and now returns the number of rows in the data frame regardless of what is stored in each row.
+
+```{r}
+lengths(list(a = 1:10, b = 2, z = 5))
+length(mtcars)
+lengths(mtcars)
+
+df <- tribble(
+  ~x,
+  list(a = 1:10, b = 2, z = 5),
+  list(a = 2:5, c = 4),
+  list(a = 1, b = 2)
+)
+
+# lengths() returns the number of elements in the list-column
+df %>% mutate(
+  length_of_a = lengths(x)
+)
+
+# length() returns the number of rows regardless of the value in the list-column
+df %>% mutate(
+  length_of_a = length(x)
+)
+
+```
+
 ### 2. List the most common types of vector found in a data frame. What makes lists different?
+
+In a data frame, I usually encounter numerics, characters, and factors, in which there is just a single value at any row x column designation. Lists are different because they can contain any number of data types, and multiple values for each. You can even have a list of lists! This means that a very diverse data set can be stored within lists in a single column of your data frame. That is the beauty of list-columns that this chapter tries to highlight.
 
 
 
