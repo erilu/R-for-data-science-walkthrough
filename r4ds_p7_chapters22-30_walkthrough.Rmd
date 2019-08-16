@@ -24,7 +24,7 @@ library(modelr)
 The datasets that are used in this chapter are simulated datasets, such as the one shown below (sim1)
 
 ```{r}
-sim1
+head(sim1)
 ```
 
 Below are the functions used in this chapter, written by Hadley for demonstration purposes:
@@ -49,7 +49,8 @@ grid <- expand.grid(
   ) %>% 
   mutate(dist = purrr::map2_dbl(a1, a2, sim1_dist))
 
-grid
+head(grid)
+dim(grid)
 
 grid %>% 
   ggplot(aes(a1, a2)) +
@@ -1132,7 +1133,7 @@ largest <- diamonds %>% arrange(desc(carat)) %>% head (20)
 
 # display a table, using kable() to make it prettier
 
-largest %>% select (carat, cut, color, clarity, price) %>% kable (caption = "important qualities of top 20 diamonds")
+largest %>% select (carat, cut, color, clarity, price) %>% knitr::kable (caption = "important qualities of top 20 diamonds")
 ```
 
 
