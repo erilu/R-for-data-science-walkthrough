@@ -1,3 +1,6 @@
 /test_output
 .Rhistory
 .DS_Store
+.Rproj.user
+.RData
+.Ruserdata
