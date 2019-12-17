@@ -476,7 +476,7 @@ stat_smooth() computes the moving average using a choice of methods. You can set
 ```{r stat_smooth}
 ggplot(data = mpg, aes(x = displ, y = hwy)) +
   geom_point(aes(color = drv)) +
-  stat_smooth(se = "FALSE")
+  stat_smooth(se = FALSE)
 ```
 
 
