@@ -9,7 +9,8 @@ library(tidyverse)
 
 ## **3.2** Creating a ggplot {-}
 
-Learn how to use ggplot2. The dataset we will work with is the built-in dataset ```mpg```.
+Here we learn how to use ggplot2. The dataset we will work with is the built-in dataset ```mpg```.
+
 ```{r}
 head(mpg)
 ```

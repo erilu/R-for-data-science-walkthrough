@@ -1,0 +1,29 @@
+# Chapter 4
+
+## 4.4 Practice
+
+### 1. Why does this code not work?
+```{r}
+my_variable <- 10
+# my_varıable
+```
+The code does not work because there is a typo in the variable name that you are calling. The letter "i" is not the same in my_var(i)able.
+
+### 2. Tweak each of the following R commands so that they run correctly:
+
+Changed "dota" to "data", "fliter" to "filter", "=" to "==", and "diamond" to "diamonds"
+
+```{r chap4_exercises}
+library(tidyverse)
+
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy))
+
+filter(mpg, cyl == 8)
+filter(diamonds, carat > 3)
+```
+
+### 3. Press Alt + Shift + K. What happens? How can you get to the same place using the menus?
+
+This opens up a list of the keyboard shortcuts! Very useful. Using the menus, either type "shorcut" into the search bar under help, or find it under: tools: keyboard shortcuts help.
+

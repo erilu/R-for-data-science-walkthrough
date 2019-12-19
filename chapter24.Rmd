@@ -1,0 +1,293 @@
+# Chapter 24
+
+For this chapter, the following packages and modifications to datasets were used:
+
+```{r}
+options(na.action = na.warn)
+library(nycflights13)
+library(lubridate)
+
+diamonds2 <- diamonds %>% 
+  filter(carat <= 2.5) %>% 
+  mutate(lprice = log2(price), lcarat = log2(carat))
+```
+
+
+## 24.2.3 Exercises
+
+### 1. In the plot of lcarat vs. lprice, there are some bright vertical strips. What do they represent?
+
+The color of each hexagon in geom_hex corresponds to the number of observations that lie within the hexagon, which means that the bright vertical strips represent highly concentrated areas containing large amounts of observations relative to the dim hexagons. Hadley alludes to the possible reason why these stripes exist in the previous chapters, where he mentions that humans are inclined to report "pretty" intervals such as 1.0, 1.5, 2.0, etc, resulting in more observations lying on these intervals.
+
+```{r chapter24-2-3_1}
+ggplot(diamonds2, aes(lcarat, lprice)) + 
+  geom_hex(bins = 50)
+```
+
+### 2. If log(price) = a_0 + a_1 \* log(carat), what does that say about the relationship between price and carat?
+
+This equation suggests that there is a linear relationsihp between log(price) and log(carat), because the equation can be interpreted as a_0 being an intercept and a_1 being a "slope". It is harder to discern the relationship between the non-logged price and carat given this equation. The relationship between the original non-transformed variables may not necessarily be linear.
+
+### 3. Extract the diamonds that have very high and very low residuals. Is there anything unusual about these diamonds? Are they particularly bad or good, or do you think these are pricing errors?
+
+Hadley extracts the diamonds with high / low residuals (abs(lresid2) > 1) in the code below. After examining these, we find that most of the outlier diamonds that are priced much lower than predicted have a specific flaw associated with them. For example, \$1262 predicted to be \$2644 has a huge carat size but has a clarity of I1 (worst clarity), of which there are not that many observations for in the dataset (707 observations for grade I1 vs 13055 observations for grade SI1). 
+
+The diamonds in this list usually have a combination of very good qualities as well as very bad qualities. It could be that there is some multicollinearity in the model, in which some of the predictor variables (lcarat, color, cut, and clarity) are correlated with one another. This may result in the model breaking down when something when the values of two variables which usually are correlated do not follow the trend for any specific observation. For example, the diamond priced at 2366 is predicted to only be 774, but this is likely due to the fact that the diamond has one of the best clarity values, but has the worst possible color. Looking at a density plot of color vs clarity, we find that there are very few observations which have this combination of color and clarity, which may be why the model breaks down.
+
+```{r chapter24-2-3_3}
+mod_diamond2 <- lm(lprice ~ lcarat + color + cut + clarity, data = diamonds2)
+
+diamonds2 <- diamonds2 %>% 
+  add_residuals(mod_diamond2, "lresid2")
+
+ggplot(diamonds2, aes(lcarat, lresid2)) + 
+  geom_hex(bins = 50)
+
+diamonds2 %>% 
+  filter(abs(lresid2) > 1) %>% 
+  add_predictions(mod_diamond2) %>% 
+  mutate(pred = round(2 ^ pred)) %>% 
+  select(price, pred, carat:table, x:z, lresid2) %>% 
+  arrange(price)
+
+diamonds2 %>% group_by(clarity) %>% summarize (num = n())
+
+diamonds2 %>% ggplot(aes(color, clarity))+
+  geom_bin2d()
+```
+
+
+### 4. Does the final model, mod_diamond2, do a good job of predicting diamond prices? Would you trust it to tell you how much to spend if you were buying a diamond?
+
+Judging by the plot of the residuals, the model does a decent job at removing the patterns in the data (fairly flat, only a handful of residuals > 1 st. deviation away from 0) for the log-transformed version of the data. The model could be improved to reduce the variance of the residuals (compress the points toward h=0), in order to get more accurate predictions. However, since we aren't dealing with log-transformed money when buying diamonds in the real world, we should examine how the residuals look when transformed back into their true values. To do so, we calculate subtract the non-logged prediction value from the true value to get the non-transformed residual. Plotting these non-transformed residuals shows that the variability in residuals increases as carat increases (same is true for lcarat). I would have moderate faith in the model for diamonds less than 1 carat, but for diamonds greater than one carat, I would be cautious.  The model would be useful to determine whether you were being completely scammed, but it may not be that good for determining small variations in price.
+
+```{r chapter24-2-3_4}
+nontransformed_residual <- diamonds2 %>%   
+    filter(abs(lresid2) < 1) %>% 
+    add_predictions(mod_diamond2) %>% 
+    mutate(pred = round(2 ^ pred)) %>%
+    mutate(resid = price - pred) 
+
+nontransformed_residual %>% ggplot( aes (carat, resid) )+
+  geom_hex()
+
+nontransformed_residual %>% 
+  summarize (resid_mean = mean(resid),
+             resid_sd = sd(resid),
+             resid_interval_low = mean(resid) - 1.96* sd(resid),
+             resid_interval_high = mean(resid) + 1.96* sd(resid),
+             limit_upper = max(resid),
+             limit_lower = min(resid),
+             maxprice = max(price),
+             minprice = min(price))
+
+```
+
+
+## 24.3.5 Exercises
+
+```{r chapter_24-3-5_examples}
+daily <- flights %>% 
+  mutate(date = make_date(year, month, day)) %>% 
+  group_by(date) %>% 
+  summarise(n = n())
+daily
+
+ggplot(daily, aes(date, n)) + 
+  geom_line()
+
+daily <- daily %>% 
+  mutate(wday = wday(date, label = TRUE))
+mod <- lm(n ~ wday, data = daily)
+
+daily <- daily %>% 
+  add_residuals(mod)
+daily %>% 
+  ggplot(aes(date, resid)) + 
+  geom_ref_line(h = 0) + 
+  geom_line()
+
+term <- function(date) {
+  cut(date, 
+    breaks = ymd(20130101, 20130605, 20130825, 20140101),
+    labels = c("spring", "summer", "fall") 
+  )
+}
+
+daily <- daily %>% 
+  mutate(term = term(date)) 
+
+```
+
+### 1. Use your Google sleuthing skills to brainstorm why there were fewer than expected flights on Jan 20, May 26, and Sep 1. (Hint: they all have the same explanation.) How would these days generalise to another year?
+
+These days are all the day before major US holidays (Sep 2, 2013 is Labor Day) which fall exclusively on Mondays. There may be fewer than expected flights due to the extended weekend / other holiday-associated factors. For another year, these days can be found by looking for the day before the third Monday in January, fourth Monday in May, and first Monday in September.
+
+### 2. What do the three days with high positive residuals represent? How would these days generalise to another year?
+
+These days look like are also associated with major US holidays, with 11/30/2013 and 12/01/2013 being the weekend after Thanksgiving, and 12/28/2013 being the weekend after Christmas. The reason flights peak on these days may be due to families who had visited their relatives leaving to go back home. These can be generalized to another year by looking for the weekends after these holidays, which typically fall after the 4th week of November and December.
+
+```{r}
+daily %>% 
+  top_n(3, resid)
+```
+
+### 3. Create a new variable that splits the wday variable into terms, but only for Saturdays, i.e. it should have Thurs, Fri, but Sat-summer, Sat-spring, Sat-fall. How does this model compare with the model with every combination of wday and term?
+
+In order to split the saturdays into terms, I wrote an annotate_sat() function that takes the wday column and term column from daily and applies the appropriate suffix to each "Sat". Fitting this model (mod3) and comparing it to the mod1 and mod2 described in the chapter shows that there is a slight improvement from mod 1 (no term variable), but that the model does slightly worse than mod2 (each day is termed). The RMSE is midway between mod1 and mod2. 
+
+```{r chapter24-3-5_3}
+annotate_sat <- function (wday, term) {
+  index <- which (wday == "Sat")
+  wday <- as.character(wday)
+  wday[index] <- str_c("Sat-", as.character(term)[index])
+  wday
+}
+
+daily <- daily %>% mutate (wday_sat = annotate_sat(wday,term))
+daily
+
+mod1 <- lm(n ~ wday, data = daily)
+mod2 <- lm(n ~ wday * term, data = daily)
+mod3 <- lm(n ~ wday_sat, data = daily)
+
+daily %>% 
+  gather_residuals(no_term = mod1, all_cominbations = mod2, only_sat_term = mod3) %>% 
+  ggplot(aes(date, resid, colour = model)) +
+    geom_line(alpha = 0.75)
+
+sigma(mod1)
+sigma(mod2)
+sigma(mod3)
+
+```
+
+
+### 4. Create a new wday variable that combines the day of week, term (for Saturdays), and public holidays. What do the residuals of that model look like?
+
+The code below adds a column to the data frame that indicates which days are holidays (I've chosen the main US corporate holidays for 2013). Fitting a model to this results in an rmse value that is lower than the model in which only the saturdays are termed (goes down from 47.36 to 42.94), suggesting that we are doing at least a slightly better job. Looking at the graph, the residuals that spike along the holidays are smaller (but still quite visible). There could be more ways to optimize the model to minimize these residuals, suchs as annotating wday with the few days before/after each holiday.
+
+```{r chapter24-3-5_4}
+daily
+annotate_sat_holiday <- function (date, wday, term) {
+  index <- which (wday == "Sat")
+  wday <- as.character(wday)
+  wday[index] <- str_c("Sat-", as.character(term)[index])
+  holidays <- ymd(20130101, 20130527, 20130704, 20130902, 20131111, 20131128, 20131225)
+  holday_index <- which (date %in% holidays)
+  wday[which (date %in% holidays)] <- "holiday"
+  wday
+}
+
+daily <- daily %>% mutate( wday_sat_holiday = annotate_sat_holiday(date,wday,term))
+daily
+
+mod4 <- lm(n ~ wday_sat_holiday, data = daily)
+
+daily %>% 
+  gather_residuals(only_sat_term = mod3, sat_with_holiday = mod4) %>% 
+  ggplot(aes(date, resid, colour = model)) +
+    geom_line(alpha = 0.75)
+
+sigma(mod3)
+sigma(mod4)
+
+```
+
+### 5. What happens if you fit a day of week effect that varies by month (i.e. n ~ wday * month)? Why is this not very helpful?
+
+Adding the month variable to the model reduces the values of the residuals by a small amount (and subsequently, the rmse). I would say that it is slightly helpful to include. I can see why it is not extremely helpful, because it may be over-fitting the data, as there is not necessarily a good reason to assume that each individual month is associated with their own unique day-of-the-week trends. This adds a large amount of predictor variables to the model that are not all necessarily independent from each other.
+
+```{r chapter24-3-5_5}
+# add month column to daily
+daily <- daily %>% mutate(month = factor(month(date)))
+daily
+
+mod5 <- lm(n ~ wday*month, data = daily)
+
+daily %>% 
+  gather_residuals(original_model = mod1,  with_month = mod5) %>% 
+  ggplot(aes(date, resid, colour = model)) +
+    geom_line(alpha = 0.75)
+
+#summary(mod5)
+sigma(mod1)
+sigma(mod5)
+
+```
+
+
+### 6. What would you expect the model n ~ wday + ns(date, 5) to look like? Knowing what you know about the data, why would you expect it to be not particularly effective?
+
+The book displays what the model n ~ wday \* ns(date, 5) looks like, which factors in the relationship between wday and the time of year into the model. The model n ~ wday + ns(date, 5) uses the "+" operator instead of "\*", which means that this model does not account for the relationship between these two variables. I would expect that n ~ wday + ns(date, 5) does a worse job as a predictive model. Testing this out below, we see that the residuals are indeed larger. The number of predictor variables are also much fewer.
+
+```{r chapter24-3-5_6}
+library(splines)
+mod6 <- MASS::rlm(n ~ wday * ns(date, 5), data = daily)
+mod7 <- MASS::rlm(n ~ wday + ns(date, 5), data = daily)
+
+summary(mod6)
+summary(mod7)
+
+daily %>% 
+  gather_residuals(multiplicative_splines = mod6,  additive_splines = mod7) %>% 
+  ggplot(aes(date, resid, colour = model)) +
+    geom_line(alpha = 0.75)
+
+sigma(mod6)
+sigma(mod7)
+```
+
+
+### 7. We hypothesised that people leaving on Sundays are more likely to be business travellers who need to be somewhere on Monday. Explore that hypothesis by seeing how it breaks down based on distance and time: if it’s true, you’d expect to see more Sunday evening flights to places that are far away.
+
+To explore this hypothesis, we first generate a new data frame from flights that contains a factor splitting up each day into early morning (12am-8am, 8am-12pm, 12pm-5pm, and 5pm-12am). We can then summarize the data to obtain the mean distance of flights that occurred during each of those intervals grouped by day. Plotting this using boxplots, we observe that flights taking off between 1am and 8am on Sundays have a much higher mean distance compared to all other categories. Contrary to our hypothesis that evening flights (5pm-12am) would be the longest distance-wise, we instead see that there are more Sunday early morning flights between 12am-8am.
+
+```{r chapter24-3-5_7}
+# add distance and time of flight to daily matrix
+timeofday <- function(date) {
+  cut(date, 
+    breaks = c(0,7, 12, 17, 23),
+    labels = c("12am-8am", "8am-12pm", "12pm-5pm","5pm-12am") 
+  )
+}
+
+flights2 <- flights %>% mutate (date = make_date (year, month, day), timeofday = timeofday(hour)) %>% 
+  group_by(date, timeofday) %>% 
+  summarize (n = n(),
+             mean_dist = mean(distance)) %>%
+  mutate(wday = wday(date, label = TRUE))
+
+flights2
+
+ggplot(flights2, aes (x = wday, y = mean_dist))+
+  geom_boxplot(aes(color = timeofday))
+# 
+# flights %>% mutate (date = make_date (year, month, day), timeofday = timeofday(hour)) %>% 
+#   mutate(wday = wday(date, label = TRUE))%>%
+#   ggplot( aes (x = wday, y = distance))+
+#   geom_boxplot(aes(color = timeofday))
+```
+
+
+### 8. It’s a little frustrating that Sunday and Saturday are on separate ends of the plot. Write a small function to set the levels of the factor so that the week starts on Monday.
+
+The levels of a factor can be re-ordered using the factor() function and redefining the order of the levels by manually passing them into the levels argument. Below is an example of a function reordering the factors so that the week starts on monday.
+
+```{r chapter24-3-5_8}
+# before reordering the factors
+ggplot(daily, aes(wday, n)) + 
+  geom_boxplot()
+
+reorder_week <- function (mydata) {
+  mydata <- factor(mydata, levels = c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"))
+  mydata
+}
+
+# after reordering the factors
+daily %>% mutate (wday2 = reorder_week(wday)) %>% ggplot( aes(wday2, n)) + 
+  geom_boxplot()
+```
+
+
+
