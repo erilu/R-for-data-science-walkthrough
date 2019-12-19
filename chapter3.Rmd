@@ -1,9 +1,9 @@
 
 # (PART) Data Visualization {-}
 
-# Chapter 3
+# Chapter 3 {-}
 
-```{r message=FALSE}
+```{r message=F, error=F, warning=F}
 library(tidyverse)
 ```
 
