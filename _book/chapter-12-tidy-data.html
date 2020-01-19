@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 12 Tidy Data | R for Data Science Walkthrough</title>
+  <meta name="description" content="This is a walkthrough of the book, R for Data Science (r4ds), with notes and solutions for the exercises." />
+  <meta name="generator" content="bookdown 0.14 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 12 Tidy Data | R for Data Science Walkthrough" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="This is a walkthrough of the book, R for Data Science (r4ds), with notes and solutions for the exercises." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 12 Tidy Data | R for Data Science Walkthrough" />
+  
+  <meta name="twitter:description" content="This is a walkthrough of the book, R for Data Science (r4ds), with notes and solutions for the exercises." />
+  
+
+<meta name="author" content="Erick Lu" />
+
+
+<meta name="date" content="2020-01-18" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="chapter-11-data-import.html"/>
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R for Data Science Walkthrough</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Introduction</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#about-me"><i class="fa fa-check"></i>About me</a></li>
+</ul></li>
+<li class="part"><span><b>I Data Visualization</b></span></li>
+<li><a href="chapter-3.html#chapter-3"><strong>Chapter 3</strong></a><ul>
+<li><a href="chapter-3.html#notes---creating-a-ggplot"><strong>3.2</strong> Notes - Creating a ggplot</a></li>
+<li><a href="chapter-3.html#exercises"><strong>3.2.4</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html"><i class="fa fa-check"></i>1. Run ggplot(data = mpg). What do you see?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#how-many-rows-are-in-mpg-how-many-columns"><i class="fa fa-check"></i>2. How many rows are in mpg? How many columns?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-does-the-drv-variable-describe-read-the-help-for-mpg-to-find-out."><i class="fa fa-check"></i>3. What does the drv variable describe? Read the help for ?mpg to find out.</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#make-a-scatterplot-of-hwy-vs-cyl."><i class="fa fa-check"></i>4. Make a scatterplot of hwy vs cyl.</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-happens-if-you-make-a-scatterplot-of-class-vs-drv-why-is-the-plot-not-useful"><i class="fa fa-check"></i>5. What happens if you make a scatterplot of class vs drv? Why is the plot not useful?</a></li>
+</ul></li>
+<li><a href="chapter-3.html#notes---aesthetic-mappings"><strong>3.3</strong> Notes - Aesthetic Mappings</a></li>
+<li><a href="chapter-3.html#exercises-1"><strong>3.3.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#whats-gone-wrong-with-this-code-why-are-the-points-not-blue"><i class="fa fa-check"></i>1. What’s gone wrong with this code? Why are the points not blue?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#which-variables-in-mpg-are-categorical-which-variables-are-continuous-hint-type-mpg-to-read-the-documentation-for-the-dataset.-how-can-you-see-this-information-when-you-run-mpg"><i class="fa fa-check"></i>2. Which variables in mpg are categorical? Which variables are continuous? (Hint: type ?mpg to read the documentation for the dataset). How can you see this information when you run mpg?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#map-a-continuous-variable-to-color-size-and-shape.-how-do-these-aesthetics-behave-differently-for-categorical-vs.continuous-variables"><i class="fa fa-check"></i>3. Map a continuous variable to color, size, and shape. How do these aesthetics behave differently for categorical vs. continuous variables?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-happens-if-you-map-the-same-variable-to-multiple-aesthetics"><i class="fa fa-check"></i>4. What happens if you map the same variable to multiple aesthetics?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-does-the-stroke-aesthetic-do-what-shapes-does-it-work-with-hint-use-geom_point"><i class="fa fa-check"></i>5. What does the stroke aesthetic do? What shapes does it work with? (Hint: use ?geom_point)</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-happens-if-you-map-an-aesthetic-to-something-other-than-a-variable-name-like-aescolour-displ-5"><i class="fa fa-check"></i>6. What happens if you map an aesthetic to something other than a variable name, like aes(colour = displ &lt; 5)?</a></li>
+</ul></li>
+<li><a href="chapter-3.html#notes---facets"><strong>3.5</strong> Notes - Facets</a></li>
+<li><a href="chapter-3.html#exercises-2"><strong>3.5.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-happens-if-you-facet-on-a-continuous-variable"><i class="fa fa-check"></i>1. What happens if you facet on a continuous variable?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-do-the-empty-cells-in-plot-with-facet_griddrv-cyl-mean-how-do-they-relate-to-this-plot"><i class="fa fa-check"></i>2. What do the empty cells in plot with facet_grid(drv ~ cyl) mean? How do they relate to this plot?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-plots-does-the-following-code-make-what-does-.-do"><i class="fa fa-check"></i>3. What plots does the following code make? What does . do?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#take-the-first-faceted-plot-in-this-section"><i class="fa fa-check"></i>4. Take the first faceted plot in this section:</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#read-facet_wrap.-what-does-nrow-do-what-does-ncol-do-what-other-options-control-the-layout-of-the-individual-panels-why-doesnt-facet_grid-have-nrow-and-ncol-argument"><i class="fa fa-check"></i>5. Read ?facet_wrap. What does nrow do? What does ncol do? What other options control the layout of the individual panels? Why doesn’t facet_grid() have nrow and ncol argument?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#when-using-facet_grid-you-should-usually-put-the-variable-with-more-unique-levels-in-the-columns.-why"><i class="fa fa-check"></i>6. When using facet_grid() you should usually put the variable with more unique levels in the columns. Why?</a></li>
+</ul></li>
+<li><a href="chapter-3.html#notes---geometric-objects"><strong>3.6</strong> Notes - Geometric objects</a></li>
+<li><a href="chapter-3.html#exercises-3"><strong>3.6.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-geom-would-you-use-to-draw-a-line-chart-a-boxplot-a-histogram-an-area-chart"><i class="fa fa-check"></i>1. What geom would you use to draw a line chart? A boxplot? A histogram? An area chart?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#run-this-code-in-your-head-and-predict-what-the-output-will-look-like.-then-run-the-code-in-r-and-check-your-predictions."><i class="fa fa-check"></i>2. Run this code in your head and predict what the output will look like. Then, run the code in R and check your predictions.</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-does-show.legend-false-do-what-happens-if-you-remove-it-why-do-you-think-i-used-it-earlier-in-the-chapter"><i class="fa fa-check"></i>3. What does show.legend = FALSE do? What happens if you remove it? Why do you think I used it earlier in the chapter?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-does-the-se-argument-to-geom_smooth-do"><i class="fa fa-check"></i>4. What does the se argument to geom_smooth() do?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#will-these-two-graphs-look-different-whywhy-not"><i class="fa fa-check"></i>5. Will these two graphs look different? Why/why not?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#recreate-the-r-code-necessary-to-generate-the-following-graphs."><i class="fa fa-check"></i>6. Recreate the R code necessary to generate the following graphs.</a></li>
+</ul></li>
+<li><a href="chapter-3.html#notes---statistical-transformations"><strong>3.7</strong> Notes - Statistical Transformations</a></li>
+<li><a href="chapter-3.html#exercises-4"><strong>3.7.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-is-the-default-geom-associated-with-stat_summary-how-could-you-rewrite-the-previous-plot-to-use-that-geom-function-instead-of-the-stat-function"><i class="fa fa-check"></i>1. What is the default geom associated with stat_summary()? How could you rewrite the previous plot to use that geom function instead of the stat function?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-does-geom_col-do-how-is-it-different-to-geom_bar"><i class="fa fa-check"></i>2. What does geom_col() do? How is it different to geom_bar()?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#most-geoms-and-stats-come-in-pairs-that-are-almost-always-used-in-concert.-read-through-the-documentation-and-make-a-list-of-all-the-pairs.-what-do-they-have-in-common"><i class="fa fa-check"></i>3. Most geoms and stats come in pairs that are almost always used in concert. Read through the documentation and make a list of all the pairs. What do they have in common?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-variables-does-stat_smooth-compute-what-parameters-control-its-behaviour"><i class="fa fa-check"></i>4. What variables does stat_smooth() compute? What parameters control its behaviour?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#in-our-proportion-bar-chart-we-need-to-set-group-1.-why-in-other-words-what-is-the-problem-with-these-two-graphs"><i class="fa fa-check"></i>5. In our proportion bar chart, we need to set group = 1. Why? In other words what is the problem with these two graphs?</a></li>
+</ul></li>
+<li><a href="chapter-3.html#notes---position-adjustments"><strong>3.8</strong> Notes - Position Adjustments</a></li>
+<li><a href="chapter-3.html#exercises-5"><strong>3.8.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-is-the-problem-with-this-plot-how-could-you-improve-it"><i class="fa fa-check"></i>1. What is the problem with this plot? How could you improve it?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-parameters-to-geom_jitter-control-the-amount-of-jittering"><i class="fa fa-check"></i>2. What parameters to geom_jitter() control the amount of jittering?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#compare-and-contrast-geom_jitter-with-geom_count."><i class="fa fa-check"></i>3. Compare and contrast geom_jitter() with geom_count().</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#whats-the-default-position-adjustment-for-geom_boxplot-create-a-visualisation-of-the-mpg-dataset-that-demonstrates-it."><i class="fa fa-check"></i>4. What’s the default position adjustment for geom_boxplot()? Create a visualisation of the mpg dataset that demonstrates it.</a></li>
+</ul></li>
+<li><a href="chapter-3.html#notes---coordinate-systems"><strong>3.9</strong> Notes - Coordinate Systems</a></li>
+<li><a href="chapter-3.html#exercises-6"><strong>3.9.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#turn-a-stacked-bar-chart-into-a-pie-chart-using-coord_polar."><i class="fa fa-check"></i>1. Turn a stacked bar chart into a pie chart using coord_polar().</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-does-labs-do-read-the-documentation."><i class="fa fa-check"></i>2. What does labs() do? Read the documentation.</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#whats-the-difference-between-coord_quickmap-and-coord_map"><i class="fa fa-check"></i>3. What’s the difference between coord_quickmap() and coord_map()?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-does-the-plot-below-tell-you-about-the-relationship-between-city-and-highway-mpg-why-is-coord_fixed-important-what-does-geom_abline-do"><i class="fa fa-check"></i>4. What does the plot below tell you about the relationship between city and highway mpg? Why is coord_fixed() important? What does geom_abline() do?</a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>II Data Transformation</b></span></li>
+<li><a href="chapter-4.html#chapter-4"><strong>Chapter 4</strong></a><ul>
+<li><a href="chapter-4.html#practice"><strong>4.4</strong> Practice</a><ul>
+<li class="chapter" data-level="" data-path="chapter-4.html"><a href="chapter-4.html"><i class="fa fa-check"></i>1. Why does this code not work?</a></li>
+<li class="chapter" data-level="" data-path="chapter-4.html"><a href="chapter-4.html#tweak-each-of-the-following-r-commands-so-that-they-run-correctly"><i class="fa fa-check"></i>2. Tweak each of the following R commands so that they run correctly:</a></li>
+<li class="chapter" data-level="" data-path="chapter-4.html"><a href="chapter-4.html#press-alt-shift-k.-what-happens-how-can-you-get-to-the-same-place-using-the-menus"><i class="fa fa-check"></i>3. Press Alt + Shift + K. What happens? How can you get to the same place using the menus?</a></li>
+</ul></li>
+</ul></li>
+<li><a href="chapter-5.html#chapter-5"><strong>Chapter 5</strong></a><ul>
+<li><a href="chapter-5.html#notes---filter-rows-with-filter"><strong>5.2</strong> Notes - Filter rows with filter()</a><ul>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html"><i class="fa fa-check"></i>5.2.1 Comparisons</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#logical-operators"><i class="fa fa-check"></i>5.2.2 Logical Operators</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#missing-values"><i class="fa fa-check"></i>5.2.3 Missing values</a></li>
+</ul></li>
+<li><a href="chapter-5.html#exercises-7"><strong>5.2.4</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#find-all-flights-that"><i class="fa fa-check"></i>1. Find all flights that</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#how-many-flights-have-a-missing-dep_time-what-other-variables-are-missing-what-might-these-rows-represent"><i class="fa fa-check"></i>2. How many flights have a missing dep_time? What other variables are missing? What might these rows represent?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#why-is-na-0-not-missing-why-is-na-true-not-missing-why-is-false-na-not-missing-can-you-figure-out-the-general-rule-na-0-is-a-tricky-counterexample"><i class="fa fa-check"></i>3. Why is NA ^ 0 not missing? Why is NA | TRUE not missing? Why is FALSE &amp; NA not missing? Can you figure out the general rule? (NA * 0 is a tricky counterexample!)</a></li>
+</ul></li>
+<li><a href="chapter-5.html#notes---arrange-rows-with-arrange"><strong>5.3</strong> Notes - Arrange rows with arrange()</a></li>
+<li><a href="chapter-5.html#exercises-8"><strong>5.3.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#how-could-you-use-arrange-to-sort-all-missing-values-to-the-start-hint-use-is.na."><i class="fa fa-check"></i>1. How could you use arrange() to sort all missing values to the start? (Hint: use is.na()).</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#sort-flights-to-find-the-most-delayed-flights.-find-the-flights-that-left-earliest."><i class="fa fa-check"></i>2. Sort flights to find the most delayed flights. Find the flights that left earliest.</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#sort-flights-to-find-the-fastest-flights."><i class="fa fa-check"></i>3. Sort flights to find the fastest flights.</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#which-flights-travelled-the-longest-which-travelled-the-shortest"><i class="fa fa-check"></i>4. Which flights travelled the longest? Which travelled the shortest?</a></li>
+</ul></li>
+<li><a href="chapter-5.html#notes---select-columns-with-select"><strong>5.4</strong> Notes - Select columns with select()</a></li>
+<li><a href="chapter-5.html#exercises-9"><strong>5.4.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#brainstorm-as-many-ways-as-possible-to-select-dep_time-dep_delay-arr_time-and-arr_delay-from-flights."><i class="fa fa-check"></i>1. Brainstorm as many ways as possible to select dep_time, dep_delay, arr_time, and arr_delay from flights.</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#what-happens-if-you-include-the-name-of-a-variable-multiple-times-in-a-select-call"><i class="fa fa-check"></i>2. What happens if you include the name of a variable multiple times in a select() call?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#what-does-the-one_of-function-do-why-might-it-be-helpful-in-conjunction-with-this-vector"><i class="fa fa-check"></i>3. What does the one_of() function do? Why might it be helpful in conjunction with this vector?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#does-the-result-of-running-the-following-code-surprise-you-how-do-the-select-helpers-deal-with-case-by-default-how-can-you-change-that-default"><i class="fa fa-check"></i>4. Does the result of running the following code surprise you? How do the select helpers deal with case by default? How can you change that default?</a></li>
+</ul></li>
+<li><a href="chapter-5.html#notes---add-new-variables-with-mutate"><strong>5.5</strong> Notes - Add new variables with mutate()</a></li>
+<li><a href="chapter-5.html#exercises-10"><strong>5.5.2</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#currently-dep_time-and-sched_dep_time-are-convenient-to-look-at-but-hard-to-compute-with-because-theyre-not-really-continuous-numbers.-convert-them-to-a-more-convenient-representation-of-number-of-minutes-since-midnight."><i class="fa fa-check"></i>1. Currently dep_time and sched_dep_time are convenient to look at, but hard to compute with because they’re not really continuous numbers. Convert them to a more convenient representation of number of minutes since midnight.</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#compare-air_time-with-arr_time---dep_time.-what-do-you-expect-to-see-what-do-you-see-what-do-you-need-to-do-to-fix-it"><i class="fa fa-check"></i>2. Compare air_time with arr_time - dep_time. What do you expect to see? What do you see? What do you need to do to fix it?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#compare-dep_time-sched_dep_time-and-dep_delay.-how-would-you-expect-those-three-numbers-to-be-related"><i class="fa fa-check"></i>3. Compare dep_time, sched_dep_time, and dep_delay. How would you expect those three numbers to be related?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#find-the-10-most-delayed-flights-using-a-ranking-function.-how-do-you-want-to-handle-ties-carefully-read-the-documentation-for-min_rank."><i class="fa fa-check"></i>4. Find the 10 most delayed flights using a ranking function. How do you want to handle ties? Carefully read the documentation for min_rank().</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#what-does-13-110-return-why"><i class="fa fa-check"></i>5. What does 1:3 + 1:10 return? Why?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#what-trigonometric-functions-does-r-provide"><i class="fa fa-check"></i>6. What trigonometric functions does R provide?</a></li>
+</ul></li>
+<li><a href="chapter-5.html#notes---grouped-summaries-with-summarise"><strong>5.6</strong> Notes - Grouped summaries with summarise()</a><ul>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#combining-multiple-operations-with-the-pipe"><i class="fa fa-check"></i>5.6.1 Combining multiple operations with the pipe</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#missing-values-1"><i class="fa fa-check"></i>5.6.2 Missing values</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#counts"><i class="fa fa-check"></i>5.6.3 Counts</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#useful-summary-functions"><i class="fa fa-check"></i>5.6.4 Useful summary functions</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#grouping-by-multiple-variables"><i class="fa fa-check"></i>5.6.5 Grouping by multiple variables</a></li>
+</ul></li>
+<li><a href="chapter-5.html#exercises-11"><strong>5.6.7</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#brainstorm-at-least-5-different-ways-to-assess-the-typical-delay-characteristics-of-a-group-of-flights.-consider-the-following-scenarios"><i class="fa fa-check"></i>1. Brainstorm at least 5 different ways to assess the typical delay characteristics of a group of flights. Consider the following scenarios:</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#come-up-with-another-approach-that-will-give-you-the-same-output-as-not_cancelled-countdest-and-not_cancelled-counttailnum-wt-distance-without-using-count."><i class="fa fa-check"></i>2. Come up with another approach that will give you the same output as not_cancelled %&gt;% count(dest) and not_cancelled %&gt;% count(tailnum, wt = distance) (without using count()).</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#our-definition-of-cancelled-flights-is.nadep_delay-is.naarr_delay-is-slightly-suboptimal.-why-which-is-the-most-important-column"><i class="fa fa-check"></i>3. Our definition of cancelled flights (is.na(dep_delay) | is.na(arr_delay) ) is slightly suboptimal. Why? Which is the most important column?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#look-at-the-number-of-cancelled-flights-per-day.-is-there-a-pattern-is-the-proportion-of-cancelled-flights-related-to-the-average-delay"><i class="fa fa-check"></i>4. Look at the number of cancelled flights per day. Is there a pattern? Is the proportion of cancelled flights related to the average delay?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#which-carrier-has-the-worst-delays-challenge-can-you-disentangle-the-effects-of-bad-airports-vs.bad-carriers-whywhy-not-hint-think-about-flights-group_bycarrier-dest-summarisen"><i class="fa fa-check"></i>5. Which carrier has the worst delays? Challenge: can you disentangle the effects of bad airports vs. bad carriers? Why/why not? (Hint: think about flights %&gt;% group_by(carrier, dest) %&gt;% summarise(n()))</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#what-does-the-sort-argument-to-count-do.-when-might-you-use-it"><i class="fa fa-check"></i>6. What does the sort argument to count() do. When might you use it?</a></li>
+</ul></li>
+<li><a href="chapter-5.html#notes---grouped-mutates-and-filters"><strong>5.7</strong> Notes - Grouped mutates (and filters)</a></li>
+<li><a href="chapter-5.html#exercises-12"><strong>5.7.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#refer-back-to-the-lists-of-useful-mutate-and-filtering-functions.-describe-how-each-operation-changes-when-you-combine-it-with-grouping."><i class="fa fa-check"></i>1. Refer back to the lists of useful mutate and filtering functions. Describe how each operation changes when you combine it with grouping.</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#which-plane-tailnum-has-the-worst-on-time-record"><i class="fa fa-check"></i>2. Which plane (tailnum) has the worst on-time record?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#what-time-of-day-should-you-fly-if-you-want-to-avoid-delays-as-much-as-possible"><i class="fa fa-check"></i>3. What time of day should you fly if you want to avoid delays as much as possible?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#for-each-destination-compute-the-total-minutes-of-delay.-for-each-flight-compute-the-proportion-of-the-total-delay-for-its-destination."><i class="fa fa-check"></i>4. For each destination, compute the total minutes of delay. For each, flight, compute the proportion of the total delay for its destination.</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#delays-are-typically-temporally-correlated-even-once-the-problem-that-caused-the-initial-delay-has-been-resolved-later-flights-are-delayed-to-allow-earlier-flights-to-leave.-using-lag-explore-how-the-delay-of-a-flight-is-related-to-the-delay-of-the-immediately-preceding-flight."><i class="fa fa-check"></i>5. Delays are typically temporally correlated: even once the problem that caused the initial delay has been resolved, later flights are delayed to allow earlier flights to leave. Using lag() explore how the delay of a flight is related to the delay of the immediately preceding flight.</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#look-at-each-destination.-can-you-find-flights-that-are-suspiciously-fast-i.e.flights-that-represent-a-potential-data-entry-error.-compute-the-air-time-a-flight-relative-to-the-shortest-flight-to-that-destination.-which-flights-were-most-delayed-in-the-air"><i class="fa fa-check"></i>6. Look at each destination. Can you find flights that are suspiciously fast? (i.e. flights that represent a potential data entry error). Compute the air time a flight relative to the shortest flight to that destination. Which flights were most delayed in the air?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#find-all-destinations-that-are-flown-by-at-least-two-carriers.-use-that-information-to-rank-the-carriers."><i class="fa fa-check"></i>7. Find all destinations that are flown by at least two carriers. Use that information to rank the carriers.</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#for-each-plane-count-the-number-of-flights-before-the-first-delay-of-greater-than-1-hour."><i class="fa fa-check"></i>8. For each plane, count the number of flights before the first delay of greater than 1 hour.</a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>III Exploratory Data Analysis</b></span></li>
+<li><a href="chapter-7.html#chapter-7"><strong>Chapter 7</strong></a><ul>
+<li><a href="chapter-7.html#notes---visualizing-distributions"><strong>7.3.1</strong> Notes - Visualizing distributions</a></li>
+<li><a href="chapter-7.html#exercises-13"><strong>7.3.4</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html"><i class="fa fa-check"></i>1. Explore the distribution of each of the x, y, and z variables in diamonds. What do you learn? Think about a diamond and how you might decide which dimension is the length, width, and depth.</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#explore-the-distribution-of-price.-do-you-discover-anything-unusual-or-surprising-hint-carefully-think-about-the-binwidth-and-make-sure-you-try-a-wide-range-of-values."><i class="fa fa-check"></i>2. Explore the distribution of price. Do you discover anything unusual or surprising? (Hint: Carefully think about the binwidth and make sure you try a wide range of values.)</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#how-many-diamonds-are-0.99-carat-how-many-are-1-carat-what-do-you-think-is-the-cause-of-the-difference"><i class="fa fa-check"></i>3. How many diamonds are 0.99 carat? How many are 1 carat? What do you think is the cause of the difference?</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#compare-and-contrast-coord_cartesian-vs-xlim-or-ylim-when-zooming-in-on-a-histogram.-what-happens-if-you-leave-binwidth-unset-what-happens-if-you-try-and-zoom-so-only-half-a-bar-shows"><i class="fa fa-check"></i>4. Compare and contrast coord_cartesian() vs xlim() or ylim() when zooming in on a histogram. What happens if you leave binwidth unset? What happens if you try and zoom so only half a bar shows?</a></li>
+</ul></li>
+<li><a href="chapter-7.html#notes---missing-values"><strong>7.4</strong> Notes - Missing Values</a></li>
+<li><a href="chapter-7.html#exercises-14"><strong>7.4.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#what-happens-to-missing-values-in-a-histogram-what-happens-to-missing-values-in-a-bar-chart-why-is-there-a-difference"><i class="fa fa-check"></i>1. What happens to missing values in a histogram? What happens to missing values in a bar chart? Why is there a difference?</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#what-does-na.rm-true-do-in-mean-and-sum"><i class="fa fa-check"></i>2. What does na.rm = TRUE do in mean() and sum()?</a></li>
+</ul></li>
+<li><a href="chapter-7.html#notes---covariation"><strong>7.5</strong> Notes - Covariation</a></li>
+<li><a href="chapter-7.html#notes---a-categorical-and-continuous-variable"><strong>7.5.1</strong> Notes - A categorical and continuous variable</a></li>
+<li><a href="chapter-7.html#exercises-15"><strong>7.5.1.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#use-what-youve-learned-to-improve-the-visualisation-of-the-departure-times-of-cancelled-vs.non-cancelled-flights."><i class="fa fa-check"></i>1. Use what you’ve learned to improve the visualisation of the departure times of cancelled vs. non-cancelled flights.</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#what-variable-in-the-diamonds-dataset-is-most-important-for-predicting-the-price-of-a-diamond-how-is-that-variable-correlated-with-cut-why-does-the-combination-of-those-two-relationships-lead-to-lower-quality-diamonds-being-more-expensive"><i class="fa fa-check"></i>2. What variable in the diamonds dataset is most important for predicting the price of a diamond? How is that variable correlated with cut? Why does the combination of those two relationships lead to lower quality diamonds being more expensive?</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#install-the-ggstance-package-and-create-a-horizontal-boxplot.-how-does-this-compare-to-using-coord_flip"><i class="fa fa-check"></i>3. Install the ggstance package, and create a horizontal boxplot. How does this compare to using coord_flip()?</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#one-problem-with-boxplots-is-that-they-were-developed-in-an-era-of-much-smaller-datasets-and-tend-to-display-a-prohibitively-large-number-of-outlying-values.-one-approach-to-remedy-this-problem-is-the-letter-value-plot.-install-the-lvplot-package-and-try-using-geom_lv-to-display-the-distribution-of-price-vs-cut.-what-do-you-learn-how-do-you-interpret-the-plots"><i class="fa fa-check"></i>4. One problem with boxplots is that they were developed in an era of much smaller datasets and tend to display a prohibitively large number of “outlying values”. One approach to remedy this problem is the letter value plot. Install the lvplot package, and try using geom_lv() to display the distribution of price vs cut. What do you learn? How do you interpret the plots?</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#compare-and-contrast-geom_violin-with-a-facetted-geom_histogram-or-a-coloured-geom_freqpoly.-what-are-the-pros-and-cons-of-each-method"><i class="fa fa-check"></i>5. Compare and contrast geom_violin() with a facetted geom_histogram(), or a coloured geom_freqpoly(). What are the pros and cons of each method?</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#if-you-have-a-small-dataset-its-sometimes-useful-to-use-geom_jitter-to-see-the-relationship-between-a-continuous-and-categorical-variable.-the-ggbeeswarm-package-provides-a-number-of-methods-similar-to-geom_jitter.-list-them-and-briefly-describe-what-each-one-does."><i class="fa fa-check"></i>6. If you have a small dataset, it’s sometimes useful to use geom_jitter() to see the relationship between a continuous and categorical variable. The ggbeeswarm package provides a number of methods similar to geom_jitter(). List them and briefly describe what each one does.</a></li>
+</ul></li>
+<li><a href="chapter-7.html#notes---two-categorical-variables"><strong>7.5.2</strong> Notes - Two categorical variables</a></li>
+<li><a href="chapter-7.html#exercises-16"><strong>7.5.2.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#how-could-you-rescale-the-count-dataset-above-to-more-clearly-show-the-distribution-of-cut-within-colour-or-colour-within-cut"><i class="fa fa-check"></i>1. How could you rescale the count dataset above to more clearly show the distribution of cut within colour, or colour within cut?</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#use-geom_tile-together-with-dplyr-to-explore-how-average-flight-delays-vary-by-destination-and-month-of-year.-what-makes-the-plot-difficult-to-read-how-could-you-improve-it"><i class="fa fa-check"></i>2. Use geom_tile() together with dplyr to explore how average flight delays vary by destination and month of year. What makes the plot difficult to read? How could you improve it?</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#why-is-it-slightly-better-to-use-aesx-color-y-cut-rather-than-aesx-cut-y-color-in-the-example-above"><i class="fa fa-check"></i>3. Why is it slightly better to use aes(x = color, y = cut) rather than aes(x = cut, y = color) in the example above?</a></li>
+</ul></li>
+<li><a href="chapter-7.html#notes---two-continuous-variables"><strong>7.5.3</strong> Notes - Two continuous variables</a></li>
+<li><a href="chapter-7.html#exercises-17"><strong>7.5.3.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#instead-of-summarising-the-conditional-distribution-with-a-boxplot-you-could-use-a-frequency-polygon.-what-do-you-need-to-consider-when-using-cut_width-vs-cut_number-how-does-that-impact-a-visualisation-of-the-2d-distribution-of-carat-and-price"><i class="fa fa-check"></i>1. Instead of summarising the conditional distribution with a boxplot, you could use a frequency polygon. What do you need to consider when using cut_width() vs cut_number()? How does that impact a visualisation of the 2d distribution of carat and price?</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#visualise-the-distribution-of-carat-partitioned-by-price."><i class="fa fa-check"></i>2. Visualise the distribution of carat, partitioned by price.</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#how-does-the-price-distribution-of-very-large-diamonds-compare-to-small-diamonds.-is-it-as-you-expect-or-does-it-surprise-you"><i class="fa fa-check"></i>3. How does the price distribution of very large diamonds compare to small diamonds. Is it as you expect, or does it surprise you?</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#combine-two-of-the-techniques-youve-learned-to-visualise-the-combined-distribution-of-cut-carat-and-price."><i class="fa fa-check"></i>4. Combine two of the techniques you’ve learned to visualise the combined distribution of cut, carat, and price.</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#two-dimensional-plots-reveal-outliers-that-are-not-visible-in-one-dimensional-plots.-for-example-some-points-in-the-plot-below-have-an-unusual-combination-of-x-and-y-values-which-makes-the-points-outliers-even-though-their-x-and-y-values-appear-normal-when-examined-separately.-why-is-a-scatterplot-a-better-display-than-a-binned-plot-for-this-case"><i class="fa fa-check"></i>5. Two dimensional plots reveal outliers that are not visible in one dimensional plots. For example, some points in the plot below have an unusual combination of x and y values, which makes the points outliers even though their x and y values appear normal when examined separately. Why is a scatterplot a better display than a binned plot for this case?</a></li>
+</ul></li>
+<li><a href="chapter-7.html#notes---patterns-and-models"><strong>7.6</strong> Notes - Patterns and models</a></li>
+</ul></li>
+<li><a href="chapter-8.html#chapter-8"><strong>Chapter 8</strong></a><ul>
+<li class="chapter" data-level="" data-path="chapter-8.html"><a href="chapter-8.html"><i class="fa fa-check"></i>Notes - Project Workflows</a></li>
+</ul></li>
+<li class="part"><span><b>IV Data Wrangling</b></span></li>
+<li><a href="chapter-10-tibbles.html#chapter-10-tibbles"><strong>Chapter 10</strong> Tibbles</a><ul>
+<li class="chapter" data-level="" data-path="chapter-10-tibbles.html"><a href="chapter-10-tibbles.html"><i class="fa fa-check"></i>Notes - Creating Tibbles</a></li>
+<li><a href="chapter-10-tibbles.html#exercises-18"><strong>10.5</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-10-tibbles.html"><a href="chapter-10-tibbles.html#how-can-you-tell-if-an-object-is-a-tibble-hint-try-printing-mtcars-which-is-a-regular-data-frame."><i class="fa fa-check"></i>1. How can you tell if an object is a tibble? (Hint: try printing mtcars, which is a regular data frame).</a></li>
+<li class="chapter" data-level="" data-path="chapter-10-tibbles.html"><a href="chapter-10-tibbles.html#compare-and-contrast-the-following-operations-on-a-data.frame-and-equivalent-tibble.-what-is-different-why-might-the-default-data-frame-behaviours-cause-you-frustration"><i class="fa fa-check"></i>2. Compare and contrast the following operations on a data.frame and equivalent tibble. What is different? Why might the default data frame behaviours cause you frustration?</a></li>
+<li class="chapter" data-level="" data-path="chapter-10-tibbles.html"><a href="chapter-10-tibbles.html#if-you-have-the-name-of-a-variable-stored-in-an-object-e.g.var---mpg-how-can-you-extract-the-reference-variable-from-a-tibble"><i class="fa fa-check"></i>3. If you have the name of a variable stored in an object, e.g. var &lt;- “mpg”, how can you extract the reference variable from a tibble?</a></li>
+<li class="chapter" data-level="" data-path="chapter-10-tibbles.html"><a href="chapter-10-tibbles.html#practice-referring-to-non-syntactic-names-in-the-following-data-frame-by"><i class="fa fa-check"></i>4. Practice referring to non-syntactic names in the following data frame by:</a></li>
+<li class="chapter" data-level="" data-path="chapter-10-tibbles.html"><a href="chapter-10-tibbles.html#what-does-tibbleenframe-do-when-might-you-use-it"><i class="fa fa-check"></i>5. What does tibble::enframe() do? When might you use it?</a></li>
+<li class="chapter" data-level="" data-path="chapter-10-tibbles.html"><a href="chapter-10-tibbles.html#what-option-controls-how-many-additional-column-names-are-printed-at-the-footer-of-a-tibble"><i class="fa fa-check"></i>6. What option controls how many additional column names are printed at the footer of a tibble?</a></li>
+</ul></li>
+</ul></li>
+<li><a href="chapter-11-data-import.html#chapter-11-data-import"><strong>Chapter 11</strong> Data Import</a><ul>
+<li><a href="chapter-11-data-import.html#notes---reading-in-files"><strong>11.2</strong> Notes - Reading in files</a></li>
+<li><a href="chapter-11-data-import.html#exercises-19"><strong>11.2.2</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-11-data-import.html"><a href="chapter-11-data-import.html"><i class="fa fa-check"></i>1. What function would you use to read a file where fields were separated with “|”?</a></li>
+<li class="chapter" data-level="" data-path="chapter-11-data-import.html"><a href="chapter-11-data-import.html#apart-from-file-skip-and-comment-what-other-arguments-do-read_csv-and-read_tsv-have-in-common"><i class="fa fa-check"></i>2. Apart from file, skip, and comment, what other arguments do read_csv() and read_tsv() have in common?</a></li>
+<li class="chapter" data-level="" data-path="chapter-11-data-import.html"><a href="chapter-11-data-import.html#what-are-the-most-important-arguments-to-read_fwf"><i class="fa fa-check"></i>3. What are the most important arguments to read_fwf()?</a></li>
+<li class="chapter" data-level="0.0.1" data-path="chapter-11-data-import.html"><a href="chapter-11-data-import.html#sometimes-strings-in-a-csv-file-contain-commas.-to-prevent-them-from-causing-problems-they-need-to-be-surrounded-by-a-quoting-character-like-or-.-by-convention-read_csv-assumes-that-the-quoting-character-will-be-and-if-you-want-to-change-it-youll-need-to-use-read_delim-instead.-what-arguments-do-you-need-to-specify-to-read-the-following-text-into-a-data-frame---5.-identify-what-is-wrong-with-each-of-the-following-inline-csv-files.-what-happens-when-you-run-the-code---11.3-notes---parsing-a-vector---11.3.1-parsing-numbers---11.3.2-parsing-strings---11.3.3-parsing-factors---11.3.4-parsing-dates-date-times-and-times---11.3.5-exercises---1.-what-are-the-most-important-arguments-to-locale---2.-what-happens-if-you-try-and-set-decimal_mark-and-grouping_mark-to-the-same-character-what-happens-to-the-default-value-of-grouping_mark-when-you-set-decimal_mark-to-what-happens-to-the-default-value-of-decimal_mark-when-you-set-the-grouping_mark-to-.---3.-i-didnt-discuss-the-date_format-and-time_format-options-to-locale.-what-do-they-do-construct-an-example-that-shows-when-they-might-be-useful.---4.-if-you-live-outside-the-us-create-a-new-locale-object-that-encapsulates-the-settings-for-the-types-of-file-you-read-most-commonly.---5.-whats-the-difference-between-read_csv-and-read_csv2---6.-what-are-the-most-common-encodings-used-in-europe-what-are-the-most-common-encodings-used-in-asia-do-some-googling-to-find-out.---7.-generate-the-correct-format-string-to-parse-each-of-the-following-dates-and-times---11.4-notes---parsing-a-file---11.5-notes---writing-to-a-file--"><i class="fa fa-check"></i><b>0.0.1</b> 4. Sometimes strings in a CSV file contain commas. To prevent them from causing problems they need to be surrounded by a quoting character, like &quot; or ’. By convention, read_csv() assumes that the quoting character will be “, and if you want to change it you’ll need to use read_delim() instead. What arguments do you need to specify to read the following text into a data frame? {-} ### 5. Identify what is wrong with each of the following inline CSV files. What happens when you run the code? {-} ## <strong>11.3</strong> Notes - Parsing a vector {-} ### 11.3.1 Parsing Numbers {-} ### 11.3.2 Parsing Strings {-} ### 11.3.3 Parsing Factors {-} ### 11.3.4 Parsing Dates, Date-times, and Times {-} ## <strong>11.3.5</strong> Exercises {-} ### 1. What are the most important arguments to locale()? {-} ### 2. What happens if you try and set decimal_mark and grouping_mark to the same character? What happens to the default value of grouping_mark when you set decimal_mark to “,”? What happens to the default value of decimal_mark when you set the grouping_mark to “.”? {-} ### 3. I didn’t discuss the date_format and time_format options to locale(). What do they do? Construct an example that shows when they might be useful. {-} ### 4. If you live outside the US, create a new locale object that encapsulates the settings for the types of file you read most commonly. {-} ### 5. What’s the difference between read_csv() and read_csv2()? {-} ### 6. What are the most common encodings used in Europe? What are the most common encodings used in Asia? Do some googling to find out. {-} ### 7. Generate the correct format string to parse each of the following dates and times: {-} ## <strong>11.4</strong> Notes - Parsing a file {-} ## <strong>11.5</strong> Notes - Writing to a file {-}</a></li>
+</ul></li>
+</ul></li>
+<li><a href="chapter-12-tidy-data.html#chapter-12-tidy-data"><strong>Chapter 12</strong> Tidy Data</a><ul>
+<li><a href="chapter-12-tidy-data.html#exercises-20"><strong>12.2.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html"><i class="fa fa-check"></i>1. Using prose, describe how the variables and observations are organised in each of the sample tables.</a></li>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html#compute-the-rate-for-table2-and-table4a-table4b.-you-will-need-to-perform-four-operations"><i class="fa fa-check"></i>2. Compute the rate for table2, and table4a + table4b. You will need to perform four operations:</a></li>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html#recreate-the-plot-showing-change-in-cases-over-time-using-table2-instead-of-table1.-what-do-you-need-to-do-first"><i class="fa fa-check"></i>3. Recreate the plot showing change in cases over time using table2 instead of table1. What do you need to do first?</a></li>
+</ul></li>
+<li><a href="chapter-12-tidy-data.html#spreading-and-gathering"><strong>12.3.1</strong> Spreading and Gathering</a></li>
+<li><a href="chapter-12-tidy-data.html#exercises-21"><strong>12.3.3</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html#why-are-gather-and-spread-not-perfectly-symmetrical-carefully-consider-the-following-example"><i class="fa fa-check"></i>1. Why are gather() and spread() not perfectly symmetrical? Carefully consider the following example:</a></li>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html#why-does-this-code-fail"><i class="fa fa-check"></i>2. Why does this code fail?</a></li>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html#why-does-spreading-this-tibble-fail-how-could-you-add-a-new-column-to-fix-the-problem"><i class="fa fa-check"></i>3. Why does spreading this tibble fail? How could you add a new column to fix the problem?</a></li>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html#tidy-the-simple-tibble-below.-do-you-need-to-spread-or-gather-it-what-are-the-variables"><i class="fa fa-check"></i>4. Tidy the simple tibble below. Do you need to spread or gather it? What are the variables?</a></li>
+</ul></li>
+<li><a href="chapter-12-tidy-data.html#separating-and-uniting"><strong>12.4</strong> Separating and uniting</a></li>
+<li><a href="chapter-12-tidy-data.html#exercises-22"><strong>12.4.3</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html#what-do-the-extra-and-fill-arguments-do-in-separate-experiment-with-the-various-options-for-the-following-two-toy-datasets."><i class="fa fa-check"></i>1. What do the extra and fill arguments do in separate()? Experiment with the various options for the following two toy datasets.</a></li>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html#both-unite-and-separate-have-a-remove-argument.-what-does-it-do-why-would-you-set-it-to-false"><i class="fa fa-check"></i>2. Both unite() and separate() have a remove argument. What does it do? Why would you set it to FALSE?</a></li>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html#compare-and-contrast-separate-and-extract.-why-are-there-three-variations-of-separation-by-position-by-separator-and-with-groups-but-only-one-unite"><i class="fa fa-check"></i>3. Compare and contrast separate() and extract(). Why are there three variations of separation (by position, by separator, and with groups), but only one unite?</a></li>
+</ul></li>
+<li><a href="chapter-12-tidy-data.html#missing-values-2"><strong>12.5</strong> Missing Values</a></li>
+<li><a href="chapter-12-tidy-data.html#exercises-23"><strong>12.5.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html#compare-and-contrast-the-fill-arguments-to-spread-and-complete."><i class="fa fa-check"></i>1. Compare and contrast the fill arguments to spread() and complete().</a></li>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html#what-does-the-direction-argument-to-fill-do"><i class="fa fa-check"></i>2. What does the direction argument to fill() do?</a></li>
+</ul></li>
+<li><a href="chapter-12-tidy-data.html#case-study"><strong>12.6</strong> Case Study</a></li>
+<li><a href="chapter-12-tidy-data.html#exercises-24"><strong>12.6.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html#in-this-case-study-i-set-na.rm-true-just-to-make-it-easier-to-check-that-we-had-the-correct-values.-is-this-reasonable-think-about-how-missing-values-are-represented-in-this-dataset.-are-there-implicit-missing-values-whats-the-difference-between-an-na-and-zero"><i class="fa fa-check"></i>1. In this case study I set na.rm = TRUE just to make it easier to check that we had the correct values. Is this reasonable? Think about how missing values are represented in this dataset. Are there implicit missing values? What’s the difference between an NA and zero?</a></li>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html#what-happens-if-you-neglect-the-mutate-step-mutatekey-stringrstr_replacekey-newrel-new_rel"><i class="fa fa-check"></i>2. What happens if you neglect the mutate() step? (mutate(key = stringr::str_replace(key, “newrel”, “new_rel”)))</a></li>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html#i-claimed-that-iso2-and-iso3-were-redundant-with-country.-confirm-this-claim."><i class="fa fa-check"></i>3. I claimed that iso2 and iso3 were redundant with country. Confirm this claim.</a></li>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html#for-each-country-year-and-sex-compute-the-total-number-of-cases-of-tb.-make-an-informative-visualisation-of-the-data."><i class="fa fa-check"></i>4. For each country, year, and sex compute the total number of cases of TB. Make an informative visualisation of the data.</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R for Data Science Walkthrough</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="chapter-12-tidy-data" class="section level1 unnumbered">
+<h1><strong>Chapter 12</strong> Tidy Data</h1>
+<p>Below is the example provided by the book of the same data presented in 4 different ways. One way is tidy, the others are not!</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">table1</code></pre></div>
+<pre><code>## # A tibble: 6 x 4
+##   country      year  cases population
+##   &lt;chr&gt;       &lt;int&gt;  &lt;int&gt;      &lt;int&gt;
+## 1 Afghanistan  1999    745   19987071
+## 2 Afghanistan  2000   2666   20595360
+## 3 Brazil       1999  37737  172006362
+## 4 Brazil       2000  80488  174504898
+## 5 China        1999 212258 1272915272
+## 6 China        2000 213766 1280428583</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">table2</code></pre></div>
+<pre><code>## # A tibble: 12 x 4
+##    country      year type            count
+##    &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;           &lt;int&gt;
+##  1 Afghanistan  1999 cases             745
+##  2 Afghanistan  1999 population   19987071
+##  3 Afghanistan  2000 cases            2666
+##  4 Afghanistan  2000 population   20595360
+##  5 Brazil       1999 cases           37737
+##  6 Brazil       1999 population  172006362
+##  7 Brazil       2000 cases           80488
+##  8 Brazil       2000 population  174504898
+##  9 China        1999 cases          212258
+## 10 China        1999 population 1272915272
+## 11 China        2000 cases          213766
+## 12 China        2000 population 1280428583</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">table3</code></pre></div>
+<pre><code>## # A tibble: 6 x 3
+##   country      year rate             
+## * &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;            
+## 1 Afghanistan  1999 745/19987071     
+## 2 Afghanistan  2000 2666/20595360    
+## 3 Brazil       1999 37737/172006362  
+## 4 Brazil       2000 80488/174504898  
+## 5 China        1999 212258/1272915272
+## 6 China        2000 213766/1280428583</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># data spread across 2 tables</span>
+table4a <span class="co"># cases</span></code></pre></div>
+<pre><code>## # A tibble: 3 x 3
+##   country     `1999` `2000`
+## * &lt;chr&gt;        &lt;int&gt;  &lt;int&gt;
+## 1 Afghanistan    745   2666
+## 2 Brazil       37737  80488
+## 3 China       212258 213766</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">table4b <span class="co"># population</span></code></pre></div>
+<pre><code>## # A tibble: 3 x 3
+##   country         `1999`     `2000`
+## * &lt;chr&gt;            &lt;int&gt;      &lt;int&gt;
+## 1 Afghanistan   19987071   20595360
+## 2 Brazil       172006362  174504898
+## 3 China       1272915272 1280428583</code></pre>
+<p>The three rules that must be satisfied for data to be “tidy” are:</p>
+<ul>
+<li>Each variable must have its own column.</li>
+<li>Each observation must have its own row.</li>
+<li>Each value must have its own cell.</li>
+</ul>
+<p>Using these rules, the a tidy dataset from above is <code>table1</code>. The packages in the tidyverse such as ggplot2, dplyr, etc. are designed to work with tidy data, so we must learn how to reorganize data and clean it up in the event that we receive a dataset that is not tidy (which is very often).</p>
+<div id="exercises-20" class="section level2 unnumbered">
+<h2><strong>12.2.1</strong> Exercises</h2>
+<div id="using-prose-describe-how-the-variables-and-observations-are-organised-in-each-of-the-sample-tables." class="section level3 unnumbered">
+<h3>1. Using prose, describe how the variables and observations are organised in each of the sample tables.</h3>
+<ul>
+<li>In table1, each of the variables are organized into columns, and each observation is in a separate row. Each row presents a unique combination of variables and respective observations, and each value has its own cell. This is considered a tidy dataset.</li>
+<li>In table2, each observation is in a separate row, but each variable does not have its own column. This is not a tidy dataset. To “tidy” this data, population and cases should be separated into individual rows, based on the count column. Count is not considered a variable. Rather, it is considered a value.</li>
+<li>In table 3, population and cases have been combined into a single column, “rate”. Note that this is <strong>not</strong> the actual value of the cases divided by the population (as you might obtain using a mutate()), rather it is a character listing the two separate items! If we had not known there were two variables combined into one column, we might have called this a tidy dataset. I would find a way to split the rate into cases and population, then use mutate() to calculate the rate.</li>
+<li>In table 4a and 4b, the data for population and cases have been split into two separate tables. The date variable is spread across the columns, and each row of each table represents an individual observation. The two tables have the same country column, and look like something you would see when working with relational data.</li>
+</ul>
+</div>
+<div id="compute-the-rate-for-table2-and-table4a-table4b.-you-will-need-to-perform-four-operations" class="section level3 unnumbered">
+<h3>2. Compute the rate for table2, and table4a + table4b. You will need to perform four operations:</h3>
+<ul>
+<li>Extract the number of TB cases per country per year.</li>
+<li>Extract the matching population per country per year.</li>
+<li>Divide cases by population, and multiply by 10000.</li>
+<li>Store back in the appropriate place.</li>
+</ul>
+<p>Which representation is easiest to work with? Which is hardest? Why?</p>
+<p>I will try doing the above operations without using tidyr functions.</p>
+<p>For table2, we can first filter for the TB cases using filter(), then filter for the population per country using filter() as well. Then we can divide the two, multiply by 10000, and bind the results back to the original table2 by using cbind(). Since there are two rows in table2 corresponding to the same rate value, we must duplicate each rate twice using <code>rep( each = 2 )</code> before binding to table2. This preserves the original structure of table2, and has the rate stored in the appropriate places. Using the spread() function in tidyr to generate tidy data and then using mutate() is much easier!</p>
+<p>For table 4a and 4b, we can extract the 1999 values from each table and perform the rate calculation, and do the same thing for the 2000 values.Then, we can bind these rates back to both table4a and 4b using cbind. This preserves the original structure for both tables.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># perform the operations above for table 2a, without using spread()</span>
+rate_table2 &lt;-<span class="st"> </span>((<span class="kw">filter</span> (table2, type <span class="op">==</span><span class="st"> &#39;cases&#39;</span>)<span class="op">$</span>count <span class="op">/</span><span class="st"> </span><span class="co"># select cases</span>
+<span class="st">  </span><span class="kw">filter</span> (table2, type <span class="op">==</span><span class="st"> &#39;population&#39;</span>)<span class="op">$</span>count) <span class="op">*</span><span class="st"> </span><span class="dv">10000</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># divide by populatoin</span>
+<span class="st">  </span><span class="kw">rep</span>(<span class="dt">each =</span> <span class="dv">2</span>) <span class="co"># repeat each element twice, maintaining the order of the vector</span>
+<span class="kw">cbind</span>(table2,rate_table2)</code></pre></div>
+<pre><code>##        country year       type      count rate_table2
+## 1  Afghanistan 1999      cases        745    0.372741
+## 2  Afghanistan 1999 population   19987071    0.372741
+## 3  Afghanistan 2000      cases       2666    1.294466
+## 4  Afghanistan 2000 population   20595360    1.294466
+## 5       Brazil 1999      cases      37737    2.193930
+## 6       Brazil 1999 population  172006362    2.193930
+## 7       Brazil 2000      cases      80488    4.612363
+## 8       Brazil 2000 population  174504898    4.612363
+## 9        China 1999      cases     212258    1.667495
+## 10       China 1999 population 1272915272    1.667495
+## 11       China 2000      cases     213766    1.669488
+## 12       China 2000 population 1280428583    1.669488</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># using spread() and dplyr is more straightforward and results in tidy data.</span>
+table2 <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">spread</span>(<span class="dt">key =</span> type, <span class="dt">value =</span> count) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">rate =</span> (cases <span class="op">/</span><span class="st"> </span>population) <span class="op">*</span><span class="st"> </span><span class="dv">10000</span>)</code></pre></div>
+<pre><code>## # A tibble: 6 x 5
+##   country      year  cases population  rate
+##   &lt;chr&gt;       &lt;int&gt;  &lt;int&gt;      &lt;int&gt; &lt;dbl&gt;
+## 1 Afghanistan  1999    745   19987071 0.373
+## 2 Afghanistan  2000   2666   20595360 1.29 
+## 3 Brazil       1999  37737  172006362 2.19 
+## 4 Brazil       2000  80488  174504898 4.61 
+## 5 China        1999 212258 1272915272 1.67 
+## 6 China        2000 213766 1280428583 1.67</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># perform the operations above for table 4a and 4b</span>
+rate_<span class="dv">1999</span> &lt;-<span class="st"> </span>(table4a<span class="op">$</span><span class="st">`</span><span class="dt">1999</span><span class="st">`</span> <span class="op">/</span><span class="st"> </span>table4b<span class="op">$</span><span class="st">`</span><span class="dt">1999</span><span class="st">`</span>)<span class="op">*</span><span class="dv">10000</span>
+rate_<span class="dv">2000</span> &lt;-<span class="st"> </span>(table4a<span class="op">$</span><span class="st">`</span><span class="dt">2000</span><span class="st">`</span> <span class="op">/</span><span class="st"> </span>table4b<span class="op">$</span><span class="st">`</span><span class="dt">2000</span><span class="st">`</span>)<span class="op">*</span><span class="dv">10000</span>
+<span class="kw">cbind</span> (table4a, rate_<span class="dv">1999</span>, rate_<span class="dv">2000</span>)</code></pre></div>
+<pre><code>##       country   1999   2000 rate_1999 rate_2000
+## 1 Afghanistan    745   2666  0.372741  1.294466
+## 2      Brazil  37737  80488  2.193930  4.612363
+## 3       China 212258 213766  1.667495  1.669488</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cbind</span> (table4b, rate_<span class="dv">1999</span>, rate_<span class="dv">2000</span>)</code></pre></div>
+<pre><code>##       country       1999       2000 rate_1999 rate_2000
+## 1 Afghanistan   19987071   20595360  0.372741  1.294466
+## 2      Brazil  172006362  174504898  2.193930  4.612363
+## 3       China 1272915272 1280428583  1.667495  1.669488</code></pre>
+</div>
+<div id="recreate-the-plot-showing-change-in-cases-over-time-using-table2-instead-of-table1.-what-do-you-need-to-do-first" class="section level3 unnumbered">
+<h3>3. Recreate the plot showing change in cases over time using table2 instead of table1. What do you need to do first?</h3>
+<p>First, we need to tidy table2 so that we can use it with ggplot2, using the spread() function. Then, we can use the ggplot() function in the same manner as in the book example.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">table2 <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">spread</span>(<span class="dt">key =</span> type, <span class="dt">value =</span> count) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(year, cases)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">group =</span> country), <span class="dt">colour =</span> <span class="st">&quot;grey50&quot;</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">colour =</span> country))</code></pre></div>
+<p><img src="r4ds-walkthrough_files/figure-html/table2_recreate_casesovertime-1.png" width="672" /></p>
+</div>
+</div>
+<div id="spreading-and-gathering" class="section level2 unnumbered">
+<h2><strong>12.3.1</strong> Spreading and Gathering</h2>
+<p>If some column names are not names of variables, but rather values of variables, it will be helful to “gather” these columns into a single column and map the values accordingly. For example, table4a and table4b has values for 1999 and 2000 split across multiple columns. To gather the values, use gather() by specifying the names of the columns to gather, and the names of the variable that is being gathered (key) and the value (value) that is being redistributed.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">table4a <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">gather</span>(<span class="st">`</span><span class="dt">1999</span><span class="st">`</span>, <span class="st">`</span><span class="dt">2000</span><span class="st">`</span>, <span class="dt">key =</span> <span class="st">&quot;year&quot;</span>, <span class="dt">value =</span> <span class="st">&quot;cases&quot;</span>)</code></pre></div>
+<pre><code>## # A tibble: 6 x 3
+##   country     year   cases
+##   &lt;chr&gt;       &lt;chr&gt;  &lt;int&gt;
+## 1 Afghanistan 1999     745
+## 2 Brazil      1999   37737
+## 3 China       1999  212258
+## 4 Afghanistan 2000    2666
+## 5 Brazil      2000   80488
+## 6 China       2000  213766</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">table4b <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">gather</span>(<span class="st">`</span><span class="dt">1999</span><span class="st">`</span>, <span class="st">`</span><span class="dt">2000</span><span class="st">`</span>, <span class="dt">key =</span> <span class="st">&quot;year&quot;</span>, <span class="dt">value =</span> <span class="st">&quot;population&quot;</span>)</code></pre></div>
+<pre><code>## # A tibble: 6 x 3
+##   country     year  population
+##   &lt;chr&gt;       &lt;chr&gt;      &lt;int&gt;
+## 1 Afghanistan 1999    19987071
+## 2 Brazil      1999   172006362
+## 3 China       1999  1272915272
+## 4 Afghanistan 2000    20595360
+## 5 Brazil      2000   174504898
+## 6 China       2000  1280428583</code></pre>
+<p>When an observation is spread across multiple rows, as in table2, you can spread the data into multiple columns such that each row contains data from a single observation. In table2, each observation is considered a country in a year. Cases and populations for each country/year observation can be split from the type column into their own columns.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">spread</span>(table2, <span class="dt">key =</span> type, <span class="dt">value =</span> count)</code></pre></div>
+<pre><code>## # A tibble: 6 x 4
+##   country      year  cases population
+##   &lt;chr&gt;       &lt;int&gt;  &lt;int&gt;      &lt;int&gt;
+## 1 Afghanistan  1999    745   19987071
+## 2 Afghanistan  2000   2666   20595360
+## 3 Brazil       1999  37737  172006362
+## 4 Brazil       2000  80488  174504898
+## 5 China        1999 212258 1272915272
+## 6 China        2000 213766 1280428583</code></pre>
+</div>
+<div id="exercises-21" class="section level2 unnumbered">
+<h2><strong>12.3.3</strong> Exercises</h2>
+<div id="why-are-gather-and-spread-not-perfectly-symmetrical-carefully-consider-the-following-example" class="section level3 unnumbered">
+<h3>1. Why are gather() and spread() not perfectly symmetrical? Carefully consider the following example:</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">stocks &lt;-<span class="st"> </span><span class="kw">tibble</span>(
+  <span class="dt">year   =</span> <span class="kw">c</span>(<span class="dv">2015</span>, <span class="dv">2015</span>, <span class="dv">2016</span>, <span class="dv">2016</span>),
+  <span class="dt">half  =</span> <span class="kw">c</span>(   <span class="dv">1</span>,    <span class="dv">2</span>,     <span class="dv">1</span>,    <span class="dv">2</span>),
+  <span class="dt">return =</span> <span class="kw">c</span>(<span class="fl">1.88</span>, <span class="fl">0.59</span>, <span class="fl">0.92</span>, <span class="fl">0.17</span>)
+)
+stocks</code></pre></div>
+<pre><code>## # A tibble: 4 x 3
+##    year  half return
+##   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
+## 1  2015     1   1.88
+## 2  2015     2   0.59
+## 3  2016     1   0.92
+## 4  2016     2   0.17</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">stocks <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">spread</span>(year, return)</code></pre></div>
+<pre><code>## # A tibble: 2 x 3
+##    half `2015` `2016`
+##   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1     1   1.88   0.92
+## 2     2   0.59   0.17</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">stocks <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">spread</span>(year, return) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">gather</span>(<span class="st">&quot;year&quot;</span>, <span class="st">&quot;return&quot;</span>, <span class="st">`</span><span class="dt">2015</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2016</span><span class="st">`</span>)</code></pre></div>
+<pre><code>## # A tibble: 4 x 3
+##    half year  return
+##   &lt;dbl&gt; &lt;chr&gt;  &lt;dbl&gt;
+## 1     1 2015    1.88
+## 2     2 2015    0.59
+## 3     1 2016    0.92
+## 4     2 2016    0.17</code></pre>
+<p>(Hint: look at the variable types and think about column names.)</p>
+<p>There are a couple differences between the unmodified stocks tibble and the spread and gathered tibble. The spread and gathered stocks tibble has the columns ordered differently. Also, the the types of each column have changed. The original tibble had 3 columns of type <dbl> whereas the spread and gathered tibble has changed the year column to <chr>. The column names can also be changed by spreading and gathering, since they have to be specified as arguments in gather().</p>
+<p>Both spread() and gather() have a convert argument. What does it do?</p>
+<p>If set to TRUE (the default is FALSE), then the function type.convert() with asis = TRUE will be run on each of the new columns in the spread() or gather() output. This will try to convert the columns to variables of the appropriate type. For example, using convert = TRUE on the example above causes the year column to become an <int> rather than <chr>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">stocks <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">spread</span>(year, return) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">gather</span>(<span class="st">&quot;year&quot;</span>, <span class="st">&quot;return&quot;</span>, <span class="st">`</span><span class="dt">2015</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2016</span><span class="st">`</span>, <span class="dt">convert =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## # A tibble: 4 x 3
+##    half  year return
+##   &lt;dbl&gt; &lt;int&gt;  &lt;dbl&gt;
+## 1     1  2015   1.88
+## 2     2  2015   0.59
+## 3     1  2016   0.92
+## 4     2  2016   0.17</code></pre>
+</div>
+<div id="why-does-this-code-fail" class="section level3 unnumbered">
+<h3>2. Why does this code fail?</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># table4a %&gt;%</span>
+<span class="co">#   gather(1999, 2000, key = &quot;year&quot;, value = &quot;cases&quot;)</span>
+<span class="co">#&gt; Error in combine_vars(vars, ind_list): Position must be between 0 and n</span></code></pre></div>
+<p>The code fails because the variables passed into gather(), 1999 and 2000, are not written correctly. They should be encased in backticks, like this: <code>1999</code> and <code>2000</code>. The code below works.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">table4a <span class="op">%&gt;%</span>
+<span class="st">   </span><span class="kw">gather</span>(<span class="st">`</span><span class="dt">1999</span><span class="st">`</span>, <span class="st">`</span><span class="dt">2000</span><span class="st">`</span>, <span class="dt">key =</span> <span class="st">&quot;year&quot;</span>, <span class="dt">value =</span> <span class="st">&quot;cases&quot;</span>)</code></pre></div>
+<pre><code>## # A tibble: 6 x 3
+##   country     year   cases
+##   &lt;chr&gt;       &lt;chr&gt;  &lt;int&gt;
+## 1 Afghanistan 1999     745
+## 2 Brazil      1999   37737
+## 3 China       1999  212258
+## 4 Afghanistan 2000    2666
+## 5 Brazil      2000   80488
+## 6 China       2000  213766</code></pre>
+</div>
+<div id="why-does-spreading-this-tibble-fail-how-could-you-add-a-new-column-to-fix-the-problem" class="section level3 unnumbered">
+<h3>3. Why does spreading this tibble fail? How could you add a new column to fix the problem?</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">people &lt;-<span class="st"> </span><span class="kw">tribble</span>(
+  <span class="op">~</span>name,             <span class="op">~</span>key,    <span class="op">~</span>value,
+  <span class="co">#-----------------|--------|------</span>
+  <span class="st">&quot;Phillip Woods&quot;</span>,   <span class="st">&quot;age&quot;</span>,       <span class="dv">45</span>,
+  <span class="st">&quot;Phillip Woods&quot;</span>,   <span class="st">&quot;height&quot;</span>,   <span class="dv">186</span>,
+  <span class="st">&quot;Phillip Woods&quot;</span>,   <span class="st">&quot;age&quot;</span>,       <span class="dv">50</span>,
+  <span class="st">&quot;Jessica Cordero&quot;</span>, <span class="st">&quot;age&quot;</span>,       <span class="dv">37</span>,
+  <span class="st">&quot;Jessica Cordero&quot;</span>, <span class="st">&quot;height&quot;</span>,   <span class="dv">156</span>
+)
+<span class="co"># spreading fails</span>
+<span class="co">#spread(people, key, value)</span>
+
+people2 &lt;-<span class="st"> </span><span class="kw">tribble</span>(
+  <span class="op">~</span>name,             <span class="op">~</span>key,    <span class="op">~</span>value,
+  <span class="co">#-----------------|--------|------</span>
+  <span class="st">&quot;Phillip Woods&quot;</span>,   <span class="st">&quot;age&quot;</span>,       <span class="dv">45</span>,
+  <span class="st">&quot;Phillip Woods&quot;</span>,   <span class="st">&quot;height&quot;</span>,   <span class="dv">186</span>,
+  <span class="st">&quot;Phillip Woods2&quot;</span>,   <span class="st">&quot;age&quot;</span>,       <span class="dv">50</span>,
+  <span class="st">&quot;Jessica Cordero&quot;</span>, <span class="st">&quot;age&quot;</span>,       <span class="dv">37</span>,
+  <span class="st">&quot;Jessica Cordero&quot;</span>, <span class="st">&quot;height&quot;</span>,   <span class="dv">156</span>
+)
+<span class="kw">spread</span>(people2, key, value)</code></pre></div>
+<pre><code>## # A tibble: 3 x 3
+##   name              age height
+##   &lt;chr&gt;           &lt;dbl&gt;  &lt;dbl&gt;
+## 1 Jessica Cordero    37    156
+## 2 Phillip Woods      45    186
+## 3 Phillip Woods2     50     NA</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">people3 &lt;-<span class="st"> </span><span class="kw">tribble</span>(
+  <span class="op">~</span>name,             <span class="op">~</span>key,    <span class="op">~</span>value, <span class="op">~</span>index,
+  <span class="co">#-----------------|--------|------|------</span>
+  <span class="st">&quot;Phillip Woods&quot;</span>,   <span class="st">&quot;age&quot;</span>,       <span class="dv">45</span>, <span class="dv">1</span>,
+  <span class="st">&quot;Phillip Woods&quot;</span>,   <span class="st">&quot;height&quot;</span>,   <span class="dv">186</span>, <span class="dv">1</span>,
+  <span class="st">&quot;Phillip Woods&quot;</span>,   <span class="st">&quot;age&quot;</span>,       <span class="dv">50</span>, <span class="dv">2</span>,
+  <span class="st">&quot;Jessica Cordero&quot;</span>, <span class="st">&quot;age&quot;</span>,       <span class="dv">37</span>, <span class="dv">3</span>,
+  <span class="st">&quot;Jessica Cordero&quot;</span>, <span class="st">&quot;height&quot;</span>,   <span class="dv">156</span>, <span class="dv">3</span>
+)
+<span class="co"># works now</span>
+<span class="kw">spread</span>(people3, key, value)</code></pre></div>
+<pre><code>## # A tibble: 3 x 4
+##   name            index   age height
+##   &lt;chr&gt;           &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
+## 1 Jessica Cordero     3    37    156
+## 2 Phillip Woods       1    45    186
+## 3 Phillip Woods       2    50     NA</code></pre>
+<p>Spreading the provided tribble fails because there is a duplicate value for the variables name and key. If I modify the second “Phillip Woods” value to “Phillip Woods2”, the spread() function works. If I add another column named “index” that identifies the unique sets of age and height, spread() also works. In any case, spread() requires a unique combination of variables to spread against.</p>
+</div>
+<div id="tidy-the-simple-tibble-below.-do-you-need-to-spread-or-gather-it-what-are-the-variables" class="section level3 unnumbered">
+<h3>4. Tidy the simple tibble below. Do you need to spread or gather it? What are the variables?</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">preg &lt;-<span class="st"> </span><span class="kw">tribble</span>(
+  <span class="op">~</span>pregnant, <span class="op">~</span>male, <span class="op">~</span>female,
+  <span class="st">&quot;yes&quot;</span>,     <span class="ot">NA</span>,    <span class="dv">10</span>,
+  <span class="st">&quot;no&quot;</span>,      <span class="dv">20</span>,    <span class="dv">12</span>
+)</code></pre></div>
+<p>I would need to gather the data. We can combine the male and female designation into a column called “gender”, and gather the 4 numerical observations into a column called “cases”. Below is the code required to do this.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">preg <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">gather</span>(male, female, <span class="dt">key =</span> <span class="st">&quot;gender&quot;</span>, <span class="dt">value =</span> <span class="st">&quot;cases&quot;</span>)</code></pre></div>
+<pre><code>## # A tibble: 4 x 3
+##   pregnant gender cases
+##   &lt;chr&gt;    &lt;chr&gt;  &lt;dbl&gt;
+## 1 yes      male      NA
+## 2 no       male      20
+## 3 yes      female    10
+## 4 no       female    12</code></pre>
+</div>
+</div>
+<div id="separating-and-uniting" class="section level2 unnumbered">
+<h2><strong>12.4</strong> Separating and uniting</h2>
+<p>In table3, the data for population and cases are combined into one column, rate. To separate them, we can use the separate() function in tidyr. In the opposite case, the function unite() can be used to combine an observation split across multiple columns. Do not confuse unite() with gather()!</p>
+<p>Separate() separates one column into multiple columns, by splitting based on a separator character. If the separator is the only non-numerical character for each observation, it does not have to be specified.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">table3 <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">separate</span>(rate, <span class="dt">into =</span> <span class="kw">c</span>(<span class="st">&quot;cases&quot;</span>, <span class="st">&quot;population&quot;</span>))</code></pre></div>
+<pre><code>## # A tibble: 6 x 4
+##   country      year cases  population
+##   &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;     
+## 1 Afghanistan  1999 745    19987071  
+## 2 Afghanistan  2000 2666   20595360  
+## 3 Brazil       1999 37737  172006362 
+## 4 Brazil       2000 80488  174504898 
+## 5 China        1999 212258 1272915272
+## 6 China        2000 213766 1280428583</code></pre>
+<p>Similar to spread() and gather(), separate() has a convert argument that can try to convert the columns to the appropriate types. You can also specify the index to separate the values on, using a number instead of string value for the sep argument.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">table3 <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">separate</span>(rate, <span class="dt">into =</span> <span class="kw">c</span>(<span class="st">&quot;cases&quot;</span>, <span class="st">&quot;population&quot;</span>), <span class="dt">convert =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## # A tibble: 6 x 4
+##   country      year  cases population
+##   &lt;chr&gt;       &lt;int&gt;  &lt;int&gt;      &lt;int&gt;
+## 1 Afghanistan  1999    745   19987071
+## 2 Afghanistan  2000   2666   20595360
+## 3 Brazil       1999  37737  172006362
+## 4 Brazil       2000  80488  174504898
+## 5 China        1999 212258 1272915272
+## 6 China        2000 213766 1280428583</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">table3 <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">separate</span>(year, <span class="dt">into =</span> <span class="kw">c</span>(<span class="st">&quot;century&quot;</span>, <span class="st">&quot;year&quot;</span>), <span class="dt">sep =</span> <span class="dv">2</span>)</code></pre></div>
+<pre><code>## # A tibble: 6 x 4
+##   country     century year  rate             
+##   &lt;chr&gt;       &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;            
+## 1 Afghanistan 19      99    745/19987071     
+## 2 Afghanistan 20      00    2666/20595360    
+## 3 Brazil      19      99    37737/172006362  
+## 4 Brazil      20      00    80488/174504898  
+## 5 China       19      99    212258/1272915272
+## 6 China       20      00    213766/1280428583</code></pre>
+<p>Unite() is the opposite of separating, and will combine two columns together using a default underscore “_“. You can change the underscore to your choice of separator, using and empty”&quot; if you do not wish to separate the values. The convert argument does not seem to work with this function in the example below.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># use default separator for unite()</span>
+table5 <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">unite</span>(new, century,year)</code></pre></div>
+<pre><code>## # A tibble: 6 x 3
+##   country     new   rate             
+##   &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;            
+## 1 Afghanistan 19_99 745/19987071     
+## 2 Afghanistan 20_00 2666/20595360    
+## 3 Brazil      19_99 37737/172006362  
+## 4 Brazil      20_00 80488/174504898  
+## 5 China       19_99 212258/1272915272
+## 6 China       20_00 213766/1280428583</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># specify sep = &quot;&quot; to combine the two columns with no separation</span>
+table5 <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">unite</span>(new, century, year, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)</code></pre></div>
+<pre><code>## # A tibble: 6 x 3
+##   country     new   rate             
+##   &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;            
+## 1 Afghanistan 1999  745/19987071     
+## 2 Afghanistan 2000  2666/20595360    
+## 3 Brazil      1999  37737/172006362  
+## 4 Brazil      2000  80488/174504898  
+## 5 China       1999  212258/1272915272
+## 6 China       2000  213766/1280428583</code></pre>
+</div>
+<div id="exercises-22" class="section level2 unnumbered">
+<h2><strong>12.4.3</strong> Exercises</h2>
+<div id="what-do-the-extra-and-fill-arguments-do-in-separate-experiment-with-the-various-options-for-the-following-two-toy-datasets." class="section level3 unnumbered">
+<h3>1. What do the extra and fill arguments do in separate()? Experiment with the various options for the following two toy datasets.</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tibble</span>(<span class="dt">x =</span> <span class="kw">c</span>(<span class="st">&quot;a,b,c&quot;</span>, <span class="st">&quot;d,e,f,g&quot;</span>, <span class="st">&quot;h,i,j&quot;</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">separate</span>(x, <span class="kw">c</span>(<span class="st">&quot;one&quot;</span>, <span class="st">&quot;two&quot;</span>, <span class="st">&quot;three&quot;</span>))</code></pre></div>
+<pre><code>## Warning: Expected 3 pieces. Additional pieces discarded in 1 rows [2].</code></pre>
+<pre><code>## # A tibble: 3 x 3
+##   one   two   three
+##   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+## 1 a     b     c    
+## 2 d     e     f    
+## 3 h     i     j</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tibble</span>(<span class="dt">x =</span> <span class="kw">c</span>(<span class="st">&quot;a,b,c&quot;</span>, <span class="st">&quot;d,e&quot;</span>, <span class="st">&quot;f,g,i&quot;</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">separate</span>(x, <span class="kw">c</span>(<span class="st">&quot;one&quot;</span>, <span class="st">&quot;two&quot;</span>, <span class="st">&quot;three&quot;</span>))</code></pre></div>
+<pre><code>## Warning: Expected 3 pieces. Missing pieces filled with `NA` in 1 rows [2].</code></pre>
+<pre><code>## # A tibble: 3 x 3
+##   one   two   three
+##   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+## 1 a     b     c    
+## 2 d     e     &lt;NA&gt; 
+## 3 f     g     i</code></pre>
+<p>In the examples above, the tibbles created are 1 column, 3 rows, with strings as observations. Within each string, commas separate the letters. The separate(x, c(“one”, “two”, “three”)) will try to split each string using the comma into three columns. However, in the first tibble, there is a row with four values separated by commas (an extra value). This is where the <code>extra</code> argument comes into play.</p>
+<p>The documentation for extra states that: * “warn” (the default): emit a warning and drop extra values. * “drop”: drop any extra values without a warning. * “merge”: only splits at most length(into) times</p>
+<p>For the second tibble, there are only two values separated by a comma in the second row (a missing value). This is where the <code>fill</code> argument comes into play.</p>
+<p>The documentation for fill states that:</p>
+<ul>
+<li>“warn” (the default): emit a warning and fill from the right</li>
+<li>“right”: fill with missing values on the right</li>
+<li>“left”: fill with missing values on the left</li>
+</ul>
+<p>The default for both extra and fill is “warn”, which just provides a warning about the missing or extra value. Below I will try the other two options on the appropriate tibles.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># tibble with extra value</span>
+<span class="kw">tibble</span>(<span class="dt">x =</span> <span class="kw">c</span>(<span class="st">&quot;a,b,c&quot;</span>, <span class="st">&quot;d,e,f,g&quot;</span>, <span class="st">&quot;h,i,j&quot;</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">separate</span>(x, <span class="kw">c</span>(<span class="st">&quot;one&quot;</span>, <span class="st">&quot;two&quot;</span>, <span class="st">&quot;three&quot;</span>), <span class="dt">extra =</span> <span class="st">&quot;drop&quot;</span>)</code></pre></div>
+<pre><code>## # A tibble: 3 x 3
+##   one   two   three
+##   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+## 1 a     b     c    
+## 2 d     e     f    
+## 3 h     i     j</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tibble</span>(<span class="dt">x =</span> <span class="kw">c</span>(<span class="st">&quot;a,b,c&quot;</span>, <span class="st">&quot;d,e,f,g&quot;</span>, <span class="st">&quot;h,i,j&quot;</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">separate</span>(x, <span class="kw">c</span>(<span class="st">&quot;one&quot;</span>, <span class="st">&quot;two&quot;</span>, <span class="st">&quot;three&quot;</span>), <span class="dt">extra =</span> <span class="st">&quot;merge&quot;</span>)</code></pre></div>
+<pre><code>## # A tibble: 3 x 3
+##   one   two   three
+##   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+## 1 a     b     c    
+## 2 d     e     f,g  
+## 3 h     i     j</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># tible with missing value</span>
+<span class="kw">tibble</span>(<span class="dt">x =</span> <span class="kw">c</span>(<span class="st">&quot;a,b,c&quot;</span>, <span class="st">&quot;d,e&quot;</span>, <span class="st">&quot;f,g,i&quot;</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">separate</span>(x, <span class="kw">c</span>(<span class="st">&quot;one&quot;</span>, <span class="st">&quot;two&quot;</span>, <span class="st">&quot;three&quot;</span>), <span class="dt">fill =</span> <span class="st">&quot;right&quot;</span>)</code></pre></div>
+<pre><code>## # A tibble: 3 x 3
+##   one   two   three
+##   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+## 1 a     b     c    
+## 2 d     e     &lt;NA&gt; 
+## 3 f     g     i</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tibble</span>(<span class="dt">x =</span> <span class="kw">c</span>(<span class="st">&quot;a,b,c&quot;</span>, <span class="st">&quot;d,e&quot;</span>, <span class="st">&quot;f,g,i&quot;</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">separate</span>(x, <span class="kw">c</span>(<span class="st">&quot;one&quot;</span>, <span class="st">&quot;two&quot;</span>, <span class="st">&quot;three&quot;</span>), <span class="dt">fill =</span> <span class="st">&quot;left&quot;</span>)</code></pre></div>
+<pre><code>## # A tibble: 3 x 3
+##   one   two   three
+##   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+## 1 a     b     c    
+## 2 &lt;NA&gt;  d     e    
+## 3 f     g     i</code></pre>
+</div>
+<div id="both-unite-and-separate-have-a-remove-argument.-what-does-it-do-why-would-you-set-it-to-false" class="section level3 unnumbered">
+<h3>2. Both unite() and separate() have a remove argument. What does it do? Why would you set it to FALSE?</h3>
+<p>The documentation states that “If TRUE, remove input column from output data frame.” The column with the values that were split is by default removed from the resulting table, but if this parameter is set to FALSE, the column remains. You might want to set it to FALSE if you want to have a record of what the original column looked like or want to separate the column a different way. Below is an exmaple of setting remove = FALSE on table3. We can see that the rate column still exists in the output.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">table3 <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">separate</span>(rate, <span class="dt">into =</span> <span class="kw">c</span>(<span class="st">&quot;cases&quot;</span>, <span class="st">&quot;population&quot;</span>), <span class="dt">convert =</span> <span class="ot">TRUE</span>, <span class="dt">remove =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<pre><code>## # A tibble: 6 x 5
+##   country      year rate               cases population
+##   &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;              &lt;int&gt;      &lt;int&gt;
+## 1 Afghanistan  1999 745/19987071         745   19987071
+## 2 Afghanistan  2000 2666/20595360       2666   20595360
+## 3 Brazil       1999 37737/172006362    37737  172006362
+## 4 Brazil       2000 80488/174504898    80488  174504898
+## 5 China        1999 212258/1272915272 212258 1272915272
+## 6 China        2000 213766/1280428583 213766 1280428583</code></pre>
+</div>
+<div id="compare-and-contrast-separate-and-extract.-why-are-there-three-variations-of-separation-by-position-by-separator-and-with-groups-but-only-one-unite" class="section level3 unnumbered">
+<h3>3. Compare and contrast separate() and extract(). Why are there three variations of separation (by position, by separator, and with groups), but only one unite?</h3>
+<p>extract() is a version of separate() except you can specify which groups to include in the final output using regexes. For example, if you run the default extract() on a data frame, it will first separate based on a non-numeric delimiter, then only place the number of groups you specify in the into argument, starting from the left. separate() will throw an error if you specify less than the number of groups for the <code>into</code> argument, and by default want to return all the groups created.</p>
+<p>There are three variations of separation because the output can be flexible based on the type of separation used (there are fewer constraints on how a value can be split up). There is only one unite because combining values together has more constraints. Unless you can take bits and pieces of different variables to unite (and define how that occurs), the only thing you can define is the delimiter that is used when uniting the data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># separate errors if you try to separate into less columns than groups, but can still function.</span>
+table3 <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">separate</span>(rate, <span class="dt">into =</span> <span class="kw">c</span>(<span class="st">&quot;cases&quot;</span>))</code></pre></div>
+<pre><code>## Warning: Expected 1 pieces. Additional pieces discarded in 6 rows [1, 2, 3,
+## 4, 5, 6].</code></pre>
+<pre><code>## # A tibble: 6 x 3
+##   country      year cases 
+##   &lt;chr&gt;       &lt;int&gt; &lt;chr&gt; 
+## 1 Afghanistan  1999 745   
+## 2 Afghanistan  2000 2666  
+## 3 Brazil       1999 37737 
+## 4 Brazil       2000 80488 
+## 5 China        1999 212258
+## 6 China        2000 213766</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># extract does not error</span>
+table3 <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">extract</span>(rate, <span class="dt">into =</span> <span class="kw">c</span>(<span class="st">&quot;cases&quot;</span>))</code></pre></div>
+<pre><code>## # A tibble: 6 x 3
+##   country      year cases 
+##   &lt;chr&gt;       &lt;int&gt; &lt;chr&gt; 
+## 1 Afghanistan  1999 745   
+## 2 Afghanistan  2000 2666  
+## 3 Brazil       1999 37737 
+## 4 Brazil       2000 80488 
+## 5 China        1999 212258
+## 6 China        2000 213766</code></pre>
+</div>
+</div>
+<div id="missing-values-2" class="section level2 unnumbered">
+<h2><strong>12.5</strong> Missing Values</h2>
+<p>Values in your dataset can be missing explicitly, in which they are specified as NA, or implicitly, in which they are not specified at all. The example provided is:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">stocks &lt;-<span class="st"> </span><span class="kw">tibble</span>(
+  <span class="dt">year   =</span> <span class="kw">c</span>(<span class="dv">2015</span>, <span class="dv">2015</span>, <span class="dv">2015</span>, <span class="dv">2015</span>, <span class="dv">2016</span>, <span class="dv">2016</span>, <span class="dv">2016</span>),
+  <span class="dt">qtr    =</span> <span class="kw">c</span>(   <span class="dv">1</span>,    <span class="dv">2</span>,    <span class="dv">3</span>,    <span class="dv">4</span>,    <span class="dv">2</span>,    <span class="dv">3</span>,    <span class="dv">4</span>),
+  <span class="dt">return =</span> <span class="kw">c</span>(<span class="fl">1.88</span>, <span class="fl">0.59</span>, <span class="fl">0.35</span>,   <span class="ot">NA</span>, <span class="fl">0.92</span>, <span class="fl">0.17</span>, <span class="fl">2.66</span>)
+)
+stocks</code></pre></div>
+<pre><code>## # A tibble: 7 x 3
+##    year   qtr return
+##   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
+## 1  2015     1   1.88
+## 2  2015     2   0.59
+## 3  2015     3   0.35
+## 4  2015     4  NA   
+## 5  2016     2   0.92
+## 6  2016     3   0.17
+## 7  2016     4   2.66</code></pre>
+<p>In which there is an explicitly missing value for year 2015 quarter 4, and an implicitly missing value for year 2016 quarter 1 (which is just not present in the data).</p>
+<p>We can expose the implicitly missing value by spreading the data:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">stocks <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">spread</span>(year, return)</code></pre></div>
+<pre><code>## # A tibble: 4 x 3
+##     qtr `2015` `2016`
+##   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1     1   1.88  NA   
+## 2     2   0.59   0.92
+## 3     3   0.35   0.17
+## 4     4  NA      2.66</code></pre>
+<p>Now we see two explicitly missing values. We can also omit NA values entirely by using na.omit() or by specifying na.rm = T in a spread and gather combination.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># get rid of NA values using na.omit()</span>
+<span class="kw">na.omit</span>(stocks)</code></pre></div>
+<pre><code>## # A tibble: 6 x 3
+##    year   qtr return
+##   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
+## 1  2015     1   1.88
+## 2  2015     2   0.59
+## 3  2015     3   0.35
+## 4  2016     2   0.92
+## 5  2016     3   0.17
+## 6  2016     4   2.66</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># get rid of NA values using spread and gather( na.rm = T )</span>
+stocks <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">spread</span>(year, return) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">gather</span>(year, return, <span class="st">`</span><span class="dt">2015</span><span class="st">`</span><span class="op">:</span><span class="st">`</span><span class="dt">2016</span><span class="st">`</span>, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## # A tibble: 6 x 3
+##     qtr year  return
+##   &lt;dbl&gt; &lt;chr&gt;  &lt;dbl&gt;
+## 1     1 2015    1.88
+## 2     2 2015    0.59
+## 3     3 2015    0.35
+## 4     2 2016    0.92
+## 5     3 2016    0.17
+## 6     4 2016    2.66</code></pre>
+<p>A very useful tool is the complete() function in tidyr! It will look for all combinations of the variables specified and find implicitly missing values in the data, and turn them explicit. This is much cleaner-looking than spreading and gathering.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">stocks <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">complete</span>(year, qtr)</code></pre></div>
+<pre><code>## # A tibble: 8 x 3
+##    year   qtr return
+##   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
+## 1  2015     1   1.88
+## 2  2015     2   0.59
+## 3  2015     3   0.35
+## 4  2015     4  NA   
+## 5  2016     1  NA   
+## 6  2016     2   0.92
+## 7  2016     3   0.17
+## 8  2016     4   2.66</code></pre>
+<p>Another reason there might be missing values in your dataset is because data was only entered for the first occurance of an observation, and implied that the sequential observations would be for the same identifying entry (also called “carrying forward” values). Below is the example provided in the book, in which the treatment and response variables are associated with a person variable. However, patient names are only identified for their first occurance in the table. To make the table easier to work with, we can “carry forward” the names using fill().</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatment &lt;-<span class="st"> </span><span class="kw">tribble</span>(
+  <span class="op">~</span><span class="st"> </span>person,           <span class="op">~</span><span class="st"> </span>treatment, <span class="op">~</span>response,
+  <span class="st">&quot;Derrick Whitmore&quot;</span>, <span class="dv">1</span>,           <span class="dv">7</span>,
+  <span class="ot">NA</span>,                 <span class="dv">2</span>,           <span class="dv">10</span>,
+  <span class="ot">NA</span>,                 <span class="dv">3</span>,           <span class="dv">9</span>,
+  <span class="st">&quot;Katherine Burke&quot;</span>,  <span class="dv">1</span>,           <span class="dv">4</span>
+)
+treatment</code></pre></div>
+<pre><code>## # A tibble: 4 x 3
+##   person           treatment response
+##   &lt;chr&gt;                &lt;dbl&gt;    &lt;dbl&gt;
+## 1 Derrick Whitmore         1        7
+## 2 &lt;NA&gt;                     2       10
+## 3 &lt;NA&gt;                     3        9
+## 4 Katherine Burke          1        4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatment <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">fill</span>(person)</code></pre></div>
+<pre><code>## # A tibble: 4 x 3
+##   person           treatment response
+##   &lt;chr&gt;                &lt;dbl&gt;    &lt;dbl&gt;
+## 1 Derrick Whitmore         1        7
+## 2 Derrick Whitmore         2       10
+## 3 Derrick Whitmore         3        9
+## 4 Katherine Burke          1        4</code></pre>
+</div>
+<div id="exercises-23" class="section level2 unnumbered">
+<h2><strong>12.5.1</strong> Exercises</h2>
+<div id="compare-and-contrast-the-fill-arguments-to-spread-and-complete." class="section level3 unnumbered">
+<h3>1. Compare and contrast the fill arguments to spread() and complete().</h3>
+<p>For the spread() function, the documentation for the fill argument states that:</p>
+<p>“If set, missing values will be replaced with this value. Note that there are two types of missingness in the input: explicit missing values (i.e. NA), and implicit missings, rows that simply aren’t present. Both types of missing value will be replaced by fill.”</p>
+<p>In other words, you can replace the missing values with a value of your choice, specified by the fill argument. For example:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">stocks <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">spread</span>(year, return, <span class="dt">fill =</span> <span class="st">&quot;MISSING&quot;</span>)</code></pre></div>
+<pre><code>## # A tibble: 4 x 3
+##     qtr `2015`  `2016` 
+##   &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;  
+## 1     1 1.88    MISSING
+## 2     2 0.59    0.92   
+## 3     3 0.35    0.17   
+## 4     4 MISSING 2.66</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># turns out you can supply more than one value, but this doesnt seem to work that great. use complete() instead for multiple values.</span>
+stocks <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">spread</span>(year, return, <span class="dt">fill =</span> <span class="kw">c</span>(<span class="st">&quot;NO_2015&quot;</span>,<span class="st">&quot;NO_2016&quot;</span>))</code></pre></div>
+<pre><code>## Warning in if (!is.na(fill)) {: the condition has length &gt; 1 and only the
+## first element will be used</code></pre>
+<pre><code>## # A tibble: 4 x 3
+##     qtr `2015`  `2016` 
+##   &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;  
+## 1     1 1.88    NO_2016
+## 2     2 0.59    0.92   
+## 3     3 0.35    0.17   
+## 4     4 NO_2015 2.66</code></pre>
+<p>For the complete() function, the documentation for the fill argument states that:</p>
+<p>“A named list that for each variable supplies a single value to use instead of NA for missing combinations.”</p>
+<p>In other words, you can supply the fill argument with a list that has one entry for each of the columns in your data frame. Depending on where the missing value is located, it will be replaced by the appropriate NA value. In the example below, I replace any NA values in the year column with “NO_YEAR”, in the qtr column with “NO_QTR”, and in the return column with “NO_RETURN”.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">stocks <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">complete</span>(year, qtr, <span class="dt">fill =</span> <span class="kw">list</span>(<span class="dt">year =</span> <span class="st">&quot;NO_YEAR&quot;</span>, <span class="dt">qtr =</span> <span class="st">&quot;NO_QTR&quot;</span>, <span class="dt">return =</span> <span class="st">&quot;NO_RETURN&quot;</span>))</code></pre></div>
+<pre><code>## # A tibble: 8 x 3
+##   year  qtr   return   
+##   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    
+## 1 2015  1     1.88     
+## 2 2015  2     0.59     
+## 3 2015  3     0.35     
+## 4 2015  4     NO_RETURN
+## 5 2016  1     NO_RETURN
+## 6 2016  2     0.92     
+## 7 2016  3     0.17     
+## 8 2016  4     2.66</code></pre>
+</div>
+<div id="what-does-the-direction-argument-to-fill-do" class="section level3 unnumbered">
+<h3>2. What does the direction argument to fill() do?</h3>
+<p>The documentation for the direction argument in fill() states: “Direction in which to fill missing values. Currently either”down&quot; (the default) or “up”.&quot;</p>
+<p>So if we specify direction = “up” for the example provided earlier, the NA values will be filled with the 2nd patient (Katherine Burke), not the 1st patient.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">treatment <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">fill</span>(person, <span class="dt">.direction =</span> <span class="st">&quot;up&quot;</span>)</code></pre></div>
+<pre><code>## # A tibble: 4 x 3
+##   person           treatment response
+##   &lt;chr&gt;                &lt;dbl&gt;    &lt;dbl&gt;
+## 1 Derrick Whitmore         1        7
+## 2 Katherine Burke          2       10
+## 3 Katherine Burke          3        9
+## 4 Katherine Burke          1        4</code></pre>
+</div>
+</div>
+<div id="case-study" class="section level2 unnumbered">
+<h2><strong>12.6</strong> Case Study</h2>
+<p>The case study presented uses the tidyr::who dataset, which is depicted below:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">who</code></pre></div>
+<pre><code>## # A tibble: 7,240 x 60
+##    country iso2  iso3   year new_sp_m014 new_sp_m1524 new_sp_m2534
+##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;int&gt;       &lt;int&gt;        &lt;int&gt;        &lt;int&gt;
+##  1 Afghan… AF    AFG    1980          NA           NA           NA
+##  2 Afghan… AF    AFG    1981          NA           NA           NA
+##  3 Afghan… AF    AFG    1982          NA           NA           NA
+##  4 Afghan… AF    AFG    1983          NA           NA           NA
+##  5 Afghan… AF    AFG    1984          NA           NA           NA
+##  6 Afghan… AF    AFG    1985          NA           NA           NA
+##  7 Afghan… AF    AFG    1986          NA           NA           NA
+##  8 Afghan… AF    AFG    1987          NA           NA           NA
+##  9 Afghan… AF    AFG    1988          NA           NA           NA
+## 10 Afghan… AF    AFG    1989          NA           NA           NA
+## # … with 7,230 more rows, and 53 more variables: new_sp_m3544 &lt;int&gt;,
+## #   new_sp_m4554 &lt;int&gt;, new_sp_m5564 &lt;int&gt;, new_sp_m65 &lt;int&gt;,
+## #   new_sp_f014 &lt;int&gt;, new_sp_f1524 &lt;int&gt;, new_sp_f2534 &lt;int&gt;,
+## #   new_sp_f3544 &lt;int&gt;, new_sp_f4554 &lt;int&gt;, new_sp_f5564 &lt;int&gt;,
+## #   new_sp_f65 &lt;int&gt;, new_sn_m014 &lt;int&gt;, new_sn_m1524 &lt;int&gt;,
+## #   new_sn_m2534 &lt;int&gt;, new_sn_m3544 &lt;int&gt;, new_sn_m4554 &lt;int&gt;,
+## #   new_sn_m5564 &lt;int&gt;, new_sn_m65 &lt;int&gt;, new_sn_f014 &lt;int&gt;,
+## #   new_sn_f1524 &lt;int&gt;, new_sn_f2534 &lt;int&gt;, new_sn_f3544 &lt;int&gt;,
+## #   new_sn_f4554 &lt;int&gt;, new_sn_f5564 &lt;int&gt;, new_sn_f65 &lt;int&gt;,
+## #   new_ep_m014 &lt;int&gt;, new_ep_m1524 &lt;int&gt;, new_ep_m2534 &lt;int&gt;,
+## #   new_ep_m3544 &lt;int&gt;, new_ep_m4554 &lt;int&gt;, new_ep_m5564 &lt;int&gt;,
+## #   new_ep_m65 &lt;int&gt;, new_ep_f014 &lt;int&gt;, new_ep_f1524 &lt;int&gt;,
+## #   new_ep_f2534 &lt;int&gt;, new_ep_f3544 &lt;int&gt;, new_ep_f4554 &lt;int&gt;,
+## #   new_ep_f5564 &lt;int&gt;, new_ep_f65 &lt;int&gt;, newrel_m014 &lt;int&gt;,
+## #   newrel_m1524 &lt;int&gt;, newrel_m2534 &lt;int&gt;, newrel_m3544 &lt;int&gt;,
+## #   newrel_m4554 &lt;int&gt;, newrel_m5564 &lt;int&gt;, newrel_m65 &lt;int&gt;,
+## #   newrel_f014 &lt;int&gt;, newrel_f1524 &lt;int&gt;, newrel_f2534 &lt;int&gt;,
+## #   newrel_f3544 &lt;int&gt;, newrel_f4554 &lt;int&gt;, newrel_f5564 &lt;int&gt;,
+## #   newrel_f65 &lt;int&gt;</code></pre>
+<p>Below are the steps taken to “tidy” this dataset. The columns to the right of year are recorded cases of TB for each of the specified cohorts, which can be gathered.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">who1 &lt;-<span class="st"> </span>who <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">gather</span>(new_sp_m014<span class="op">:</span>newrel_f65, <span class="dt">key =</span> <span class="st">&quot;key&quot;</span>, <span class="dt">value =</span> <span class="st">&quot;cases&quot;</span>, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)
+who1</code></pre></div>
+<pre><code>## # A tibble: 76,046 x 6
+##    country     iso2  iso3   year key         cases
+##    &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt; &lt;int&gt; &lt;chr&gt;       &lt;int&gt;
+##  1 Afghanistan AF    AFG    1997 new_sp_m014     0
+##  2 Afghanistan AF    AFG    1998 new_sp_m014    30
+##  3 Afghanistan AF    AFG    1999 new_sp_m014     8
+##  4 Afghanistan AF    AFG    2000 new_sp_m014    52
+##  5 Afghanistan AF    AFG    2001 new_sp_m014   129
+##  6 Afghanistan AF    AFG    2002 new_sp_m014    90
+##  7 Afghanistan AF    AFG    2003 new_sp_m014   127
+##  8 Afghanistan AF    AFG    2004 new_sp_m014   139
+##  9 Afghanistan AF    AFG    2005 new_sp_m014   151
+## 10 Afghanistan AF    AFG    2006 new_sp_m014   193
+## # … with 76,036 more rows</code></pre>
+<p>In order to prepare for using separate on “key”, we need to standardize the format of the values. Most of the values have two underscores: one after “new” and one before the age range. However, one cohort does not have the first underscore after “new”. The underscore can be added using str_replace().</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">who2 &lt;-<span class="st"> </span>who1 <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">key =</span> stringr<span class="op">::</span><span class="kw">str_replace</span>(key, <span class="st">&quot;newrel&quot;</span>, <span class="st">&quot;new_rel&quot;</span>))
+who2</code></pre></div>
+<pre><code>## # A tibble: 76,046 x 6
+##    country     iso2  iso3   year key         cases
+##    &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt; &lt;int&gt; &lt;chr&gt;       &lt;int&gt;
+##  1 Afghanistan AF    AFG    1997 new_sp_m014     0
+##  2 Afghanistan AF    AFG    1998 new_sp_m014    30
+##  3 Afghanistan AF    AFG    1999 new_sp_m014     8
+##  4 Afghanistan AF    AFG    2000 new_sp_m014    52
+##  5 Afghanistan AF    AFG    2001 new_sp_m014   129
+##  6 Afghanistan AF    AFG    2002 new_sp_m014    90
+##  7 Afghanistan AF    AFG    2003 new_sp_m014   127
+##  8 Afghanistan AF    AFG    2004 new_sp_m014   139
+##  9 Afghanistan AF    AFG    2005 new_sp_m014   151
+## 10 Afghanistan AF    AFG    2006 new_sp_m014   193
+## # … with 76,036 more rows</code></pre>
+<p>Now that the format is standardized, the new, type, and sexage can be separated:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">who3 &lt;-<span class="st"> </span>who2 <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">separate</span>(key, <span class="kw">c</span>(<span class="st">&quot;new&quot;</span>, <span class="st">&quot;type&quot;</span>, <span class="st">&quot;sexage&quot;</span>), <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)
+who3</code></pre></div>
+<pre><code>## # A tibble: 76,046 x 8
+##    country     iso2  iso3   year new   type  sexage cases
+##    &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt; &lt;int&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;  &lt;int&gt;
+##  1 Afghanistan AF    AFG    1997 new   sp    m014       0
+##  2 Afghanistan AF    AFG    1998 new   sp    m014      30
+##  3 Afghanistan AF    AFG    1999 new   sp    m014       8
+##  4 Afghanistan AF    AFG    2000 new   sp    m014      52
+##  5 Afghanistan AF    AFG    2001 new   sp    m014     129
+##  6 Afghanistan AF    AFG    2002 new   sp    m014      90
+##  7 Afghanistan AF    AFG    2003 new   sp    m014     127
+##  8 Afghanistan AF    AFG    2004 new   sp    m014     139
+##  9 Afghanistan AF    AFG    2005 new   sp    m014     151
+## 10 Afghanistan AF    AFG    2006 new   sp    m014     193
+## # … with 76,036 more rows</code></pre>
+<p>The iso2 and iso3 columns look like different identifiers for country, so these can be dropped.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">who3 <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">count</span>(new)</code></pre></div>
+<pre><code>## # A tibble: 1 x 2
+##   new       n
+##   &lt;chr&gt; &lt;int&gt;
+## 1 new   76046</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">who4 &lt;-<span class="st"> </span>who3 <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>new, <span class="op">-</span>iso2, <span class="op">-</span>iso3)</code></pre></div>
+<p>The sexage column can be futher separated into sex and age:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">who5 &lt;-<span class="st"> </span>who4 <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">separate</span>(sexage, <span class="kw">c</span>(<span class="st">&quot;sex&quot;</span>, <span class="st">&quot;age&quot;</span>), <span class="dt">sep =</span> <span class="dv">1</span>)
+who5</code></pre></div>
+<pre><code>## # A tibble: 76,046 x 6
+##    country      year type  sex   age   cases
+##    &lt;chr&gt;       &lt;int&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;int&gt;
+##  1 Afghanistan  1997 sp    m     014       0
+##  2 Afghanistan  1998 sp    m     014      30
+##  3 Afghanistan  1999 sp    m     014       8
+##  4 Afghanistan  2000 sp    m     014      52
+##  5 Afghanistan  2001 sp    m     014     129
+##  6 Afghanistan  2002 sp    m     014      90
+##  7 Afghanistan  2003 sp    m     014     127
+##  8 Afghanistan  2004 sp    m     014     139
+##  9 Afghanistan  2005 sp    m     014     151
+## 10 Afghanistan  2006 sp    m     014     193
+## # … with 76,036 more rows</code></pre>
+<p>We can combine all the steps above using the pipe:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">who <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">gather</span>(code, value, new_sp_m014<span class="op">:</span>newrel_f65, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">code =</span> stringr<span class="op">::</span><span class="kw">str_replace</span>(code, <span class="st">&quot;newrel&quot;</span>, <span class="st">&quot;new_rel&quot;</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">separate</span>(code, <span class="kw">c</span>(<span class="st">&quot;new&quot;</span>, <span class="st">&quot;var&quot;</span>, <span class="st">&quot;sexage&quot;</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>new, <span class="op">-</span>iso2, <span class="op">-</span>iso3) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">separate</span>(sexage, <span class="kw">c</span>(<span class="st">&quot;sex&quot;</span>, <span class="st">&quot;age&quot;</span>), <span class="dt">sep =</span> <span class="dv">1</span>)</code></pre></div>
+<pre><code>## # A tibble: 76,046 x 6
+##    country      year var   sex   age   value
+##    &lt;chr&gt;       &lt;int&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;int&gt;
+##  1 Afghanistan  1997 sp    m     014       0
+##  2 Afghanistan  1998 sp    m     014      30
+##  3 Afghanistan  1999 sp    m     014       8
+##  4 Afghanistan  2000 sp    m     014      52
+##  5 Afghanistan  2001 sp    m     014     129
+##  6 Afghanistan  2002 sp    m     014      90
+##  7 Afghanistan  2003 sp    m     014     127
+##  8 Afghanistan  2004 sp    m     014     139
+##  9 Afghanistan  2005 sp    m     014     151
+## 10 Afghanistan  2006 sp    m     014     193
+## # … with 76,036 more rows</code></pre>
+</div>
+<div id="exercises-24" class="section level2 unnumbered">
+<h2><strong>12.6.1</strong> Exercises</h2>
+<div id="in-this-case-study-i-set-na.rm-true-just-to-make-it-easier-to-check-that-we-had-the-correct-values.-is-this-reasonable-think-about-how-missing-values-are-represented-in-this-dataset.-are-there-implicit-missing-values-whats-the-difference-between-an-na-and-zero" class="section level3 unnumbered">
+<h3>1. In this case study I set na.rm = TRUE just to make it easier to check that we had the correct values. Is this reasonable? Think about how missing values are represented in this dataset. Are there implicit missing values? What’s the difference between an NA and zero?</h3>
+<p>In some instances, the presence of an explicitly missing value might have meaning behind it. For example, maybe more missing values are present in data collected from districts in poor neighborhoods, because of staffing issues. In cases where knowing why missing values are present, it might not be good to use na.rm = TRUE. In this context, the presence of missing values might have meant that no cases were observed, or that no people were recorded in the sex/age group specified. However we do not know this for certain. For the purposes of teaching us how to tidy data, I would say that this was reasonable.</p>
+<p>To find the number of implicit missing values, first make version of the tidy who without removing NA values, then use complete() to convert implicitly missing values to explicitly missing values. We can then look at how many new rows with NA values were added by subtracting the # of rows (using nrow()). The difference between NA and zero is that the value of NA is unknown (it could have been anything, but the data wasn’t entered), and the value of 0 is that there were zero TB cases (this is a defined value that holds meaning).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">clean_who &lt;-<span class="st"> </span>who <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">gather</span>(code, value, new_sp_m014<span class="op">:</span>newrel_f65) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">code =</span> stringr<span class="op">::</span><span class="kw">str_replace</span>(code, <span class="st">&quot;newrel&quot;</span>, <span class="st">&quot;new_rel&quot;</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">separate</span>(code, <span class="kw">c</span>(<span class="st">&quot;new&quot;</span>, <span class="st">&quot;var&quot;</span>, <span class="st">&quot;sexage&quot;</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>new, <span class="op">-</span>iso2, <span class="op">-</span>iso3) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">separate</span>(sexage, <span class="kw">c</span>(<span class="st">&quot;sex&quot;</span>, <span class="st">&quot;age&quot;</span>), <span class="dt">sep =</span> <span class="dv">1</span>)
+
+<span class="co"># Use complete to convert implicity missing values into explicitly missing values</span>
+complete_who &lt;-<span class="st"> </span><span class="kw">complete</span>(clean_who, country, year)
+
+<span class="co"># Calculate how many implicitly missing values there are in the dataset by subtracting rows</span>
+<span class="kw">nrow</span>(complete_who) <span class="op">-</span><span class="st"> </span><span class="kw">nrow</span>(clean_who)[<span class="dv">1</span>]</code></pre></div>
+<pre><code>## [1] 206</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># count how many values are NA in the data set, how many are 0, and how many are neither NA or 0.</span>
+clean_who <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">count</span>(<span class="kw">is.na</span>(value), value <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)</code></pre></div>
+<pre><code>## # A tibble: 3 x 3
+##   `is.na(value)` `value == 0`      n
+##   &lt;lgl&gt;          &lt;lgl&gt;         &lt;int&gt;
+## 1 FALSE          FALSE         64966
+## 2 FALSE          TRUE          11080
+## 3 TRUE           NA           329394</code></pre>
+</div>
+<div id="what-happens-if-you-neglect-the-mutate-step-mutatekey-stringrstr_replacekey-newrel-new_rel" class="section level3 unnumbered">
+<h3>2. What happens if you neglect the mutate() step? (mutate(key = stringr::str_replace(key, “newrel”, “new_rel”)))</h3>
+<p>The mutate() step is required to allow the separate() function to be applied in the same manner for all the values in the code column, because it changes instances of “newrel” to “new_rel”, which has an underscore after “new” like all the other entries in the column. Without the mutate() step, the rows with “newrel” in them will not be separated correctly by separate(). Below is the output after removing the mutate() step, which shows an error “Expected 3 pieces. Missing pieces filled with <code>NA</code> in 2580 rows…”</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">who <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">gather</span>(code, value, new_sp_m014<span class="op">:</span>newrel_f65, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">separate</span>(code, <span class="kw">c</span>(<span class="st">&quot;new&quot;</span>, <span class="st">&quot;var&quot;</span>, <span class="st">&quot;sexage&quot;</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>new, <span class="op">-</span>iso2, <span class="op">-</span>iso3) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">separate</span>(sexage, <span class="kw">c</span>(<span class="st">&quot;sex&quot;</span>, <span class="st">&quot;age&quot;</span>), <span class="dt">sep =</span> <span class="dv">1</span>)</code></pre></div>
+<pre><code>## Warning: Expected 3 pieces. Missing pieces filled with `NA` in 2580 rows
+## [73467, 73468, 73469, 73470, 73471, 73472, 73473, 73474, 73475, 73476,
+## 73477, 73478, 73479, 73480, 73481, 73482, 73483, 73484, 73485, 73486, ...].</code></pre>
+<pre><code>## # A tibble: 76,046 x 6
+##    country      year var   sex   age   value
+##    &lt;chr&gt;       &lt;int&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;int&gt;
+##  1 Afghanistan  1997 sp    m     014       0
+##  2 Afghanistan  1998 sp    m     014      30
+##  3 Afghanistan  1999 sp    m     014       8
+##  4 Afghanistan  2000 sp    m     014      52
+##  5 Afghanistan  2001 sp    m     014     129
+##  6 Afghanistan  2002 sp    m     014      90
+##  7 Afghanistan  2003 sp    m     014     127
+##  8 Afghanistan  2004 sp    m     014     139
+##  9 Afghanistan  2005 sp    m     014     151
+## 10 Afghanistan  2006 sp    m     014     193
+## # … with 76,036 more rows</code></pre>
+</div>
+<div id="i-claimed-that-iso2-and-iso3-were-redundant-with-country.-confirm-this-claim." class="section level3 unnumbered">
+<h3>3. I claimed that iso2 and iso3 were redundant with country. Confirm this claim.</h3>
+<p>To confirm this claim, we can first identify the number of unique values in each of the three columns. Then, we can compare the number of unique combinations of country, iso2, and iso3 that are present in the data using group_by(). When we compare these metrics, they are all equal to 219, proving that iso2 and iso3 are reduntant with country.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># see how many unique values for country, iso2, and iso3 there are</span>
+<span class="kw">length</span>(<span class="kw">unique</span>(who<span class="op">$</span>country))</code></pre></div>
+<pre><code>## [1] 219</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">length</span>(<span class="kw">unique</span>(who<span class="op">$</span>iso2))</code></pre></div>
+<pre><code>## [1] 219</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">length</span>(<span class="kw">unique</span>(who<span class="op">$</span>iso3))</code></pre></div>
+<pre><code>## [1] 219</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># find out how many unique groupings of country, iso2, and iso3 there are</span>
+who <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(country, iso2, iso3) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">count</span>() <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">nrow</span>()</code></pre></div>
+<pre><code>## [1] 219</code></pre>
+</div>
+<div id="for-each-country-year-and-sex-compute-the-total-number-of-cases-of-tb.-make-an-informative-visualisation-of-the-data." class="section level3 unnumbered">
+<h3>4. For each country, year, and sex compute the total number of cases of TB. Make an informative visualisation of the data.</h3>
+<p>Below I use group_by() and summarize() to compute the total number of cases of TB by country, year, and sex. We can feed this into ggplot() to make a visualization. However, it is difficult to make something informative that combines all of these variables, due to the large number of countries and years to display. I tried to do this in the plot below, by depicting the number of TB cases over time, grouped by country, and faceted by sex. I had to remove the legend for the countries because it was occupying too much space. Looking at the plot, we can see two countries with high number of TB cases rising from 2000 and onwards, with a higher occurance in males compared to females.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># store the tidy version of who in an object</span>
+tidy_who &lt;-<span class="st"> </span>who <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">gather</span>(code, value, new_sp_m014<span class="op">:</span>newrel_f65, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">code =</span> stringr<span class="op">::</span><span class="kw">str_replace</span>(code, <span class="st">&quot;newrel&quot;</span>, <span class="st">&quot;new_rel&quot;</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">separate</span>(code, <span class="kw">c</span>(<span class="st">&quot;new&quot;</span>, <span class="st">&quot;var&quot;</span>, <span class="st">&quot;sexage&quot;</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>new, <span class="op">-</span>iso2, <span class="op">-</span>iso3) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">separate</span>(sexage, <span class="kw">c</span>(<span class="st">&quot;sex&quot;</span>, <span class="st">&quot;age&quot;</span>), <span class="dt">sep =</span> <span class="dv">1</span>)
+
+<span class="co"># count the total number of cases for each country, year and sex</span>
+total_TB &lt;-<span class="st"> </span>tidy_who <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(country, year, sex) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarize</span>(
+    <span class="dt">total_TB_cases =</span> <span class="kw">sum</span>(value, <span class="dt">na.rm =</span> T)
+  )
+
+<span class="co"># plot the data</span>
+total_TB <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span> (<span class="dt">x =</span> year, <span class="dt">y =</span> total_TB_cases))<span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">color =</span> country))<span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)<span class="op">+</span>
+<span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>sex)</code></pre></div>
+<p><img src="r4ds-walkthrough_files/figure-html/country_year_sex_TB_cases-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># remove values before 1995 and then plot the data</span>
+  total_TB <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">filter</span>( year <span class="op">&gt;</span><span class="st"> </span><span class="dv">1995</span> )<span class="op">%&gt;%</span>
+<span class="st">      </span><span class="kw">ggplot</span>(<span class="kw">aes</span> (<span class="dt">x =</span> year, <span class="dt">y =</span> total_TB_cases))<span class="op">+</span>
+<span class="st">      </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">color =</span> country))<span class="op">+</span>
+<span class="st">      </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)<span class="op">+</span>
+<span class="st">      </span><span class="kw">facet_wrap</span>(<span class="op">~</span>sex)</code></pre></div>
+<p><img src="r4ds-walkthrough_files/figure-html/country_year_sex_TB_cases-2.png" width="672" /></p>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="chapter-11-data-import.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": ["r4ds-walkthrough.pdf", "r4ds-walkthrough.epub"],
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

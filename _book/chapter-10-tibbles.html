@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 10 Tibbles | R for Data Science Walkthrough</title>
+  <meta name="description" content="This is a walkthrough of the book, R for Data Science (r4ds), with notes and solutions for the exercises." />
+  <meta name="generator" content="bookdown 0.14 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 10 Tibbles | R for Data Science Walkthrough" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="This is a walkthrough of the book, R for Data Science (r4ds), with notes and solutions for the exercises." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 10 Tibbles | R for Data Science Walkthrough" />
+  
+  <meta name="twitter:description" content="This is a walkthrough of the book, R for Data Science (r4ds), with notes and solutions for the exercises." />
+  
+
+<meta name="author" content="Erick Lu" />
+
+
+<meta name="date" content="2020-01-18" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="chapter-8.html"/>
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R for Data Science Walkthrough</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Introduction</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#about-me"><i class="fa fa-check"></i>About me</a></li>
+</ul></li>
+<li class="part"><span><b>I Data Visualization</b></span></li>
+<li><a href="chapter-3.html#chapter-3"><strong>Chapter 3</strong></a><ul>
+<li><a href="chapter-3.html#creating-a-ggplot"><strong>3.2</strong> Creating a ggplot</a></li>
+<li><a href="chapter-3.html#exercises"><strong>3.2.4</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html"><i class="fa fa-check"></i>1. Run ggplot(data = mpg). What do you see?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#how-many-rows-are-in-mpg-how-many-columns"><i class="fa fa-check"></i>2. How many rows are in mpg? How many columns?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-does-the-drv-variable-describe-read-the-help-for-mpg-to-find-out."><i class="fa fa-check"></i>3. What does the drv variable describe? Read the help for ?mpg to find out.</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#make-a-scatterplot-of-hwy-vs-cyl."><i class="fa fa-check"></i>4. Make a scatterplot of hwy vs cyl.</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-happens-if-you-make-a-scatterplot-of-class-vs-drv-why-is-the-plot-not-useful"><i class="fa fa-check"></i>5. What happens if you make a scatterplot of class vs drv? Why is the plot not useful?</a></li>
+</ul></li>
+<li><a href="chapter-3.html#aesthetic-mappings"><strong>3.3</strong> Aesthetic Mappings</a></li>
+<li><a href="chapter-3.html#exercises-1"><strong>3.3.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#whats-gone-wrong-with-this-code-why-are-the-points-not-blue"><i class="fa fa-check"></i>1. What’s gone wrong with this code? Why are the points not blue?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#which-variables-in-mpg-are-categorical-which-variables-are-continuous-hint-type-mpg-to-read-the-documentation-for-the-dataset.-how-can-you-see-this-information-when-you-run-mpg"><i class="fa fa-check"></i>2. Which variables in mpg are categorical? Which variables are continuous? (Hint: type ?mpg to read the documentation for the dataset). How can you see this information when you run mpg?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#map-a-continuous-variable-to-color-size-and-shape.-how-do-these-aesthetics-behave-differently-for-categorical-vs.continuous-variables"><i class="fa fa-check"></i>3. Map a continuous variable to color, size, and shape. How do these aesthetics behave differently for categorical vs. continuous variables?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-happens-if-you-map-the-same-variable-to-multiple-aesthetics"><i class="fa fa-check"></i>4. What happens if you map the same variable to multiple aesthetics?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-does-the-stroke-aesthetic-do-what-shapes-does-it-work-with-hint-use-geom_point"><i class="fa fa-check"></i>5. What does the stroke aesthetic do? What shapes does it work with? (Hint: use ?geom_point)</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-happens-if-you-map-an-aesthetic-to-something-other-than-a-variable-name-like-aescolour-displ-5"><i class="fa fa-check"></i>6. What happens if you map an aesthetic to something other than a variable name, like aes(colour = displ &lt; 5)?</a></li>
+</ul></li>
+<li><a href="chapter-3.html#facets"><strong>3.5</strong> Facets</a></li>
+<li><a href="chapter-3.html#exercises-2"><strong>3.5.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-happens-if-you-facet-on-a-continuous-variable"><i class="fa fa-check"></i>1. What happens if you facet on a continuous variable?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-do-the-empty-cells-in-plot-with-facet_griddrv-cyl-mean-how-do-they-relate-to-this-plot"><i class="fa fa-check"></i>2. What do the empty cells in plot with facet_grid(drv ~ cyl) mean? How do they relate to this plot?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-plots-does-the-following-code-make-what-does-.-do"><i class="fa fa-check"></i>3. What plots does the following code make? What does . do?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#take-the-first-faceted-plot-in-this-section"><i class="fa fa-check"></i>4. Take the first faceted plot in this section:</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#read-facet_wrap.-what-does-nrow-do-what-does-ncol-do-what-other-options-control-the-layout-of-the-individual-panels-why-doesnt-facet_grid-have-nrow-and-ncol-argument"><i class="fa fa-check"></i>5. Read ?facet_wrap. What does nrow do? What does ncol do? What other options control the layout of the individual panels? Why doesn’t facet_grid() have nrow and ncol argument?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#when-using-facet_grid-you-should-usually-put-the-variable-with-more-unique-levels-in-the-columns.-why"><i class="fa fa-check"></i>6. When using facet_grid() you should usually put the variable with more unique levels in the columns. Why?</a></li>
+</ul></li>
+<li><a href="chapter-3.html#geometric-objects"><strong>3.6</strong> Geometric objects</a></li>
+<li><a href="chapter-3.html#exercises-3"><strong>3.6.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-geom-would-you-use-to-draw-a-line-chart-a-boxplot-a-histogram-an-area-chart"><i class="fa fa-check"></i>1. What geom would you use to draw a line chart? A boxplot? A histogram? An area chart?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#run-this-code-in-your-head-and-predict-what-the-output-will-look-like.-then-run-the-code-in-r-and-check-your-predictions."><i class="fa fa-check"></i>2. Run this code in your head and predict what the output will look like. Then, run the code in R and check your predictions.</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-does-show.legend-false-do-what-happens-if-you-remove-it-why-do-you-think-i-used-it-earlier-in-the-chapter"><i class="fa fa-check"></i>3. What does show.legend = FALSE do? What happens if you remove it? Why do you think I used it earlier in the chapter?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-does-the-se-argument-to-geom_smooth-do"><i class="fa fa-check"></i>4. What does the se argument to geom_smooth() do?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#will-these-two-graphs-look-different-whywhy-not"><i class="fa fa-check"></i>5. Will these two graphs look different? Why/why not?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#recreate-the-r-code-necessary-to-generate-the-following-graphs."><i class="fa fa-check"></i>6. Recreate the R code necessary to generate the following graphs.</a></li>
+</ul></li>
+<li><a href="chapter-3.html#statistical-transformations"><strong>3.7</strong> Statistical Transformations</a></li>
+<li><a href="chapter-3.html#exercises-4"><strong>3.7.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-is-the-default-geom-associated-with-stat_summary-how-could-you-rewrite-the-previous-plot-to-use-that-geom-function-instead-of-the-stat-function"><i class="fa fa-check"></i>1. What is the default geom associated with stat_summary()? How could you rewrite the previous plot to use that geom function instead of the stat function?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-does-geom_col-do-how-is-it-different-to-geom_bar"><i class="fa fa-check"></i>2. What does geom_col() do? How is it different to geom_bar()?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#most-geoms-and-stats-come-in-pairs-that-are-almost-always-used-in-concert.-read-through-the-documentation-and-make-a-list-of-all-the-pairs.-what-do-they-have-in-common"><i class="fa fa-check"></i>3. Most geoms and stats come in pairs that are almost always used in concert. Read through the documentation and make a list of all the pairs. What do they have in common?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-variables-does-stat_smooth-compute-what-parameters-control-its-behaviour"><i class="fa fa-check"></i>4. What variables does stat_smooth() compute? What parameters control its behaviour?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#in-our-proportion-bar-chart-we-need-to-set-group-1.-why-in-other-words-what-is-the-problem-with-these-two-graphs"><i class="fa fa-check"></i>5. In our proportion bar chart, we need to set group = 1. Why? In other words what is the problem with these two graphs?</a></li>
+</ul></li>
+<li><a href="chapter-3.html#position-adjustments"><strong>3.8</strong> Position Adjustments</a></li>
+<li><a href="chapter-3.html#exercises-5"><strong>3.8.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-is-the-problem-with-this-plot-how-could-you-improve-it"><i class="fa fa-check"></i>1. What is the problem with this plot? How could you improve it?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-parameters-to-geom_jitter-control-the-amount-of-jittering"><i class="fa fa-check"></i>2. What parameters to geom_jitter() control the amount of jittering?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#compare-and-contrast-geom_jitter-with-geom_count."><i class="fa fa-check"></i>3. Compare and contrast geom_jitter() with geom_count().</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#whats-the-default-position-adjustment-for-geom_boxplot-create-a-visualisation-of-the-mpg-dataset-that-demonstrates-it."><i class="fa fa-check"></i>4. What’s the default position adjustment for geom_boxplot()? Create a visualisation of the mpg dataset that demonstrates it.</a></li>
+</ul></li>
+<li><a href="chapter-3.html#coordinate-systems"><strong>3.9</strong> Coordinate Systems</a></li>
+<li><a href="chapter-3.html#exercises-6"><strong>3.9.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#turn-a-stacked-bar-chart-into-a-pie-chart-using-coord_polar."><i class="fa fa-check"></i>1. Turn a stacked bar chart into a pie chart using coord_polar().</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-does-labs-do-read-the-documentation."><i class="fa fa-check"></i>2. What does labs() do? Read the documentation.</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#whats-the-difference-between-coord_quickmap-and-coord_map"><i class="fa fa-check"></i>3. What’s the difference between coord_quickmap() and coord_map()?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-does-the-plot-below-tell-you-about-the-relationship-between-city-and-highway-mpg-why-is-coord_fixed-important-what-does-geom_abline-do"><i class="fa fa-check"></i>4. What does the plot below tell you about the relationship between city and highway mpg? Why is coord_fixed() important? What does geom_abline() do?</a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>II Data Transformation</b></span></li>
+<li><a href="chapter-4.html#chapter-4"><strong>Chapter 4</strong></a><ul>
+<li><a href="chapter-4.html#practice"><strong>4.4</strong> Practice</a><ul>
+<li class="chapter" data-level="" data-path="chapter-4.html"><a href="chapter-4.html"><i class="fa fa-check"></i>1. Why does this code not work?</a></li>
+<li class="chapter" data-level="" data-path="chapter-4.html"><a href="chapter-4.html#tweak-each-of-the-following-r-commands-so-that-they-run-correctly"><i class="fa fa-check"></i>2. Tweak each of the following R commands so that they run correctly:</a></li>
+<li class="chapter" data-level="" data-path="chapter-4.html"><a href="chapter-4.html#press-alt-shift-k.-what-happens-how-can-you-get-to-the-same-place-using-the-menus"><i class="fa fa-check"></i>3. Press Alt + Shift + K. What happens? How can you get to the same place using the menus?</a></li>
+</ul></li>
+</ul></li>
+<li><a href="chapter-5.html#chapter-5"><strong>Chapter 5</strong></a><ul>
+<li><a href="chapter-5.html#filter-rows-with-filter"><strong>5.2</strong> Filter rows with filter()</a><ul>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html"><i class="fa fa-check"></i>5.2.1 Comparisons</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#logical-operators"><i class="fa fa-check"></i>5.2.2 Logical Operators</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#missing-values"><i class="fa fa-check"></i>5.2.3 Missing values</a></li>
+</ul></li>
+<li><a href="chapter-5.html#exercises-7"><strong>5.2.4</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#find-all-flights-that"><i class="fa fa-check"></i>1. Find all flights that</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#how-many-flights-have-a-missing-dep_time-what-other-variables-are-missing-what-might-these-rows-represent"><i class="fa fa-check"></i>2. How many flights have a missing dep_time? What other variables are missing? What might these rows represent?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#why-is-na-0-not-missing-why-is-na-true-not-missing-why-is-false-na-not-missing-can-you-figure-out-the-general-rule-na-0-is-a-tricky-counterexample"><i class="fa fa-check"></i>3. Why is NA ^ 0 not missing? Why is NA | TRUE not missing? Why is FALSE &amp; NA not missing? Can you figure out the general rule? (NA * 0 is a tricky counterexample!)</a></li>
+</ul></li>
+<li><a href="chapter-5.html#arrange-rows-with-arrange"><strong>5.3</strong> Arrange rows with arrange()</a></li>
+<li><a href="chapter-5.html#exercises-8"><strong>5.3.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#how-could-you-use-arrange-to-sort-all-missing-values-to-the-start-hint-use-is.na."><i class="fa fa-check"></i>1. How could you use arrange() to sort all missing values to the start? (Hint: use is.na()).</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#sort-flights-to-find-the-most-delayed-flights.-find-the-flights-that-left-earliest."><i class="fa fa-check"></i>2. Sort flights to find the most delayed flights. Find the flights that left earliest.</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#sort-flights-to-find-the-fastest-flights."><i class="fa fa-check"></i>3. Sort flights to find the fastest flights.</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#which-flights-travelled-the-longest-which-travelled-the-shortest"><i class="fa fa-check"></i>4. Which flights travelled the longest? Which travelled the shortest?</a></li>
+</ul></li>
+<li><a href="chapter-5.html#select-columns-with-select"><strong>5.4</strong> Select columns with select()</a></li>
+<li><a href="chapter-5.html#exercises-9"><strong>5.4.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#brainstorm-as-many-ways-as-possible-to-select-dep_time-dep_delay-arr_time-and-arr_delay-from-flights."><i class="fa fa-check"></i>1. Brainstorm as many ways as possible to select dep_time, dep_delay, arr_time, and arr_delay from flights.</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#what-happens-if-you-include-the-name-of-a-variable-multiple-times-in-a-select-call"><i class="fa fa-check"></i>2. What happens if you include the name of a variable multiple times in a select() call?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#what-does-the-one_of-function-do-why-might-it-be-helpful-in-conjunction-with-this-vector"><i class="fa fa-check"></i>3. What does the one_of() function do? Why might it be helpful in conjunction with this vector?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#does-the-result-of-running-the-following-code-surprise-you-how-do-the-select-helpers-deal-with-case-by-default-how-can-you-change-that-default"><i class="fa fa-check"></i>4. Does the result of running the following code surprise you? How do the select helpers deal with case by default? How can you change that default?</a></li>
+</ul></li>
+<li><a href="chapter-5.html#add-new-variables-with-mutate"><strong>5.5</strong> Add new variables with mutate()</a></li>
+<li><a href="chapter-5.html#exercises-10"><strong>5.5.2</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#currently-dep_time-and-sched_dep_time-are-convenient-to-look-at-but-hard-to-compute-with-because-theyre-not-really-continuous-numbers.-convert-them-to-a-more-convenient-representation-of-number-of-minutes-since-midnight."><i class="fa fa-check"></i>1. Currently dep_time and sched_dep_time are convenient to look at, but hard to compute with because they’re not really continuous numbers. Convert them to a more convenient representation of number of minutes since midnight.</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#compare-air_time-with-arr_time---dep_time.-what-do-you-expect-to-see-what-do-you-see-what-do-you-need-to-do-to-fix-it"><i class="fa fa-check"></i>2. Compare air_time with arr_time - dep_time. What do you expect to see? What do you see? What do you need to do to fix it?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#compare-dep_time-sched_dep_time-and-dep_delay.-how-would-you-expect-those-three-numbers-to-be-related"><i class="fa fa-check"></i>3. Compare dep_time, sched_dep_time, and dep_delay. How would you expect those three numbers to be related?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#find-the-10-most-delayed-flights-using-a-ranking-function.-how-do-you-want-to-handle-ties-carefully-read-the-documentation-for-min_rank."><i class="fa fa-check"></i>4. Find the 10 most delayed flights using a ranking function. How do you want to handle ties? Carefully read the documentation for min_rank().</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#what-does-13-110-return-why"><i class="fa fa-check"></i>5. What does 1:3 + 1:10 return? Why?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#what-trigonometric-functions-does-r-provide"><i class="fa fa-check"></i>6. What trigonometric functions does R provide?</a></li>
+</ul></li>
+<li><a href="chapter-5.html#grouped-summaries-with-summarise"><strong>5.6</strong> Grouped summaries with summarise()</a><ul>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#combining-multiple-operations-with-the-pipe"><i class="fa fa-check"></i>5.6.1 Combining multiple operations with the pipe</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#missing-values-1"><i class="fa fa-check"></i>5.6.2 Missing values</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#counts"><i class="fa fa-check"></i>5.6.3 Counts</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#useful-summary-functions"><i class="fa fa-check"></i>5.6.4 Useful summary functions</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#grouping-by-multiple-variables"><i class="fa fa-check"></i>5.6.5 Grouping by multiple variables</a></li>
+</ul></li>
+<li><a href="chapter-5.html#exercises-11"><strong>5.6.7</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#brainstorm-at-least-5-different-ways-to-assess-the-typical-delay-characteristics-of-a-group-of-flights.-consider-the-following-scenarios"><i class="fa fa-check"></i>1. Brainstorm at least 5 different ways to assess the typical delay characteristics of a group of flights. Consider the following scenarios:</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#come-up-with-another-approach-that-will-give-you-the-same-output-as-not_cancelled-countdest-and-not_cancelled-counttailnum-wt-distance-without-using-count."><i class="fa fa-check"></i>2. Come up with another approach that will give you the same output as not_cancelled %&gt;% count(dest) and not_cancelled %&gt;% count(tailnum, wt = distance) (without using count()).</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#our-definition-of-cancelled-flights-is.nadep_delay-is.naarr_delay-is-slightly-suboptimal.-why-which-is-the-most-important-column"><i class="fa fa-check"></i>3. Our definition of cancelled flights (is.na(dep_delay) | is.na(arr_delay) ) is slightly suboptimal. Why? Which is the most important column?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#look-at-the-number-of-cancelled-flights-per-day.-is-there-a-pattern-is-the-proportion-of-cancelled-flights-related-to-the-average-delay"><i class="fa fa-check"></i>4. Look at the number of cancelled flights per day. Is there a pattern? Is the proportion of cancelled flights related to the average delay?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#which-carrier-has-the-worst-delays-challenge-can-you-disentangle-the-effects-of-bad-airports-vs.bad-carriers-whywhy-not-hint-think-about-flights-group_bycarrier-dest-summarisen"><i class="fa fa-check"></i>5. Which carrier has the worst delays? Challenge: can you disentangle the effects of bad airports vs. bad carriers? Why/why not? (Hint: think about flights %&gt;% group_by(carrier, dest) %&gt;% summarise(n()))</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#what-does-the-sort-argument-to-count-do.-when-might-you-use-it"><i class="fa fa-check"></i>6. What does the sort argument to count() do. When might you use it?</a></li>
+</ul></li>
+<li><a href="chapter-5.html#grouped-mutates-and-filters"><strong>5.7</strong> Grouped mutates (and filters)</a></li>
+<li><a href="chapter-5.html#exercises-12"><strong>5.7.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#refer-back-to-the-lists-of-useful-mutate-and-filtering-functions.-describe-how-each-operation-changes-when-you-combine-it-with-grouping."><i class="fa fa-check"></i>1. Refer back to the lists of useful mutate and filtering functions. Describe how each operation changes when you combine it with grouping.</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#which-plane-tailnum-has-the-worst-on-time-record"><i class="fa fa-check"></i>2. Which plane (tailnum) has the worst on-time record?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#what-time-of-day-should-you-fly-if-you-want-to-avoid-delays-as-much-as-possible"><i class="fa fa-check"></i>3. What time of day should you fly if you want to avoid delays as much as possible?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#for-each-destination-compute-the-total-minutes-of-delay.-for-each-flight-compute-the-proportion-of-the-total-delay-for-its-destination."><i class="fa fa-check"></i>4. For each destination, compute the total minutes of delay. For each, flight, compute the proportion of the total delay for its destination.</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#delays-are-typically-temporally-correlated-even-once-the-problem-that-caused-the-initial-delay-has-been-resolved-later-flights-are-delayed-to-allow-earlier-flights-to-leave.-using-lag-explore-how-the-delay-of-a-flight-is-related-to-the-delay-of-the-immediately-preceding-flight."><i class="fa fa-check"></i>5. Delays are typically temporally correlated: even once the problem that caused the initial delay has been resolved, later flights are delayed to allow earlier flights to leave. Using lag() explore how the delay of a flight is related to the delay of the immediately preceding flight.</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#look-at-each-destination.-can-you-find-flights-that-are-suspiciously-fast-i.e.flights-that-represent-a-potential-data-entry-error.-compute-the-air-time-a-flight-relative-to-the-shortest-flight-to-that-destination.-which-flights-were-most-delayed-in-the-air"><i class="fa fa-check"></i>6. Look at each destination. Can you find flights that are suspiciously fast? (i.e. flights that represent a potential data entry error). Compute the air time a flight relative to the shortest flight to that destination. Which flights were most delayed in the air?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#find-all-destinations-that-are-flown-by-at-least-two-carriers.-use-that-information-to-rank-the-carriers."><i class="fa fa-check"></i>7. Find all destinations that are flown by at least two carriers. Use that information to rank the carriers.</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#for-each-plane-count-the-number-of-flights-before-the-first-delay-of-greater-than-1-hour."><i class="fa fa-check"></i>8. For each plane, count the number of flights before the first delay of greater than 1 hour.</a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>III Exploratory Data Analysis</b></span></li>
+<li><a href="chapter-7.html#chapter-7"><strong>Chapter 7</strong></a><ul>
+<li><a href="chapter-7.html#visualizing-distributions"><strong>7.3.1</strong> Visualizing distributions</a></li>
+<li><a href="chapter-7.html#exercises-13"><strong>7.3.4</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html"><i class="fa fa-check"></i>1. Explore the distribution of each of the x, y, and z variables in diamonds. What do you learn? Think about a diamond and how you might decide which dimension is the length, width, and depth.</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#explore-the-distribution-of-price.-do-you-discover-anything-unusual-or-surprising-hint-carefully-think-about-the-binwidth-and-make-sure-you-try-a-wide-range-of-values."><i class="fa fa-check"></i>2. Explore the distribution of price. Do you discover anything unusual or surprising? (Hint: Carefully think about the binwidth and make sure you try a wide range of values.)</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#how-many-diamonds-are-0.99-carat-how-many-are-1-carat-what-do-you-think-is-the-cause-of-the-difference"><i class="fa fa-check"></i>3. How many diamonds are 0.99 carat? How many are 1 carat? What do you think is the cause of the difference?</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#compare-and-contrast-coord_cartesian-vs-xlim-or-ylim-when-zooming-in-on-a-histogram.-what-happens-if-you-leave-binwidth-unset-what-happens-if-you-try-and-zoom-so-only-half-a-bar-shows"><i class="fa fa-check"></i>4. Compare and contrast coord_cartesian() vs xlim() or ylim() when zooming in on a histogram. What happens if you leave binwidth unset? What happens if you try and zoom so only half a bar shows?</a></li>
+</ul></li>
+<li><a href="chapter-7.html#missing-values-2"><strong>7.4</strong> Missing Values</a></li>
+<li><a href="chapter-7.html#exercises-14"><strong>7.4.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#what-happens-to-missing-values-in-a-histogram-what-happens-to-missing-values-in-a-bar-chart-why-is-there-a-difference"><i class="fa fa-check"></i>1. What happens to missing values in a histogram? What happens to missing values in a bar chart? Why is there a difference?</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#what-does-na.rm-true-do-in-mean-and-sum"><i class="fa fa-check"></i>2. What does na.rm = TRUE do in mean() and sum()?</a></li>
+</ul></li>
+<li><a href="chapter-7.html#covariation"><strong>7.5</strong> Covariation</a></li>
+<li><a href="chapter-7.html#a-categorical-and-continuous-variable"><strong>7.5.1</strong> A categorical and continuous variable</a></li>
+<li><a href="chapter-7.html#exercises-15"><strong>7.5.1.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#use-what-youve-learned-to-improve-the-visualisation-of-the-departure-times-of-cancelled-vs.non-cancelled-flights."><i class="fa fa-check"></i>1. Use what you’ve learned to improve the visualisation of the departure times of cancelled vs. non-cancelled flights.</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#what-variable-in-the-diamonds-dataset-is-most-important-for-predicting-the-price-of-a-diamond-how-is-that-variable-correlated-with-cut-why-does-the-combination-of-those-two-relationships-lead-to-lower-quality-diamonds-being-more-expensive"><i class="fa fa-check"></i>2. What variable in the diamonds dataset is most important for predicting the price of a diamond? How is that variable correlated with cut? Why does the combination of those two relationships lead to lower quality diamonds being more expensive?</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#install-the-ggstance-package-and-create-a-horizontal-boxplot.-how-does-this-compare-to-using-coord_flip"><i class="fa fa-check"></i>3. Install the ggstance package, and create a horizontal boxplot. How does this compare to using coord_flip()?</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#one-problem-with-boxplots-is-that-they-were-developed-in-an-era-of-much-smaller-datasets-and-tend-to-display-a-prohibitively-large-number-of-outlying-values.-one-approach-to-remedy-this-problem-is-the-letter-value-plot.-install-the-lvplot-package-and-try-using-geom_lv-to-display-the-distribution-of-price-vs-cut.-what-do-you-learn-how-do-you-interpret-the-plots"><i class="fa fa-check"></i>4. One problem with boxplots is that they were developed in an era of much smaller datasets and tend to display a prohibitively large number of “outlying values”. One approach to remedy this problem is the letter value plot. Install the lvplot package, and try using geom_lv() to display the distribution of price vs cut. What do you learn? How do you interpret the plots?</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#compare-and-contrast-geom_violin-with-a-facetted-geom_histogram-or-a-coloured-geom_freqpoly.-what-are-the-pros-and-cons-of-each-method"><i class="fa fa-check"></i>5. Compare and contrast geom_violin() with a facetted geom_histogram(), or a coloured geom_freqpoly(). What are the pros and cons of each method?</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#if-you-have-a-small-dataset-its-sometimes-useful-to-use-geom_jitter-to-see-the-relationship-between-a-continuous-and-categorical-variable.-the-ggbeeswarm-package-provides-a-number-of-methods-similar-to-geom_jitter.-list-them-and-briefly-describe-what-each-one-does."><i class="fa fa-check"></i>6. If you have a small dataset, it’s sometimes useful to use geom_jitter() to see the relationship between a continuous and categorical variable. The ggbeeswarm package provides a number of methods similar to geom_jitter(). List them and briefly describe what each one does.</a></li>
+</ul></li>
+<li><a href="chapter-7.html#two-categorical-variables"><strong>7.5.2</strong> Two categorical variables</a></li>
+<li><a href="chapter-7.html#exercises-16"><strong>7.5.2.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#how-could-you-rescale-the-count-dataset-above-to-more-clearly-show-the-distribution-of-cut-within-colour-or-colour-within-cut"><i class="fa fa-check"></i>1. How could you rescale the count dataset above to more clearly show the distribution of cut within colour, or colour within cut?</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#use-geom_tile-together-with-dplyr-to-explore-how-average-flight-delays-vary-by-destination-and-month-of-year.-what-makes-the-plot-difficult-to-read-how-could-you-improve-it"><i class="fa fa-check"></i>2. Use geom_tile() together with dplyr to explore how average flight delays vary by destination and month of year. What makes the plot difficult to read? How could you improve it?</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#why-is-it-slightly-better-to-use-aesx-color-y-cut-rather-than-aesx-cut-y-color-in-the-example-above"><i class="fa fa-check"></i>3. Why is it slightly better to use aes(x = color, y = cut) rather than aes(x = cut, y = color) in the example above?</a></li>
+</ul></li>
+<li><a href="chapter-7.html#two-continuous-variables"><strong>7.5.3</strong> Two continuous variables</a></li>
+<li><a href="chapter-7.html#exercises-17"><strong>7.5.3.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#instead-of-summarising-the-conditional-distribution-with-a-boxplot-you-could-use-a-frequency-polygon.-what-do-you-need-to-consider-when-using-cut_width-vs-cut_number-how-does-that-impact-a-visualisation-of-the-2d-distribution-of-carat-and-price"><i class="fa fa-check"></i>1. Instead of summarising the conditional distribution with a boxplot, you could use a frequency polygon. What do you need to consider when using cut_width() vs cut_number()? How does that impact a visualisation of the 2d distribution of carat and price?</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#visualise-the-distribution-of-carat-partitioned-by-price."><i class="fa fa-check"></i>2. Visualise the distribution of carat, partitioned by price.</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#how-does-the-price-distribution-of-very-large-diamonds-compare-to-small-diamonds.-is-it-as-you-expect-or-does-it-surprise-you"><i class="fa fa-check"></i>3. How does the price distribution of very large diamonds compare to small diamonds. Is it as you expect, or does it surprise you?</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#combine-two-of-the-techniques-youve-learned-to-visualise-the-combined-distribution-of-cut-carat-and-price."><i class="fa fa-check"></i>4. Combine two of the techniques you’ve learned to visualise the combined distribution of cut, carat, and price.</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#two-dimensional-plots-reveal-outliers-that-are-not-visible-in-one-dimensional-plots.-for-example-some-points-in-the-plot-below-have-an-unusual-combination-of-x-and-y-values-which-makes-the-points-outliers-even-though-their-x-and-y-values-appear-normal-when-examined-separately.-why-is-a-scatterplot-a-better-display-than-a-binned-plot-for-this-case"><i class="fa fa-check"></i>5. Two dimensional plots reveal outliers that are not visible in one dimensional plots. For example, some points in the plot below have an unusual combination of x and y values, which makes the points outliers even though their x and y values appear normal when examined separately. Why is a scatterplot a better display than a binned plot for this case?</a></li>
+</ul></li>
+<li><a href="chapter-7.html#patterns-and-models"><strong>7.6</strong> Patterns and models</a></li>
+</ul></li>
+<li><a href="chapter-8.html#chapter-8"><strong>Chapter 8</strong></a></li>
+<li class="part"><span><b>IV Data Wrangling</b></span></li>
+<li><a href="chapter-10-tibbles.html#chapter-10-tibbles"><strong>Chapter 10</strong> Tibbles</a><ul>
+<li><a href="chapter-10-tibbles.html#exercises-18"><strong>10.5</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-10-tibbles.html"><a href="chapter-10-tibbles.html"><i class="fa fa-check"></i>1. How can you tell if an object is a tibble? (Hint: try printing mtcars, which is a regular data frame).</a></li>
+<li class="chapter" data-level="" data-path="chapter-10-tibbles.html"><a href="chapter-10-tibbles.html#compare-and-contrast-the-following-operations-on-a-data.frame-and-equivalent-tibble.-what-is-different-why-might-the-default-data-frame-behaviours-cause-you-frustration"><i class="fa fa-check"></i>2. Compare and contrast the following operations on a data.frame and equivalent tibble. What is different? Why might the default data frame behaviours cause you frustration?</a></li>
+<li class="chapter" data-level="" data-path="chapter-10-tibbles.html"><a href="chapter-10-tibbles.html#if-you-have-the-name-of-a-variable-stored-in-an-object-e.g.var---mpg-how-can-you-extract-the-reference-variable-from-a-tibble"><i class="fa fa-check"></i>3. If you have the name of a variable stored in an object, e.g. var &lt;- “mpg”, how can you extract the reference variable from a tibble?</a></li>
+<li class="chapter" data-level="" data-path="chapter-10-tibbles.html"><a href="chapter-10-tibbles.html#practice-referring-to-non-syntactic-names-in-the-following-data-frame-by"><i class="fa fa-check"></i>4. Practice referring to non-syntactic names in the following data frame by:</a></li>
+<li class="chapter" data-level="" data-path="chapter-10-tibbles.html"><a href="chapter-10-tibbles.html#what-does-tibbleenframe-do-when-might-you-use-it"><i class="fa fa-check"></i>5. What does tibble::enframe() do? When might you use it?</a></li>
+<li class="chapter" data-level="" data-path="chapter-10-tibbles.html"><a href="chapter-10-tibbles.html#what-option-controls-how-many-additional-column-names-are-printed-at-the-footer-of-a-tibble"><i class="fa fa-check"></i>6. What option controls how many additional column names are printed at the footer of a tibble?</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R for Data Science Walkthrough</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="chapter-10-tibbles" class="section level1 unnumbered">
+<h1><strong>Chapter 10</strong> Tibbles</h1>
+<p>You can create tibbles from existing data frames using as_tibble(), or create brand new tibbles using tibble():</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tibble</span>(
+  <span class="dt">x =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>,
+  <span class="dt">y =</span> <span class="dv">1</span>,
+  <span class="dt">z =</span> x <span class="op">^</span><span class="st"> </span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span>y
+)</code></pre></div>
+<pre><code>## # A tibble: 5 x 3
+##       x     y     z
+##   &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1     1     1     2
+## 2     2     1     5
+## 3     3     1    10
+## 4     4     1    17
+## 5     5     1    26</code></pre>
+<p>A cousin of tibble(), tribble(), can also be used as a way to manually enter data into a tibble format:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tribble</span>(
+  <span class="op">~</span>x, <span class="op">~</span>y, <span class="op">~</span>z,
+  <span class="co">#--|--|----</span>
+  <span class="st">&quot;a&quot;</span>, <span class="dv">2</span>, <span class="fl">3.6</span>,
+  <span class="st">&quot;b&quot;</span>, <span class="dv">1</span>, <span class="fl">8.5</span>
+)</code></pre></div>
+<pre><code>## # A tibble: 2 x 3
+##   x         y     z
+##   &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 a         2   3.6
+## 2 b         1   8.5</code></pre>
+<p>You can also use non-syntactic names for variables in tibbles:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tb &lt;-<span class="st"> </span><span class="kw">tibble</span>(
+  <span class="st">`</span><span class="dt">:)</span><span class="st">`</span> =<span class="st"> &quot;smile&quot;</span>,
+  <span class="st">`</span><span class="dt"> </span><span class="st">`</span> =<span class="st"> &quot;space&quot;</span>,
+  <span class="st">`</span><span class="dt">2000</span><span class="st">`</span> =<span class="st"> &quot;number&quot;</span>
+)
+tb</code></pre></div>
+<pre><code>## # A tibble: 1 x 3
+##   `:)`  ` `   `2000`
+##   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; 
+## 1 smile space number</code></pre>
+<p>When compared to a data.frame in baseR, the tibble looks more user-friendly. Calling a tibble automatically provides only the beginning chunk of the data rather than filling up your entire console (think if it as default head(data.frame) display). Other nice features include not converting strings to factors or changing variable names.</p>
+<p>To convert tables to or from data frames, use as_tibble() and as.data.frame():</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(iris)</code></pre></div>
+<pre><code>## [1] &quot;data.frame&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(<span class="kw">as_tibble</span>(iris))</code></pre></div>
+<pre><code>## [1] &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(<span class="kw">as.data.frame</span>(<span class="kw">as_tibble</span>(iris)))</code></pre></div>
+<pre><code>## [1] &quot;data.frame&quot;</code></pre>
+<p>You can select columns in tibbles the same way you would with a data.frame:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">df &lt;-<span class="st"> </span><span class="kw">tibble</span>(
+  <span class="dt">x =</span> <span class="kw">runif</span>(<span class="dv">5</span>),
+  <span class="dt">y =</span> <span class="kw">rnorm</span>(<span class="dv">5</span>)
+)
+<span class="co"># extract column &#39;x&#39; using either $ or [[]]</span>
+df<span class="op">$</span>x</code></pre></div>
+<pre><code>## [1] 0.02150921 0.74497870 0.85418294 0.47402780 0.39835551</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">df[[<span class="st">&quot;x&quot;</span>]]</code></pre></div>
+<pre><code>## [1] 0.02150921 0.74497870 0.85418294 0.47402780 0.39835551</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">df[[<span class="dv">1</span>]]</code></pre></div>
+<pre><code>## [1] 0.02150921 0.74497870 0.85418294 0.47402780 0.39835551</code></pre>
+<div id="exercises-18" class="section level2 unnumbered">
+<h2><strong>10.5</strong> Exercises</h2>
+<div id="how-can-you-tell-if-an-object-is-a-tibble-hint-try-printing-mtcars-which-is-a-regular-data-frame." class="section level3 unnumbered">
+<h3>1. How can you tell if an object is a tibble? (Hint: try printing mtcars, which is a regular data frame).</h3>
+<p>You can tell if an object is a tibble because the output you get by calling it will say “tibble”! For example, calling the diamonds tibble returns :<code># A tibble: 53,940 x 10</code> as the first line of the output. Also you can tell something is a tibble based on the class specifications underneath each variable name. A tibble will also only print out the first 10 rows by default, whereas a data.frame will print out as many as the console allows. Last, the definitive way to tell something is a tibble is to use the class() function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(diamonds)</code></pre></div>
+<pre><code>## [1] &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(mtcars)</code></pre></div>
+<pre><code>## [1] &quot;data.frame&quot;</code></pre>
+</div>
+<div id="compare-and-contrast-the-following-operations-on-a-data.frame-and-equivalent-tibble.-what-is-different-why-might-the-default-data-frame-behaviours-cause-you-frustration" class="section level3 unnumbered">
+<h3>2. Compare and contrast the following operations on a data.frame and equivalent tibble. What is different? Why might the default data frame behaviours cause you frustration?</h3>
+<p>On a data.frame, <code>df$x</code> will still return the values for column xyz. This behavior does not occur for a tibble, which requires the exact name of the column <code>df$xyz</code>. This data.frame feature might cause frustration if you have columns in your dataset with the same prefix, in which you might fetch the wrong column. The other functions between data.frame and tibble work the same way. One distinction to note is that, when creating the data.frame, “a” is considered a factor with 1 level. When creating the tibble, “a” is not converted into a factor.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">abc =</span> <span class="dv">1</span>, <span class="dt">xyz =</span> <span class="st">&quot;a&quot;</span>)
+df<span class="op">$</span>x</code></pre></div>
+<pre><code>## [1] a
+## Levels: a</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">df[, <span class="st">&quot;xyz&quot;</span>]</code></pre></div>
+<pre><code>## [1] a
+## Levels: a</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">df[, <span class="kw">c</span>(<span class="st">&quot;abc&quot;</span>, <span class="st">&quot;xyz&quot;</span>)]</code></pre></div>
+<pre><code>##   abc xyz
+## 1   1   a</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">df &lt;-<span class="st"> </span><span class="kw">tibble</span>(<span class="dt">abc =</span> <span class="dv">1</span>, <span class="dt">xyz =</span> <span class="st">&quot;a&quot;</span>)
+df<span class="op">$</span>x</code></pre></div>
+<pre><code>## Warning: Unknown or uninitialised column: &#39;x&#39;.</code></pre>
+<pre><code>## NULL</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">df[, <span class="st">&quot;xyz&quot;</span>]</code></pre></div>
+<pre><code>## # A tibble: 1 x 1
+##   xyz  
+##   &lt;chr&gt;
+## 1 a</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">df[, <span class="kw">c</span>(<span class="st">&quot;abc&quot;</span>, <span class="st">&quot;xyz&quot;</span>)]</code></pre></div>
+<pre><code>## # A tibble: 1 x 2
+##     abc xyz  
+##   &lt;dbl&gt; &lt;chr&gt;
+## 1     1 a</code></pre>
+</div>
+<div id="if-you-have-the-name-of-a-variable-stored-in-an-object-e.g.var---mpg-how-can-you-extract-the-reference-variable-from-a-tibble" class="section level3 unnumbered">
+<h3>3. If you have the name of a variable stored in an object, e.g. var &lt;- “mpg”, how can you extract the reference variable from a tibble?</h3>
+<p>If the name of the variable is stored in an object, you can pass the object in lieu of the variable name using [[]] or [] just as you would do so with the explicit variable name. You can even pass the object and another variable name to obtain multiple reference variables using c(). I provide an example below using the diamonds dataset.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">var &lt;-<span class="st"> &quot;carat&quot;</span>
+var2 &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;carat&quot;</span>,<span class="st">&quot;price&quot;</span>)
+
+<span class="co"># extract only carat</span>
+diamonds[,var]</code></pre></div>
+<pre><code>## # A tibble: 53,940 x 1
+##    carat
+##    &lt;dbl&gt;
+##  1 0.23 
+##  2 0.21 
+##  3 0.23 
+##  4 0.290
+##  5 0.31 
+##  6 0.24 
+##  7 0.24 
+##  8 0.26 
+##  9 0.22 
+## 10 0.23 
+## # … with 53,930 more rows</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#extract carat and price</span>
+diamonds[,<span class="kw">c</span>(var,<span class="st">&quot;price&quot;</span>)]</code></pre></div>
+<pre><code>## # A tibble: 53,940 x 2
+##    carat price
+##    &lt;dbl&gt; &lt;int&gt;
+##  1 0.23    326
+##  2 0.21    326
+##  3 0.23    327
+##  4 0.290   334
+##  5 0.31    335
+##  6 0.24    336
+##  7 0.24    336
+##  8 0.26    337
+##  9 0.22    337
+## 10 0.23    338
+## # … with 53,930 more rows</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">diamonds[,var2]</code></pre></div>
+<pre><code>## # A tibble: 53,940 x 2
+##    carat price
+##    &lt;dbl&gt; &lt;int&gt;
+##  1 0.23    326
+##  2 0.21    326
+##  3 0.23    327
+##  4 0.290   334
+##  5 0.31    335
+##  6 0.24    336
+##  7 0.24    336
+##  8 0.26    337
+##  9 0.22    337
+## 10 0.23    338
+## # … with 53,930 more rows</code></pre>
+</div>
+<div id="practice-referring-to-non-syntactic-names-in-the-following-data-frame-by" class="section level3 unnumbered">
+<h3>4. Practice referring to non-syntactic names in the following data frame by:</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">annoying &lt;-<span class="st"> </span><span class="kw">tibble</span>(
+  <span class="st">`</span><span class="dt">1</span><span class="st">`</span> =<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,
+  <span class="st">`</span><span class="dt">2</span><span class="st">`</span> =<span class="st"> `</span><span class="dt">1</span><span class="st">`</span> <span class="op">*</span><span class="st"> </span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(<span class="kw">length</span>(<span class="st">`</span><span class="dt">1</span><span class="st">`</span>))
+)</code></pre></div>
+<ul>
+<li>Extracting the variable called 1.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">annoying[,<span class="st">&quot;1&quot;</span>]</code></pre></div>
+<pre><code>## # A tibble: 10 x 1
+##      `1`
+##    &lt;int&gt;
+##  1     1
+##  2     2
+##  3     3
+##  4     4
+##  5     5
+##  6     6
+##  7     7
+##  8     8
+##  9     9
+## 10    10</code></pre>
+<ul>
+<li>Plotting a scatterplot of 1 vs 2.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(annoying, <span class="kw">aes</span>(<span class="st">`</span><span class="dt">1</span><span class="st">`</span>,<span class="st">`</span><span class="dt">2</span><span class="st">`</span>))<span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>()</code></pre></div>
+<p><img src="r4ds-walkthrough_files/figure-html/scatterplot_1v2-1.png" width="672" /></p>
+<ul>
+<li>Creating a new column called 3 which is 2 divided by 1.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">annoying <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="st">`</span><span class="dt">3</span><span class="st">`</span> =<span class="st"> `</span><span class="dt">2</span><span class="st">`</span><span class="op">/</span><span class="st">`</span><span class="dt">1</span><span class="st">`</span>)</code></pre></div>
+<pre><code>## # A tibble: 10 x 3
+##      `1`   `2`   `3`
+##    &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1     1  2.01  2.01
+##  2     2  5.05  2.52
+##  3     3  6.50  2.17
+##  4     4  8.77  2.19
+##  5     5 10.9   2.17
+##  6     6 13.3   2.21
+##  7     7 14.3   2.04
+##  8     8 15.7   1.97
+##  9     9 18.8   2.09
+## 10    10 20.1   2.01</code></pre>
+<ul>
+<li>Renaming the columns to one, two and three.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">annoying <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="st">`</span><span class="dt">3</span><span class="st">`</span> =<span class="st"> `</span><span class="dt">2</span><span class="st">`</span><span class="op">/</span><span class="st">`</span><span class="dt">1</span><span class="st">`</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">rename</span>(<span class="dt">one =</span> <span class="st">`</span><span class="dt">1</span><span class="st">`</span>, <span class="dt">two =</span> <span class="st">`</span><span class="dt">2</span><span class="st">`</span>, <span class="dt">three =</span> <span class="st">`</span><span class="dt">3</span><span class="st">`</span> )</code></pre></div>
+<pre><code>## # A tibble: 10 x 3
+##      one   two three
+##    &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1     1  2.01  2.01
+##  2     2  5.05  2.52
+##  3     3  6.50  2.17
+##  4     4  8.77  2.19
+##  5     5 10.9   2.17
+##  6     6 13.3   2.21
+##  7     7 14.3   2.04
+##  8     8 15.7   1.97
+##  9     9 18.8   2.09
+## 10    10 20.1   2.01</code></pre>
+</div>
+<div id="what-does-tibbleenframe-do-when-might-you-use-it" class="section level3 unnumbered">
+<h3>5. What does tibble::enframe() do? When might you use it?</h3>
+<p>Taken from the documentation: “enframe() converts named atomic vectors or lists to two-column data frames. For unnamed vectors, the natural sequence is used as name column.” I might use this when I have a vector that I want to turn into a data.frame for graphing using ggplot, which requires data be in data.frame or tibble.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x =<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">100</span>)
+<span class="kw">names</span>(x) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">5</span><span class="op">:</span><span class="dv">104</span>)
+<span class="kw">enframe</span>(x)</code></pre></div>
+<pre><code>## # A tibble: 100 x 2
+##    name   value
+##    &lt;chr&gt;  &lt;dbl&gt;
+##  1 5     -0.270
+##  2 6      1.68 
+##  3 7     -1.53 
+##  4 8      0.641
+##  5 9     -0.546
+##  6 10     1.31 
+##  7 11    -1.78 
+##  8 12     2.48 
+##  9 13     0.176
+## 10 14     0.804
+## # … with 90 more rows</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(<span class="kw">enframe</span>(x))</code></pre></div>
+<pre><code>## [1] &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
+</div>
+<div id="what-option-controls-how-many-additional-column-names-are-printed-at-the-footer-of-a-tibble" class="section level3 unnumbered">
+<h3>6. What option controls how many additional column names are printed at the footer of a tibble?</h3>
+<p>The documentation for ?format.tbl (tibble formatting) says that the n_extra argument will control how many additional columns to print abbreviated information for. The example provided in the documentation is below, which only prints 2 of the additional columns (whereas the unmodified print(flights) would yield 5 additional columns in the footer).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(nycflights13<span class="op">::</span>flights, <span class="dt">n_extra =</span> <span class="dv">2</span>)</code></pre></div>
+<pre><code>## # A tibble: 336,776 x 19
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;dbl&gt;    &lt;int&gt;
+##  1  2013     1     1      517            515         2      830
+##  2  2013     1     1      533            529         4      850
+##  3  2013     1     1      542            540         2      923
+##  4  2013     1     1      544            545        -1     1004
+##  5  2013     1     1      554            600        -6      812
+##  6  2013     1     1      554            558        -4      740
+##  7  2013     1     1      555            600        -5      913
+##  8  2013     1     1      557            600        -3      709
+##  9  2013     1     1      557            600        -3      838
+## 10  2013     1     1      558            600        -2      753
+## # … with 336,766 more rows, and 12 more variables: sched_arr_time &lt;int&gt;,
+## #   arr_delay &lt;dbl&gt;, …</code></pre>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="chapter-8.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": ["r4ds-walkthrough.pdf", "r4ds-walkthrough.epub"],
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

@@ -10,7 +10,7 @@ documentclass: book
 description: "This is a walkthrough of the book, R for Data Science (r4ds), with notes and solutions for the exercises."
 ---
 
-# Introduction
+# Introduction {-}
 
 The free online version of the book **R for Data Science** by Hadley Wickham and Garrett Grolemund can be found at http://r4ds.had.co.nz/index.html. This is the version that I will be working with.
 
@@ -18,7 +18,7 @@ Here, I work through each chapter of the book and provide my take on the solutio
 
 My solutions may not be perfect, but hopefully they provide some insight into how each exercise can be answered. Although there are no formal solutions for this book, a more comprehensive and well-polished guide by Jeffrey Arnold can be found at https://jrnold.github.io/r4ds-exercise-solutions/.
 
-## About me
+## About me {-}
 
 I used this book when I was a PhD student in the Biomedical Sciences program at UCSF. For one of my research projects, I needed to perform RNA-sequencing experiments in order to characterize the gene expression changes that occured after immune cell activation. Typically, this type of data is analyzed using a suite of bioinformatics R packages available on Bioconductor. However, the built-in functions for data visualization within these packages are typically very basic. The techniques I learned from this book were useful to help process the RNA-seq data, perform exploratory data analysis, and create visualizations.
 

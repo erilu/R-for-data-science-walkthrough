@@ -1,15 +1,13 @@
-# Chapter 5 {-}
+# **Chapter 5** {-}
 
 The data that we will work with in chapter 5 is from the nycflights13 package.
 
-```{r}
+```{r message=F, error=F, warning=F}
 library(tidyverse)
 library(nycflights13)
-
-flights
 ```
 
-## **5.2** Filter rows with filter() {-}
+## **5.2** Notes - Filter rows with filter() {-}
 
 filter() will subset obervations based on their values. I think it works a lot like the which() function in base R (ie: data[which(data$variable > value),] ). Below is a way to do the same thing using either filter() or base R which().
 
@@ -161,7 +159,7 @@ filter(flights, dep_time == NA | TRUE)
 ```
 
 
-## **5.3** Arrange rows with arrange() {-}
+## **5.3** Notes - Arrange rows with arrange() {-}
 
 arrange() will return a data frame with the observations sorted by the variable you specify. It functions similarly to the order() function in base R. Below are two ways to get the same sorted dataframe using arrange() and order(). You can see that arrange() makes things a little simpler to read. For the base R order() function, it will only return a sorted list of values, so you have to pass them into the flights[] frame to obtain all the values for the sorted data.
 
@@ -243,7 +241,7 @@ mean(longest$air_time)
 ```
 
 
-## **5.4** Select columns with select() {-}
+## **5.4** Notes - Select columns with select() {-}
 
 The select() function allows you to select a subset of columns (variables) from your data frame and return a new data frame with these selected columns. This works similarly to using indexes to pull out columns from a data frame in base R. For example, here is a way to do the same thing both ways:
 
@@ -327,7 +325,7 @@ select(flights, contains("TIME", ignore.case = FALSE))
 Since no columns in the flights data frame have the uppercase TIME in them, nothing is returned.
 
 
-## **5.5** Add new variables with mutate() {-}
+## **5.5** Notes - Add new variables with mutate() {-}
 
 ```{r}
 # view the data as a spreadsheet with View() - note capital V
@@ -448,7 +446,7 @@ Taken from the R documentation: "These functions give the obvious trigonometric 
 
 ```cospi(x), sinpi(x), and tanpi(x), compute cos(pi*x), sin(pi*x), and tan(pi*x).```
 
-## **5.6** Grouped summaries with summarise() {-}
+## **5.6** Notes - Grouped summaries with summarise() {-}
 
 summarise(), in its simplest usage, can perform a function on a column in the data set and return the output as a single row:
 
@@ -828,7 +826,7 @@ ggplot(by_carrier_dest) +
 
 If you set sort = TRUE in count(), it will return the output sorted in descending order of n. This might be useful when trying to find the item with the most occurances when counting, and will save you from having to pipe the data into arrange().
 
-## **5.7** Grouped mutates (and filters) {-}
+## **5.7** Notes - Grouped mutates (and filters) {-}
 
 You can use the group_by() function for purposes other than piping into summarize(). For example, you can use group_by() with filter() to find which items within a group satisfy a certain condition.
 

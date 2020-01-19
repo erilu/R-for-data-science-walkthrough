@@ -1,0 +1,156 @@
+# (PART) Data Wrangling {-}
+
+# **Chapter 10** Tibbles {-}
+
+## Notes - Creating Tibbles {-}
+
+You can create tibbles from existing data frames using as_tibble(), or create brand new tibbles using tibble():
+
+```{r}
+tibble(
+  x = 1:5,
+  y = 1,
+  z = x ^ 2 + y
+)
+```
+
+A cousin of tibble(), tribble(), can also be used as a way to manually enter data into a tibble format:
+
+```{r}
+tribble(
+  ~x, ~y, ~z,
+  #--|--|----
+  "a", 2, 3.6,
+  "b", 1, 8.5
+)
+```
+
+You can also use non-syntactic names for variables in tibbles:
+
+```{r}
+tb <- tibble(
+  `:)` = "smile",
+  ` ` = "space",
+  `2000` = "number"
+)
+tb
+```
+
+When compared to a data.frame in baseR, the tibble looks more user-friendly. Calling a tibble automatically provides only the beginning chunk of the data rather than filling up your entire console (think if it as default head(data.frame) display). Other nice features include not converting strings to factors or changing variable names.
+
+To convert tables to or from data frames, use as_tibble() and as.data.frame():
+
+```{r}
+class(iris)
+class(as_tibble(iris))
+class(as.data.frame(as_tibble(iris)))
+```
+
+You can select columns in tibbles the same way you would with a data.frame:
+
+```{r}
+df <- tibble(
+  x = runif(5),
+  y = rnorm(5)
+)
+# extract column 'x' using either $ or [[]]
+df$x
+df[["x"]]
+df[[1]]
+```
+
+## **10.5** Exercises {-}
+
+### 1. How can you tell if an object is a tibble? (Hint: try printing mtcars, which is a regular data frame). {-}
+
+You can tell if an object is a tibble because the output you get by calling it will say "tibble"! For example, calling the diamonds tibble returns :```# A tibble: 53,940 x 10``` as the first line of the output. Also you can tell something is a tibble based on the class specifications underneath each variable name. A tibble will also only print out the first 10 rows by default, whereas a data.frame will print out as many as the console allows. Last, the definitive way to tell something is a tibble is to use the class() function.
+
+```{r}
+class(diamonds)
+class(mtcars)
+```
+
+### 2. Compare and contrast the following operations on a data.frame and equivalent tibble. What is different? Why might the default data frame behaviours cause you frustration? {-}
+
+On a data.frame, ```df$x``` will still return the values for column xyz. This behavior does not occur for a tibble, which requires the exact name of the column ```df$xyz```. This data.frame feature might cause frustration if you have columns in your dataset with the same prefix, in which you might fetch the wrong column. The other functions between data.frame and tibble work the same way. One distinction to note is that, when creating the data.frame, "a" is considered a factor with 1 level. When creating the tibble, "a" is not converted into a factor.
+
+```{r}
+df <- data.frame(abc = 1, xyz = "a")
+df$x
+df[, "xyz"]
+df[, c("abc", "xyz")]
+
+df <- tibble(abc = 1, xyz = "a")
+df$x
+df[, "xyz"]
+df[, c("abc", "xyz")]
+```
+
+### 3. If you have the name of a variable stored in an object, e.g. var <- "mpg", how can you extract the reference variable from a tibble? {-}
+
+If the name of the variable is stored in an object, you can pass the object in lieu of the variable name using [[]] or [] just as you would do so with the explicit variable name. You can even pass the object and another variable name to obtain multiple reference variables using c(). I provide an example below using the diamonds dataset.
+
+```{r}
+var <- "carat"
+var2 <- c("carat","price")
+
+# extract only carat
+diamonds[,var]
+
+#extract carat and price
+diamonds[,c(var,"price")]
+diamonds[,var2]
+```
+
+### 4. Practice referring to non-syntactic names in the following data frame by: {-}
+```{r}
+annoying <- tibble(
+  `1` = 1:10,
+  `2` = `1` * 2 + rnorm(length(`1`))
+)
+```
+
+* Extracting the variable called 1.
+```{r}
+annoying[,"1"]
+```
+* Plotting a scatterplot of 1 vs 2.
+```{r scatterplot_1v2}
+ggplot(annoying, aes(`1`,`2`))+
+  geom_point()
+```
+
+* Creating a new column called 3 which is 2 divided by 1.
+```{r}
+annoying %>%
+  mutate(`3` = `2`/`1`)
+```
+
+* Renaming the columns to one, two and three.
+```{r}
+annoying %>%
+  mutate(`3` = `2`/`1`) %>%
+  rename(one = `1`, two = `2`, three = `3` )
+```
+
+
+### 5. What does tibble::enframe() do? When might you use it? {-}
+
+Taken from the documentation: "enframe() converts named atomic vectors or lists to two-column data frames. For unnamed vectors, the natural sequence is used as name column." I might use this when I have a vector that I want to turn into a data.frame for graphing using ggplot, which requires data be in data.frame or tibble.
+
+```{r}
+x = rnorm(100)
+names(x) <- c(5:104)
+enframe(x)
+class(enframe(x))
+```
+
+### 6. What option controls how many additional column names are printed at the footer of a tibble? {-}
+
+The documentation for ?format.tbl (tibble formatting) says that the n_extra argument will control how many additional columns to print abbreviated information for. The example provided in the documentation is below, which only prints 2 of the additional columns (whereas the unmodified print(flights) would yield 5 additional columns in the footer).
+
+```{r}
+print(nycflights13::flights, n_extra = 2)
+```
+
+
