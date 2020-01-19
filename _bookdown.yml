@@ -3,7 +3,7 @@ rmd_files:
   - "chapter3.Rmd"
   - "chapter4.Rmd"
   - "chapter5.Rmd"
-#  - "chapter7.Rmd"
+  - "chapter7.Rmd"
 #  - "chapter8.Rmd"
 #  - "chapter10.Rmd"
 #  - "chapter11.Rmd"
