@@ -11,8 +11,8 @@ The files are split up into groups of chapters within the book which focus on a 
 * [Chapters 1-3](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_p1_chapters1-3_walkthrough.md) Data Visualization using ggplot2
 * [Chapters 4-6](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_p2_chapters4-6_walkthrough.md) Data Transformation using dplyr
 * [Chapters 7-8](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_p3_chapters7-8_walkthrough.md) Exploratory Data Analysis
-* [Chapters 9-13](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_p4_chapters9-13_walkthrough.md) Data Wranging Part 1 - Tibbles, Data Import, Tidy Data, and Relational Data.
-* [Chapters 14-16](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_p5_chapters14-16_walkthrough.md) Data Wranging Part 2 - Strings, Factors, Dates, and Times
+* [Chapters 9-13](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_p4_chapters9-13_walkthrough.md) Data Wrangling Part 1 - Tibbles, Data Import, Tidy Data, and Relational Data.
+* [Chapters 14-16](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_p5_chapters14-16_walkthrough.md) Data Wrangling Part 2 - Strings, Factors, Dates, and Times
 * [Chapters 17-21](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_p6_chapters17-21_walkthrough.md) Functions, Vectors, and Iteration
 * [Chapters 22-30](https://github.com/erilu/R-for-data-science-walkthrough/blob/master/r4ds_p7_chapters22-30_walkthrough.md) Model basics and building, graphics, and R markdown
 

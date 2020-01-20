@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 11 Data Import | R for Data Science Walkthrough</title>
+  <meta name="description" content="This is a walkthrough of the book, R for Data Science (r4ds), with notes and solutions for the exercises." />
+  <meta name="generator" content="bookdown 0.14 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 11 Data Import | R for Data Science Walkthrough" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="This is a walkthrough of the book, R for Data Science (r4ds), with notes and solutions for the exercises." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 11 Data Import | R for Data Science Walkthrough" />
+  
+  <meta name="twitter:description" content="This is a walkthrough of the book, R for Data Science (r4ds), with notes and solutions for the exercises." />
+  
+
+<meta name="author" content="Erick Lu" />
+
+
+<meta name="date" content="2020-01-19" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="chapter-10-tibbles.html"/>
+<link rel="next" href="chapter-12-tidy-data.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R for Data Science Walkthrough</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Introduction</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#about-me"><i class="fa fa-check"></i>About me</a></li>
+</ul></li>
+<li class="part"><span><b>I Data Visualization</b></span></li>
+<li><a href="chapter-3.html#chapter-3"><strong>Chapter 3</strong></a><ul>
+<li><a href="chapter-3.html#notes---creating-a-ggplot"><strong>3.2</strong> Notes - Creating a ggplot</a></li>
+<li><a href="chapter-3.html#exercises"><strong>3.2.4</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html"><i class="fa fa-check"></i>1. Run ggplot(data = mpg). What do you see?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#how-many-rows-are-in-mpg-how-many-columns"><i class="fa fa-check"></i>2. How many rows are in mpg? How many columns?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-does-the-drv-variable-describe-read-the-help-for-mpg-to-find-out."><i class="fa fa-check"></i>3. What does the drv variable describe? Read the help for ?mpg to find out.</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#make-a-scatterplot-of-hwy-vs-cyl."><i class="fa fa-check"></i>4. Make a scatterplot of hwy vs cyl.</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-happens-if-you-make-a-scatterplot-of-class-vs-drv-why-is-the-plot-not-useful"><i class="fa fa-check"></i>5. What happens if you make a scatterplot of class vs drv? Why is the plot not useful?</a></li>
+</ul></li>
+<li><a href="chapter-3.html#notes---aesthetic-mappings"><strong>3.3</strong> Notes - Aesthetic Mappings</a></li>
+<li><a href="chapter-3.html#exercises-1"><strong>3.3.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#whats-gone-wrong-with-this-code-why-are-the-points-not-blue"><i class="fa fa-check"></i>1. What’s gone wrong with this code? Why are the points not blue?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#which-variables-in-mpg-are-categorical-which-variables-are-continuous-hint-type-mpg-to-read-the-documentation-for-the-dataset.-how-can-you-see-this-information-when-you-run-mpg"><i class="fa fa-check"></i>2. Which variables in mpg are categorical? Which variables are continuous? (Hint: type ?mpg to read the documentation for the dataset). How can you see this information when you run mpg?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#map-a-continuous-variable-to-color-size-and-shape.-how-do-these-aesthetics-behave-differently-for-categorical-vs.continuous-variables"><i class="fa fa-check"></i>3. Map a continuous variable to color, size, and shape. How do these aesthetics behave differently for categorical vs. continuous variables?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-happens-if-you-map-the-same-variable-to-multiple-aesthetics"><i class="fa fa-check"></i>4. What happens if you map the same variable to multiple aesthetics?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-does-the-stroke-aesthetic-do-what-shapes-does-it-work-with-hint-use-geom_point"><i class="fa fa-check"></i>5. What does the stroke aesthetic do? What shapes does it work with? (Hint: use ?geom_point)</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-happens-if-you-map-an-aesthetic-to-something-other-than-a-variable-name-like-aescolour-displ-5"><i class="fa fa-check"></i>6. What happens if you map an aesthetic to something other than a variable name, like aes(colour = displ &lt; 5)?</a></li>
+</ul></li>
+<li><a href="chapter-3.html#notes---facets"><strong>3.5</strong> Notes - Facets</a></li>
+<li><a href="chapter-3.html#exercises-2"><strong>3.5.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-happens-if-you-facet-on-a-continuous-variable"><i class="fa fa-check"></i>1. What happens if you facet on a continuous variable?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-do-the-empty-cells-in-plot-with-facet_griddrv-cyl-mean-how-do-they-relate-to-this-plot"><i class="fa fa-check"></i>2. What do the empty cells in plot with facet_grid(drv ~ cyl) mean? How do they relate to this plot?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-plots-does-the-following-code-make-what-does-.-do"><i class="fa fa-check"></i>3. What plots does the following code make? What does . do?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#take-the-first-faceted-plot-in-this-section"><i class="fa fa-check"></i>4. Take the first faceted plot in this section:</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#read-facet_wrap.-what-does-nrow-do-what-does-ncol-do-what-other-options-control-the-layout-of-the-individual-panels-why-doesnt-facet_grid-have-nrow-and-ncol-argument"><i class="fa fa-check"></i>5. Read ?facet_wrap. What does nrow do? What does ncol do? What other options control the layout of the individual panels? Why doesn’t facet_grid() have nrow and ncol argument?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#when-using-facet_grid-you-should-usually-put-the-variable-with-more-unique-levels-in-the-columns.-why"><i class="fa fa-check"></i>6. When using facet_grid() you should usually put the variable with more unique levels in the columns. Why?</a></li>
+</ul></li>
+<li><a href="chapter-3.html#notes---geometric-objects"><strong>3.6</strong> Notes - Geometric objects</a></li>
+<li><a href="chapter-3.html#exercises-3"><strong>3.6.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-geom-would-you-use-to-draw-a-line-chart-a-boxplot-a-histogram-an-area-chart"><i class="fa fa-check"></i>1. What geom would you use to draw a line chart? A boxplot? A histogram? An area chart?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#run-this-code-in-your-head-and-predict-what-the-output-will-look-like.-then-run-the-code-in-r-and-check-your-predictions."><i class="fa fa-check"></i>2. Run this code in your head and predict what the output will look like. Then, run the code in R and check your predictions.</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-does-show.legend-false-do-what-happens-if-you-remove-it-why-do-you-think-i-used-it-earlier-in-the-chapter"><i class="fa fa-check"></i>3. What does show.legend = FALSE do? What happens if you remove it? Why do you think I used it earlier in the chapter?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-does-the-se-argument-to-geom_smooth-do"><i class="fa fa-check"></i>4. What does the se argument to geom_smooth() do?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#will-these-two-graphs-look-different-whywhy-not"><i class="fa fa-check"></i>5. Will these two graphs look different? Why/why not?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#recreate-the-r-code-necessary-to-generate-the-following-graphs."><i class="fa fa-check"></i>6. Recreate the R code necessary to generate the following graphs.</a></li>
+</ul></li>
+<li><a href="chapter-3.html#notes---statistical-transformations"><strong>3.7</strong> Notes - Statistical Transformations</a></li>
+<li><a href="chapter-3.html#exercises-4"><strong>3.7.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-is-the-default-geom-associated-with-stat_summary-how-could-you-rewrite-the-previous-plot-to-use-that-geom-function-instead-of-the-stat-function"><i class="fa fa-check"></i>1. What is the default geom associated with stat_summary()? How could you rewrite the previous plot to use that geom function instead of the stat function?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-does-geom_col-do-how-is-it-different-to-geom_bar"><i class="fa fa-check"></i>2. What does geom_col() do? How is it different to geom_bar()?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#most-geoms-and-stats-come-in-pairs-that-are-almost-always-used-in-concert.-read-through-the-documentation-and-make-a-list-of-all-the-pairs.-what-do-they-have-in-common"><i class="fa fa-check"></i>3. Most geoms and stats come in pairs that are almost always used in concert. Read through the documentation and make a list of all the pairs. What do they have in common?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-variables-does-stat_smooth-compute-what-parameters-control-its-behaviour"><i class="fa fa-check"></i>4. What variables does stat_smooth() compute? What parameters control its behaviour?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#in-our-proportion-bar-chart-we-need-to-set-group-1.-why-in-other-words-what-is-the-problem-with-these-two-graphs"><i class="fa fa-check"></i>5. In our proportion bar chart, we need to set group = 1. Why? In other words what is the problem with these two graphs?</a></li>
+</ul></li>
+<li><a href="chapter-3.html#notes---position-adjustments"><strong>3.8</strong> Notes - Position Adjustments</a></li>
+<li><a href="chapter-3.html#exercises-5"><strong>3.8.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-is-the-problem-with-this-plot-how-could-you-improve-it"><i class="fa fa-check"></i>1. What is the problem with this plot? How could you improve it?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-parameters-to-geom_jitter-control-the-amount-of-jittering"><i class="fa fa-check"></i>2. What parameters to geom_jitter() control the amount of jittering?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#compare-and-contrast-geom_jitter-with-geom_count."><i class="fa fa-check"></i>3. Compare and contrast geom_jitter() with geom_count().</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#whats-the-default-position-adjustment-for-geom_boxplot-create-a-visualisation-of-the-mpg-dataset-that-demonstrates-it."><i class="fa fa-check"></i>4. What’s the default position adjustment for geom_boxplot()? Create a visualisation of the mpg dataset that demonstrates it.</a></li>
+</ul></li>
+<li><a href="chapter-3.html#notes---coordinate-systems"><strong>3.9</strong> Notes - Coordinate Systems</a></li>
+<li><a href="chapter-3.html#exercises-6"><strong>3.9.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#turn-a-stacked-bar-chart-into-a-pie-chart-using-coord_polar."><i class="fa fa-check"></i>1. Turn a stacked bar chart into a pie chart using coord_polar().</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-does-labs-do-read-the-documentation."><i class="fa fa-check"></i>2. What does labs() do? Read the documentation.</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#whats-the-difference-between-coord_quickmap-and-coord_map"><i class="fa fa-check"></i>3. What’s the difference between coord_quickmap() and coord_map()?</a></li>
+<li class="chapter" data-level="" data-path="chapter-3.html"><a href="chapter-3.html#what-does-the-plot-below-tell-you-about-the-relationship-between-city-and-highway-mpg-why-is-coord_fixed-important-what-does-geom_abline-do"><i class="fa fa-check"></i>4. What does the plot below tell you about the relationship between city and highway mpg? Why is coord_fixed() important? What does geom_abline() do?</a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>II Data Transformation</b></span></li>
+<li><a href="chapter-4.html#chapter-4"><strong>Chapter 4</strong></a><ul>
+<li><a href="chapter-4.html#practice"><strong>4.4</strong> Practice</a><ul>
+<li class="chapter" data-level="" data-path="chapter-4.html"><a href="chapter-4.html"><i class="fa fa-check"></i>1. Why does this code not work?</a></li>
+<li class="chapter" data-level="" data-path="chapter-4.html"><a href="chapter-4.html#tweak-each-of-the-following-r-commands-so-that-they-run-correctly"><i class="fa fa-check"></i>2. Tweak each of the following R commands so that they run correctly:</a></li>
+<li class="chapter" data-level="" data-path="chapter-4.html"><a href="chapter-4.html#press-alt-shift-k.-what-happens-how-can-you-get-to-the-same-place-using-the-menus"><i class="fa fa-check"></i>3. Press Alt + Shift + K. What happens? How can you get to the same place using the menus?</a></li>
+</ul></li>
+</ul></li>
+<li><a href="chapter-5.html#chapter-5"><strong>Chapter 5</strong></a><ul>
+<li><a href="chapter-5.html#notes---filter-rows-with-filter"><strong>5.2</strong> Notes - Filter rows with filter()</a><ul>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html"><i class="fa fa-check"></i>5.2.1 Comparisons</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#logical-operators"><i class="fa fa-check"></i>5.2.2 Logical Operators</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#missing-values"><i class="fa fa-check"></i>5.2.3 Missing values</a></li>
+</ul></li>
+<li><a href="chapter-5.html#exercises-7"><strong>5.2.4</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#find-all-flights-that"><i class="fa fa-check"></i>1. Find all flights that</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#how-many-flights-have-a-missing-dep_time-what-other-variables-are-missing-what-might-these-rows-represent"><i class="fa fa-check"></i>2. How many flights have a missing dep_time? What other variables are missing? What might these rows represent?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#why-is-na-0-not-missing-why-is-na-true-not-missing-why-is-false-na-not-missing-can-you-figure-out-the-general-rule-na-0-is-a-tricky-counterexample"><i class="fa fa-check"></i>3. Why is NA ^ 0 not missing? Why is NA | TRUE not missing? Why is FALSE &amp; NA not missing? Can you figure out the general rule? (NA * 0 is a tricky counterexample!)</a></li>
+</ul></li>
+<li><a href="chapter-5.html#notes---arrange-rows-with-arrange"><strong>5.3</strong> Notes - Arrange rows with arrange()</a></li>
+<li><a href="chapter-5.html#exercises-8"><strong>5.3.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#how-could-you-use-arrange-to-sort-all-missing-values-to-the-start-hint-use-is.na."><i class="fa fa-check"></i>1. How could you use arrange() to sort all missing values to the start? (Hint: use is.na()).</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#sort-flights-to-find-the-most-delayed-flights.-find-the-flights-that-left-earliest."><i class="fa fa-check"></i>2. Sort flights to find the most delayed flights. Find the flights that left earliest.</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#sort-flights-to-find-the-fastest-flights."><i class="fa fa-check"></i>3. Sort flights to find the fastest flights.</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#which-flights-travelled-the-longest-which-travelled-the-shortest"><i class="fa fa-check"></i>4. Which flights travelled the longest? Which travelled the shortest?</a></li>
+</ul></li>
+<li><a href="chapter-5.html#notes---select-columns-with-select"><strong>5.4</strong> Notes - Select columns with select()</a></li>
+<li><a href="chapter-5.html#exercises-9"><strong>5.4.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#brainstorm-as-many-ways-as-possible-to-select-dep_time-dep_delay-arr_time-and-arr_delay-from-flights."><i class="fa fa-check"></i>1. Brainstorm as many ways as possible to select dep_time, dep_delay, arr_time, and arr_delay from flights.</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#what-happens-if-you-include-the-name-of-a-variable-multiple-times-in-a-select-call"><i class="fa fa-check"></i>2. What happens if you include the name of a variable multiple times in a select() call?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#what-does-the-one_of-function-do-why-might-it-be-helpful-in-conjunction-with-this-vector"><i class="fa fa-check"></i>3. What does the one_of() function do? Why might it be helpful in conjunction with this vector?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#does-the-result-of-running-the-following-code-surprise-you-how-do-the-select-helpers-deal-with-case-by-default-how-can-you-change-that-default"><i class="fa fa-check"></i>4. Does the result of running the following code surprise you? How do the select helpers deal with case by default? How can you change that default?</a></li>
+</ul></li>
+<li><a href="chapter-5.html#notes---add-new-variables-with-mutate"><strong>5.5</strong> Notes - Add new variables with mutate()</a></li>
+<li><a href="chapter-5.html#exercises-10"><strong>5.5.2</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#currently-dep_time-and-sched_dep_time-are-convenient-to-look-at-but-hard-to-compute-with-because-theyre-not-really-continuous-numbers.-convert-them-to-a-more-convenient-representation-of-number-of-minutes-since-midnight."><i class="fa fa-check"></i>1. Currently dep_time and sched_dep_time are convenient to look at, but hard to compute with because they’re not really continuous numbers. Convert them to a more convenient representation of number of minutes since midnight.</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#compare-air_time-with-arr_time---dep_time.-what-do-you-expect-to-see-what-do-you-see-what-do-you-need-to-do-to-fix-it"><i class="fa fa-check"></i>2. Compare air_time with arr_time - dep_time. What do you expect to see? What do you see? What do you need to do to fix it?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#compare-dep_time-sched_dep_time-and-dep_delay.-how-would-you-expect-those-three-numbers-to-be-related"><i class="fa fa-check"></i>3. Compare dep_time, sched_dep_time, and dep_delay. How would you expect those three numbers to be related?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#find-the-10-most-delayed-flights-using-a-ranking-function.-how-do-you-want-to-handle-ties-carefully-read-the-documentation-for-min_rank."><i class="fa fa-check"></i>4. Find the 10 most delayed flights using a ranking function. How do you want to handle ties? Carefully read the documentation for min_rank().</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#what-does-13-110-return-why"><i class="fa fa-check"></i>5. What does 1:3 + 1:10 return? Why?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#what-trigonometric-functions-does-r-provide"><i class="fa fa-check"></i>6. What trigonometric functions does R provide?</a></li>
+</ul></li>
+<li><a href="chapter-5.html#notes---grouped-summaries-with-summarise"><strong>5.6</strong> Notes - Grouped summaries with summarise()</a><ul>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#combining-multiple-operations-with-the-pipe"><i class="fa fa-check"></i>5.6.1 Combining multiple operations with the pipe</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#missing-values-1"><i class="fa fa-check"></i>5.6.2 Missing values</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#counts"><i class="fa fa-check"></i>5.6.3 Counts</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#useful-summary-functions"><i class="fa fa-check"></i>5.6.4 Useful summary functions</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#grouping-by-multiple-variables"><i class="fa fa-check"></i>5.6.5 Grouping by multiple variables</a></li>
+</ul></li>
+<li><a href="chapter-5.html#exercises-11"><strong>5.6.7</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#brainstorm-at-least-5-different-ways-to-assess-the-typical-delay-characteristics-of-a-group-of-flights.-consider-the-following-scenarios"><i class="fa fa-check"></i>1. Brainstorm at least 5 different ways to assess the typical delay characteristics of a group of flights. Consider the following scenarios:</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#come-up-with-another-approach-that-will-give-you-the-same-output-as-not_cancelled-countdest-and-not_cancelled-counttailnum-wt-distance-without-using-count."><i class="fa fa-check"></i>2. Come up with another approach that will give you the same output as not_cancelled %&gt;% count(dest) and not_cancelled %&gt;% count(tailnum, wt = distance) (without using count()).</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#our-definition-of-cancelled-flights-is.nadep_delay-is.naarr_delay-is-slightly-suboptimal.-why-which-is-the-most-important-column"><i class="fa fa-check"></i>3. Our definition of cancelled flights (is.na(dep_delay) | is.na(arr_delay) ) is slightly suboptimal. Why? Which is the most important column?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#look-at-the-number-of-cancelled-flights-per-day.-is-there-a-pattern-is-the-proportion-of-cancelled-flights-related-to-the-average-delay"><i class="fa fa-check"></i>4. Look at the number of cancelled flights per day. Is there a pattern? Is the proportion of cancelled flights related to the average delay?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#which-carrier-has-the-worst-delays-challenge-can-you-disentangle-the-effects-of-bad-airports-vs.bad-carriers-whywhy-not-hint-think-about-flights-group_bycarrier-dest-summarisen"><i class="fa fa-check"></i>5. Which carrier has the worst delays? Challenge: can you disentangle the effects of bad airports vs. bad carriers? Why/why not? (Hint: think about flights %&gt;% group_by(carrier, dest) %&gt;% summarise(n()))</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#what-does-the-sort-argument-to-count-do.-when-might-you-use-it"><i class="fa fa-check"></i>6. What does the sort argument to count() do. When might you use it?</a></li>
+</ul></li>
+<li><a href="chapter-5.html#notes---grouped-mutates-and-filters"><strong>5.7</strong> Notes - Grouped mutates (and filters)</a></li>
+<li><a href="chapter-5.html#exercises-12"><strong>5.7.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#refer-back-to-the-lists-of-useful-mutate-and-filtering-functions.-describe-how-each-operation-changes-when-you-combine-it-with-grouping."><i class="fa fa-check"></i>1. Refer back to the lists of useful mutate and filtering functions. Describe how each operation changes when you combine it with grouping.</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#which-plane-tailnum-has-the-worst-on-time-record"><i class="fa fa-check"></i>2. Which plane (tailnum) has the worst on-time record?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#what-time-of-day-should-you-fly-if-you-want-to-avoid-delays-as-much-as-possible"><i class="fa fa-check"></i>3. What time of day should you fly if you want to avoid delays as much as possible?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#for-each-destination-compute-the-total-minutes-of-delay.-for-each-flight-compute-the-proportion-of-the-total-delay-for-its-destination."><i class="fa fa-check"></i>4. For each destination, compute the total minutes of delay. For each, flight, compute the proportion of the total delay for its destination.</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#delays-are-typically-temporally-correlated-even-once-the-problem-that-caused-the-initial-delay-has-been-resolved-later-flights-are-delayed-to-allow-earlier-flights-to-leave.-using-lag-explore-how-the-delay-of-a-flight-is-related-to-the-delay-of-the-immediately-preceding-flight."><i class="fa fa-check"></i>5. Delays are typically temporally correlated: even once the problem that caused the initial delay has been resolved, later flights are delayed to allow earlier flights to leave. Using lag() explore how the delay of a flight is related to the delay of the immediately preceding flight.</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#look-at-each-destination.-can-you-find-flights-that-are-suspiciously-fast-i.e.flights-that-represent-a-potential-data-entry-error.-compute-the-air-time-a-flight-relative-to-the-shortest-flight-to-that-destination.-which-flights-were-most-delayed-in-the-air"><i class="fa fa-check"></i>6. Look at each destination. Can you find flights that are suspiciously fast? (i.e. flights that represent a potential data entry error). Compute the air time a flight relative to the shortest flight to that destination. Which flights were most delayed in the air?</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#find-all-destinations-that-are-flown-by-at-least-two-carriers.-use-that-information-to-rank-the-carriers."><i class="fa fa-check"></i>7. Find all destinations that are flown by at least two carriers. Use that information to rank the carriers.</a></li>
+<li class="chapter" data-level="" data-path="chapter-5.html"><a href="chapter-5.html#for-each-plane-count-the-number-of-flights-before-the-first-delay-of-greater-than-1-hour."><i class="fa fa-check"></i>8. For each plane, count the number of flights before the first delay of greater than 1 hour.</a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>III Exploratory Data Analysis</b></span></li>
+<li><a href="chapter-7.html#chapter-7"><strong>Chapter 7</strong></a><ul>
+<li><a href="chapter-7.html#notes---visualizing-distributions"><strong>7.3.1</strong> Notes - Visualizing distributions</a></li>
+<li><a href="chapter-7.html#exercises-13"><strong>7.3.4</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html"><i class="fa fa-check"></i>1. Explore the distribution of each of the x, y, and z variables in diamonds. What do you learn? Think about a diamond and how you might decide which dimension is the length, width, and depth.</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#explore-the-distribution-of-price.-do-you-discover-anything-unusual-or-surprising-hint-carefully-think-about-the-binwidth-and-make-sure-you-try-a-wide-range-of-values."><i class="fa fa-check"></i>2. Explore the distribution of price. Do you discover anything unusual or surprising? (Hint: Carefully think about the binwidth and make sure you try a wide range of values.)</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#how-many-diamonds-are-0.99-carat-how-many-are-1-carat-what-do-you-think-is-the-cause-of-the-difference"><i class="fa fa-check"></i>3. How many diamonds are 0.99 carat? How many are 1 carat? What do you think is the cause of the difference?</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#compare-and-contrast-coord_cartesian-vs-xlim-or-ylim-when-zooming-in-on-a-histogram.-what-happens-if-you-leave-binwidth-unset-what-happens-if-you-try-and-zoom-so-only-half-a-bar-shows"><i class="fa fa-check"></i>4. Compare and contrast coord_cartesian() vs xlim() or ylim() when zooming in on a histogram. What happens if you leave binwidth unset? What happens if you try and zoom so only half a bar shows?</a></li>
+</ul></li>
+<li><a href="chapter-7.html#notes---missing-values"><strong>7.4</strong> Notes - Missing Values</a></li>
+<li><a href="chapter-7.html#exercises-14"><strong>7.4.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#what-happens-to-missing-values-in-a-histogram-what-happens-to-missing-values-in-a-bar-chart-why-is-there-a-difference"><i class="fa fa-check"></i>1. What happens to missing values in a histogram? What happens to missing values in a bar chart? Why is there a difference?</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#what-does-na.rm-true-do-in-mean-and-sum"><i class="fa fa-check"></i>2. What does na.rm = TRUE do in mean() and sum()?</a></li>
+</ul></li>
+<li><a href="chapter-7.html#notes---covariation"><strong>7.5</strong> Notes - Covariation</a></li>
+<li><a href="chapter-7.html#notes---a-categorical-and-continuous-variable"><strong>7.5.1</strong> Notes - A categorical and continuous variable</a></li>
+<li><a href="chapter-7.html#exercises-15"><strong>7.5.1.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#use-what-youve-learned-to-improve-the-visualisation-of-the-departure-times-of-cancelled-vs.non-cancelled-flights."><i class="fa fa-check"></i>1. Use what you’ve learned to improve the visualisation of the departure times of cancelled vs. non-cancelled flights.</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#what-variable-in-the-diamonds-dataset-is-most-important-for-predicting-the-price-of-a-diamond-how-is-that-variable-correlated-with-cut-why-does-the-combination-of-those-two-relationships-lead-to-lower-quality-diamonds-being-more-expensive"><i class="fa fa-check"></i>2. What variable in the diamonds dataset is most important for predicting the price of a diamond? How is that variable correlated with cut? Why does the combination of those two relationships lead to lower quality diamonds being more expensive?</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#install-the-ggstance-package-and-create-a-horizontal-boxplot.-how-does-this-compare-to-using-coord_flip"><i class="fa fa-check"></i>3. Install the ggstance package, and create a horizontal boxplot. How does this compare to using coord_flip()?</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#one-problem-with-boxplots-is-that-they-were-developed-in-an-era-of-much-smaller-datasets-and-tend-to-display-a-prohibitively-large-number-of-outlying-values.-one-approach-to-remedy-this-problem-is-the-letter-value-plot.-install-the-lvplot-package-and-try-using-geom_lv-to-display-the-distribution-of-price-vs-cut.-what-do-you-learn-how-do-you-interpret-the-plots"><i class="fa fa-check"></i>4. One problem with boxplots is that they were developed in an era of much smaller datasets and tend to display a prohibitively large number of “outlying values”. One approach to remedy this problem is the letter value plot. Install the lvplot package, and try using geom_lv() to display the distribution of price vs cut. What do you learn? How do you interpret the plots?</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#compare-and-contrast-geom_violin-with-a-facetted-geom_histogram-or-a-coloured-geom_freqpoly.-what-are-the-pros-and-cons-of-each-method"><i class="fa fa-check"></i>5. Compare and contrast geom_violin() with a facetted geom_histogram(), or a coloured geom_freqpoly(). What are the pros and cons of each method?</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#if-you-have-a-small-dataset-its-sometimes-useful-to-use-geom_jitter-to-see-the-relationship-between-a-continuous-and-categorical-variable.-the-ggbeeswarm-package-provides-a-number-of-methods-similar-to-geom_jitter.-list-them-and-briefly-describe-what-each-one-does."><i class="fa fa-check"></i>6. If you have a small dataset, it’s sometimes useful to use geom_jitter() to see the relationship between a continuous and categorical variable. The ggbeeswarm package provides a number of methods similar to geom_jitter(). List them and briefly describe what each one does.</a></li>
+</ul></li>
+<li><a href="chapter-7.html#notes---two-categorical-variables"><strong>7.5.2</strong> Notes - Two categorical variables</a></li>
+<li><a href="chapter-7.html#exercises-16"><strong>7.5.2.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#how-could-you-rescale-the-count-dataset-above-to-more-clearly-show-the-distribution-of-cut-within-colour-or-colour-within-cut"><i class="fa fa-check"></i>1. How could you rescale the count dataset above to more clearly show the distribution of cut within colour, or colour within cut?</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#use-geom_tile-together-with-dplyr-to-explore-how-average-flight-delays-vary-by-destination-and-month-of-year.-what-makes-the-plot-difficult-to-read-how-could-you-improve-it"><i class="fa fa-check"></i>2. Use geom_tile() together with dplyr to explore how average flight delays vary by destination and month of year. What makes the plot difficult to read? How could you improve it?</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#why-is-it-slightly-better-to-use-aesx-color-y-cut-rather-than-aesx-cut-y-color-in-the-example-above"><i class="fa fa-check"></i>3. Why is it slightly better to use aes(x = color, y = cut) rather than aes(x = cut, y = color) in the example above?</a></li>
+</ul></li>
+<li><a href="chapter-7.html#notes---two-continuous-variables"><strong>7.5.3</strong> Notes - Two continuous variables</a></li>
+<li><a href="chapter-7.html#exercises-17"><strong>7.5.3.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#instead-of-summarising-the-conditional-distribution-with-a-boxplot-you-could-use-a-frequency-polygon.-what-do-you-need-to-consider-when-using-cut_width-vs-cut_number-how-does-that-impact-a-visualisation-of-the-2d-distribution-of-carat-and-price"><i class="fa fa-check"></i>1. Instead of summarising the conditional distribution with a boxplot, you could use a frequency polygon. What do you need to consider when using cut_width() vs cut_number()? How does that impact a visualisation of the 2d distribution of carat and price?</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#visualise-the-distribution-of-carat-partitioned-by-price."><i class="fa fa-check"></i>2. Visualise the distribution of carat, partitioned by price.</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#how-does-the-price-distribution-of-very-large-diamonds-compare-to-small-diamonds.-is-it-as-you-expect-or-does-it-surprise-you"><i class="fa fa-check"></i>3. How does the price distribution of very large diamonds compare to small diamonds. Is it as you expect, or does it surprise you?</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#combine-two-of-the-techniques-youve-learned-to-visualise-the-combined-distribution-of-cut-carat-and-price."><i class="fa fa-check"></i>4. Combine two of the techniques you’ve learned to visualise the combined distribution of cut, carat, and price.</a></li>
+<li class="chapter" data-level="" data-path="chapter-7.html"><a href="chapter-7.html#two-dimensional-plots-reveal-outliers-that-are-not-visible-in-one-dimensional-plots.-for-example-some-points-in-the-plot-below-have-an-unusual-combination-of-x-and-y-values-which-makes-the-points-outliers-even-though-their-x-and-y-values-appear-normal-when-examined-separately.-why-is-a-scatterplot-a-better-display-than-a-binned-plot-for-this-case"><i class="fa fa-check"></i>5. Two dimensional plots reveal outliers that are not visible in one dimensional plots. For example, some points in the plot below have an unusual combination of x and y values, which makes the points outliers even though their x and y values appear normal when examined separately. Why is a scatterplot a better display than a binned plot for this case?</a></li>
+</ul></li>
+<li><a href="chapter-7.html#notes---patterns-and-models"><strong>7.6</strong> Notes - Patterns and models</a></li>
+</ul></li>
+<li><a href="chapter-8.html#chapter-8"><strong>Chapter 8</strong></a><ul>
+<li class="chapter" data-level="" data-path="chapter-8.html"><a href="chapter-8.html"><i class="fa fa-check"></i>Notes - Project Workflows</a></li>
+</ul></li>
+<li class="part"><span><b>IV Data Wrangling</b></span></li>
+<li><a href="chapter-10-tibbles.html#chapter-10-tibbles"><strong>Chapter 10</strong> Tibbles</a><ul>
+<li class="chapter" data-level="" data-path="chapter-10-tibbles.html"><a href="chapter-10-tibbles.html"><i class="fa fa-check"></i>Notes - Creating Tibbles</a></li>
+<li><a href="chapter-10-tibbles.html#exercises-18"><strong>10.5</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-10-tibbles.html"><a href="chapter-10-tibbles.html#how-can-you-tell-if-an-object-is-a-tibble-hint-try-printing-mtcars-which-is-a-regular-data-frame."><i class="fa fa-check"></i>1. How can you tell if an object is a tibble? (Hint: try printing mtcars, which is a regular data frame).</a></li>
+<li class="chapter" data-level="" data-path="chapter-10-tibbles.html"><a href="chapter-10-tibbles.html#compare-and-contrast-the-following-operations-on-a-data.frame-and-equivalent-tibble.-what-is-different-why-might-the-default-data-frame-behaviours-cause-you-frustration"><i class="fa fa-check"></i>2. Compare and contrast the following operations on a data.frame and equivalent tibble. What is different? Why might the default data frame behaviours cause you frustration?</a></li>
+<li class="chapter" data-level="" data-path="chapter-10-tibbles.html"><a href="chapter-10-tibbles.html#if-you-have-the-name-of-a-variable-stored-in-an-object-e.g.var---mpg-how-can-you-extract-the-reference-variable-from-a-tibble"><i class="fa fa-check"></i>3. If you have the name of a variable stored in an object, e.g. var &lt;- “mpg”, how can you extract the reference variable from a tibble?</a></li>
+<li class="chapter" data-level="" data-path="chapter-10-tibbles.html"><a href="chapter-10-tibbles.html#practice-referring-to-non-syntactic-names-in-the-following-data-frame-by"><i class="fa fa-check"></i>4. Practice referring to non-syntactic names in the following data frame by:</a></li>
+<li class="chapter" data-level="" data-path="chapter-10-tibbles.html"><a href="chapter-10-tibbles.html#what-does-tibbleenframe-do-when-might-you-use-it"><i class="fa fa-check"></i>5. What does tibble::enframe() do? When might you use it?</a></li>
+<li class="chapter" data-level="" data-path="chapter-10-tibbles.html"><a href="chapter-10-tibbles.html#what-option-controls-how-many-additional-column-names-are-printed-at-the-footer-of-a-tibble"><i class="fa fa-check"></i>6. What option controls how many additional column names are printed at the footer of a tibble?</a></li>
+</ul></li>
+</ul></li>
+<li><a href="chapter-11-data-import.html#chapter-11-data-import"><strong>Chapter 11</strong> Data Import</a><ul>
+<li><a href="chapter-11-data-import.html#notes---reading-in-files"><strong>11.2</strong> Notes - Reading in files</a></li>
+<li><a href="chapter-11-data-import.html#exercises-19"><strong>11.2.2</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-11-data-import.html"><a href="chapter-11-data-import.html"><i class="fa fa-check"></i>1. What function would you use to read a file where fields were separated with “|”?</a></li>
+<li class="chapter" data-level="" data-path="chapter-11-data-import.html"><a href="chapter-11-data-import.html#apart-from-file-skip-and-comment-what-other-arguments-do-read_csv-and-read_tsv-have-in-common"><i class="fa fa-check"></i>2. Apart from file, skip, and comment, what other arguments do read_csv() and read_tsv() have in common?</a></li>
+<li class="chapter" data-level="" data-path="chapter-11-data-import.html"><a href="chapter-11-data-import.html#what-are-the-most-important-arguments-to-read_fwf"><i class="fa fa-check"></i>3. What are the most important arguments to read_fwf()?</a></li>
+<li class="chapter" data-level="0.0.1" data-path="chapter-11-data-import.html"><a href="chapter-11-data-import.html#sometimes-strings-in-a-csv-file-contain-commas.-to-prevent-them-from-causing-problems-they-need-to-be-surrounded-by-a-quoting-character-like-or-.-by-convention-read_csv-assumes-that-the-quoting-character-will-be-and-if-you-want-to-change-it-youll-need-to-use-read_delim-instead.-what-arguments-do-you-need-to-specify-to-read-the-following-text-into-a-data-frame--"><i class="fa fa-check"></i><b>0.0.1</b> 4. Sometimes strings in a CSV file contain commas. To prevent them from causing problems they need to be surrounded by a quoting character, like &quot; or ’. By convention, read_csv() assumes that the quoting character will be “, and if you want to change it you’ll need to use read_delim() instead. What arguments do you need to specify to read the following text into a data frame? {-}</a></li>
+<li class="chapter" data-level="" data-path="chapter-11-data-import.html"><a href="chapter-11-data-import.html#identify-what-is-wrong-with-each-of-the-following-inline-csv-files.-what-happens-when-you-run-the-code"><i class="fa fa-check"></i>5. Identify what is wrong with each of the following inline CSV files. What happens when you run the code?</a></li>
+</ul></li>
+<li><a href="chapter-11-data-import.html#notes---parsing-a-vector"><strong>11.3</strong> Notes - Parsing a vector</a><ul>
+<li class="chapter" data-level="" data-path="chapter-11-data-import.html"><a href="chapter-11-data-import.html#parsing-numbers"><i class="fa fa-check"></i>11.3.1 Parsing Numbers</a></li>
+<li class="chapter" data-level="" data-path="chapter-11-data-import.html"><a href="chapter-11-data-import.html#parsing-strings"><i class="fa fa-check"></i>11.3.2 Parsing Strings</a></li>
+<li class="chapter" data-level="" data-path="chapter-11-data-import.html"><a href="chapter-11-data-import.html#parsing-factors"><i class="fa fa-check"></i>11.3.3 Parsing Factors</a></li>
+<li class="chapter" data-level="" data-path="chapter-11-data-import.html"><a href="chapter-11-data-import.html#parsing-dates-date-times-and-times"><i class="fa fa-check"></i>11.3.4 Parsing Dates, Date-times, and Times</a></li>
+</ul></li>
+<li><a href="chapter-11-data-import.html#exercises-20"><strong>11.3.5</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-11-data-import.html"><a href="chapter-11-data-import.html#what-are-the-most-important-arguments-to-locale"><i class="fa fa-check"></i>1. What are the most important arguments to locale()?</a></li>
+<li class="chapter" data-level="" data-path="chapter-11-data-import.html"><a href="chapter-11-data-import.html#what-happens-if-you-try-and-set-decimal_mark-and-grouping_mark-to-the-same-character-what-happens-to-the-default-value-of-grouping_mark-when-you-set-decimal_mark-to-what-happens-to-the-default-value-of-decimal_mark-when-you-set-the-grouping_mark-to-."><i class="fa fa-check"></i>2. What happens if you try and set decimal_mark and grouping_mark to the same character? What happens to the default value of grouping_mark when you set decimal_mark to “,”? What happens to the default value of decimal_mark when you set the grouping_mark to “.”?</a></li>
+<li class="chapter" data-level="" data-path="chapter-11-data-import.html"><a href="chapter-11-data-import.html#i-didnt-discuss-the-date_format-and-time_format-options-to-locale.-what-do-they-do-construct-an-example-that-shows-when-they-might-be-useful."><i class="fa fa-check"></i>3. I didn’t discuss the date_format and time_format options to locale(). What do they do? Construct an example that shows when they might be useful.</a></li>
+<li class="chapter" data-level="" data-path="chapter-11-data-import.html"><a href="chapter-11-data-import.html#if-you-live-outside-the-us-create-a-new-locale-object-that-encapsulates-the-settings-for-the-types-of-file-you-read-most-commonly."><i class="fa fa-check"></i>4. If you live outside the US, create a new locale object that encapsulates the settings for the types of file you read most commonly.</a></li>
+<li class="chapter" data-level="" data-path="chapter-11-data-import.html"><a href="chapter-11-data-import.html#whats-the-difference-between-read_csv-and-read_csv2"><i class="fa fa-check"></i>5. What’s the difference between read_csv() and read_csv2()?</a></li>
+<li class="chapter" data-level="" data-path="chapter-11-data-import.html"><a href="chapter-11-data-import.html#what-are-the-most-common-encodings-used-in-europe-what-are-the-most-common-encodings-used-in-asia-do-some-googling-to-find-out."><i class="fa fa-check"></i>6. What are the most common encodings used in Europe? What are the most common encodings used in Asia? Do some googling to find out.</a></li>
+<li class="chapter" data-level="" data-path="chapter-11-data-import.html"><a href="chapter-11-data-import.html#generate-the-correct-format-string-to-parse-each-of-the-following-dates-and-times"><i class="fa fa-check"></i>7. Generate the correct format string to parse each of the following dates and times:</a></li>
+</ul></li>
+<li><a href="chapter-11-data-import.html#notes---parsing-a-file"><strong>11.4</strong> Notes - Parsing a file</a></li>
+<li><a href="chapter-11-data-import.html#notes---writing-to-a-file"><strong>11.5</strong> Notes - Writing to a file</a></li>
+</ul></li>
+<li><a href="chapter-12-tidy-data.html#chapter-12-tidy-data"><strong>Chapter 12</strong> Tidy Data</a><ul>
+<li><a href="chapter-12-tidy-data.html#exercises-21"><strong>12.2.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html"><i class="fa fa-check"></i>1. Using prose, describe how the variables and observations are organised in each of the sample tables.</a></li>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html#compute-the-rate-for-table2-and-table4a-table4b.-you-will-need-to-perform-four-operations"><i class="fa fa-check"></i>2. Compute the rate for table2, and table4a + table4b. You will need to perform four operations:</a></li>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html#recreate-the-plot-showing-change-in-cases-over-time-using-table2-instead-of-table1.-what-do-you-need-to-do-first"><i class="fa fa-check"></i>3. Recreate the plot showing change in cases over time using table2 instead of table1. What do you need to do first?</a></li>
+</ul></li>
+<li><a href="chapter-12-tidy-data.html#notes---spreading-and-gathering"><strong>12.3.1</strong> Notes - Spreading and Gathering</a></li>
+<li><a href="chapter-12-tidy-data.html#exercises-22"><strong>12.3.3</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html#why-are-gather-and-spread-not-perfectly-symmetrical-carefully-consider-the-following-example"><i class="fa fa-check"></i>1. Why are gather() and spread() not perfectly symmetrical? Carefully consider the following example:</a></li>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html#why-does-this-code-fail"><i class="fa fa-check"></i>2. Why does this code fail?</a></li>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html#why-does-spreading-this-tibble-fail-how-could-you-add-a-new-column-to-fix-the-problem"><i class="fa fa-check"></i>3. Why does spreading this tibble fail? How could you add a new column to fix the problem?</a></li>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html#tidy-the-simple-tibble-below.-do-you-need-to-spread-or-gather-it-what-are-the-variables"><i class="fa fa-check"></i>4. Tidy the simple tibble below. Do you need to spread or gather it? What are the variables?</a></li>
+</ul></li>
+<li><a href="chapter-12-tidy-data.html#notes---separating-and-uniting"><strong>12.4</strong> Notes - Separating and uniting</a></li>
+<li><a href="chapter-12-tidy-data.html#exercises-23"><strong>12.4.3</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html#what-do-the-extra-and-fill-arguments-do-in-separate-experiment-with-the-various-options-for-the-following-two-toy-datasets."><i class="fa fa-check"></i>1. What do the extra and fill arguments do in separate()? Experiment with the various options for the following two toy datasets.</a></li>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html#both-unite-and-separate-have-a-remove-argument.-what-does-it-do-why-would-you-set-it-to-false"><i class="fa fa-check"></i>2. Both unite() and separate() have a remove argument. What does it do? Why would you set it to FALSE?</a></li>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html#compare-and-contrast-separate-and-extract.-why-are-there-three-variations-of-separation-by-position-by-separator-and-with-groups-but-only-one-unite"><i class="fa fa-check"></i>3. Compare and contrast separate() and extract(). Why are there three variations of separation (by position, by separator, and with groups), but only one unite?</a></li>
+</ul></li>
+<li><a href="chapter-12-tidy-data.html#notes---missing-values-1"><strong>12.5</strong> Notes - Missing Values</a></li>
+<li><a href="chapter-12-tidy-data.html#exercises-24"><strong>12.5.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html#compare-and-contrast-the-fill-arguments-to-spread-and-complete."><i class="fa fa-check"></i>1. Compare and contrast the fill arguments to spread() and complete().</a></li>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html#what-does-the-direction-argument-to-fill-do"><i class="fa fa-check"></i>2. What does the direction argument to fill() do?</a></li>
+</ul></li>
+<li><a href="chapter-12-tidy-data.html#notes---case-study"><strong>12.6</strong> Notes - Case Study</a></li>
+<li><a href="chapter-12-tidy-data.html#exercises-25"><strong>12.6.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html#in-this-case-study-i-set-na.rm-true-just-to-make-it-easier-to-check-that-we-had-the-correct-values.-is-this-reasonable-think-about-how-missing-values-are-represented-in-this-dataset.-are-there-implicit-missing-values-whats-the-difference-between-an-na-and-zero"><i class="fa fa-check"></i>1. In this case study I set na.rm = TRUE just to make it easier to check that we had the correct values. Is this reasonable? Think about how missing values are represented in this dataset. Are there implicit missing values? What’s the difference between an NA and zero?</a></li>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html#what-happens-if-you-neglect-the-mutate-step-mutatekey-stringrstr_replacekey-newrel-new_rel"><i class="fa fa-check"></i>2. What happens if you neglect the mutate() step? (mutate(key = stringr::str_replace(key, “newrel”, “new_rel”)))</a></li>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html#i-claimed-that-iso2-and-iso3-were-redundant-with-country.-confirm-this-claim."><i class="fa fa-check"></i>3. I claimed that iso2 and iso3 were redundant with country. Confirm this claim.</a></li>
+<li class="chapter" data-level="" data-path="chapter-12-tidy-data.html"><a href="chapter-12-tidy-data.html#for-each-country-year-and-sex-compute-the-total-number-of-cases-of-tb.-make-an-informative-visualisation-of-the-data."><i class="fa fa-check"></i>4. For each country, year, and sex compute the total number of cases of TB. Make an informative visualisation of the data.</a></li>
+</ul></li>
+</ul></li>
+<li><a href="chapter-13-relational-data.html#chapter-13-relational-data"><strong>Chapter 13</strong> Relational Data</a><ul>
+<li><a href="chapter-13-relational-data.html#exercises-26"><strong>13.2.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-13-relational-data.html"><a href="chapter-13-relational-data.html"><i class="fa fa-check"></i>1. Imagine you wanted to draw (approximately) the route each plane flies from its origin to its destination. What variables would you need? What tables would you need to combine?</a></li>
+<li class="chapter" data-level="" data-path="chapter-13-relational-data.html"><a href="chapter-13-relational-data.html#i-forgot-to-draw-the-relationship-between-weather-and-airports.-what-is-the-relationship-and-how-should-it-appear-in-the-diagram"><i class="fa fa-check"></i>2. I forgot to draw the relationship between weather and airports. What is the relationship and how should it appear in the diagram?</a></li>
+<li class="chapter" data-level="" data-path="chapter-13-relational-data.html"><a href="chapter-13-relational-data.html#weather-only-contains-information-for-the-origin-nyc-airports.-if-it-contained-weather-records-for-all-airports-in-the-usa-what-additional-relation-would-it-define-with-flights"><i class="fa fa-check"></i>3. weather only contains information for the origin (NYC) airports. If it contained weather records for all airports in the USA, what additional relation would it define with flights?</a></li>
+<li class="chapter" data-level="" data-path="chapter-13-relational-data.html"><a href="chapter-13-relational-data.html#we-know-that-some-days-of-the-year-are-special-and-fewer-people-than-usual-fly-on-them.-how-might-you-represent-that-data-as-a-data-frame-what-would-be-the-primary-keys-of-that-table-how-would-it-connect-to-the-existing-tables"><i class="fa fa-check"></i>4. We know that some days of the year are “special”, and fewer people than usual fly on them. How might you represent that data as a data frame? What would be the primary keys of that table? How would it connect to the existing tables?</a></li>
+</ul></li>
+<li><a href="chapter-13-relational-data.html#notes---keys"><strong>13.3</strong> Notes - Keys</a></li>
+<li><a href="chapter-13-relational-data.html#exercises-27"><strong>13.3.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-13-relational-data.html"><a href="chapter-13-relational-data.html#add-a-surrogate-key-to-flights."><i class="fa fa-check"></i>1. Add a surrogate key to flights.</a></li>
+<li class="chapter" data-level="" data-path="chapter-13-relational-data.html"><a href="chapter-13-relational-data.html#identify-the-keys-in-the-following-datasets"><i class="fa fa-check"></i>2. Identify the keys in the following datasets:</a></li>
+<li class="chapter" data-level="" data-path="chapter-13-relational-data.html"><a href="chapter-13-relational-data.html#draw-a-diagram-illustrating-the-connections-between-the-batting-master-and-salaries-tables-in-the-lahman-package.-draw-another-diagram-that-shows-the-relationship-between-master-managers-awardsmanagers.-how-would-you-characterise-the-relationship-between-the-batting-pitching-and-fielding-tables"><i class="fa fa-check"></i>3. Draw a diagram illustrating the connections between the Batting, Master, and Salaries tables in the Lahman package. Draw another diagram that shows the relationship between Master, Managers, AwardsManagers. How would you characterise the relationship between the Batting, Pitching, and Fielding tables?</a></li>
+</ul></li>
+<li><a href="chapter-13-relational-data.html#notes---mutating-joins"><strong>13.4</strong> Notes - Mutating Joins</a></li>
+<li><a href="chapter-13-relational-data.html#exercises-28"><strong>13.4.6</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-13-relational-data.html"><a href="chapter-13-relational-data.html#compute-the-average-delay-by-destination-then-join-on-the-airports-data-frame-so-you-can-show-the-spatial-distribution-of-delays.-heres-an-easy-way-to-draw-a-map-of-the-united-states"><i class="fa fa-check"></i>1. Compute the average delay by destination, then join on the airports data frame so you can show the spatial distribution of delays. Here’s an easy way to draw a map of the United States:</a></li>
+<li class="chapter" data-level="" data-path="chapter-13-relational-data.html"><a href="chapter-13-relational-data.html#add-the-location-of-the-origin-and-destination-i.e.the-lat-and-lon-to-flights."><i class="fa fa-check"></i>2. Add the location of the origin and destination (i.e. the lat and lon) to flights.</a></li>
+<li class="chapter" data-level="" data-path="chapter-13-relational-data.html"><a href="chapter-13-relational-data.html#is-there-a-relationship-between-the-age-of-a-plane-and-its-delays"><i class="fa fa-check"></i>3. Is there a relationship between the age of a plane and its delays?</a></li>
+<li class="chapter" data-level="" data-path="chapter-13-relational-data.html"><a href="chapter-13-relational-data.html#what-weather-conditions-make-it-more-likely-to-see-a-delay"><i class="fa fa-check"></i>4. What weather conditions make it more likely to see a delay?</a></li>
+<li class="chapter" data-level="" data-path="chapter-13-relational-data.html"><a href="chapter-13-relational-data.html#what-happened-on-june-13-2013-display-the-spatial-pattern-of-delays-and-then-use-google-to-cross-reference-with-the-weather."><i class="fa fa-check"></i>5. What happened on June 13 2013? Display the spatial pattern of delays, and then use Google to cross-reference with the weather.</a></li>
+</ul></li>
+<li><a href="chapter-13-relational-data.html#notes---filtering-joins"><strong>13.5</strong> Notes - Filtering Joins</a></li>
+<li><a href="chapter-13-relational-data.html#exercises-29"><strong>13.5.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-13-relational-data.html"><a href="chapter-13-relational-data.html#what-does-it-mean-for-a-flight-to-have-a-missing-tailnum-what-do-the-tail-numbers-that-dont-have-a-matching-record-in-planes-have-in-common-hint-one-variable-explains-90-of-the-problems."><i class="fa fa-check"></i>1. What does it mean for a flight to have a missing tailnum? What do the tail numbers that don’t have a matching record in planes have in common? (Hint: one variable explains ~90% of the problems.)</a></li>
+<li class="chapter" data-level="" data-path="chapter-13-relational-data.html"><a href="chapter-13-relational-data.html#filter-flights-to-only-show-flights-with-planes-that-have-flown-at-least-100-flights."><i class="fa fa-check"></i>2. Filter flights to only show flights with planes that have flown at least 100 flights.</a></li>
+<li class="chapter" data-level="" data-path="chapter-13-relational-data.html"><a href="chapter-13-relational-data.html#combine-fueleconomyvehicles-and-fueleconomycommon-to-find-only-the-records-for-the-most-common-models."><i class="fa fa-check"></i>3. Combine fueleconomy::vehicles and fueleconomy::common to find only the records for the most common models.</a></li>
+<li class="chapter" data-level="" data-path="chapter-13-relational-data.html"><a href="chapter-13-relational-data.html#find-the-48-hours-over-the-course-of-the-whole-year-that-have-the-worst-delays.-cross-reference-it-with-the-weather-data.-can-you-see-any-patterns"><i class="fa fa-check"></i>4. Find the 48 hours (over the course of the whole year) that have the worst delays. Cross-reference it with the weather data. Can you see any patterns?</a></li>
+<li class="chapter" data-level="" data-path="chapter-13-relational-data.html"><a href="chapter-13-relational-data.html#what-does-anti_joinflights-airports-by-cdest-faa-tell-you-what-does-anti_joinairports-flights-by-cfaa-dest-tell-you"><i class="fa fa-check"></i>5. What does anti_join(flights, airports, by = c(“dest” = “faa”)) tell you? What does anti_join(airports, flights, by = c(“faa” = “dest”)) tell you?</a></li>
+<li class="chapter" data-level="" data-path="chapter-13-relational-data.html"><a href="chapter-13-relational-data.html#you-might-expect-that-theres-an-implicit-relationship-between-plane-and-airline-because-each-plane-is-flown-by-a-single-airline.-confirm-or-reject-this-hypothesis-using-the-tools-youve-learned-above."><i class="fa fa-check"></i>6. You might expect that there’s an implicit relationship between plane and airline, because each plane is flown by a single airline. Confirm or reject this hypothesis using the tools you’ve learned above.</a></li>
+</ul></li>
+<li><a href="chapter-13-relational-data.html#notes---join-problems-and-set-operations"><strong>13.6 &amp; 13.7</strong> Notes - Join problems and set operations</a></li>
+</ul></li>
+<li><a href="chapter-14-strings.html#chapter-14-strings"><strong>Chapter 14</strong> Strings</a><ul>
+<li><a href="chapter-14-strings.html#exercises-30"><strong>14.2.5</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html"><i class="fa fa-check"></i>1. In code that doesn’t use stringr, you’ll often see paste() and paste0(). What’s the difference between the two functions? What stringr function are they equivalent to? How do the functions differ in their handling of NA?</a></li>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#in-your-own-words-describe-the-difference-between-the-sep-and-collapse-arguments-to-str_c."><i class="fa fa-check"></i>2. In your own words, describe the difference between the sep and collapse arguments to str_c().</a></li>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#use-str_length-and-str_sub-to-extract-the-middle-character-from-a-string.-what-will-you-do-if-the-string-has-an-even-number-of-characters"><i class="fa fa-check"></i>3. Use str_length() and str_sub() to extract the middle character from a string. What will you do if the string has an even number of characters?</a></li>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#what-does-str_wrap-do-when-might-you-want-to-use-it"><i class="fa fa-check"></i>4. What does str_wrap() do? When might you want to use it?</a></li>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#what-does-str_trim-do-whats-the-opposite-of-str_trim"><i class="fa fa-check"></i>5. What does str_trim() do? What’s the opposite of str_trim()?</a></li>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#write-a-function-that-turns-e.g.-a-vector-ca-b-c-into-the-string-a-b-and-c.-think-carefully-about-what-it-should-do-if-given-a-vector-of-length-0-1-or-2."><i class="fa fa-check"></i>6. Write a function that turns (e.g.) a vector c(“a”, “b”, “c”) into the string a, b, and c. Think carefully about what it should do if given a vector of length 0, 1, or 2.</a></li>
+</ul></li>
+<li><a href="chapter-14-strings.html#exercises-31"><strong>14.3.1.1</strong> Exercises</a><ul>
+<li><a href="chapter-14-strings.html#explain-why-each-of-these-strings-dont-match-a-.">1. Explain why each of these strings don’t match a <code>\</code>: <code>&quot;\&quot;, &quot;\\&quot;, &quot;\\\&quot;</code>.</a></li>
+<li><a href="chapter-14-strings.html#how-would-you-match-the-sequence">2. How would you match the sequence <code>&quot;'\</code>?</a></li>
+<li><a href="chapter-14-strings.html#what-patterns-will-the-regular-expression-......-match-how-would-you-represent-it-as-a-string">3. What patterns will the regular expression <code>\..\..\..</code> match? How would you represent it as a string?</a></li>
+</ul></li>
+<li><a href="chapter-14-strings.html#exercises-32"><strong>14.3.2.1</strong> Exercises</a><ul>
+<li><a href="chapter-14-strings.html#how-would-you-match-the-literal-string">1. How would you match the literal string <code>&quot;$^$&quot;</code>?</a></li>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#given-the-corpus-of-common-words-in-stringrwords-create-regular-expressions-that-find-all-words-that"><i class="fa fa-check"></i>2. Given the corpus of common words in stringr::words, create regular expressions that find all words that:</a></li>
+</ul></li>
+<li><a href="chapter-14-strings.html#exercises-33"><strong>14.3.3.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#create-regular-expressions-to-find-all-words-that"><i class="fa fa-check"></i>1. Create regular expressions to find all words that:</a></li>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#empirically-verify-the-rule-i-before-e-except-after-c."><i class="fa fa-check"></i>2. Empirically verify the rule “i before e except after c”.</a></li>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#is-q-always-followed-by-a-u"><i class="fa fa-check"></i>3. Is “q” always followed by a “u”?</a></li>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#write-a-regular-expression-that-matches-a-word-if-its-probably-written-in-british-english-not-american-english."><i class="fa fa-check"></i>4. Write a regular expression that matches a word if it’s probably written in British English, not American English.</a></li>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#create-a-regular-expression-that-will-match-telephone-numbers-as-commonly-written-in-your-country."><i class="fa fa-check"></i>5. Create a regular expression that will match telephone numbers as commonly written in your country.</a></li>
+</ul></li>
+<li><a href="chapter-14-strings.html#exercises-34"><strong>14.3.4.1</strong> Exercises</a><ul>
+<li><a href="chapter-14-strings.html#describe-the-equivalents-of-in-mn-form.">1. Describe the equivalents of <code>?, +, *</code> in <code>{m,n}</code> form.</a></li>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#describe-in-words-what-these-regular-expressions-match-read-carefully-to-see-if-im-using-a-regular-expression-or-a-string-that-defines-a-regular-expression."><i class="fa fa-check"></i>2. Describe in words what these regular expressions match: (read carefully to see if I’m using a regular expression or a string that defines a regular expression.)</a></li>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#create-regular-expressions-to-find-all-words-that-1"><i class="fa fa-check"></i>3. Create regular expressions to find all words that:</a></li>
+<li><a href="chapter-14-strings.html#solve-the-beginner-regexp-crosswords-at-httpsregexcrossword.comchallengesbeginner.">4. Solve the beginner regexp crosswords at <a href="https://regexcrossword.com/challenges/beginner" class="uri">https://regexcrossword.com/challenges/beginner</a>.</a></li>
+</ul></li>
+<li><a href="chapter-14-strings.html#exercises-35"><strong>14.3.5.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#describe-in-words-what-these-expressions-will-match"><i class="fa fa-check"></i>1. Describe, in words, what these expressions will match:</a></li>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#construct-regular-expressions-to-match-words-that"><i class="fa fa-check"></i>2. Construct regular expressions to match words that:</a></li>
+</ul></li>
+<li><a href="chapter-14-strings.html#exercises-36"><strong>14.4.2</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#for-each-of-the-following-challenges-try-solving-it-by-using-both-a-single-regular-expression-and-a-combination-of-multiple-str_detect-calls."><i class="fa fa-check"></i>1. For each of the following challenges, try solving it by using both a single regular expression, and a combination of multiple str_detect() calls.</a></li>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#what-word-has-the-highest-number-of-vowels-what-word-has-the-highest-proportion-of-vowels-hint-what-is-the-denominator"><i class="fa fa-check"></i>2. What word has the highest number of vowels? What word has the highest proportion of vowels? (Hint: what is the denominator?)</a></li>
+</ul></li>
+<li><a href="chapter-14-strings.html#exercises-37"><strong>14.4.3.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#in-the-previous-example-you-might-have-noticed-that-the-regular-expression-matched-flickered-which-is-not-a-colour.-modify-the-regex-to-fix-the-problem."><i class="fa fa-check"></i>1. In the previous example, you might have noticed that the regular expression matched “flickered”, which is not a colour. Modify the regex to fix the problem.</a></li>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#from-the-harvard-sentences-data-extract"><i class="fa fa-check"></i>2. From the Harvard sentences data, extract:</a></li>
+</ul></li>
+<li><a href="chapter-14-strings.html#exercises-38"><strong>14.4.4.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#find-all-words-that-come-after-a-number-like-one-two-three-etc.-pull-out-both-the-number-and-the-word."><i class="fa fa-check"></i>1. Find all words that come after a “number” like “one”, “two”, “three” etc. Pull out both the number and the word.</a></li>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#find-all-contractions.-separate-out-the-pieces-before-and-after-the-apostrophe."><i class="fa fa-check"></i>2. Find all contractions. Separate out the pieces before and after the apostrophe.</a></li>
+</ul></li>
+<li><a href="chapter-14-strings.html#exercises-39"><strong>14.4.5.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#replace-all-forward-slashes-in-a-string-with-backslashes."><i class="fa fa-check"></i>1. Replace all forward slashes in a string with backslashes.</a></li>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#implement-a-simple-version-of-str_to_lower-using-replace_all."><i class="fa fa-check"></i>2. Implement a simple version of str_to_lower() using replace_all().</a></li>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#switch-the-first-and-last-letters-in-words.-which-of-those-strings-are-still-words"><i class="fa fa-check"></i>3. Switch the first and last letters in words. Which of those strings are still words?</a></li>
+</ul></li>
+<li><a href="chapter-14-strings.html#exercises-40"><strong>14.4.6.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#split-up-a-string-like-apples-pears-and-bananas-into-individual-components."><i class="fa fa-check"></i>1. Split up a string like “apples, pears, and bananas” into individual components.</a></li>
+<li class="chapter" data-level="0.0.2" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#why-is-it-better-to-split-up-by-boundaryword-than--"><i class="fa fa-check"></i><b>0.0.2</b> 2. Why is it better to split up by boundary(“word”) than &quot; “? {-}</a></li>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#what-does-splitting-with-an-empty-string-do-experiment-and-then-read-the-documentation."><i class="fa fa-check"></i>3. What does splitting with an empty string (“”) do? Experiment, and then read the documentation.</a></li>
+</ul></li>
+<li><a href="chapter-14-strings.html#exercises-41"><strong>14.5.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#how-would-you-find-all-strings-containing-with-regex-vs.with-fixed"><i class="fa fa-check"></i>1. How would you find all strings containing  with regex() vs. with fixed()?</a></li>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#what-are-the-five-most-common-words-in-sentences"><i class="fa fa-check"></i>2. What are the five most common words in sentences?</a></li>
+</ul></li>
+<li><a href="chapter-14-strings.html#exercises-42"><strong>14.7.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#find-the-stringi-functions-that"><i class="fa fa-check"></i>1. Find the stringi functions that:</a></li>
+<li class="chapter" data-level="" data-path="chapter-14-strings.html"><a href="chapter-14-strings.html#how-do-you-control-the-language-that-stri_sort-uses-for-sorting"><i class="fa fa-check"></i>2. How do you control the language that stri_sort() uses for sorting?</a></li>
+</ul></li>
+</ul></li>
+<li><a href="chapter-15-factors.html#chapter-15-factors"><strong>Chapter 15</strong> Factors</a><ul>
+<li><a href="chapter-15-factors.html#exercises-43"><strong>15.3.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-15-factors.html"><a href="chapter-15-factors.html"><i class="fa fa-check"></i>1. Explore the distribution of rincome (reported income). What makes the default bar chart hard to understand? How could you improve the plot?</a></li>
+<li class="chapter" data-level="" data-path="chapter-15-factors.html"><a href="chapter-15-factors.html#what-is-the-most-common-relig-in-this-survey-whats-the-most-common-partyid"><i class="fa fa-check"></i>2. What is the most common relig in this survey? What’s the most common partyid?</a></li>
+<li class="chapter" data-level="" data-path="chapter-15-factors.html"><a href="chapter-15-factors.html#which-relig-does-denom-denomination-apply-to-how-can-you-find-out-with-a-table-how-can-you-find-out-with-a-visualisation"><i class="fa fa-check"></i>3. Which relig does denom (denomination) apply to? How can you find out with a table? How can you find out with a visualisation?</a></li>
+</ul></li>
+<li><a href="chapter-15-factors.html#exercises-44"><strong>15.4.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-15-factors.html"><a href="chapter-15-factors.html#there-are-some-suspiciously-high-numbers-in-tvhours.-is-the-mean-a-good-summary"><i class="fa fa-check"></i>1. There are some suspiciously high numbers in tvhours. Is the mean a good summary?</a></li>
+<li class="chapter" data-level="" data-path="chapter-15-factors.html"><a href="chapter-15-factors.html#for-each-factor-in-gss_cat-identify-whether-the-order-of-the-levels-is-arbitrary-or-principled."><i class="fa fa-check"></i>2. For each factor in gss_cat identify whether the order of the levels is arbitrary or principled.</a></li>
+<li class="chapter" data-level="" data-path="chapter-15-factors.html"><a href="chapter-15-factors.html#why-did-moving-not-applicable-to-the-front-of-the-levels-move-it-to-the-bottom-of-the-plot"><i class="fa fa-check"></i>3. Why did moving “Not applicable” to the front of the levels move it to the bottom of the plot?</a></li>
+</ul></li>
+<li><a href="chapter-15-factors.html#exercises-45"><strong>15.5.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-15-factors.html"><a href="chapter-15-factors.html#how-have-the-proportions-of-people-identifying-as-democrat-republican-and-independent-changed-over-time"><i class="fa fa-check"></i>1. How have the proportions of people identifying as Democrat, Republican, and Independent changed over time?</a></li>
+<li class="chapter" data-level="" data-path="chapter-15-factors.html"><a href="chapter-15-factors.html#how-could-you-collapse-rincome-into-a-small-set-of-categories"><i class="fa fa-check"></i>2. How could you collapse rincome into a small set of categories?</a></li>
+</ul></li>
+</ul></li>
+<li><a href="chapter-16-dates-and-times.html#chapter-16-dates-and-times"><strong>Chapter 16</strong> Dates and times</a><ul>
+<li><a href="chapter-16-dates-and-times.html#exercises-46"><strong>16.2.4</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-16-dates-and-times.html"><a href="chapter-16-dates-and-times.html"><i class="fa fa-check"></i>1. What happens if you parse a string that contains invalid dates?</a></li>
+<li class="chapter" data-level="" data-path="chapter-16-dates-and-times.html"><a href="chapter-16-dates-and-times.html#what-does-the-tzone-argument-to-today-do-why-is-it-important"><i class="fa fa-check"></i>2. What does the tzone argument to today() do? Why is it important?</a></li>
+<li class="chapter" data-level="" data-path="chapter-16-dates-and-times.html"><a href="chapter-16-dates-and-times.html#use-the-appropriate-lubridate-function-to-parse-each-of-the-following-dates"><i class="fa fa-check"></i>3. Use the appropriate lubridate function to parse each of the following dates:</a></li>
+</ul></li>
+<li><a href="chapter-16-dates-and-times.html#exercises-47"><strong>16.3.4</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-16-dates-and-times.html"><a href="chapter-16-dates-and-times.html#how-does-the-distribution-of-flight-times-within-a-day-change-over-the-course-of-the-year"><i class="fa fa-check"></i>1. How does the distribution of flight times within a day change over the course of the year?</a></li>
+<li class="chapter" data-level="" data-path="chapter-16-dates-and-times.html"><a href="chapter-16-dates-and-times.html#compare-dep_time-sched_dep_time-and-dep_delay.-are-they-consistent-explain-your-findings."><i class="fa fa-check"></i>2. Compare dep_time, sched_dep_time and dep_delay. Are they consistent? Explain your findings.</a></li>
+<li class="chapter" data-level="" data-path="chapter-16-dates-and-times.html"><a href="chapter-16-dates-and-times.html#compare-air_time-with-the-duration-between-the-departure-and-arrival.-explain-your-findings.-hint-consider-the-location-of-the-airport."><i class="fa fa-check"></i>3. Compare air_time with the duration between the departure and arrival. Explain your findings. (Hint: consider the location of the airport.)</a></li>
+<li class="chapter" data-level="" data-path="chapter-16-dates-and-times.html"><a href="chapter-16-dates-and-times.html#how-does-the-average-delay-time-change-over-the-course-of-a-day-should-you-use-dep_time-or-sched_dep_time-why"><i class="fa fa-check"></i>4. How does the average delay time change over the course of a day? Should you use dep_time or sched_dep_time? Why?</a></li>
+<li class="chapter" data-level="" data-path="chapter-16-dates-and-times.html"><a href="chapter-16-dates-and-times.html#on-what-day-of-the-week-should-you-leave-if-you-want-to-minimise-the-chance-of-a-delay"><i class="fa fa-check"></i>5. On what day of the week should you leave if you want to minimise the chance of a delay?</a></li>
+<li><a href="chapter-16-dates-and-times.html#what-makes-the-distribution-of-diamondscarat-and-flightssched_dep_time-similar">6. What makes the distribution of diamonds<span class="math inline">\(carat and flights\)</span>sched_dep_time similar?</a></li>
+<li class="chapter" data-level="" data-path="chapter-16-dates-and-times.html"><a href="chapter-16-dates-and-times.html#confirm-my-hypothesis-that-the-early-departures-of-flights-in-minutes-20-30-and-50-60-are-caused-by-scheduled-flights-that-leave-early.-hint-create-a-binary-variable-that-tells-you-whether-or-not-a-flight-was-delayed."><i class="fa fa-check"></i>7. Confirm my hypothesis that the early departures of flights in minutes 20-30 and 50-60 are caused by scheduled flights that leave early. Hint: create a binary variable that tells you whether or not a flight was delayed.</a></li>
+</ul></li>
+<li><a href="chapter-16-dates-and-times.html#exercises-48"><strong>16.4.5</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-16-dates-and-times.html"><a href="chapter-16-dates-and-times.html#why-is-there-months-but-no-dmonths"><i class="fa fa-check"></i>1. Why is there months() but no dmonths()?</a></li>
+<li class="chapter" data-level="" data-path="chapter-16-dates-and-times.html"><a href="chapter-16-dates-and-times.html#explain-daysovernight-1-to-someone-who-has-just-started-learning-r.-how-does-it-work"><i class="fa fa-check"></i>2. Explain days(overnight * 1) to someone who has just started learning R. How does it work?</a></li>
+<li class="chapter" data-level="" data-path="chapter-16-dates-and-times.html"><a href="chapter-16-dates-and-times.html#create-a-vector-of-dates-giving-the-first-day-of-every-month-in-2015.-create-a-vector-of-dates-giving-the-first-day-of-every-month-in-the-current-year."><i class="fa fa-check"></i>3. Create a vector of dates giving the first day of every month in 2015. Create a vector of dates giving the first day of every month in the current year.</a></li>
+<li class="chapter" data-level="" data-path="chapter-16-dates-and-times.html"><a href="chapter-16-dates-and-times.html#write-a-function-that-given-your-birthday-as-a-date-returns-how-old-you-are-in-years."><i class="fa fa-check"></i>4. Write a function that given your birthday (as a date), returns how old you are in years.</a></li>
+<li class="chapter" data-level="" data-path="chapter-16-dates-and-times.html"><a href="chapter-16-dates-and-times.html#why-cant-today-today-years1-months1-work"><i class="fa fa-check"></i>5. Why can’t (today() %–% (today() + years(1)) / months(1) work?</a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>V Program</b></span></li>
+<li><a href="chapter-19-functions.html#chapter-19-functions"><strong>Chapter 19</strong> Functions</a><ul>
+<li><a href="chapter-19-functions.html#exercises-49"><strong>19.2.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-19-functions.html"><a href="chapter-19-functions.html"><i class="fa fa-check"></i>1. Why is TRUE not a parameter to rescale01()? What would happen if x contained a single missing value, and na.rm was FALSE?</a></li>
+<li class="chapter" data-level="" data-path="chapter-19-functions.html"><a href="chapter-19-functions.html#in-the-second-variant-of-rescale01-infinite-values-are-left-unchanged.-rewrite-rescale01-so-that--inf-is-mapped-to-0-and-inf-is-mapped-to-1."><i class="fa fa-check"></i>2. In the second variant of rescale01(), infinite values are left unchanged. Rewrite rescale01() so that -Inf is mapped to 0, and Inf is mapped to 1.</a></li>
+<li class="chapter" data-level="" data-path="chapter-19-functions.html"><a href="chapter-19-functions.html#practice-turning-the-following-code-snippets-into-functions.-think-about-what-each-function-does.-what-would-you-call-it-how-many-arguments-does-it-need-can-you-rewrite-it-to-be-more-expressive-or-less-duplicative"><i class="fa fa-check"></i>3. Practice turning the following code snippets into functions. Think about what each function does. What would you call it? How many arguments does it need? Can you rewrite it to be more expressive or less duplicative?</a></li>
+<li><a href="chapter-19-functions.html#follow-httpnicercode.github.iointrowriting-functions.html-to-write-your-own-functions-to-compute-the-variance-and-skew-of-a-numeric-vector.">4. Follow <a href="http://nicercode.github.io/intro/writing-functions.html" class="uri">http://nicercode.github.io/intro/writing-functions.html</a> to write your own functions to compute the variance and skew of a numeric vector.</a></li>
+<li class="chapter" data-level="" data-path="chapter-19-functions.html"><a href="chapter-19-functions.html#write-both_na-a-function-that-takes-two-vectors-of-the-same-length-and-returns-the-number-of-positions-that-have-an-na-in-both-vectors."><i class="fa fa-check"></i>5. Write both_na(), a function that takes two vectors of the same length and returns the number of positions that have an NA in both vectors.</a></li>
+<li class="chapter" data-level="" data-path="chapter-19-functions.html"><a href="chapter-19-functions.html#what-do-the-following-functions-do-why-are-they-useful-even-though-they-are-so-short"><i class="fa fa-check"></i>6. What do the following functions do? Why are they useful even though they are so short?</a></li>
+<li class="chapter" data-level="" data-path="chapter-19-functions.html"><a href="chapter-19-functions.html#read-the-complete-lyrics-to-little-bunny-foo-foo.-theres-a-lot-of-duplication-in-this-song.-extend-the-initial-piping-example-to-recreate-the-complete-song-and-use-functions-to-reduce-the-duplication."><i class="fa fa-check"></i>7. Read the complete lyrics to “Little Bunny Foo Foo”. There’s a lot of duplication in this song. Extend the initial piping example to recreate the complete song, and use functions to reduce the duplication.</a></li>
+</ul></li>
+<li><a href="chapter-19-functions.html#exercises-50"><strong>19.3.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-19-functions.html"><a href="chapter-19-functions.html#read-the-source-code-for-each-of-the-following-three-functions-puzzle-out-what-they-do-and-then-brainstorm-better-names."><i class="fa fa-check"></i>1. Read the source code for each of the following three functions, puzzle out what they do, and then brainstorm better names.</a></li>
+<li class="chapter" data-level="" data-path="chapter-19-functions.html"><a href="chapter-19-functions.html#take-a-function-that-youve-written-recently-and-spend-5-minutes-brainstorming-a-better-name-for-it-and-its-arguments."><i class="fa fa-check"></i>2. Take a function that you’ve written recently and spend 5 minutes brainstorming a better name for it and its arguments.</a></li>
+<li class="chapter" data-level="" data-path="chapter-19-functions.html"><a href="chapter-19-functions.html#compare-and-contrast-rnorm-and-massmvrnorm.-how-could-you-make-them-more-consistent"><i class="fa fa-check"></i>3. Compare and contrast rnorm() and MASS::mvrnorm(). How could you make them more consistent?</a></li>
+<li class="chapter" data-level="" data-path="chapter-19-functions.html"><a href="chapter-19-functions.html#make-a-case-for-why-norm_r-norm_d-etc-would-be-better-than-rnorm-dnorm.-make-a-case-for-the-opposite."><i class="fa fa-check"></i>4. Make a case for why norm_r(), norm_d() etc would be better than rnorm(), dnorm(). Make a case for the opposite.</a></li>
+</ul></li>
+<li><a href="chapter-19-functions.html#exercises-51"><strong>19.4.4</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-19-functions.html"><a href="chapter-19-functions.html#whats-the-difference-between-if-and-ifelse-carefully-read-the-help-and-construct-three-examples-that-illustrate-the-key-differences."><i class="fa fa-check"></i>1. What’s the difference between if and ifelse()? Carefully read the help and construct three examples that illustrate the key differences.</a></li>
+<li class="chapter" data-level="" data-path="chapter-19-functions.html"><a href="chapter-19-functions.html#write-a-greeting-function-that-says-good-morning-good-afternoon-or-good-evening-depending-on-the-time-of-day.-hint-use-a-time-argument-that-defaults-to-lubridatenow.-that-will-make-it-easier-to-test-your-function."><i class="fa fa-check"></i>2. Write a greeting function that says “good morning”, “good afternoon”, or “good evening”, depending on the time of day. (Hint: use a time argument that defaults to lubridate::now(). That will make it easier to test your function.)</a></li>
+<li class="chapter" data-level="" data-path="chapter-19-functions.html"><a href="chapter-19-functions.html#implement-a-fizzbuzz-function.-it-takes-a-single-number-as-input.-if-the-number-is-divisible-by-three-it-returns-fizz.-if-its-divisible-by-five-it-returns-buzz.-if-its-divisible-by-three-and-five-it-returns-fizzbuzz.-otherwise-it-returns-the-number.-make-sure-you-first-write-working-code-before-you-create-the-function."><i class="fa fa-check"></i>3. Implement a fizzbuzz function. It takes a single number as input. If the number is divisible by three, it returns “fizz”. If it’s divisible by five it returns “buzz”. If it’s divisible by three and five, it returns “fizzbuzz”. Otherwise, it returns the number. Make sure you first write working code before you create the function.</a></li>
+<li class="chapter" data-level="" data-path="chapter-19-functions.html"><a href="chapter-19-functions.html#how-could-you-use-cut-to-simplify-this-set-of-nested-if-else-statements"><i class="fa fa-check"></i>4. How could you use cut() to simplify this set of nested if-else statements?</a></li>
+<li class="chapter" data-level="" data-path="chapter-19-functions.html"><a href="chapter-19-functions.html#what-happens-if-you-use-switch-with-numeric-values"><i class="fa fa-check"></i>5. What happens if you use switch() with numeric values?</a></li>
+<li class="chapter" data-level="" data-path="chapter-19-functions.html"><a href="chapter-19-functions.html#what-does-this-switch-call-do-what-happens-if-x-is-e"><i class="fa fa-check"></i>6. What does this switch() call do? What happens if x is “e”?</a></li>
+</ul></li>
+<li><a href="chapter-19-functions.html#exercises-52"><strong>19.5.5</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-19-functions.html"><a href="chapter-19-functions.html#what-does-commasletters-collapse---do-why"><i class="fa fa-check"></i>1. What does commas(letters, collapse = “-”) do? Why?</a></li>
+<li class="chapter" data-level="" data-path="chapter-19-functions.html"><a href="chapter-19-functions.html#itd-be-nice-if-you-could-supply-multiple-characters-to-the-pad-argument-e.g.ruletitle-pad--.-why-doesnt-this-currently-work-how-could-you-fix-it"><i class="fa fa-check"></i>2. It’d be nice if you could supply multiple characters to the pad argument, e.g. rule(“Title”, pad = “-+”). Why doesn’t this currently work? How could you fix it?</a></li>
+<li class="chapter" data-level="" data-path="chapter-19-functions.html"><a href="chapter-19-functions.html#what-does-the-trim-argument-to-mean-do-when-might-you-use-it"><i class="fa fa-check"></i>3. What does the trim argument to mean() do? When might you use it?</a></li>
+<li class="chapter" data-level="" data-path="chapter-19-functions.html"><a href="chapter-19-functions.html#the-default-value-for-the-method-argument-to-cor-is-cpearson-kendall-spearman.-what-does-that-mean-what-value-is-used-by-default"><i class="fa fa-check"></i>4. The default value for the method argument to cor() is c(“pearson”, “kendall”, “spearman”). What does that mean? What value is used by default?</a></li>
+</ul></li>
+</ul></li>
+<li><a href="chapter-20-vectors.html#chapter-20-vectors"><strong>Chapter 20</strong> Vectors</a><ul>
+<li><a href="chapter-20-vectors.html#exercises-53"><strong>20.3.5</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-20-vectors.html"><a href="chapter-20-vectors.html"><i class="fa fa-check"></i>1. Describe the difference between is.finite(x) and !is.infinite(x).</a></li>
+<li class="chapter" data-level="" data-path="chapter-20-vectors.html"><a href="chapter-20-vectors.html#read-the-source-code-for-dplyrnear-hint-to-see-the-source-code-drop-the-.-how-does-it-work"><i class="fa fa-check"></i>2. Read the source code for dplyr::near() (Hint: to see the source code, drop the ()). How does it work?</a></li>
+<li class="chapter" data-level="" data-path="chapter-20-vectors.html"><a href="chapter-20-vectors.html#a-logical-vector-can-take-3-possible-values.-how-many-possible-values-can-an-integer-vector-take-how-many-possible-values-can-a-double-take-use-google-to-do-some-research."><i class="fa fa-check"></i>3. A logical vector can take 3 possible values. How many possible values can an integer vector take? How many possible values can a double take? Use google to do some research.</a></li>
+<li class="chapter" data-level="" data-path="chapter-20-vectors.html"><a href="chapter-20-vectors.html#brainstorm-at-least-four-functions-that-allow-you-to-convert-a-double-to-an-integer.-how-do-they-differ-be-precise."><i class="fa fa-check"></i>4. Brainstorm at least four functions that allow you to convert a double to an integer. How do they differ? Be precise.</a></li>
+<li class="chapter" data-level="" data-path="chapter-20-vectors.html"><a href="chapter-20-vectors.html#what-functions-from-the-readr-package-allow-you-to-turn-a-string-into-logical-integer-and-double-vector"><i class="fa fa-check"></i>5. What functions from the readr package allow you to turn a string into logical, integer, and double vector?</a></li>
+</ul></li>
+<li><a href="chapter-20-vectors.html#exercises-54"><strong>20.4.6</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-20-vectors.html"><a href="chapter-20-vectors.html#what-does-meanis.nax-tell-you-about-a-vector-x-what-about-sumis.finitex"><i class="fa fa-check"></i>1. What does mean(is.na(x)) tell you about a vector x? What about sum(!is.finite(x))?</a></li>
+<li class="chapter" data-level="" data-path="chapter-20-vectors.html"><a href="chapter-20-vectors.html#carefully-read-the-documentation-of-is.vector.-what-does-it-actually-test-for-why-does-is.atomic-not-agree-with-the-definition-of-atomic-vectors-above"><i class="fa fa-check"></i>2. Carefully read the documentation of is.vector(). What does it actually test for? Why does is.atomic() not agree with the definition of atomic vectors above?</a></li>
+<li class="chapter" data-level="" data-path="chapter-20-vectors.html"><a href="chapter-20-vectors.html#compare-and-contrast-setnames-with-purrrset_names."><i class="fa fa-check"></i>3. Compare and contrast setNames() with purrr::set_names().</a></li>
+<li class="chapter" data-level="" data-path="chapter-20-vectors.html"><a href="chapter-20-vectors.html#create-functions-that-take-a-vector-as-input-and-returns"><i class="fa fa-check"></i>4. Create functions that take a vector as input and returns:</a></li>
+<li class="chapter" data-level="" data-path="chapter-20-vectors.html"><a href="chapter-20-vectors.html#why-is-x-whichx-0-not-the-same-as-xx-0"><i class="fa fa-check"></i>5. Why is x[-which(x &gt; 0)] not the same as x[x &lt;= 0]?</a></li>
+<li class="chapter" data-level="" data-path="chapter-20-vectors.html"><a href="chapter-20-vectors.html#what-happens-when-you-subset-with-a-positive-integer-thats-bigger-than-the-length-of-the-vector-what-happens-when-you-subset-with-a-name-that-doesnt-exist"><i class="fa fa-check"></i>6. What happens when you subset with a positive integer that’s bigger than the length of the vector? What happens when you subset with a name that doesn’t exist?</a></li>
+</ul></li>
+<li><a href="chapter-20-vectors.html#exercises-55"><strong>20.5.4</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-20-vectors.html"><a href="chapter-20-vectors.html#draw-the-following-lists-as-nested-sets"><i class="fa fa-check"></i>1. Draw the following lists as nested sets:</a></li>
+<li class="chapter" data-level="" data-path="chapter-20-vectors.html"><a href="chapter-20-vectors.html#what-happens-if-you-subset-a-tibble-as-if-youre-subsetting-a-list-what-are-the-key-differences-between-a-list-and-a-tibble"><i class="fa fa-check"></i>2. What happens if you subset a tibble as if you’re subsetting a list? What are the key differences between a list and a tibble?</a></li>
+</ul></li>
+<li><a href="chapter-20-vectors.html#exercises-56"><strong>20.7.4</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-20-vectors.html"><a href="chapter-20-vectors.html#what-does-hmshms3600-return-how-does-it-print-what-primitive-type-is-the-augmented-vector-built-on-top-of-what-attributes-does-it-use"><i class="fa fa-check"></i>1. What does hms::hms(3600) return? How does it print? What primitive type is the augmented vector built on top of? What attributes does it use?</a></li>
+<li class="chapter" data-level="" data-path="chapter-20-vectors.html"><a href="chapter-20-vectors.html#try-and-make-a-tibble-that-has-columns-with-different-lengths.-what-happens"><i class="fa fa-check"></i>2. Try and make a tibble that has columns with different lengths. What happens?</a></li>
+<li class="chapter" data-level="" data-path="chapter-20-vectors.html"><a href="chapter-20-vectors.html#based-on-the-definition-above-is-it-ok-to-have-a-list-as-a-column-of-a-tibble"><i class="fa fa-check"></i>3. Based on the definition above, is it ok to have a list as a column of a tibble?</a></li>
+</ul></li>
+</ul></li>
+<li><a href="chapter-21.html#chapter-21"><strong>Chapter 21</strong></a><ul>
+<li><a href="chapter-21.html#exercises-57"><strong>21.2.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-21.html"><a href="chapter-21.html"><i class="fa fa-check"></i>1. Write for loops to:</a></li>
+<li class="chapter" data-level="" data-path="chapter-21.html"><a href="chapter-21.html#eliminate-the-for-loop-in-each-of-the-following-examples-by-taking-advantage-of-an-existing-function-that-works-with-vectors"><i class="fa fa-check"></i>2. Eliminate the for loop in each of the following examples by taking advantage of an existing function that works with vectors:</a></li>
+<li class="chapter" data-level="" data-path="chapter-21.html"><a href="chapter-21.html#combine-your-function-writing-and-for-loop-skills"><i class="fa fa-check"></i>3. Combine your function writing and for loop skills:</a></li>
+<li class="chapter" data-level="" data-path="chapter-21.html"><a href="chapter-21.html#its-common-to-see-for-loops-that-dont-preallocate-the-output-and-instead-increase-the-length-of-a-vector-at-each-step"><i class="fa fa-check"></i>4. It’s common to see for loops that don’t preallocate the output and instead increase the length of a vector at each step:</a></li>
+</ul></li>
+<li><a href="chapter-21.html#exercises-58"><strong>21.3.5</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-21.html"><a href="chapter-21.html#imagine-you-have-a-directory-full-of-csv-files-that-you-want-to-read-in.-you-have-their-paths-in-a-vector-files---dirdata-pattern-.csv-full.names-true-and-now-want-to-read-each-one-with-read_csv.-write-the-for-loop-that-will-load-them-into-a-single-data-frame."><i class="fa fa-check"></i>1. Imagine you have a directory full of CSV files that you want to read in. You have their paths in a vector, files &lt;- dir(“data/”, pattern = “\.csv$”, full.names = TRUE), and now want to read each one with read_csv(). Write the for loop that will load them into a single data frame.</a></li>
+<li class="chapter" data-level="" data-path="chapter-21.html"><a href="chapter-21.html#what-happens-if-you-use-for-nm-in-namesx-and-x-has-no-names-what-if-only-some-of-the-elements-are-named-what-if-the-names-are-not-unique"><i class="fa fa-check"></i>2. What happens if you use for (nm in names(x)) and x has no names? What if only some of the elements are named? What if the names are not unique?</a></li>
+<li class="chapter" data-level="" data-path="chapter-21.html"><a href="chapter-21.html#write-a-function-that-prints-the-mean-of-each-numeric-column-in-a-data-frame-along-with-its-name.-for-example-show_meaniris-would-print"><i class="fa fa-check"></i>3. Write a function that prints the mean of each numeric column in a data frame, along with its name. For example, show_mean(iris) would print:</a></li>
+<li class="chapter" data-level="" data-path="chapter-21.html"><a href="chapter-21.html#what-does-this-code-do-how-does-it-work"><i class="fa fa-check"></i>4. What does this code do? How does it work?</a></li>
+</ul></li>
+<li><a href="chapter-21.html#exercises-59"><strong>21.4.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-21.html"><a href="chapter-21.html#read-the-documentation-for-apply.-in-the-2d-case-what-two-for-loops-does-it-generalise"><i class="fa fa-check"></i>1. Read the documentation for apply(). In the 2d case, what two for loops does it generalise?</a></li>
+<li class="chapter" data-level="" data-path="chapter-21.html"><a href="chapter-21.html#adapt-col_summary-so-that-it-only-applies-to-numeric-columns.-you-might-want-to-start-with-an-is_numeric-function-that-returns-a-logical-vector-that-has-a-true-corresponding-to-each-numeric-column."><i class="fa fa-check"></i>2. Adapt col_summary() so that it only applies to numeric columns. You might want to start with an is_numeric() function that returns a logical vector that has a TRUE corresponding to each numeric column.</a></li>
+</ul></li>
+<li><a href="chapter-21.html#exercises-60"><strong>21.5.3</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-21.html"><a href="chapter-21.html#write-code-that-uses-one-of-the-map-functions-to"><i class="fa fa-check"></i>1. Write code that uses one of the map functions to:</a></li>
+<li class="chapter" data-level="" data-path="chapter-21.html"><a href="chapter-21.html#how-can-you-create-a-single-vector-that-for-each-column-in-a-data-frame-indicates-whether-or-not-its-a-factor"><i class="fa fa-check"></i>2. How can you create a single vector that for each column in a data frame indicates whether or not it’s a factor?</a></li>
+<li class="chapter" data-level="" data-path="chapter-21.html"><a href="chapter-21.html#what-happens-when-you-use-the-map-functions-on-vectors-that-arent-lists-what-does-map15-runif-do-why"><i class="fa fa-check"></i>3. What happens when you use the map functions on vectors that aren’t lists? What does map(1:5, runif) do? Why?</a></li>
+<li class="chapter" data-level="" data-path="chapter-21.html"><a href="chapter-21.html#what-does-map-22-rnorm-n-5-do-why-what-does-map_dbl-22-rnorm-n-5-do-why"><i class="fa fa-check"></i>4. What does map(-2:2, rnorm, n = 5) do? Why? What does map_dbl(-2:2, rnorm, n = 5) do? Why?</a></li>
+<li class="chapter" data-level="" data-path="chapter-21.html"><a href="chapter-21.html#rewrite-mapx-functiondf-lmmpg-wt-data-df-to-eliminate-the-anonymous-function."><i class="fa fa-check"></i>5. Rewrite map(x, function(df) lm(mpg ~ wt, data = df)) to eliminate the anonymous function.</a></li>
+</ul></li>
+<li><a href="chapter-21.html#exercises-61"><strong>21.9.3</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-21.html"><a href="chapter-21.html#implement-your-own-version-of-every-using-a-for-loop.-compare-it-with-purrrevery.-what-does-purrrs-version-do-that-your-version-doesnt"><i class="fa fa-check"></i>1. Implement your own version of every() using a for loop. Compare it with purrr::every(). What does purrr’s version do that your version doesn’t?</a></li>
+<li class="chapter" data-level="" data-path="chapter-21.html"><a href="chapter-21.html#create-an-enhanced-col_summary-that-applies-a-summary-function-to-every-numeric-column-in-a-data-frame."><i class="fa fa-check"></i>2. Create an enhanced col_summary() that applies a summary function to every numeric column in a data frame.</a></li>
+<li class="chapter" data-level="" data-path="chapter-21.html"><a href="chapter-21.html#a-possible-base-r-equivalent-of-col_summary-is"><i class="fa fa-check"></i>3. A possible base R equivalent of col_summary() is:</a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>VI Modeling</b></span></li>
+<li><a href="chapter-23.html#chapter-23"><strong>Chapter 23</strong></a><ul>
+<li class="chapter" data-level="" data-path="chapter-23.html"><a href="chapter-23.html"><i class="fa fa-check"></i>Notes - making simple models</a></li>
+<li><a href="chapter-23.html#exercises-62"><strong>23.2.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-23.html"><a href="chapter-23.html#one-downside-of-the-linear-model-is-that-it-is-sensitive-to-unusual-values-because-the-distance-incorporates-a-squared-term.-fit-a-linear-model-to-the-simulated-data-below-and-visualise-the-results.-rerun-a-few-times-to-generate-different-simulated-datasets.-what-do-you-notice-about-the-model"><i class="fa fa-check"></i>1. One downside of the linear model is that it is sensitive to unusual values because the distance incorporates a squared term. Fit a linear model to the simulated data below, and visualise the results. Rerun a few times to generate different simulated datasets. What do you notice about the model?</a></li>
+<li class="chapter" data-level="" data-path="chapter-23.html"><a href="chapter-23.html#one-way-to-make-linear-models-more-robust-is-to-use-a-different-distance-measure.-for-example-instead-of-root-mean-squared-distance-you-could-use-mean-absolute-distance"><i class="fa fa-check"></i>2. One way to make linear models more robust is to use a different distance measure. For example, instead of root-mean-squared distance, you could use mean-absolute distance:</a></li>
+<li class="chapter" data-level="" data-path="chapter-23.html"><a href="chapter-23.html#one-challenge-with-performing-numerical-optimisation-is-that-its-only-guaranteed-to-find-one-local-optimum.-whats-the-problem-with-optimising-a-three-parameter-model-like-this"><i class="fa fa-check"></i>3. One challenge with performing numerical optimisation is that it’s only guaranteed to find one local optimum. What’s the problem with optimising a three parameter model like this?</a></li>
+</ul></li>
+<li><a href="chapter-23.html#exercises-63"><strong>23.3.3</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-23.html"><a href="chapter-23.html#instead-of-using-lm-to-fit-a-straight-line-you-can-use-loess-to-fit-a-smooth-curve.-repeat-the-process-of-model-fitting-grid-generation-predictions-and-visualisation-on-sim1-using-loess-instead-of-lm.-how-does-the-result-compare-to-geom_smooth"><i class="fa fa-check"></i>1. Instead of using lm() to fit a straight line, you can use loess() to fit a smooth curve. Repeat the process of model fitting, grid generation, predictions, and visualisation on sim1 using loess() instead of lm(). How does the result compare to geom_smooth()?</a></li>
+<li class="chapter" data-level="" data-path="chapter-23.html"><a href="chapter-23.html#add_predictions-is-paired-with-gather_predictions-and-spread_predictions.-how-do-these-three-functions-differ"><i class="fa fa-check"></i>2. add_predictions() is paired with gather_predictions() and spread_predictions(). How do these three functions differ?</a></li>
+<li class="chapter" data-level="" data-path="chapter-23.html"><a href="chapter-23.html#what-does-geom_ref_line-do-what-package-does-it-come-from-why-is-displaying-a-reference-line-in-plots-showing-residuals-useful-and-important"><i class="fa fa-check"></i>3. What does geom_ref_line() do? What package does it come from? Why is displaying a reference line in plots showing residuals useful and important?</a></li>
+<li class="chapter" data-level="" data-path="chapter-23.html"><a href="chapter-23.html#why-might-you-want-to-look-at-a-frequency-polygon-of-absolute-residuals-what-are-the-pros-and-cons-compared-to-looking-at-the-raw-residuals"><i class="fa fa-check"></i>4. Why might you want to look at a frequency polygon of absolute residuals? What are the pros and cons compared to looking at the raw residuals?</a></li>
+</ul></li>
+<li><a href="chapter-23.html#exercises-64"><strong>23.4.5</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-23.html"><a href="chapter-23.html#what-happens-if-you-repeat-the-analysis-of-sim2-using-a-model-without-an-intercept.-what-happens-to-the-model-equation-what-happens-to-the-predictions"><i class="fa fa-check"></i>1. What happens if you repeat the analysis of sim2 using a model without an intercept. What happens to the model equation? What happens to the predictions?</a></li>
+<li class="chapter" data-level="" data-path="chapter-23.html"><a href="chapter-23.html#use-model_matrix-to-explore-the-equations-generated-for-the-models-i-fit-to-sim3-and-sim4.-why-is-a-good-shorthand-for-interaction"><i class="fa fa-check"></i>2. Use model_matrix() to explore the equations generated for the models I fit to sim3 and sim4. Why is * a good shorthand for interaction?</a></li>
+<li class="chapter" data-level="" data-path="chapter-23.html"><a href="chapter-23.html#using-the-basic-principles-convert-the-formulas-in-the-following-two-models-into-functions.-hint-start-by-converting-the-categorical-variable-into-0-1-variables."><i class="fa fa-check"></i>3. Using the basic principles, convert the formulas in the following two models into functions. (Hint: start by converting the categorical variable into 0-1 variables.)</a></li>
+<li class="chapter" data-level="" data-path="chapter-23.html"><a href="chapter-23.html#for-sim4-which-of-mod1-and-mod2-is-better-i-think-mod2-does-a-slightly-better-job-at-removing-patterns-but-its-pretty-subtle.-can-you-come-up-with-a-plot-to-support-my-claim"><i class="fa fa-check"></i>4. For sim4, which of mod1 and mod2 is better? I think mod2 does a slightly better job at removing patterns, but it’s pretty subtle. Can you come up with a plot to support my claim?</a></li>
+</ul></li>
+</ul></li>
+<li><a href="chapter-24.html#chapter-24"><strong>Chapter 24</strong></a><ul>
+<li><a href="chapter-24.html#exercises-65"><strong>24.2.3</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-24.html"><a href="chapter-24.html"><i class="fa fa-check"></i>1. In the plot of lcarat vs. lprice, there are some bright vertical strips. What do they represent?</a></li>
+<li class="chapter" data-level="" data-path="chapter-24.html"><a href="chapter-24.html#if-logprice-a_0-a_1-logcarat-what-does-that-say-about-the-relationship-between-price-and-carat"><i class="fa fa-check"></i>2. If log(price) = a_0 + a_1 * log(carat), what does that say about the relationship between price and carat?</a></li>
+<li class="chapter" data-level="" data-path="chapter-24.html"><a href="chapter-24.html#extract-the-diamonds-that-have-very-high-and-very-low-residuals.-is-there-anything-unusual-about-these-diamonds-are-they-particularly-bad-or-good-or-do-you-think-these-are-pricing-errors"><i class="fa fa-check"></i>3. Extract the diamonds that have very high and very low residuals. Is there anything unusual about these diamonds? Are they particularly bad or good, or do you think these are pricing errors?</a></li>
+<li class="chapter" data-level="" data-path="chapter-24.html"><a href="chapter-24.html#does-the-final-model-mod_diamond2-do-a-good-job-of-predicting-diamond-prices-would-you-trust-it-to-tell-you-how-much-to-spend-if-you-were-buying-a-diamond"><i class="fa fa-check"></i>4. Does the final model, mod_diamond2, do a good job of predicting diamond prices? Would you trust it to tell you how much to spend if you were buying a diamond?</a></li>
+</ul></li>
+<li><a href="chapter-24.html#exercises-66"><strong>24.3.5</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-24.html"><a href="chapter-24.html#use-your-google-sleuthing-skills-to-brainstorm-why-there-were-fewer-than-expected-flights-on-jan-20-may-26-and-sep-1.-hint-they-all-have-the-same-explanation.-how-would-these-days-generalise-to-another-year"><i class="fa fa-check"></i>1. Use your Google sleuthing skills to brainstorm why there were fewer than expected flights on Jan 20, May 26, and Sep 1. (Hint: they all have the same explanation.) How would these days generalise to another year?</a></li>
+<li class="chapter" data-level="" data-path="chapter-24.html"><a href="chapter-24.html#what-do-the-three-days-with-high-positive-residuals-represent-how-would-these-days-generalise-to-another-year"><i class="fa fa-check"></i>2. What do the three days with high positive residuals represent? How would these days generalise to another year?</a></li>
+<li class="chapter" data-level="" data-path="chapter-24.html"><a href="chapter-24.html#create-a-new-variable-that-splits-the-wday-variable-into-terms-but-only-for-saturdays-i.e.it-should-have-thurs-fri-but-sat-summer-sat-spring-sat-fall.-how-does-this-model-compare-with-the-model-with-every-combination-of-wday-and-term"><i class="fa fa-check"></i>3. Create a new variable that splits the wday variable into terms, but only for Saturdays, i.e. it should have Thurs, Fri, but Sat-summer, Sat-spring, Sat-fall. How does this model compare with the model with every combination of wday and term?</a></li>
+<li class="chapter" data-level="" data-path="chapter-24.html"><a href="chapter-24.html#create-a-new-wday-variable-that-combines-the-day-of-week-term-for-saturdays-and-public-holidays.-what-do-the-residuals-of-that-model-look-like"><i class="fa fa-check"></i>4. Create a new wday variable that combines the day of week, term (for Saturdays), and public holidays. What do the residuals of that model look like?</a></li>
+<li class="chapter" data-level="" data-path="chapter-24.html"><a href="chapter-24.html#what-happens-if-you-fit-a-day-of-week-effect-that-varies-by-month-i.e.n-wday-month-why-is-this-not-very-helpful"><i class="fa fa-check"></i>5. What happens if you fit a day of week effect that varies by month (i.e. n ~ wday * month)? Why is this not very helpful?</a></li>
+<li class="chapter" data-level="" data-path="chapter-24.html"><a href="chapter-24.html#what-would-you-expect-the-model-n-wday-nsdate-5-to-look-like-knowing-what-you-know-about-the-data-why-would-you-expect-it-to-be-not-particularly-effective"><i class="fa fa-check"></i>6. What would you expect the model n ~ wday + ns(date, 5) to look like? Knowing what you know about the data, why would you expect it to be not particularly effective?</a></li>
+<li class="chapter" data-level="" data-path="chapter-24.html"><a href="chapter-24.html#we-hypothesised-that-people-leaving-on-sundays-are-more-likely-to-be-business-travellers-who-need-to-be-somewhere-on-monday.-explore-that-hypothesis-by-seeing-how-it-breaks-down-based-on-distance-and-time-if-its-true-youd-expect-to-see-more-sunday-evening-flights-to-places-that-are-far-away."><i class="fa fa-check"></i>7. We hypothesised that people leaving on Sundays are more likely to be business travellers who need to be somewhere on Monday. Explore that hypothesis by seeing how it breaks down based on distance and time: if it’s true, you’d expect to see more Sunday evening flights to places that are far away.</a></li>
+<li class="chapter" data-level="" data-path="chapter-24.html"><a href="chapter-24.html#its-a-little-frustrating-that-sunday-and-saturday-are-on-separate-ends-of-the-plot.-write-a-small-function-to-set-the-levels-of-the-factor-so-that-the-week-starts-on-monday."><i class="fa fa-check"></i>8. It’s a little frustrating that Sunday and Saturday are on separate ends of the plot. Write a small function to set the levels of the factor so that the week starts on Monday.</a></li>
+</ul></li>
+</ul></li>
+<li><a href="chapter-25.html#chapter-25"><strong>Chapter 25</strong></a><ul>
+<li><a href="chapter-25.html#exercises-67"><strong>25.2.5</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-25.html"><a href="chapter-25.html"><i class="fa fa-check"></i>1. A linear trend seems to be slightly too simple for the overall trend. Can you do better with a quadratic polynomial? How can you interpret the coefficients of the quadratic? (Hint you might want to transform year so that it has mean zero.)</a></li>
+<li class="chapter" data-level="" data-path="chapter-25.html"><a href="chapter-25.html#explore-other-methods-for-visualising-the-distribution-of-r2-per-continent.-you-might-want-to-try-the-ggbeeswarm-package-which-provides-similar-methods-for-avoiding-overlaps-as-jitter-but-uses-deterministic-methods."><i class="fa fa-check"></i>2. Explore other methods for visualising the distribution of R2 per continent. You might want to try the ggbeeswarm package, which provides similar methods for avoiding overlaps as jitter, but uses deterministic methods.</a></li>
+<li class="chapter" data-level="" data-path="chapter-25.html"><a href="chapter-25.html#to-create-the-last-plot-showing-the-data-for-the-countries-with-the-worst-model-fits-we-needed-two-steps-we-created-a-data-frame-with-one-row-per-country-and-then-semi-joined-it-to-the-original-dataset.-its-possible-to-avoid-this-join-if-we-use-unnest-instead-of-unnest.drop-true.-how"><i class="fa fa-check"></i>3. To create the last plot (showing the data for the countries with the worst model fits), we needed two steps: we created a data frame with one row per country and then semi-joined it to the original dataset. It’s possible to avoid this join if we use unnest() instead of unnest(.drop = TRUE). How?</a></li>
+</ul></li>
+<li><a href="chapter-25.html#exercises-68"><strong>25.4.5</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-25.html"><a href="chapter-25.html#list-all-the-functions-that-you-can-think-of-that-take-a-atomic-vector-and-return-a-list."><i class="fa fa-check"></i>1. List all the functions that you can think of that take a atomic vector and return a list.</a></li>
+<li class="chapter" data-level="" data-path="chapter-25.html"><a href="chapter-25.html#brainstorm-useful-summary-functions-that-like-quantile-return-multiple-values."><i class="fa fa-check"></i>2. Brainstorm useful summary functions that, like quantile(), return multiple values.</a></li>
+<li class="chapter" data-level="" data-path="chapter-25.html"><a href="chapter-25.html#whats-missing-in-the-following-data-frame-how-does-quantile-return-that-missing-piece-why-isnt-that-helpful-here"><i class="fa fa-check"></i>3. What’s missing in the following data frame? How does quantile() return that missing piece? Why isn’t that helpful here?</a></li>
+<li class="chapter" data-level="" data-path="chapter-25.html"><a href="chapter-25.html#what-does-this-code-do-why-might-might-it-be-useful"><i class="fa fa-check"></i>4. What does this code do? Why might might it be useful?</a></li>
+</ul></li>
+<li><a href="chapter-25.html#exercises-69"><strong>25.5.3</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-25.html"><a href="chapter-25.html#why-might-the-lengths-function-be-useful-for-creating-atomic-vector-columns-from-list-columns"><i class="fa fa-check"></i>1. Why might the lengths() function be useful for creating atomic vector columns from list-columns?</a></li>
+<li class="chapter" data-level="" data-path="chapter-25.html"><a href="chapter-25.html#list-the-most-common-types-of-vector-found-in-a-data-frame.-what-makes-lists-different"><i class="fa fa-check"></i>2. List the most common types of vector found in a data frame. What makes lists different?</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="part-communicate.html"><a href="part-communicate.html"><i class="fa fa-check"></i><b>1</b> (PART) Communicate</a></li>
+<li><a href="chapter-27.html#chapter-27"><strong>Chapter 27</strong></a><ul>
+<li><a href="chapter-27.html#exercises-70"><strong>27.2.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-27.html"><a href="chapter-27.html"><i class="fa fa-check"></i>1. Create a new notebook using File &gt; New File &gt; R Notebook. Read the instructions. Practice running the chunks. Verify that you can modify the code, re-run it, and see modified output.</a></li>
+<li class="chapter" data-level="" data-path="chapter-27.html"><a href="chapter-27.html#create-a-new-r-markdown-document-with-file-new-file-r-markdown-knit-it-by-clicking-the-appropriate-button.-knit-it-by-using-the-appropriate-keyboard-short-cut.-verify-that-you-can-modify-the-input-and-see-the-output-update."><i class="fa fa-check"></i>2. Create a new R Markdown document with File &gt; New File &gt; R Markdown… Knit it by clicking the appropriate button. Knit it by using the appropriate keyboard short cut. Verify that you can modify the input and see the output update.</a></li>
+<li class="chapter" data-level="" data-path="chapter-27.html"><a href="chapter-27.html#compare-and-contrast-the-r-notebook-and-r-markdown-files-you-created-above.-how-are-the-outputs-similar-how-are-they-different-how-are-the-inputs-similar-how-are-they-different-what-happens-if-you-copy-the-yaml-header-from-one-to-the-other"><i class="fa fa-check"></i>3. Compare and contrast the R notebook and R markdown files you created above. How are the outputs similar? How are they different? How are the inputs similar? How are they different? What happens if you copy the YAML header from one to the other?</a></li>
+<li class="chapter" data-level="" data-path="chapter-27.html"><a href="chapter-27.html#create-one-new-r-markdown-document-for-each-of-the-three-built-in-formats-html-pdf-and-word.-knit-each-of-the-three-documents.-how-does-the-output-differ-how-does-the-input-differ-you-may-need-to-install-latex-in-order-to-build-the-pdf-output-rstudio-will-prompt-you-if-this-is-necessary."><i class="fa fa-check"></i>4. Create one new R Markdown document for each of the three built-in formats: HTML, PDF and Word. Knit each of the three documents. How does the output differ? How does the input differ? (You may need to install LaTeX in order to build the PDF output — RStudio will prompt you if this is necessary.)</a></li>
+</ul></li>
+<li><a href="chapter-27.html#exercises-71"><strong>27.3.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-27.html"><a href="chapter-27.html#practice-what-youve-learned-by-creating-a-brief-cv.-the-title-should-be-your-name-and-you-should-include-headings-for-at-least-education-or-employment.-each-of-the-sections-should-include-a-bulleted-list-of-jobsdegrees.-highlight-the-year-in-bold."><i class="fa fa-check"></i>1. Practice what you’ve learned by creating a brief CV. The title should be your name, and you should include headings for (at least) education or employment. Each of the sections should include a bulleted list of jobs/degrees. Highlight the year in bold.</a></li>
+<li class="chapter" data-level="" data-path="chapter-27.html"><a href="chapter-27.html#using-the-r-markdown-quick-reference-figure-out-how-to"><i class="fa fa-check"></i>2. Using the R Markdown quick reference, figure out how to:</a></li>
+<li><a href="chapter-27.html#copy-and-paste-the-contents-of-diamond-sizes.rmd-from-httpsgithub.comhadleyr4dstreemasterrmarkdown-in-to-a-local-r-markdown-document.-check-that-you-can-run-it-then-add-text-after-the-frequency-polygon-that-describes-its-most-striking-features.">3. Copy and paste the contents of diamond-sizes.Rmd from <a href="https://github.com/hadley/r4ds/tree/master/rmarkdown" class="uri">https://github.com/hadley/r4ds/tree/master/rmarkdown</a> in to a local R markdown document. Check that you can run it, then add text after the frequency polygon that describes its most striking features.</a></li>
+</ul></li>
+<li><a href="chapter-27.html#exercises-72"><strong>27.4.7</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-27.html"><a href="chapter-27.html#add-a-section-that-explores-how-diamond-sizes-vary-by-cut-colour-and-clarity.-assume-youre-writing-a-report-for-someone-who-doesnt-know-r-and-instead-of-setting-echo-false-on-each-chunk-set-a-global-option."><i class="fa fa-check"></i>1. Add a section that explores how diamond sizes vary by cut, colour, and clarity. Assume you’re writing a report for someone who doesn’t know R, and instead of setting echo = FALSE on each chunk, set a global option.</a></li>
+<li><a href="chapter-27.html#download-diamond-sizes.rmd-from-httpsgithub.comhadleyr4dstreemasterrmarkdown.-add-a-section-that-describes-the-largest-20-diamonds-including-a-table-that-displays-their-most-important-attributes.">2. Download diamond-sizes.Rmd from <a href="https://github.com/hadley/r4ds/tree/master/rmarkdown" class="uri">https://github.com/hadley/r4ds/tree/master/rmarkdown</a>. Add a section that describes the largest 20 diamonds, including a table that displays their most important attributes.</a></li>
+<li class="chapter" data-level="" data-path="chapter-27.html"><a href="chapter-27.html#modify-diamonds-sizes.rmd-to-use-comma-to-produce-nicely-formatted-output.-also-include-the-percentage-of-diamonds-that-are-larger-than-2.5-carats."><i class="fa fa-check"></i>3. Modify diamonds-sizes.Rmd to use comma() to produce nicely formatted output. Also include the percentage of diamonds that are larger than 2.5 carats.</a></li>
+<li class="chapter" data-level="" data-path="chapter-27.html"><a href="chapter-27.html#set-up-a-network-of-chunks-where-d-depends-on-c-and-b-and-both-b-and-c-depend-on-a.-have-each-chunk-print-lubridatenow-set-cache-true-then-verify-your-understanding-of-caching."><i class="fa fa-check"></i>4. Set up a network of chunks where d depends on c and b, and both b and c depend on a. Have each chunk print lubridate::now(), set cache = TRUE, then verify your understanding of caching.</a></li>
+</ul></li>
+</ul></li>
+<li><a href="chapter-28.html#chapter-28"><strong>Chapter 28</strong></a><ul>
+<li><a href="chapter-28.html#exercises-73"><strong>28.2.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-28.html"><a href="chapter-28.html"><i class="fa fa-check"></i>1. Create one plot on the fuel economy data with customised title, subtitle, caption, x, y, and colour labels.</a></li>
+<li class="chapter" data-level="" data-path="chapter-28.html"><a href="chapter-28.html#the-geom_smooth-is-somewhat-misleading-because-the-hwy-for-large-engines-is-skewed-upwards-due-to-the-inclusion-of-lightweight-sports-cars-with-big-engines.-use-your-modelling-tools-to-fit-and-display-a-better-model."><i class="fa fa-check"></i>2. The geom_smooth() is somewhat misleading because the hwy for large engines is skewed upwards due to the inclusion of lightweight sports cars with big engines. Use your modelling tools to fit and display a better model.</a></li>
+<li class="chapter" data-level="" data-path="chapter-28.html"><a href="chapter-28.html#take-an-exploratory-graphic-that-youve-created-in-the-last-month-and-add-informative-titles-to-make-it-easier-for-others-to-understand."><i class="fa fa-check"></i>3. Take an exploratory graphic that you’ve created in the last month, and add informative titles to make it easier for others to understand.</a></li>
+</ul></li>
+<li><a href="chapter-28.html#exercises-74"><strong>28.3.1</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-28.html"><a href="chapter-28.html#use-geom_text-with-infinite-positions-to-place-text-at-the-four-corners-of-the-plot."><i class="fa fa-check"></i>1. Use geom_text() with infinite positions to place text at the four corners of the plot.</a></li>
+<li class="chapter" data-level="" data-path="chapter-28.html"><a href="chapter-28.html#read-the-documentation-for-annotate.-how-can-you-use-it-to-add-a-text-label-to-a-plot-without-having-to-create-a-tibble"><i class="fa fa-check"></i>2. Read the documentation for annotate(). How can you use it to add a text label to a plot without having to create a tibble?</a></li>
+<li class="chapter" data-level="" data-path="chapter-28.html"><a href="chapter-28.html#how-do-labels-with-geom_text-interact-with-faceting-how-can-you-add-a-label-to-a-single-facet-how-can-you-put-a-different-label-in-each-facet-hint-think-about-the-underlying-data."><i class="fa fa-check"></i>3. How do labels with geom_text() interact with faceting? How can you add a label to a single facet? How can you put a different label in each facet? (Hint: think about the underlying data.)</a></li>
+<li class="chapter" data-level="" data-path="chapter-28.html"><a href="chapter-28.html#what-arguments-to-geom_label-control-the-appearance-of-the-background-box"><i class="fa fa-check"></i>4. What arguments to geom_label() control the appearance of the background box?</a></li>
+<li class="chapter" data-level="" data-path="chapter-28.html"><a href="chapter-28.html#what-are-the-four-arguments-to-arrow-how-do-they-work-create-a-series-of-plots-that-demonstrate-the-most-important-options."><i class="fa fa-check"></i>5. What are the four arguments to arrow()? How do they work? Create a series of plots that demonstrate the most important options.</a></li>
+</ul></li>
+<li><a href="chapter-28.html#exercises-75"><strong>28.4.4</strong> Exercises</a><ul>
+<li class="chapter" data-level="" data-path="chapter-28.html"><a href="chapter-28.html#why-doesnt-the-following-code-override-the-default-scale"><i class="fa fa-check"></i>1. Why doesn’t the following code override the default scale?</a></li>
+<li class="chapter" data-level="" data-path="chapter-28.html"><a href="chapter-28.html#what-is-the-first-argument-to-every-scale-how-does-it-compare-to-labs"><i class="fa fa-check"></i>2. What is the first argument to every scale? How does it compare to labs()?</a></li>
+<li class="chapter" data-level="" data-path="chapter-28.html"><a href="chapter-28.html#change-the-display-of-the-presidential-terms-by"><i class="fa fa-check"></i>3. Change the display of the presidential terms by:</a></li>
+<li class="chapter" data-level="" data-path="chapter-28.html"><a href="chapter-28.html#use-override.aes-to-make-the-legend-on-the-following-plot-easier-to-see."><i class="fa fa-check"></i>4. Use override.aes to make the legend on the following plot easier to see.</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R for Data Science Walkthrough</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="chapter-11-data-import" class="section level1 unnumbered">
+<h1><strong>Chapter 11</strong> Data Import</h1>
+<div id="notes---reading-in-files" class="section level2 unnumbered">
+<h2><strong>11.2</strong> Notes - Reading in files</h2>
+<p>To practice various utilities for reading in files, we can use inline csv designation, which requires proper newline designation. Below are some examples of reading in inline csv chunks with various arguments tailored for the type of data being read in.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># basic read_csv()</span>
+<span class="kw">read_csv</span>(<span class="st">&quot;a,b,c</span>
+<span class="st">         1,2,3</span>
+<span class="st">         4,5,6&quot;</span>)</code></pre></div>
+<pre><code>## # A tibble: 2 x 3
+##       a     b     c
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1     1     2     3
+## 2     4     5     6</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># read in data, ignoring metadata lines</span>
+<span class="kw">read_csv</span>(<span class="st">&quot;The first line of metadata</span>
+<span class="st">The second line of metadata</span>
+<span class="st">  x,y,z</span>
+<span class="st">  1,2,3&quot;</span>, <span class="dt">skip =</span> <span class="dv">2</span>)</code></pre></div>
+<pre><code>## # A tibble: 1 x 3
+##       x     y     z
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1     1     2     3</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># designate lines to skip that start with specific symbol</span>
+<span class="kw">read_csv</span>(<span class="st">&quot;# A comment I want to skip</span>
+<span class="st">  x,y,z</span>
+<span class="st">  1,2,3&quot;</span>, <span class="dt">comment =</span> <span class="st">&quot;#&quot;</span>)</code></pre></div>
+<pre><code>## # A tibble: 1 x 3
+##       x     y     z
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1     1     2     3</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># read in file that doesnt have column names</span>
+<span class="kw">read_csv</span>(<span class="st">&quot;1,2,3</span><span class="ch">\n</span><span class="st">4,5,6&quot;</span>, <span class="dt">col_names =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<pre><code>## # A tibble: 2 x 3
+##      X1    X2    X3
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1     1     2     3
+## 2     4     5     6</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># read in file and specify column names</span>
+<span class="kw">read_csv</span>(<span class="st">&quot;1,2,3</span><span class="ch">\n</span><span class="st">4,5,6&quot;</span>, <span class="dt">col_names =</span> <span class="kw">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>, <span class="st">&quot;z&quot;</span>))</code></pre></div>
+<pre><code>## # A tibble: 2 x 3
+##       x     y     z
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1     1     2     3
+## 2     4     5     6</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># read in file, replacing symbol with missing values (NA)</span>
+<span class="kw">read_csv</span>(<span class="st">&quot;a,b,c</span><span class="ch">\n</span><span class="st">1,2,.&quot;</span>, <span class="dt">na =</span> <span class="st">&quot;.&quot;</span>)</code></pre></div>
+<pre><code>## # A tibble: 1 x 3
+##       a     b c    
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;lgl&gt;
+## 1     1     2 NA</code></pre>
+</div>
+<div id="exercises-19" class="section level2 unnumbered">
+<h2><strong>11.2.2</strong> Exercises</h2>
+<div id="what-function-would-you-use-to-read-a-file-where-fields-were-separated-with" class="section level3 unnumbered">
+<h3>1. What function would you use to read a file where fields were separated with “|”?</h3>
+<p>I would use <code>read_delim()</code> to read in a file where fields are separated with “|”. For example:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">read_delim</span> (<span class="st">&quot;a|b|c</span>
+<span class="st">            1|2|3</span>
+<span class="st">            4|5|6&quot;</span>, <span class="st">&quot;|&quot;</span>)</code></pre></div>
+<pre><code>## # A tibble: 2 x 3
+##   a                   b     c
+##   &lt;chr&gt;           &lt;dbl&gt; &lt;dbl&gt;
+## 1 &quot;            1&quot;     2     3
+## 2 &quot;            4&quot;     5     6</code></pre>
+</div>
+<div id="apart-from-file-skip-and-comment-what-other-arguments-do-read_csv-and-read_tsv-have-in-common" class="section level3 unnumbered">
+<h3>2. Apart from file, skip, and comment, what other arguments do read_csv() and read_tsv() have in common?</h3>
+<p>Based on the documentation, read_csv() and read_tsv() have col_names, col_types, locale, na, quoted_na, quote, trim_ws, n_max, guess_max, and progress.</p>
+</div>
+<div id="what-are-the-most-important-arguments-to-read_fwf" class="section level3 unnumbered">
+<h3>3. What are the most important arguments to read_fwf()?</h3>
+<p>The most important arguments are the file, and the col_positions arguments. There are many options to specify col_positions, including fwf_empty(), fwf_widths(), fwf_positions(), and fwf_cols(). Below is the example provided in the documentation:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fwf_sample &lt;-<span class="st"> </span><span class="kw">readr_example</span>(<span class="st">&quot;fwf-sample.txt&quot;</span>)
+<span class="kw">cat</span>(<span class="kw">read_lines</span>(fwf_sample))</code></pre></div>
+<pre><code>## John Smith          WA        418-Y11-4111 Mary Hartford       CA        319-Z19-4341 Evan Nolan          IL        219-532-c301</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># You can specify column positions in several ways:</span>
+<span class="co"># 1. Guess based on position of empty columns</span>
+<span class="kw">read_fwf</span>(fwf_sample, <span class="kw">fwf_empty</span>(fwf_sample, <span class="dt">col_names =</span> <span class="kw">c</span>(<span class="st">&quot;first&quot;</span>, <span class="st">&quot;last&quot;</span>, <span class="st">&quot;state&quot;</span>, <span class="st">&quot;ssn&quot;</span>)))</code></pre></div>
+<pre><code>## Parsed with column specification:
+## cols(
+##   first = col_character(),
+##   last = col_character(),
+##   state = col_character(),
+##   ssn = col_character()
+## )</code></pre>
+<pre><code>## # A tibble: 3 x 4
+##   first last     state ssn         
+##   &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;       
+## 1 John  Smith    WA    418-Y11-4111
+## 2 Mary  Hartford CA    319-Z19-4341
+## 3 Evan  Nolan    IL    219-532-c301</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># 2. A vector of field widths</span>
+<span class="kw">read_fwf</span>(fwf_sample, <span class="kw">fwf_widths</span>(<span class="kw">c</span>(<span class="dv">20</span>, <span class="dv">10</span>, <span class="dv">12</span>), <span class="kw">c</span>(<span class="st">&quot;name&quot;</span>, <span class="st">&quot;state&quot;</span>, <span class="st">&quot;ssn&quot;</span>)))</code></pre></div>
+<pre><code>## Parsed with column specification:
+## cols(
+##   name = col_character(),
+##   state = col_character(),
+##   ssn = col_character()
+## )</code></pre>
+<pre><code>## # A tibble: 3 x 3
+##   name          state ssn         
+##   &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt;       
+## 1 John Smith    WA    418-Y11-4111
+## 2 Mary Hartford CA    319-Z19-4341
+## 3 Evan Nolan    IL    219-532-c301</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># 3. Paired vectors of start and end positions</span>
+<span class="kw">read_fwf</span>(fwf_sample, <span class="kw">fwf_positions</span>(<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">30</span>), <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">42</span>), <span class="kw">c</span>(<span class="st">&quot;name&quot;</span>, <span class="st">&quot;ssn&quot;</span>)))</code></pre></div>
+<pre><code>## Parsed with column specification:
+## cols(
+##   name = col_character(),
+##   ssn = col_character()
+## )</code></pre>
+<pre><code>## # A tibble: 3 x 2
+##   name       ssn         
+##   &lt;chr&gt;      &lt;chr&gt;       
+## 1 John Smith 418-Y11-4111
+## 2 Mary Hartf 319-Z19-4341
+## 3 Evan Nolan 219-532-c301</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># 4. Named arguments with start and end positions</span>
+<span class="kw">read_fwf</span>(fwf_sample, <span class="kw">fwf_cols</span>(<span class="dt">name =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">10</span>), <span class="dt">ssn =</span> <span class="kw">c</span>(<span class="dv">30</span>, <span class="dv">42</span>)))</code></pre></div>
+<pre><code>## Parsed with column specification:
+## cols(
+##   name = col_character(),
+##   ssn = col_character()
+## )</code></pre>
+<pre><code>## # A tibble: 3 x 2
+##   name       ssn         
+##   &lt;chr&gt;      &lt;chr&gt;       
+## 1 John Smith 418-Y11-4111
+## 2 Mary Hartf 319-Z19-4341
+## 3 Evan Nolan 219-532-c301</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># 5. Named arguments with column widths</span>
+<span class="kw">read_fwf</span>(fwf_sample, <span class="kw">fwf_cols</span>(<span class="dt">name =</span> <span class="dv">20</span>, <span class="dt">state =</span> <span class="dv">10</span>, <span class="dt">ssn =</span> <span class="dv">12</span>))</code></pre></div>
+<pre><code>## Parsed with column specification:
+## cols(
+##   name = col_character(),
+##   state = col_character(),
+##   ssn = col_character()
+## )</code></pre>
+<pre><code>## # A tibble: 3 x 3
+##   name          state ssn         
+##   &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt;       
+## 1 John Smith    WA    418-Y11-4111
+## 2 Mary Hartford CA    319-Z19-4341
+## 3 Evan Nolan    IL    219-532-c301</code></pre>
+</div>
+<div id="sometimes-strings-in-a-csv-file-contain-commas.-to-prevent-them-from-causing-problems-they-need-to-be-surrounded-by-a-quoting-character-like-or-.-by-convention-read_csv-assumes-that-the-quoting-character-will-be-and-if-you-want-to-change-it-youll-need-to-use-read_delim-instead.-what-arguments-do-you-need-to-specify-to-read-the-following-text-into-a-data-frame--" class="section level3">
+<h3><span class="header-section-number">0.0.1</span> 4. Sometimes strings in a CSV file contain commas. To prevent them from causing problems they need to be surrounded by a quoting character, like &quot; or ’. By convention, read_csv() assumes that the quoting character will be “, and if you want to change it you’ll need to use read_delim() instead. What arguments do you need to specify to read the following text into a data frame? {-}</h3>
+<p><code>&quot;x,y\n1,'a,b'&quot;</code></p>
+<p>In this example, the string is surrounded by the quoting character ’. This is not what read_csv() default assumes. In the documentation it looks like you can specify the quote argument for both read_csv() and read_delim(). Below I read in the text using both methods, specifying <code>quote = &quot;\'&quot;</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">read_csv</span> (<span class="st">&quot;x,y</span><span class="ch">\n</span><span class="st">1,&#39;a,b&#39;&quot;</span>, <span class="dt">quote =</span> <span class="st">&quot;</span><span class="ch">\&#39;</span><span class="st">&quot;</span>)</code></pre></div>
+<pre><code>## # A tibble: 1 x 2
+##       x y    
+##   &lt;dbl&gt; &lt;chr&gt;
+## 1     1 a,b</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">read_delim</span>(<span class="st">&quot;x,y</span><span class="ch">\n</span><span class="st">1,&#39;a,b&#39;&quot;</span>, <span class="dt">delim =</span> <span class="st">&quot;,&quot;</span>, <span class="dt">quote =</span> <span class="st">&quot;</span><span class="ch">\&#39;</span><span class="st">&quot;</span>)</code></pre></div>
+<pre><code>## # A tibble: 1 x 2
+##       x y    
+##   &lt;dbl&gt; &lt;chr&gt;
+## 1     1 a,b</code></pre>
+</div>
+<div id="identify-what-is-wrong-with-each-of-the-following-inline-csv-files.-what-happens-when-you-run-the-code" class="section level3 unnumbered">
+<h3>5. Identify what is wrong with each of the following inline CSV files. What happens when you run the code?</h3>
+<p>I have annotated the code below with the problems for each of the inline CSV files. The output should be displayed if you are viewing the rendered <code>.md file</code> (you won’t see the output if this is a <code>.Rmd</code> file).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># There are not enough column names to go with the amount of columns in the data.</span>
+<span class="kw">read_csv</span>(<span class="st">&quot;a,b</span><span class="ch">\n</span><span class="st">1,2,3</span><span class="ch">\n</span><span class="st">4,5,6&quot;</span>)</code></pre></div>
+<pre><code>## Warning: 2 parsing failures.
+## row col  expected    actual         file
+##   1  -- 2 columns 3 columns literal data
+##   2  -- 2 columns 3 columns literal data</code></pre>
+<pre><code>## # A tibble: 2 x 2
+##       a     b
+##   &lt;dbl&gt; &lt;dbl&gt;
+## 1     1     2
+## 2     4     5</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Mismatched numbers of columns again. The first row only has 2, whereas the 2nd row has 4, and the header only has 3.</span>
+<span class="kw">read_csv</span>(<span class="st">&quot;a,b,c</span><span class="ch">\n</span><span class="st">1,2</span><span class="ch">\n</span><span class="st">1,2,3,4&quot;</span>)</code></pre></div>
+<pre><code>## Warning: 2 parsing failures.
+## row col  expected    actual         file
+##   1  -- 3 columns 2 columns literal data
+##   2  -- 3 columns 4 columns literal data</code></pre>
+<pre><code>## # A tibble: 2 x 3
+##       a     b     c
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1     1     2    NA
+## 2     1     2     3</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Two header columns, and one column of data. Also the &quot;1&quot; is still being read in as an integer.</span>
+<span class="kw">read_csv</span>(<span class="st">&quot;a,b</span><span class="ch">\n\&quot;</span><span class="st">1&quot;</span>)</code></pre></div>
+<pre><code>## Warning: 2 parsing failures.
+## row col                     expected    actual         file
+##   1  a  closing quote at end of file           literal data
+##   1  -- 2 columns                    1 columns literal data</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##       a b    
+##   &lt;dbl&gt; &lt;chr&gt;
+## 1     1 &lt;NA&gt;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Since there are both integer values and character values in the same column, both columns are defined as character.</span>
+<span class="kw">read_csv</span>(<span class="st">&quot;a,b</span><span class="ch">\n</span><span class="st">1,2</span><span class="ch">\n</span><span class="st">a,b&quot;</span>)</code></pre></div>
+<pre><code>## # A tibble: 2 x 2
+##   a     b    
+##   &lt;chr&gt; &lt;chr&gt;
+## 1 1     2    
+## 2 a     b</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># I assume &quot;;&quot; was meant to be the delimiter. The csv only has one observation. Use read_delim(&quot;a;b\n1;3&quot;, &quot;;&quot;) instead.</span>
+<span class="kw">read_csv</span>(<span class="st">&quot;a;b</span><span class="ch">\n</span><span class="st">1;3&quot;</span>)</code></pre></div>
+<pre><code>## # A tibble: 1 x 1
+##   `a;b`
+##   &lt;chr&gt;
+## 1 1;3</code></pre>
+</div>
+</div>
+<div id="notes---parsing-a-vector" class="section level2 unnumbered">
+<h2><strong>11.3</strong> Notes - Parsing a vector</h2>
+<p>Parsing vectors or files can be useful to convert variables to their appropriate classes. For example, if a column of integer values was read in as characters, we can convert the data back into integers using parse_integer(). Below are the provided examples of use:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(<span class="kw">parse_logical</span>(<span class="kw">c</span>(<span class="st">&quot;TRUE&quot;</span>, <span class="st">&quot;FALSE&quot;</span>, <span class="st">&quot;NA&quot;</span>)))</code></pre></div>
+<pre><code>##  logi [1:3] TRUE FALSE NA</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(<span class="kw">parse_integer</span>(<span class="kw">c</span>(<span class="st">&quot;1&quot;</span>, <span class="st">&quot;2&quot;</span>, <span class="st">&quot;3&quot;</span>)))</code></pre></div>
+<pre><code>##  int [1:3] 1 2 3</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(<span class="kw">parse_date</span>(<span class="kw">c</span>(<span class="st">&quot;2010-01-01&quot;</span>, <span class="st">&quot;1979-10-14&quot;</span>)))</code></pre></div>
+<pre><code>##  Date[1:2], format: &quot;2010-01-01&quot; &quot;1979-10-14&quot;</code></pre>
+<p>Below are the other examples using parsing functions. Using the problems() function on a parsed vector seems especially useful!</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># can specify na values if present in data</span>
+<span class="kw">parse_integer</span>(<span class="kw">c</span>(<span class="st">&quot;1&quot;</span>, <span class="st">&quot;231&quot;</span>, <span class="st">&quot;.&quot;</span>, <span class="st">&quot;456&quot;</span>), <span class="dt">na =</span> <span class="st">&quot;.&quot;</span>)</code></pre></div>
+<pre><code>## [1]   1 231  NA 456</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="kw">parse_integer</span>(<span class="kw">c</span>(<span class="st">&quot;123&quot;</span>, <span class="st">&quot;345&quot;</span>, <span class="st">&quot;abc&quot;</span>, <span class="st">&quot;123.45&quot;</span>))</code></pre></div>
+<pre><code>## Warning: 2 parsing failures.
+## row col               expected actual
+##   3  -- an integer                abc
+##   4  -- no trailing characters    .45</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x</code></pre></div>
+<pre><code>## [1] 123 345  NA  NA
+## attr(,&quot;problems&quot;)
+## # A tibble: 2 x 4
+##     row   col expected               actual
+##   &lt;int&gt; &lt;int&gt; &lt;chr&gt;                  &lt;chr&gt; 
+## 1     3    NA an integer             abc   
+## 2     4    NA no trailing characters .45</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">problems</span>(x)</code></pre></div>
+<pre><code>## # A tibble: 2 x 4
+##     row   col expected               actual
+##   &lt;int&gt; &lt;int&gt; &lt;chr&gt;                  &lt;chr&gt; 
+## 1     3    NA an integer             abc   
+## 2     4    NA no trailing characters .45</code></pre>
+<div id="parsing-numbers" class="section level3 unnumbered">
+<h3>11.3.1 Parsing Numbers</h3>
+<p>Reading in data obtained from outside the US is also tricky since there are different conventions used to display numerical data. For example, using “.” instead of “,” to mark decimal places or groupings. The functions have arguments that allow you to specify these marks. The examples provided in the book are below. parse_number() also ignores non-numerical symbols such as $ or %. However, parse_double does not seem to have this feature.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># you can specify the decimal mark symbol if needed</span>
+<span class="kw">parse_double</span>(<span class="st">&quot;1.23&quot;</span>)</code></pre></div>
+<pre><code>## [1] 1.23</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">parse_double</span>(<span class="st">&quot;1,23&quot;</span>, <span class="dt">locale =</span> <span class="kw">locale</span>(<span class="dt">decimal_mark =</span> <span class="st">&quot;,&quot;</span>))</code></pre></div>
+<pre><code>## [1] 1.23</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># parse_number() ignores non-numerical symbols</span>
+<span class="kw">parse_number</span>(<span class="st">&quot;$100&quot;</span>)</code></pre></div>
+<pre><code>## [1] 100</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">parse_number</span>(<span class="st">&quot;20%&quot;</span>)</code></pre></div>
+<pre><code>## [1] 20</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">parse_number</span>(<span class="st">&quot;It cost $123.45&quot;</span>)</code></pre></div>
+<pre><code>## [1] 123.45</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># You can also specify grouping marks if needed.</span>
+<span class="co"># Used in America</span>
+<span class="kw">parse_number</span>(<span class="st">&quot;$123,456,789&quot;</span>)</code></pre></div>
+<pre><code>## [1] 123456789</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Used in many parts of Europe</span>
+<span class="kw">parse_number</span>(<span class="st">&quot;123.456.789&quot;</span>, <span class="dt">locale =</span> <span class="kw">locale</span>(<span class="dt">grouping_mark =</span> <span class="st">&quot;.&quot;</span>))</code></pre></div>
+<pre><code>## [1] 123456789</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Used in Switzerland</span>
+<span class="kw">parse_number</span>(<span class="st">&quot;123&#39;456&#39;789&quot;</span>, <span class="dt">locale =</span> <span class="kw">locale</span>(<span class="dt">grouping_mark =</span> <span class="st">&quot;&#39;&quot;</span>))</code></pre></div>
+<pre><code>## [1] 123456789</code></pre>
+</div>
+<div id="parsing-strings" class="section level3 unnumbered">
+<h3>11.3.2 Parsing Strings</h3>
+<p>You can use parse_character() to parse strings. Each character in a string is encoded, and you can specify the encoding as an argument in parse_character(). To guess the encoding for a particular string you are parsing, you can use guess_encoding().</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x1 &lt;-<span class="st"> &quot;El Ni</span><span class="ch">\xf1</span><span class="st">o was particularly bad this year&quot;</span>
+x2 &lt;-<span class="st"> &quot;</span><span class="ch">\x82\xb1\x82\xf1\x82\xc9\x82\xbf\x82\xcd</span><span class="st">&quot;</span>
+
+<span class="kw">parse_character</span>(x1, <span class="dt">locale =</span> <span class="kw">locale</span>(<span class="dt">encoding =</span> <span class="st">&quot;Latin1&quot;</span>))</code></pre></div>
+<pre><code>## [1] &quot;El Niño was particularly bad this year&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">parse_character</span>(x2, <span class="dt">locale =</span> <span class="kw">locale</span>(<span class="dt">encoding =</span> <span class="st">&quot;Shift-JIS&quot;</span>))</code></pre></div>
+<pre><code>## [1] &quot;こんにちは&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">guess_encoding</span>(<span class="kw">charToRaw</span>(x1))</code></pre></div>
+<pre><code>## # A tibble: 2 x 2
+##   encoding   confidence
+##   &lt;chr&gt;           &lt;dbl&gt;
+## 1 ISO-8859-1       0.46
+## 2 ISO-8859-9       0.23</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">guess_encoding</span>(<span class="kw">charToRaw</span>(x2))</code></pre></div>
+<pre><code>## # A tibble: 1 x 2
+##   encoding confidence
+##   &lt;chr&gt;         &lt;dbl&gt;
+## 1 KOI8-R         0.42</code></pre>
+</div>
+<div id="parsing-factors" class="section level3 unnumbered">
+<h3>11.3.3 Parsing Factors</h3>
+<p>To parse a vector of factors, you can use parse_factor(), specifying the levels that you are expecting to see. If a value in the vector does not exist in the levels argument, an error is returned.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fruit &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;apple&quot;</span>, <span class="st">&quot;banana&quot;</span>)
+<span class="kw">parse_factor</span>(<span class="kw">c</span>(<span class="st">&quot;apple&quot;</span>, <span class="st">&quot;banana&quot;</span>, <span class="st">&quot;banana&quot;</span>), <span class="dt">levels =</span> fruit)</code></pre></div>
+<pre><code>## [1] apple  banana banana
+## Levels: apple banana</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">parse_factor</span>(<span class="kw">c</span>(<span class="st">&quot;apple&quot;</span>, <span class="st">&quot;banana&quot;</span>, <span class="st">&quot;bananana&quot;</span>), <span class="dt">levels =</span> fruit)</code></pre></div>
+<pre><code>## Warning: 1 parsing failure.
+## row col           expected   actual
+##   3  -- value in level set bananana</code></pre>
+<pre><code>## [1] apple  banana &lt;NA&gt;  
+## attr(,&quot;problems&quot;)
+## # A tibble: 1 x 4
+##     row   col expected           actual  
+##   &lt;int&gt; &lt;int&gt; &lt;chr&gt;              &lt;chr&gt;   
+## 1     3    NA value in level set bananana
+## Levels: apple banana</code></pre>
+</div>
+<div id="parsing-dates-date-times-and-times" class="section level3 unnumbered">
+<h3>11.3.4 Parsing Dates, Date-times, and Times</h3>
+<p>There are three types of parsers for these purposes which spit out a combination of date, time, or date-time. Below are the provided examples from the book for each of the parsers.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># date-time</span>
+<span class="co"># requires input as year, month, day (mandatory), time-(optional)-hour, minute, second,</span>
+<span class="kw">parse_datetime</span>(<span class="st">&quot;2010-10-01T2010&quot;</span>)</code></pre></div>
+<pre><code>## [1] &quot;2010-10-01 20:10:00 UTC&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">parse_datetime</span>(<span class="st">&quot;20101010&quot;</span>)</code></pre></div>
+<pre><code>## [1] &quot;2010-10-10 UTC&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># date - year, month, day</span>
+<span class="co"># expects a four digit year, a - or /, the month, a - or /, then the day</span>
+<span class="kw">parse_date</span>(<span class="st">&quot;2010-10-01&quot;</span>)</code></pre></div>
+<pre><code>## [1] &quot;2010-10-01&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#  expects the hour, :, minutes, optionally : and seconds, and an optional am/pm specifier:</span>
+<span class="kw">library</span>(hms)
+<span class="kw">parse_time</span>(<span class="st">&quot;01:10 am&quot;</span>)</code></pre></div>
+<pre><code>## 01:10:00</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">parse_time</span>(<span class="st">&quot;01:10 pm&quot;</span>)</code></pre></div>
+<pre><code>## 13:10:00</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">parse_time</span>(<span class="st">&quot;20:10:01&quot;</span>)</code></pre></div>
+<pre><code>## 20:10:01</code></pre>
+<p>You can also create your own date-time format. There are many parameters you can specify for your date-time “key”. See ?parse_date for the options. Depending on how you set up the “key”, you may parse different dates from one set of numbers (book example below).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># different dates are parsed depending on the key that you provide</span>
+<span class="kw">parse_date</span>(<span class="st">&quot;01/02/15&quot;</span>, <span class="st">&quot;%m/%d/%y&quot;</span>)</code></pre></div>
+<pre><code>## [1] &quot;2015-01-02&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">parse_date</span>(<span class="st">&quot;01/02/15&quot;</span>, <span class="st">&quot;%d/%m/%y&quot;</span>)</code></pre></div>
+<pre><code>## [1] &quot;2015-02-01&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">parse_date</span>(<span class="st">&quot;01/02/15&quot;</span>, <span class="st">&quot;%y/%m/%d&quot;</span>)</code></pre></div>
+<pre><code>## [1] &quot;2001-02-15&quot;</code></pre>
+<p>Last, as with parsing numbers, different countries may have different date formats. You can solve this by specifying the local argument, as we did with parse_integer().</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">parse_date</span>(<span class="st">&quot;1 janvier 2015&quot;</span>, <span class="st">&quot;%d %B %Y&quot;</span>, <span class="dt">locale =</span> <span class="kw">locale</span>(<span class="st">&quot;fr&quot;</span>))</code></pre></div>
+<pre><code>## [1] &quot;2015-01-01&quot;</code></pre>
+</div>
+</div>
+<div id="exercises-20" class="section level2 unnumbered">
+<h2><strong>11.3.5</strong> Exercises</h2>
+<div id="what-are-the-most-important-arguments-to-locale" class="section level3 unnumbered">
+<h3>1. What are the most important arguments to locale()?</h3>
+<p>If you are using locale() for parse_number(), then the most important arguments are <code>decimal_mark</code> and <code>grouping_mark</code>. For parse_character(), you should specify <code>encoding</code>. For parse_date(), you should specify the region using the appropriate characters.</p>
+</div>
+<div id="what-happens-if-you-try-and-set-decimal_mark-and-grouping_mark-to-the-same-character-what-happens-to-the-default-value-of-grouping_mark-when-you-set-decimal_mark-to-what-happens-to-the-default-value-of-decimal_mark-when-you-set-the-grouping_mark-to-." class="section level3 unnumbered">
+<h3>2. What happens if you try and set decimal_mark and grouping_mark to the same character? What happens to the default value of grouping_mark when you set decimal_mark to “,”? What happens to the default value of decimal_mark when you set the grouping_mark to “.”?</h3>
+<p>When you try to set them to the same character, you get an error: <code>Error: `decimal_mark` and `grouping_mark` must be different</code> The default grouping_mark becomes ‘.’ if decimal_mark is set to ‘,’.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># parse_number(&quot;1,234.567&quot;, locale = locale(grouping_mark = &#39;.&#39;, decimal_mark = &#39;.&#39;)) # This Errors!</span>
+<span class="kw">parse_number</span>(<span class="st">&quot;1.234,567&quot;</span>, <span class="dt">locale =</span> <span class="kw">locale</span>(<span class="dt">decimal_mark =</span> <span class="st">&#39;,&#39;</span>))</code></pre></div>
+<pre><code>## [1] 1234.567</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">parse_number</span>(<span class="st">&quot;1.234,567&quot;</span>, <span class="dt">locale =</span> <span class="kw">locale</span>(<span class="dt">grouping_mark =</span> <span class="st">&#39;.&#39;</span>))</code></pre></div>
+<pre><code>## [1] 1234.567</code></pre>
+</div>
+<div id="i-didnt-discuss-the-date_format-and-time_format-options-to-locale.-what-do-they-do-construct-an-example-that-shows-when-they-might-be-useful." class="section level3 unnumbered">
+<h3>3. I didn’t discuss the date_format and time_format options to locale(). What do they do? Construct an example that shows when they might be useful.</h3>
+<p>The date_format and time_format specify the date and time formats for the parse function, which are by default <code>date_format = &quot;%AD&quot;</code> and <code>time_format = &quot;%AT&quot;</code>. From the readr vignette, for date_format, “The default value is %AD which uses an automatic date parser that recognises dates of the format Y-m-d or Y/m/d.” For time_format, “The default value is %At which uses an automatic time parser that recognises times of the form H:M optionally followed by seconds and am/pm.” I could see this useful to specify a custom date_format for american dates, which are often entered as m-d-Y instead of the default Y-m-d. The full four year date is also often truncated to the last 2 digits, which might result in an error without specifying it in date_format. Below is an example.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># today&#39;s american date parsed incorrectly using default date_format (throws error)</span>
+<span class="kw">parse_date</span>(<span class="st">&quot;05/24/18&quot;</span>)</code></pre></div>
+<pre><code>## Warning: 1 parsing failure.
+## row col   expected   actual
+##   1  -- date like  05/24/18</code></pre>
+<pre><code>## [1] NA</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># today&#39;s american date parsed correctly by specifying date_format</span>
+<span class="kw">parse_date</span>(<span class="st">&quot;05/24/18&quot;</span>, <span class="dt">locale =</span> <span class="kw">locale</span>(<span class="dt">date_format =</span> <span class="st">&quot;%m/%d/%y&quot;</span>))</code></pre></div>
+<pre><code>## [1] &quot;2018-05-24&quot;</code></pre>
+</div>
+<div id="if-you-live-outside-the-us-create-a-new-locale-object-that-encapsulates-the-settings-for-the-types-of-file-you-read-most-commonly." class="section level3 unnumbered">
+<h3>4. If you live outside the US, create a new locale object that encapsulates the settings for the types of file you read most commonly.</h3>
+<p>I live in the US, but for practice purposes lets say I move to Colombia. I might have to commonly read in old files that are not UTF-8 encoded, but latin1 encoded. The decimal marks are also “,” instead of “.”. Below is an example locale object for these requirements.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">locale</span>(<span class="dt">date_names =</span> <span class="st">&quot;es&quot;</span>, <span class="dt">decimal_mark =</span> <span class="st">&quot;,&quot;</span>, <span class="dt">encoding =</span> <span class="st">&quot;latin1&quot;</span>)</code></pre></div>
+<pre><code>## &lt;locale&gt;
+## Numbers:  123.456,78
+## Formats:  %AD / %AT
+## Timezone: UTC
+## Encoding: latin1
+## &lt;date_names&gt;
+## Days:   domingo (dom.), lunes (lun.), martes (mar.), miércoles (mié.),
+##         jueves (jue.), viernes (vie.), sábado (sáb.)
+## Months: enero (ene.), febrero (feb.), marzo (mar.), abril (abr.), mayo
+##         (may.), junio (jun.), julio (jul.), agosto (ago.),
+##         septiembre (sept.), octubre (oct.), noviembre (nov.),
+##         diciembre (dic.)
+## AM/PM:  a. m./p. m.</code></pre>
+</div>
+<div id="whats-the-difference-between-read_csv-and-read_csv2" class="section level3 unnumbered">
+<h3>5. What’s the difference between read_csv() and read_csv2()?</h3>
+<p>Base on the documentation, read_csv2() uses semicolons “;” as separators, instead of “,”. read_csv2() would ideally be used if the comma “,” is used as a decimal point within the file, which would mess up read_csv(). Below is an example:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># messed up because &quot;,&quot; is used as a decimal point</span>
+<span class="kw">read_csv</span>(<span class="st">&quot;a;b</span><span class="ch">\n</span><span class="st">1,0;2,0&quot;</span>)</code></pre></div>
+<pre><code>## Warning: 1 parsing failure.
+## row col  expected    actual         file
+##   1  -- 1 columns 3 columns literal data</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   `a;b`
+##   &lt;dbl&gt;
+## 1     1</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># using read_csv2 fixes the problem</span>
+<span class="kw">read_csv2</span>(<span class="st">&quot;a;b</span><span class="ch">\n</span><span class="st">1,0;2,0&quot;</span>)</code></pre></div>
+<pre><code>## Using &#39;,&#39; as decimal and &#39;.&#39; as grouping mark. Use read_delim() for more control.</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##       a     b
+##   &lt;dbl&gt; &lt;dbl&gt;
+## 1     1     2</code></pre>
+</div>
+<div id="what-are-the-most-common-encodings-used-in-europe-what-are-the-most-common-encodings-used-in-asia-do-some-googling-to-find-out." class="section level3 unnumbered">
+<h3>6. What are the most common encodings used in Europe? What are the most common encodings used in Asia? Do some googling to find out.</h3>
+<p>I got the info from the ?stringi::stri_enc_detect documentation.</p>
+<p>Common encodings used in Europe are: ISO-8859-1, ISO-8859-2, windows-1252, ISO-8859-7 Common encodings used in Asia are: Shift_JIS, ISO-2022-JP, ISO-2022-CN, ISO-2022-KR, GB18030, EUC-JP, EUC-KR</p>
+<p>UTF-8 is widely popular now, and you can also use guess_encoding() if you are unsure what encoding to use. There is also a lot of info about encoding on Wikipedia.</p>
+</div>
+<div id="generate-the-correct-format-string-to-parse-each-of-the-following-dates-and-times" class="section level3 unnumbered">
+<h3>7. Generate the correct format string to parse each of the following dates and times:</h3>
+<p>My answers are in the R code below. Helpful descriptions for the format string paramters are found at ?parse_datetime.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">d1 &lt;-<span class="st"> &quot;January 1, 2010&quot;</span>
+<span class="kw">parse_date</span> (d1, <span class="st">&quot;%B%e%*%Y&quot;</span>)</code></pre></div>
+<pre><code>## [1] &quot;2010-01-01&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">d2 &lt;-<span class="st"> &quot;2015-Mar-07&quot;</span>
+<span class="kw">parse_date</span>(d2, <span class="st">&quot;%Y-%b-%d&quot;</span>)</code></pre></div>
+<pre><code>## [1] &quot;2015-03-07&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">d3 &lt;-<span class="st"> &quot;06-Jun-2017&quot;</span>
+<span class="kw">parse_date</span>(d3, <span class="st">&quot;%d-%b-%Y&quot;</span>)</code></pre></div>
+<pre><code>## [1] &quot;2017-06-06&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">d4 &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;August 19 (2015)&quot;</span>, <span class="st">&quot;July 1 (2015)&quot;</span>)
+<span class="kw">parse_date</span>(d4, <span class="st">&quot;%B %d (%Y)&quot;</span>)</code></pre></div>
+<pre><code>## [1] &quot;2015-08-19&quot; &quot;2015-07-01&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">d5 &lt;-<span class="st"> &quot;12/30/14&quot;</span> <span class="co"># Dec 30, 2014</span>
+<span class="kw">parse_date</span>(d5, <span class="st">&quot;%m/%d/%y&quot;</span>)</code></pre></div>
+<pre><code>## [1] &quot;2014-12-30&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">t1 &lt;-<span class="st"> &quot;1705&quot;</span>
+<span class="kw">parse_time</span>(t1, <span class="st">&quot;%H%M&quot;</span>)</code></pre></div>
+<pre><code>## 17:05:00</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">t2 &lt;-<span class="st"> &quot;11:15:10.12 PM&quot;</span>
+<span class="kw">parse_time</span>(t2, <span class="st">&quot;%I:%M:%OS %p&quot;</span>)</code></pre></div>
+<pre><code>## 23:15:10.12</code></pre>
+</div>
+</div>
+<div id="notes---parsing-a-file" class="section level2 unnumbered">
+<h2><strong>11.4</strong> Notes - Parsing a file</h2>
+<p>The parsers that we learned about in the previous section are automatically applied by readr when reading in a file using read_csv() or other reading functions. These guess the type of data in each column being read in, using a combination of guess_parser() and parse_guess() on the first 1000 rows of observations.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">guess_parser</span>(<span class="kw">c</span>(<span class="st">&quot;TRUE&quot;</span>, <span class="st">&quot;FALSE&quot;</span>))</code></pre></div>
+<pre><code>## [1] &quot;logical&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">parse_guess</span>(<span class="st">&quot;2010-10-10&quot;</span>)</code></pre></div>
+<pre><code>## [1] &quot;2010-10-10&quot;</code></pre>
+<p>There are usually a lot of issues when parsing a large, unorganized file. readr has a “challenge” example that displays some of the issues that arise:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">challenge &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="kw">readr_example</span>(<span class="st">&quot;challenge.csv&quot;</span>))</code></pre></div>
+<pre><code>## Parsed with column specification:
+## cols(
+##   x = col_double(),
+##   y = col_logical()
+## )</code></pre>
+<pre><code>## Warning: 1000 parsing failures.
+##  row col           expected     actual                                                                                         file
+## 1001   y 1/0/T/F/TRUE/FALSE 2015-01-16 &#39;/Library/Frameworks/R.framework/Versions/3.5/Resources/library/readr/extdata/challenge.csv&#39;
+## 1002   y 1/0/T/F/TRUE/FALSE 2018-05-18 &#39;/Library/Frameworks/R.framework/Versions/3.5/Resources/library/readr/extdata/challenge.csv&#39;
+## 1003   y 1/0/T/F/TRUE/FALSE 2015-09-05 &#39;/Library/Frameworks/R.framework/Versions/3.5/Resources/library/readr/extdata/challenge.csv&#39;
+## 1004   y 1/0/T/F/TRUE/FALSE 2012-11-28 &#39;/Library/Frameworks/R.framework/Versions/3.5/Resources/library/readr/extdata/challenge.csv&#39;
+## 1005   y 1/0/T/F/TRUE/FALSE 2020-01-13 &#39;/Library/Frameworks/R.framework/Versions/3.5/Resources/library/readr/extdata/challenge.csv&#39;
+## .... ... .................. .......... ............................................................................................
+## See problems(...) for more details.</code></pre>
+<p>Since the default only looks at the first 1000 rows, we can run into issues if the first 1000 rows or more have troubling characteristics. Here there are many issues displayed in the output after attempting to read the file in. It is very helpful that the error output displays what the function attempted to do. We see that it attempted to parse column x using col_integer(), and column y using col_character(). We can see more details by using problems():</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">problems</span>(challenge)</code></pre></div>
+<pre><code>## # A tibble: 1,000 x 5
+##      row col   expected      actual   file                                 
+##    &lt;int&gt; &lt;chr&gt; &lt;chr&gt;         &lt;chr&gt;    &lt;chr&gt;                                
+##  1  1001 y     1/0/T/F/TRUE… 2015-01… &#39;/Library/Frameworks/R.framework/Ver…
+##  2  1002 y     1/0/T/F/TRUE… 2018-05… &#39;/Library/Frameworks/R.framework/Ver…
+##  3  1003 y     1/0/T/F/TRUE… 2015-09… &#39;/Library/Frameworks/R.framework/Ver…
+##  4  1004 y     1/0/T/F/TRUE… 2012-11… &#39;/Library/Frameworks/R.framework/Ver…
+##  5  1005 y     1/0/T/F/TRUE… 2020-01… &#39;/Library/Frameworks/R.framework/Ver…
+##  6  1006 y     1/0/T/F/TRUE… 2016-04… &#39;/Library/Frameworks/R.framework/Ver…
+##  7  1007 y     1/0/T/F/TRUE… 2011-05… &#39;/Library/Frameworks/R.framework/Ver…
+##  8  1008 y     1/0/T/F/TRUE… 2020-07… &#39;/Library/Frameworks/R.framework/Ver…
+##  9  1009 y     1/0/T/F/TRUE… 2011-04… &#39;/Library/Frameworks/R.framework/Ver…
+## 10  1010 y     1/0/T/F/TRUE… 2010-05… &#39;/Library/Frameworks/R.framework/Ver…
+## # … with 990 more rows</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tail</span>(challenge)</code></pre></div>
+<pre><code>## # A tibble: 6 x 2
+##       x y    
+##   &lt;dbl&gt; &lt;lgl&gt;
+## 1 0.805 NA   
+## 2 0.164 NA   
+## 3 0.472 NA   
+## 4 0.718 NA   
+## 5 0.270 NA   
+## 6 0.608 NA</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">typeof</span>(challenge<span class="op">$</span>x)</code></pre></div>
+<pre><code>## [1] &quot;double&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">typeof</span>(challenge<span class="op">$</span>y)</code></pre></div>
+<pre><code>## [1] &quot;logical&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">unique</span>(challenge<span class="op">$</span>y[<span class="dv">1</span><span class="op">:</span><span class="dv">1000</span>])</code></pre></div>
+<pre><code>## [1] NA</code></pre>
+<p>The values for column x after row 1000 seem to be doubles, rather than integers. We can fix this by changing the default parsing function from col_integer() to col_double(). We also observe that column y contains date values, but the default type was character, since the first 1000 values were NA. We can fix this by changing col_character() to col_date().</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">challenge &lt;-<span class="st"> </span><span class="kw">read_csv</span>(
+  <span class="kw">readr_example</span>(<span class="st">&quot;challenge.csv&quot;</span>),
+  <span class="dt">col_types =</span> <span class="kw">cols</span>(
+    <span class="dt">x =</span> <span class="kw">col_double</span>(),
+    <span class="dt">y =</span> <span class="kw">col_date</span>()
+  )
+)
+<span class="kw">tail</span>(challenge)</code></pre></div>
+<pre><code>## # A tibble: 6 x 2
+##       x y         
+##   &lt;dbl&gt; &lt;date&gt;    
+## 1 0.805 2019-11-21
+## 2 0.164 2018-03-29
+## 3 0.472 2014-08-04
+## 4 0.718 2015-08-16
+## 5 0.270 2020-02-04
+## 6 0.608 2019-01-06</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">typeof</span>(challenge<span class="op">$</span>x)</code></pre></div>
+<pre><code>## [1] &quot;double&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">typeof</span>(challenge<span class="op">$</span>y)</code></pre></div>
+<pre><code>## [1] &quot;double&quot;</code></pre>
+<p>Hadley recommends that we should always examine the output of the read_() function and re-specify the col_parsers to match what is appropriate for the data. One strategy around this that he describes, which I think would probably be more straightforward if you have many, many columns of data, is to read everything in as a character, then use type_convert() on the table to convert to the appropriate types. We can see in the example below that type_convert() properly converts column x to double and column y to date formats.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">challenge2 &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="kw">readr_example</span>(<span class="st">&quot;challenge.csv&quot;</span>),
+  <span class="dt">col_types =</span> <span class="kw">cols</span>(<span class="dt">.default =</span> <span class="kw">col_character</span>())
+)
+challenge2</code></pre></div>
+<pre><code>## # A tibble: 2,000 x 2
+##    x     y    
+##    &lt;chr&gt; &lt;chr&gt;
+##  1 404   &lt;NA&gt; 
+##  2 4172  &lt;NA&gt; 
+##  3 3004  &lt;NA&gt; 
+##  4 787   &lt;NA&gt; 
+##  5 37    &lt;NA&gt; 
+##  6 2332  &lt;NA&gt; 
+##  7 2489  &lt;NA&gt; 
+##  8 1449  &lt;NA&gt; 
+##  9 3665  &lt;NA&gt; 
+## 10 3863  &lt;NA&gt; 
+## # … with 1,990 more rows</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">type_convert</span>(challenge2)</code></pre></div>
+<pre><code>## Parsed with column specification:
+## cols(
+##   x = col_double(),
+##   y = col_date(format = &quot;&quot;)
+## )</code></pre>
+<pre><code>## # A tibble: 2,000 x 2
+##        x y         
+##    &lt;dbl&gt; &lt;date&gt;    
+##  1   404 NA        
+##  2  4172 NA        
+##  3  3004 NA        
+##  4   787 NA        
+##  5    37 NA        
+##  6  2332 NA        
+##  7  2489 NA        
+##  8  1449 NA        
+##  9  3665 NA        
+## 10  3863 NA        
+## # … with 1,990 more rows</code></pre>
+<p>The functions read_lines() and read_file() also seem useful to read in the raw lines or unstructured text of a file, in order to better understand the type of data contained. Unless you want to manipulate the strings or extract data using regexes, it might be more efficient to use <code>less</code> in your terminal to view the data file, rather than read_file().</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># use read_lines to read individual lines of the file</span>
+<span class="kw">head</span>(<span class="kw">read_lines</span>(<span class="kw">readr_example</span>(<span class="st">&quot;challenge.csv&quot;</span>)))</code></pre></div>
+<pre><code>## [1] &quot;x,y&quot;     &quot;404,NA&quot;  &quot;4172,NA&quot; &quot;3004,NA&quot; &quot;787,NA&quot;  &quot;37,NA&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#use read_file to read the entire file in as one string</span>
+<span class="kw">substr</span>(<span class="kw">read_file</span>(<span class="kw">readr_example</span>(<span class="st">&quot;challenge.csv&quot;</span>)), <span class="dv">1</span>, <span class="dv">100</span>)</code></pre></div>
+<pre><code>## [1] &quot;x,y\n404,NA\n4172,NA\n3004,NA\n787,NA\n37,NA\n2332,NA\n2489,NA\n1449,NA\n3665,NA\n3863,NA\n4374,NA\n875,NA\n172,N&quot;</code></pre>
+</div>
+<div id="notes---writing-to-a-file" class="section level2 unnumbered">
+<h2><strong>11.5</strong> Notes - Writing to a file</h2>
+<p>The functions write_csv() and write_tsv() are useful functions to write data.frames or tibbles in R to files. When writing files, it is important to use UTF-8 encoding for strings and save dates/date-times in ISO8601 format. There is also a special function for writing to excel: write_excel_csv(). write_rds() will save the actual R object containing the data frame, so that if you load the <code>.rds</code> using read_rds() you can access the data as it was at the time of save. Think of this as using save() in base R to save a <code>.Robj</code> for a variable you want to keep track of. You could also use write_feather() from the <code>feather</code> package to save the data in a format accessible by other programming languages, or read it back into R using read_feather().</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># write_csv(challenge, &quot;challenge.csv&quot;)</span>
+<span class="co"># write_rds(challenge, &quot;challenge.rds&quot;)</span>
+<span class="co"># library(feather)</span>
+<span class="co"># write_feather(challenge, &quot;challenge.feather&quot;)</span></code></pre></div>
+<p>When executing the above write_csv() or write_rds(), the files will appear in your working directory, which if you are using an R notebook, conveniently is where your <code>.Rmd</code> file is being kept!</p>
+<p>There are also other types of files that might be read in. You can use haven for reading in SPSS, Stata, and SAS files, readxl for excel files, DBI to run SQL queries against databases (returns data frame), jsonlite for json, and xml2 for XML.</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="chapter-10-tibbles.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="chapter-12-tidy-data.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": ["r4ds-walkthrough.pdf", "r4ds-walkthrough.epub"],
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

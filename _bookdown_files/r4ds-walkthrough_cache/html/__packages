@@ -21,3 +21,8 @@ hms
 stringi
 lubridate
 gapminder
+gridExtra
+Lahman
+maps
+ggcorrplot
+fueleconomy

@@ -1,5 +1,9 @@
 # **Chapter 21** {-}
 
+```{r, echo=FALSE}
+knitr::opts_chunk$set(error = TRUE)
+```
+
 ## **21.2.1** Exercises {-}
 
 ### 1. Write for loops to: {-}
@@ -410,13 +414,13 @@ map_chr(nycflights13::flights, typeof)
 * Compute the number of unique values in each column of iris.
 
 ```{r}
-map_int(iris, function(x) length(unique(x)))
+map_int(iris, function(a) length(unique(a)))
 ```
 
 * Generate 10 random normals for each of μ=−10,0,10, and 100.
 
 ```{r}
-map(c(10,0,10,100), function (x) rnorm(10, x, 1))
+map(c(10,0,10,100), function (b) rnorm(10, b, 1))
 
 # also works
 # map(c(10,0,10,100), ~ rnorm(10, ., 1))
