@@ -1,6 +1,6 @@
 # (PART) Modeling {-}
 
-# **Chapter 23** {-}
+# Chapter 23 - Model basics {-}
 
 ## Notes - making simple models {-}
 

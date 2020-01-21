@@ -1,8 +1,10 @@
+output_dir: "docs"
 rmd_files:
   - "index.Rmd"
   - "chapter3.Rmd"
   - "chapter4.Rmd"
   - "chapter5.Rmd"
+  - "chapter6.Rmd"
   - "chapter7.Rmd"
   - "chapter8.Rmd"
   - "chapter10.Rmd"

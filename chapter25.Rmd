@@ -1,4 +1,4 @@
-# **Chapter 25** {-}
+# Chapter 25 - Many models {-}
 
 First, we'll load and prepare the data used for the exercises in this chapter.
 

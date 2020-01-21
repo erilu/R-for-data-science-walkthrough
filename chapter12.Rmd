@@ -1,4 +1,4 @@
-# **Chapter 12** Tidy Data {-}
+# Chapter 12 - Tidy data {-}
 
 Below is the example provided by the book of the same data presented in 4 different ways. One way is tidy, the others are not!
 

@@ -1,0 +1,22 @@
+# Chapter 6 - Workflow: scripts {-}
+
+## **6.3** Exercises {-}
+
+### 1. Go to the RStudio Tips twitter account, ```https://twitter.com/rstudiotips``` and find one tip that looks interesting. Practice using it! {-}
+
+RStudio Tips retweeted on Sep 21, 2018 that View(function) will show a functions source code. You can then sift through the function methods using the dropdown menu. This is a nice way to examine the inner workings of a function that is part of a package you are using.
+
+If you would like to alter the function to work differently, you can use the trace(function, edit = T). This will bring up a pop up with the code. You can then navigate to the line(s) you want to change, make your changes, and save them! This will alter the function for only your current R session. Restarting R will bring the funcion back to default.
+
+### 2. What other common mistakes will RStudio diagnostics report? Read ```https://support.rstudio.com/hc/en-us/articles/205753617-Code-Diagnostics``` to find out. {-}
+
+Rstudio diagnostics has many helpful warnings that will:
+
+* check arguments to function calls:
+  + is an argument missing, with no default?
+  + are commas missing between arguments?
+* warn if variable used has no definition in scope
+* warn if variable is defined but not used
+* provide R style diagnostics
+* provide diagnostics for other languages such as C/C++ and JavaScript
+

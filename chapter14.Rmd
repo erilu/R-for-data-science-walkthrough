@@ -1,4 +1,4 @@
-# **Chapter 14** Strings {-}
+# Chapter 14 - Strings {-}
 
 ```{r message=F, warning=F}
 library(tidyverse)
@@ -313,7 +313,7 @@ str_extract("streeet", '[aeiou]{3,}')
 str_extract("streettttt", '([aeiou][^aeiou]|[^aeiou][aeiou]){2,}')
 ```
 
-### 4. Solve the beginner regexp crosswords at https://regexcrossword.com/challenges/beginner. {-}
+### 4. Solve the beginner regexp crosswords at ```https://regexcrossword.com/challenges/beginner```. {-}
 
 Here are the solutions with some explanations to how I arrived at the answers:
 
@@ -644,7 +644,7 @@ str_split(sample, " ")[[1]]
 str_split(sample, boundary("word"))[[1]]
 ```
 
-### 2. Why is it better to split up by boundary("word") than " "? {-}
+### 2. Why is it better to split up by ```boundary("word")``` than ```" "```? {-}
 
 It is better to split up by boundary("word") than by " " because splitting by " " will cause some words to include puncutation marks, such as commmas or periods. boundary("word") takes these into consideration when splitting, and will not include them in the output. See the comparison provided in my answer to the previous exercise, which uses both ways to split the string.
 

@@ -1,4 +1,4 @@
-# **Chapter 24** {-}
+# Chapter 24 - Model building {-}
 
 For this chapter, the following packages and modifications to datasets were used:
 

@@ -1,4 +1,4 @@
-# **Chapter 21** {-}
+# Chapter 21 - Iteration {-}
 
 ```{r, echo=FALSE}
 knitr::opts_chunk$set(error = TRUE)

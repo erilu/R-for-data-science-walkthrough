@@ -1,6 +1,4 @@
-# (PART) Exploratory Data Analysis {-}
-
-# **Chapter 7** {-}
+# Chapter 7 - Exploratory Data Analysis {-}
 
 Exploratory data analysis (EDA) is something I was first introduced to while I was an undergraduate Statistics major at UC Berkeley. The description that this book provides is very similar to what I was taught, in that there is no "correct" or defined way to perform EDA. Exploring the data and generating questions and insights about how the data is structured, the quality of the data, what types of analysis/modeling can be performed using the data, and interpreting results of your analysis are all important things to be thinking about. While EDA can be performed in a variety of ways, this text focuses on using the tidyverse packages to do so.
 

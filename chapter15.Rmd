@@ -1,5 +1,5 @@
 
-# **Chapter 15** Factors {-}
+# Chapter 15 - Factors {-}
 
 ```{r message=F, warning=F}
 library(forcats)

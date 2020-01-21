@@ -1,6 +1,6 @@
 # (PART) Data Wrangling {-}
 
-# **Chapter 10** Tibbles {-}
+# Chapter 10 - Tibbles {-}
 
 ## Notes - Creating Tibbles {-}
 

@@ -1,4 +1,4 @@
-# **Chapter 16** Dates and times {-}
+# Chapter 16 - Dates and times {-}
 
 ```{r message=F, warning=F}
 library(lubridate)

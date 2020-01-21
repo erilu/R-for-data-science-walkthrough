@@ -1,6 +1,6 @@
-# (PART) Data Visualization {-}
+# (PART) Data Exploration {-}
 
-# **Chapter 3** {-}
+# Chapter 3 - Data visualization {-}
 
 ```{r message=F, error=F, warning=F}
 library(tidyverse)

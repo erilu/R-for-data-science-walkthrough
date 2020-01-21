@@ -1,4 +1,4 @@
-# **Chapter 28** {-}
+# Chapter 28 - Graphics for communication {-}
 
 ## **28.2.1** Exercises {-}
 

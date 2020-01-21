@@ -1,4 +1,4 @@
-# **Chapter 13** Relational Data {-}
+# Chapter 13 - Relational data {-}
 
 If you've ever worked with SQL before, this chapter should be relatively familiar to you. Here we learn about the different ways to work with relational data in R, using dplyr functions. Quoted from the book, the different types of thins you can perform are:
 

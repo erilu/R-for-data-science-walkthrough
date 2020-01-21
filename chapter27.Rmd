@@ -1,6 +1,6 @@
 # (PART) Communicate {-}
 
-# **Chapter 27** {-}
+# Chapter 27 - R Markdown {-}
 
 ## **27.2.1** Exercises {-}
 
@@ -39,7 +39,7 @@ How to do the above:
 * A block quote can be added by prefacing the text using using `> `.
 
 
-### 3. Copy and paste the contents of diamond-sizes.Rmd from https://github.com/hadley/r4ds/tree/master/rmarkdown in to a local R markdown document. Check that you can run it, then add text after the frequency polygon that describes its most striking features. {-}
+### 3. Copy and paste the contents of diamond-sizes.Rmd from ```https://github.com/hadley/r4ds/tree/master/rmarkdown``` in to a local R markdown document. Check that you can run it, then add text after the frequency polygon that describes its most striking features. {-}
 
 Below are the contents of diamond-sizes.Rmd.
 
@@ -95,7 +95,7 @@ diamonds %>% ggplot (aes(x = clarity, y = carat))+
 ```
 
 
-### 2. Download diamond-sizes.Rmd from https://github.com/hadley/r4ds/tree/master/rmarkdown. Add a section that describes the largest 20 diamonds, including a table that displays their most important attributes. {-}
+### 2. Download diamond-sizes.Rmd from ```https://github.com/hadley/r4ds/tree/master/rmarkdown```. Add a section that describes the largest 20 diamonds, including a table that displays their most important attributes. {-}
 
 To filter out the top 20 largest diamonds, we can arrange the data table using arrange() so that the largest diamonds are at the top, then take the first 20 entries using head(). To display a table with their most important attributes, we can use knitr::kable() for carat, cut, color, clarity, and price, which I believe to be important based on the qualities they convey about the diamond.
 
