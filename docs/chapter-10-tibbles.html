@@ -24,7 +24,7 @@
 <meta name="author" content="Erick Lu" />
 
 
-<meta name="date" content="2020-01-20" />
+<meta name="date" content="2020-01-21" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -753,11 +753,11 @@ tb</code></pre></div>
 )
 <span class="co"># extract column &#39;x&#39; using either $ or [[]]</span>
 df<span class="op">$</span>x</code></pre></div>
-<pre><code>## [1] 0.8524355 0.6797743 0.6142775 0.1764409 0.6766989</code></pre>
+<pre><code>## [1] 0.84011082 0.09959577 0.27459996 0.87146539 0.36318207</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">df[[<span class="st">&quot;x&quot;</span>]]</code></pre></div>
-<pre><code>## [1] 0.8524355 0.6797743 0.6142775 0.1764409 0.6766989</code></pre>
+<pre><code>## [1] 0.84011082 0.09959577 0.27459996 0.87146539 0.36318207</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">df[[<span class="dv">1</span>]]</code></pre></div>
-<pre><code>## [1] 0.8524355 0.6797743 0.6142775 0.1764409 0.6766989</code></pre>
+<pre><code>## [1] 0.84011082 0.09959577 0.27459996 0.87146539 0.36318207</code></pre>
 </div>
 <div id="exercises-19" class="section level2 unnumbered">
 <h2><strong>10.5</strong> Exercises</h2>
@@ -888,16 +888,16 @@ diamonds[,<span class="kw">c</span>(var,<span class="st">&quot;price&quot;</span
 <pre><code>## # A tibble: 10 x 3
 ##      `1`   `2`   `3`
 ##    &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1     1  3.04  3.04
-##  2     2  5.58  2.79
-##  3     3  7.12  2.37
-##  4     4 10.5   2.62
-##  5     5 10.3   2.06
-##  6     6 11.2   1.87
-##  7     7 13.4   1.92
-##  8     8 16.6   2.08
-##  9     9 16.4   1.82
-## 10    10 19.3   1.93</code></pre>
+##  1     1  1.58  1.58
+##  2     2  3.45  1.73
+##  3     3  7.28  2.43
+##  4     4  7.28  1.82
+##  5     5  9.54  1.91
+##  6     6  9.81  1.63
+##  7     7 13.6   1.94
+##  8     8 15.4   1.93
+##  9     9 19.4   2.15
+## 10    10 20.4   2.04</code></pre>
 <ul>
 <li>Renaming the columns to one, two and three.</li>
 </ul>
@@ -907,16 +907,16 @@ diamonds[,<span class="kw">c</span>(var,<span class="st">&quot;price&quot;</span
 <pre><code>## # A tibble: 10 x 3
 ##      one   two three
 ##    &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1     1  3.04  3.04
-##  2     2  5.58  2.79
-##  3     3  7.12  2.37
-##  4     4 10.5   2.62
-##  5     5 10.3   2.06
-##  6     6 11.2   1.87
-##  7     7 13.4   1.92
-##  8     8 16.6   2.08
-##  9     9 16.4   1.82
-## 10    10 19.3   1.93</code></pre>
+##  1     1  1.58  1.58
+##  2     2  3.45  1.73
+##  3     3  7.28  2.43
+##  4     4  7.28  1.82
+##  5     5  9.54  1.91
+##  6     6  9.81  1.63
+##  7     7 13.6   1.94
+##  8     8 15.4   1.93
+##  9     9 19.4   2.15
+## 10    10 20.4   2.04</code></pre>
 </div>
 <div id="what-does-tibbleenframe-do-when-might-you-use-it" class="section level3 unnumbered">
 <h3>5. What does tibble::enframe() do? When might you use it?</h3>
@@ -925,18 +925,18 @@ diamonds[,<span class="kw">c</span>(var,<span class="st">&quot;price&quot;</span
 <span class="kw">names</span>(x) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">5</span><span class="op">:</span><span class="dv">104</span>)
 <span class="kw">enframe</span>(x)</code></pre></div>
 <pre><code>## # A tibble: 100 x 2
-##    name    value
-##    &lt;chr&gt;   &lt;dbl&gt;
-##  1 5      1.12  
-##  2 6     -0.286 
-##  3 7     -1.10  
-##  4 8     -0.570 
-##  5 9      3.56  
-##  6 10    -1.66  
-##  7 11     0.623 
-##  8 12     0.0434
-##  9 13     0.447 
-## 10 14     0.329 
+##    name   value
+##    &lt;chr&gt;  &lt;dbl&gt;
+##  1 5      1.21 
+##  2 6     -0.197
+##  3 7      0.227
+##  4 8     -0.749
+##  5 9     -0.262
+##  6 10    -1.42 
+##  7 11     0.178
+##  8 12     3.02 
+##  9 13     1.07 
+## 10 14     1.49 
 ## # … with 90 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(<span class="kw">enframe</span>(x))</code></pre></div>
 <pre><code>## [1] &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>

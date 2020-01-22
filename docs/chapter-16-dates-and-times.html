@@ -24,7 +24,7 @@
 <meta name="author" content="Erick Lu" />
 
 
-<meta name="date" content="2020-01-20" />
+<meta name="date" content="2020-01-21" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -714,9 +714,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h3>2. What does the tzone argument to today() do? Why is it important?</h3>
 <p>The documentation states that the <code>tzone</code> argument in today() accepts a character vector specifying the time zone you would like to find the curent date of. It will default to the system time zone on your computer if left unspecified. This is important because, depending on the time zone, the date could be different. For example, the US west coast is 3 hours behind the US east coast. If it is 11PM on the west coast, the east coast is one day ahead. Below is the example provided in the documentation.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">today</span>()</code></pre></div>
-<pre><code>## [1] &quot;2020-01-20&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">today</span>(<span class="st">&quot;GMT&quot;</span>)</code></pre></div>
 <pre><code>## [1] &quot;2020-01-21&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">today</span>(<span class="st">&quot;GMT&quot;</span>)</code></pre></div>
+<pre><code>## [1] &quot;2020-01-22&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">today</span>() <span class="op">==</span><span class="st"> </span><span class="kw">today</span>(<span class="st">&quot;GMT&quot;</span>) <span class="co"># not always true</span></code></pre></div>
 <pre><code>## [1] FALSE</code></pre>
 </div>
